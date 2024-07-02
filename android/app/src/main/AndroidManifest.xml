@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="whossy_mobile_app"
+        android:label="Whossy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
