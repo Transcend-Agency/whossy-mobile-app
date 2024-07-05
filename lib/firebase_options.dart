@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA3qDpFpJYWJ_KmSw-6E9tnIfV0VLvw_gQ',
-    appId: '1:332139466657:android:4c6b0b30b85aa8ac2d05e0',
+    appId: '1:332139466657:android:89ebe843200d8fa72d05e0',
     messagingSenderId: '332139466657',
     projectId: 'whossy-app',
     storageBucket: 'whossy-app.appspot.com',

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class AppUtils {
@@ -60,5 +62,13 @@ class AppUtils {
           onClosed?.call(); // Call the onClosed callback for other reasons
         }
       });
+  }
+
+  /// Calculates a text scale factor based on the device width and a maximum scale factor.
+  static double textScaleFactor(BuildContext context,
+      {double maxTextScaleFactor = 2}) {
+    final width = MediaQuery.of(context).size.width;
+    double val = (width / 1400) * maxTextScaleFactor;
+    return max(1, min(val, maxTextScaleFactor));
   }
 }

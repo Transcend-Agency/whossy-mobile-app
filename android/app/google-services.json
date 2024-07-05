@@ -23,6 +23,25 @@
           "other_platform_oauth_client": []
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:332139466657:android:89ebe843200d8fa72d05e0",
+        "android_client_info": {
+          "package_name": "com.transcend.whossy_mobile_app.whossy_mobile_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3qDpFpJYWJ_KmSw-6E9tnIfV0VLvw_gQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
     }
   ],
   "configuration_version": "1"
