@@ -11,12 +11,11 @@ class TextStyles {
   );
 
   static TextStyle buttonText = const TextStyle(
-    fontSize: 19,
+    fontSize: 17.5,
     fontFamily: 'NeueMontreal',
   );
 
   static TextStyle miniText = const TextStyle(
-    color: Colors.black,
     fontSize: 17,
     fontFamily: 'NeueMontreal',
   );

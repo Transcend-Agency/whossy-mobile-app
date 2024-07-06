@@ -1,12 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_mobile_app/common/components/Slider/splash_slider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:whossy_mobile_app/common/utils/widget_functions.dart';
 
-import '../../common/components/Box/icon_box.dart';
-import '../../common/components/Button/app_button.dart';
-import '../../common/components/Text/gradient_text.dart';
+import '../../common/components/index.dart';
 import '../../common/styles/text_style.dart';
 import '../../constants/asset_paths.dart';
 import '../../constants/colors.dart';
@@ -35,39 +33,41 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Animate each slider after the frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Start first and third controllers from the beginning
-      animateToMaxMin(
-        _scrollController1,
-        _scrollController1.position.maxScrollExtent,
-        _scrollController1.position.minScrollExtent,
-        _scrollController1.position.maxScrollExtent,
-        25,
-      );
-      animateToMaxMin(
-        _scrollController3,
-        _scrollController3.position.maxScrollExtent,
-        _scrollController3.position.minScrollExtent,
-        _scrollController3.position.maxScrollExtent,
-        15,
-      );
+      Future.delayed(Duration.zero, () {
+        // Start first and third controllers from the beginning
+        animateToMaxMin(
+          _scrollController1,
+          _scrollController1.position.maxScrollExtent,
+          _scrollController1.position.minScrollExtent,
+          _scrollController1.position.maxScrollExtent,
+          25,
+        );
+        animateToMaxMin(
+          _scrollController3,
+          _scrollController3.position.maxScrollExtent,
+          _scrollController3.position.minScrollExtent,
+          _scrollController3.position.maxScrollExtent,
+          15,
+        );
 
-      // Start the second and fourth controllers from the end
-      _scrollController2.jumpTo(_scrollController2.position.maxScrollExtent);
-      animateToMaxMin(
-        _scrollController2,
-        _scrollController2.position.maxScrollExtent,
-        _scrollController2.position.minScrollExtent,
-        _scrollController2.position.minScrollExtent,
-        20,
-      );
-      _scrollController4.jumpTo(_scrollController4.position.maxScrollExtent);
-      animateToMaxMin(
-        _scrollController4,
-        _scrollController4.position.maxScrollExtent,
-        _scrollController4.position.minScrollExtent,
-        _scrollController4.position.minScrollExtent,
-        18,
-      );
+        // Start the second and fourth controllers from the end
+        _scrollController2.jumpTo(_scrollController2.position.maxScrollExtent);
+        animateToMaxMin(
+          _scrollController2,
+          _scrollController2.position.maxScrollExtent,
+          _scrollController2.position.minScrollExtent,
+          _scrollController2.position.minScrollExtent,
+          20,
+        );
+        _scrollController4.jumpTo(_scrollController4.position.maxScrollExtent);
+        animateToMaxMin(
+          _scrollController4,
+          _scrollController4.position.maxScrollExtent,
+          _scrollController4.position.minScrollExtent,
+          _scrollController4.position.minScrollExtent,
+          18,
+        );
+      });
     });
   }
 
@@ -78,6 +78,10 @@ class _SplashScreenState extends State<SplashScreen> {
     double direction,
     int seconds,
   ) {
+    if (!controller.hasClients) {
+      return;
+    }
+
     controller
         .animateTo(
       direction,
@@ -95,14 +99,12 @@ class _SplashScreenState extends State<SplashScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Stack(
             children: [
               Column(
                 children: [
-                  addHeight(10),
                   SplashSlider(
                     scrollController: _scrollController1,
                     row: 1,
@@ -132,7 +134,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           BoxDecoration(gradient: AppColors.splashShade),
                       child: Padding(
                         padding: EdgeInsets.only(
-                            left: 16.w, right: 16.w, top: 110.w),
+                            left: 14.w, right: 14.w, top: 110.w),
                         child: Column(
                           children: [
                             Stack(
@@ -162,7 +164,11 @@ class _SplashScreenState extends State<SplashScreen> {
                               ],
                             ),
                             addHeight(32),
-                            AppButton(onPress: () {}, text: 'Login'),
+                            AppButton(
+                                onPress: () {
+                                  context.push('/auth');
+                                },
+                                text: 'Login'),
                             addHeight(14),
                             RichText(
                               textAlign: TextAlign.center,

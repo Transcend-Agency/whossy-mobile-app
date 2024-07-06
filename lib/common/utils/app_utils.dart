@@ -65,10 +65,14 @@ class AppUtils {
   }
 
   /// Calculates a text scale factor based on the device width and a maximum scale factor.
-  static double textScaleFactor(BuildContext context,
-      {double maxTextScaleFactor = 2}) {
+  static TextScaler scaleText(
+    BuildContext context, {
+    double maxTextScaleFactor = 2,
+  }) {
     final width = MediaQuery.of(context).size.width;
     double val = (width / 1400) * maxTextScaleFactor;
-    return max(1, min(val, maxTextScaleFactor));
+
+    double scale = max(1, min(val, maxTextScaleFactor));
+    return TextScaler.linear(scale);
   }
 }

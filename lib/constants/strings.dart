@@ -8,4 +8,6 @@ class AppStrings {
   static String noAccount = 'Don\'t have an account? ';
 
   static String cAccount = 'Create account';
+
+  static String welBack = 'Welcome back';
 }

@@ -22,7 +22,8 @@ class GradientText extends StatelessWidget {
             TextSpan(text: AppStrings.splashText1),
             TextSpan(text: AppStrings.splashText2),
           ],
-        ),
+        ), //
+        textScaler: const TextScaler.linear(0.95),
       ),
     );
   }
