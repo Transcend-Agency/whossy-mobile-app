@@ -165,10 +165,9 @@ class _SplashScreenState extends State<SplashScreen> {
                             ),
                             addHeight(32),
                             AppButton(
-                                onPress: () {
-                                  context.push('/auth');
-                                },
-                                text: 'Login'),
+                              onPress: () => context.push('/auth'),
+                              text: 'Login',
+                            ),
                             addHeight(14),
                             RichText(
                               textAlign: TextAlign.center,

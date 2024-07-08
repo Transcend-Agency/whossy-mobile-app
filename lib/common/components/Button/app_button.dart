@@ -18,7 +18,7 @@ class AppButton extends StatelessWidget {
     super.key,
     required this.onPress,
     this.color,
-    this.height = 46,
+    this.height = 50,
     this.loading = false,
     required this.text,
   });
