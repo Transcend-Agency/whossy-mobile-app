@@ -1,6 +1,7 @@
+// app_strings.dart
+
 class AppStrings {
   static const String appName = 'Whossy';
-
   static const String splashText1 = 'Heartfelt Connections Await.';
   static const String splashText2 = '\nDiscover Love on Whossy.';
   static const String noAccount = 'Don\'t have an account? ';
@@ -26,6 +27,15 @@ class AppStrings {
   // New strings for ResetPasswordScreen
   static const String resetPasswordTitle = 'Reset your password';
   static const String resetPasswordSubtitle =
-      'First we need to verify that you’re YOU! Enter your email to receive otp code.';
+      'Enter your email to receive otp code.';
   static const String sendCodeButton = 'Send Code';
+
+  // Strings for SignUpScreen
+  static const String signUpTitle = "Welcome to Whossy, Let's get you Started!";
+  static const String signUpSubtitle =
+      'Ensure to enter the correct data, as some will be displayed on your profile.';
+  static const String firstNameLabel = 'First name';
+  static const String firstNameHint = 'John';
+  static const String lastNameLabel = 'Last name';
+  static const String lastNameHint = 'Doe';
 }

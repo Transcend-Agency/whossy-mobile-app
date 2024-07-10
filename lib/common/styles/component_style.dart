@@ -5,6 +5,13 @@ import '../../constants/colors.dart';
 
 final pagePadding = EdgeInsets.symmetric(horizontal: 14.w);
 
+final textTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);
+
+final circularTop = BorderRadius.only(
+  topLeft: Radius.circular(12.r),
+  topRight: Radius.circular(12.r),
+);
+
 final circularBorder = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(8.r),
 );

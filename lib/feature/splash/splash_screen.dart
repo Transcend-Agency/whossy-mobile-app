@@ -1,7 +1,8 @@
-import 'package:flutter/gestures.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:whossy_mobile_app/common/styles/component_style.dart';
 import 'package:whossy_mobile_app/common/utils/widget_functions.dart';
 
 import '../../common/components/index.dart';
@@ -96,109 +97,107 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
-          child: Stack(
+    return AppScaffold(
+      body: Stack(
+        children: [
+          Column(
             children: [
-              Column(
-                children: [
-                  SplashSlider(
-                    scrollController: _scrollController1,
-                    row: 1,
-                  ),
-                  SplashSlider(
-                    scrollController: _scrollController2,
-                    row: 2,
-                  ),
-                  SplashSlider(
-                    scrollController: _scrollController3,
-                    row: 3,
-                  ),
-                  SplashSlider(
-                    scrollController: _scrollController4,
-                    row: 4,
-                  ),
-                ],
+              SplashSlider(
+                scrollController: _scrollController1,
+                row: 1,
               ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    Container(
-                      decoration:
-                          BoxDecoration(gradient: AppColors.splashShade),
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            left: 14.w, right: 14.w, top: 110.w),
-                        child: Column(
-                          children: [
-                            Stack(
-                              children: [
-                                const GradientText(
-                                  gradient: AppColors.splashGradient,
-                                ),
-                                Positioned(
-                                  right: 125.w,
-                                  top: 0,
-                                  bottom: 0,
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5.w),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const IconBox(
-                                            iconPath: AppAssets.chatXIcon),
-                                        addWidth(6),
-                                        const IconBox(
-                                            iconPath: AppAssets.chatLoveIcon),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            addHeight(32),
-                            AppButton(
-                              onPress: () => context.push('/auth'),
-                              text: 'Login',
-                            ),
-                            addHeight(14),
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: AppStrings.noAccount,
-                                    style: TextStyles.miniText,
-                                  ),
-                                  TextSpan(
-                                    text: AppStrings.cAccount,
-                                    style: TextStyles.miniText.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => {},
-                                  ),
-                                ],
-                              ),
-                            ),
-                            addHeight(20),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              SplashSlider(
+                scrollController: _scrollController2,
+                row: 2,
+              ),
+              SplashSlider(
+                scrollController: _scrollController3,
+                row: 3,
+              ),
+              SplashSlider(
+                scrollController: _scrollController4,
+                row: 4,
               ),
             ],
           ),
-        ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(gradient: AppColors.splashShade),
+                  child: Padding(
+                    padding:
+                        EdgeInsets.only(left: 14.w, right: 14.w, top: 110.w),
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: [
+                            const GradientText(
+                              gradient: AppColors.splashGradient,
+                            ),
+                            Positioned(
+                              right: 125.w,
+                              top: 0,
+                              bottom: 0,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5.w),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const IconBox(
+                                        iconPath: AppAssets.chatXIcon),
+                                    addWidth(6),
+                                    const IconBox(
+                                        iconPath: AppAssets.chatLoveIcon),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        addHeight(32),
+                        AppButton(
+                          onPress: () => context.pushNamed('login'),
+                          text: 'Login',
+                        ),
+                        addHeight(8),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: AppStrings.noAccount,
+                                style: TextStyles.fieldHeader,
+                                // .copyWith(fontSize: 15) try with a smaller screen
+                              ),
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: GestureDetector(
+                                  onTap: () => context.pushNamed('signup'),
+                                  child: Container(
+                                    margin: textTouchable,
+                                    child: Text(
+                                      AppStrings.cAccount,
+                                      style: TextStyles.underlineText,
+                                      // .copyWith(fontSize: 14) try with a smaller screen
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        addHeight(12),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

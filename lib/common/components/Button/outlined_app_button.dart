@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/common/utils/app_utils.dart';
 
 import '../../../constants/colors.dart';
 import '../../styles/text_style.dart';
@@ -12,7 +11,7 @@ class OutlinedAppButton extends StatelessWidget {
   final Color? borderColor;
   final double height;
   final bool loading;
-  final String? text; // Make text optional
+  final String? text;
   final Color textColor;
   final Widget? child;
 
@@ -30,21 +29,32 @@ class OutlinedAppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double? fontSize = ScreenUtil().screenWidth > 500 ? 17 : null;
+
     return OutlinedButton(
       onPressed: onPress,
       style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.primaryColor,
         minimumSize: Size(double.infinity, height.h),
         side: BorderSide(color: borderColor ?? AppColors.black),
         shape: circularBorder,
       ),
       child: loading
           ? const AppLoader()
-          : child ??
-              Text(
-                text!,
-                style: TextStyles.buttonText.copyWith(color: textColor),
-                textScaler: AppUtils.scaleText(context),
+          : DefaultTextStyle(
+              style: TextStyles.buttonText.copyWith(
+                color: textColor,
+                fontSize: fontSize,
               ),
+              child: child ??
+                  Text(
+                    text!,
+                    style: TextStyles.buttonText.copyWith(
+                      color: textColor,
+                      fontSize: fontSize,
+                    ),
+                  ),
+            ),
     );
   }
 }

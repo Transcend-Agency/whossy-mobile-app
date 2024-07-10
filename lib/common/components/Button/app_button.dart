@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/common/utils/app_utils.dart';
 import 'package:whossy_mobile_app/constants/colors.dart';
 
 import '../../styles/text_style.dart';
@@ -25,6 +24,8 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double? fontSize = ScreenUtil().screenWidth > 500 ? 18 : null;
+
     return MaterialButton(
       height: height.h,
       minWidth: double.infinity,
@@ -38,8 +39,7 @@ class AppButton extends StatelessWidget {
           ? const AppLoader()
           : Text(
               text,
-              style: TextStyles.buttonText,
-              textScaler: AppUtils.scaleText(context),
+              style: TextStyles.buttonText.copyWith(fontSize: fontSize),
             ),
     );
   }

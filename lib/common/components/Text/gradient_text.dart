@@ -18,7 +18,7 @@ class GradientText extends StatelessWidget {
       child: RichText(
         text: TextSpan(
           style: TextStyles.header,
-          children: [
+          children: const [
             TextSpan(text: AppStrings.splashText1),
             TextSpan(text: AppStrings.splashText2),
           ],

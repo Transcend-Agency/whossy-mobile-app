@@ -20,8 +20,9 @@ class TextStyles {
   );
 
   static TextStyle buttonText = const TextStyle(
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'NeueMontreal',
+    fontWeight: FontWeight.w500,
   );
 
   static TextStyle miniText = const TextStyle(
@@ -30,13 +31,17 @@ class TextStyles {
     fontFamily: 'NeueMontreal',
   );
 
-  static TextStyle hintText = const TextStyle(
+  static TextStyle hintThemeText = const TextStyle(
     color: AppColors.hintTextColor,
-    fontSize: 15.5,
+    fontSize: 15.75,
     fontFamily: 'NeueMontreal',
     height: 1.4,
     letterSpacing: 0.4,
     fontWeight: FontWeight.w400,
+  );
+
+  static TextStyle hintText = hintThemeText.copyWith(
+    fontSize: 13.sp,
   );
 
   static TextStyle errorStyle = TextStyle(
@@ -48,16 +53,17 @@ class TextStyles {
     fontWeight: FontWeight.w400,
   );
 
-  static TextStyle fieldHeader = TextStyle(
-    fontSize: 14.sp,
+  static TextStyle fieldHeader = const TextStyle(
+    fontSize: 16,
     fontFamily: 'NeueMontreal',
+    color: AppColors.black,
   );
 
-  static TextStyle underlineText = TextStyle(
+  static TextStyle underlineText = const TextStyle(
     color: AppColors.black,
     fontFamily: 'NeueMontreal',
     fontWeight: FontWeight.w500,
     decoration: TextDecoration.underline,
-    fontSize: 14.sp,
+    fontSize: 16,
   );
 }

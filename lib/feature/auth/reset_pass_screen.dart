@@ -36,60 +36,52 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
-          child: Padding(
-            padding: pagePadding,
-            child: Consumer<AuthenticationProvider>(
-              builder: (_, auth, __) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    addHeight(24),
-                    Text(
-                      AppStrings.resetPasswordTitle,
-                      style: TextStyles.title,
-                    ),
-                    Text(
-                      AppStrings.resetPasswordSubtitle,
-                      style: TextStyles.hintText,
-                    ),
-                    addHeight(24),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 6.h),
-                      child: Text(
-                        AppStrings.emailPhoneLabel,
-                        style: TextStyles.fieldHeader,
-                      ),
-                    ),
-                    Form(
-                      key: formKey1,
-                      child: Shake(
-                        key: shakeState1,
-                        child: AppTextField(
-                          focusNode: emailFocusNode,
-                          textController: myEmailController,
-                          hintText: AppStrings.emailHint,
-                          validation: (email) => email?.trim().validateEmail(),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 26.h),
-                      child: AppButton(
-                        onPress: () {},
-                        text: AppStrings.sendCodeButton,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ),
+    return AppScaffold(
+      padding: pagePadding,
+      body: Consumer<AuthenticationProvider>(
+        builder: (_, auth, __) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              addHeight(24),
+              Text(
+                AppStrings.resetPasswordTitle,
+                style: TextStyles.title,
+              ),
+              Text(
+                AppStrings.resetPasswordSubtitle,
+                style: TextStyles.hintText,
+              ),
+              addHeight(24),
+              Padding(
+                padding: EdgeInsets.only(bottom: 6.h),
+                child: Text(
+                  AppStrings.emailPhoneLabel,
+                  style: TextStyles.fieldHeader,
+                ),
+              ),
+              Form(
+                key: formKey1,
+                child: Shake(
+                  key: shakeState1,
+                  child: AppTextField(
+                    focusNode: emailFocusNode,
+                    textController: myEmailController,
+                    hintText: AppStrings.emailHint,
+                    validation: (email) => email?.trim().validateEmail(),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 26.h),
+                child: AppButton(
+                  onPress: () {},
+                  text: AppStrings.sendCodeButton,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -21,14 +21,16 @@ class AppTextField extends StatelessWidget {
     this.lengthLimit,
     this.isPhone = false,
     this.isUsername = false,
+    this.prefixIcon,
+    this.countryCode = '',
   });
 
   final FocusNode focusNode;
   final TextEditingController textController;
   final void Function(String)? onFieldSubmitted;
-  final Color? customFillColor = AppColors.inputBackGround;
   final String hintText;
 
+  final Widget? prefixIcon;
   final Widget? suffixIcon;
   final String? Function(String?)? validation;
   final TextInputAction action;
@@ -39,12 +41,13 @@ class AppTextField extends StatelessWidget {
   final int? lengthLimit;
   final bool isPhone;
   final bool isUsername;
+  final String countryCode;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: isPhone ? TextInputType.phone : null,
-      style: TextStyles.hintText.copyWith(color: textColor),
+      style: TextStyles.hintThemeText.copyWith(color: textColor),
       maxLength: maxLength,
       cursorColor: textColor,
       focusNode: focusNode,
@@ -56,7 +59,7 @@ class AppTextField extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       inputFormatters: [
         isPhone
-            ? _PhoneNumberFormatter()
+            ? _PhoneNumberFormatter(countryCode)
             : FilteringTextInputFormatter(RegExp('.'), allow: true),
         LengthLimitingTextInputFormatter(maxLength ?? lengthLimit),
         if (isUsername) LowercaseTextFormatter()
@@ -69,17 +72,21 @@ class AppTextField extends StatelessWidget {
           ),
         ),
         isDense: true,
-        fillColor: customFillColor
-            ?.withOpacity(customFillColor == Colors.white ? 1.0 : 0.4),
+        fillColor: AppColors.inputBackGround.withOpacity(0.6),
         hintText: hintText,
         contentPadding: const EdgeInsets.all(18),
         suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
       ),
     );
   }
 }
 
 class _PhoneNumberFormatter extends TextInputFormatter {
+  final String countryCode;
+
+  _PhoneNumberFormatter(this.countryCode);
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
@@ -87,14 +94,17 @@ class _PhoneNumberFormatter extends TextInputFormatter {
   ) {
     final text = newValue.text;
 
-    if (text.isEmpty) {
-      return newValue;
+    if (!text.startsWith(countryCode)) {
+      return TextEditingValue(
+        text: countryCode + text.replaceAll(countryCode, ''),
+        selection: TextSelection.collapsed(offset: countryCode.length),
+      );
     }
 
     final buffer = StringBuffer();
     int count = 0;
 
-    for (int i = 0; i < text.length; i++) {
+    for (int i = countryCode.length; i < text.length; i++) {
       if (text[i].contains(RegExp(r'[0-9]'))) {
         if (count == 3 || count == 6) {
           buffer.write(' ');
@@ -105,8 +115,9 @@ class _PhoneNumberFormatter extends TextInputFormatter {
     }
 
     return TextEditingValue(
-      text: buffer.toString(),
-      selection: TextSelection.collapsed(offset: buffer.length),
+      text: countryCode + buffer.toString(),
+      selection:
+          TextSelection.collapsed(offset: countryCode.length + buffer.length),
     );
   }
 }
