@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppUtils {
   /// Global key for accessing the ScaffoldMessengerState to show SnackBars.
@@ -64,18 +63,6 @@ class AppUtils {
       });
   }
 
-  /// Calculates a text scale factor based on the device width and a maximum scale factor.
-  static TextScaler scaleText(
-    BuildContext context, {
-    double maxTextScaleFactor = 2,
-  }) {
-    final width = MediaQuery.of(context).size.width;
-    double val = (width / 1400) * maxTextScaleFactor;
-
-    double scale = max(1, min(val, maxTextScaleFactor));
-    return TextScaler.linear(scale);
-  }
-
   static String countryCodeToEmoji(String countryCode) {
     // 0x41 is Letter A
     // 0x1F1E6 is Regional Indicator Symbol Letter A
@@ -86,5 +73,9 @@ class AppUtils {
     final int firstLetter = countryCode.codeUnitAt(0) - 0x41 + 0x1F1E6;
     final int secondLetter = countryCode.codeUnitAt(1) - 0x41 + 0x1F1E6;
     return String.fromCharCode(firstLetter) + String.fromCharCode(secondLetter);
+  }
+
+  static double? scale(double size) {
+    return ScreenUtil().screenWidth > 500 ? size : null;
   }
 }

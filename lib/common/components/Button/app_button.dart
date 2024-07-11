@@ -4,6 +4,7 @@ import 'package:whossy_mobile_app/common/styles/component_style.dart';
 import 'package:whossy_mobile_app/constants/colors.dart';
 
 import '../../styles/text_style.dart';
+import '../../utils/app_utils.dart';
 import '../Loader/app_loader.dart';
 
 class AppButton extends StatelessWidget {
@@ -24,8 +25,6 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double? fontSize = ScreenUtil().screenWidth > 500 ? 18 : null;
-
     return MaterialButton(
       height: height.h,
       minWidth: double.infinity,
@@ -39,7 +38,9 @@ class AppButton extends StatelessWidget {
           ? const AppLoader()
           : Text(
               text,
-              style: TextStyles.buttonText.copyWith(fontSize: fontSize),
+              style: TextStyles.buttonText.copyWith(
+                fontSize: AppUtils.scale(18),
+              ),
             ),
     );
   }

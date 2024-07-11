@@ -38,4 +38,11 @@ class AppStrings {
   static const String firstNameHint = 'John';
   static const String lastNameLabel = 'Last name';
   static const String lastNameHint = 'Doe';
+
+  static const requirements = [
+    'Be at least 8 characters or more',
+    'At least 1 uppercase and lowercase letter',
+    'Must contain a digit or a number',
+    "Must contain a special character e.g'@\$!%*?&'. ",
+  ];
 }

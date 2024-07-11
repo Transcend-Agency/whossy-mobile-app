@@ -22,7 +22,6 @@ class AppTextField extends StatelessWidget {
     this.isPhone = false,
     this.isUsername = false,
     this.prefixIcon,
-    this.countryCode = '',
   });
 
   final FocusNode focusNode;
@@ -41,7 +40,6 @@ class AppTextField extends StatelessWidget {
   final int? lengthLimit;
   final bool isPhone;
   final bool isUsername;
-  final String countryCode;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +57,7 @@ class AppTextField extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       inputFormatters: [
         isPhone
-            ? _PhoneNumberFormatter(countryCode)
+            ? _PhoneNumberFormatter()
             : FilteringTextInputFormatter(RegExp('.'), allow: true),
         LengthLimitingTextInputFormatter(maxLength ?? lengthLimit),
         if (isUsername) LowercaseTextFormatter()
@@ -83,10 +81,6 @@ class AppTextField extends StatelessWidget {
 }
 
 class _PhoneNumberFormatter extends TextInputFormatter {
-  final String countryCode;
-
-  _PhoneNumberFormatter(this.countryCode);
-
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
@@ -94,19 +88,16 @@ class _PhoneNumberFormatter extends TextInputFormatter {
   ) {
     final text = newValue.text;
 
-    if (!text.startsWith(countryCode)) {
-      return TextEditingValue(
-        text: countryCode + text.replaceAll(countryCode, ''),
-        selection: TextSelection.collapsed(offset: countryCode.length),
-      );
+    if (text.isEmpty) {
+      return newValue;
     }
 
     final buffer = StringBuffer();
     int count = 0;
 
-    for (int i = countryCode.length; i < text.length; i++) {
+    for (int i = 0; i < text.length; i++) {
       if (text[i].contains(RegExp(r'[0-9]'))) {
-        if (count == 3 || count == 6) {
+        if (count == 2 || count == 5) {
           buffer.write(' ');
         }
         buffer.write(text[i]);
@@ -115,9 +106,8 @@ class _PhoneNumberFormatter extends TextInputFormatter {
     }
 
     return TextEditingValue(
-      text: countryCode + buffer.toString(),
-      selection:
-          TextSelection.collapsed(offset: countryCode.length + buffer.length),
+      text: buffer.toString(),
+      selection: TextSelection.collapsed(offset: buffer.length),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../constants/colors.dart';
+import '../styles/text_style.dart';
 
 Widget addHeight(double height) => SizedBox(height: height.h);
 
@@ -21,5 +22,26 @@ Icon searchIcon() {
     Icons.search,
     color: AppColors.hintTextColor,
     size: 18.r,
+  );
+}
+
+Widget passwordRequirementRow(String text) {
+  return Row(
+    children: [
+      const Icon(
+        Icons.check,
+        color: AppColors.hintTextColor,
+        size: 18,
+      ),
+      addWidth(8),
+      Expanded(
+        child: Text(
+          text,
+          style: TextStyles.hintThemeText,
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        ),
+      ),
+    ],
   );
 }

@@ -15,6 +15,8 @@ class AppColors {
   static const Color errorBorderColor = AppColors.primaryColor;
   // Color(0xFFFF0A0A);
 
+  static const Color faceBookColor = Color(0xFF1877f2);
+
   static const splashGradient = LinearGradient(
     colors: [AppColors.warmYellow, AppColors.primaryColor],
     begin: Alignment.topCenter,

@@ -1,6 +1,7 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
@@ -25,22 +26,18 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
   Country? country;
 
   // Controllers
-  final emailController = TextEditingController();
   final countryController = TextEditingController();
   final phoneController = TextEditingController();
 
   // Form keys
-  final formKey1 = GlobalKey<FormState>();
   final formKey2 = GlobalKey<FormState>();
   final formKey3 = GlobalKey<FormState>();
 
   // Shake state keys
-  final shakeState1 = GlobalKey<ShakeState>();
   final shakeState2 = GlobalKey<ShakeState>();
   final shakeState3 = GlobalKey<ShakeState>();
 
   // Focus nodes
-  final emailFocusNode = FocusNode();
   final countryFocusNode = FocusNode();
   final phoneFocusNode = FocusNode();
 
@@ -50,21 +47,16 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
 
   @override
   void dispose() {
-    // Dispose controllers
-    emailController.dispose();
     countryController.dispose();
     phoneController.dispose();
 
     // Dispose focus nodes
-    emailFocusNode.dispose();
     countryFocusNode.dispose();
     phoneFocusNode.dispose();
 
     // Dispose form keys and shake states if necessary
-    formKey1.currentState?.dispose();
     formKey2.currentState?.dispose();
     formKey3.currentState?.dispose();
-    shakeState1.currentState?.dispose();
     shakeState2.currentState?.dispose();
     shakeState3.currentState?.dispose();
 
@@ -81,6 +73,9 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double? spacing = ScreenUtil().screenWidth > 500 ? 10.w : 10.w;
+    double? padding = ScreenUtil().screenWidth > 500 ? 5 : 8;
+
     return AppScaffold(
       padding: pagePadding,
       body: Consumer<AuthenticationProvider>(
@@ -93,31 +88,14 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                 "Just a few more steps to go!",
                 style: TextStyles.title.copyWith(fontSize: 24.sp),
               ),
+              addHeight(4),
               Text(
                 "Ensure you have access to the phone number entered in order to receive otp code.",
-                style: TextStyles.hintText,
+                style: TextStyles.hintText.copyWith(
+                  fontSize: AppUtils.scale(11.5.sp),
+                ),
               ),
               addHeight(24),
-              Padding(
-                padding: EdgeInsets.only(bottom: 6.h),
-                child: Text(
-                  'Email',
-                  style: TextStyles.fieldHeader,
-                ),
-              ),
-              Form(
-                key: formKey1,
-                child: Shake(
-                  key: shakeState1,
-                  child: AppTextField(
-                    focusNode: emailFocusNode,
-                    textController: emailController,
-                    hintText: AppStrings.emailHint,
-                    validation: (email) => email?.trim().validateEmail(),
-                  ),
-                ),
-              ),
-              addHeight(12),
               Padding(
                 padding: EdgeInsets.only(bottom: 6.h),
                 child: Text(
@@ -132,13 +110,13 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                   child: AppTextField(
                     focusNode: phoneFocusNode,
                     textController: phoneController,
-                    hintText: '(+1) 00 000 0000',
-                    countryCode: country?.countryCode ?? '+1',
+                    hintText:
+                        '${country?.phoneCode != null ? '' : '(+1) '}00 000 0000',
                     isPhone: true,
-                    prefixIcon: Padding(
-                      padding: EdgeInsets.only(left: 3.w, right: 3.w),
-                      child: GestureDetector(
-                        onTap: showPicker,
+                    prefixIcon: GestureDetector(
+                      onTap: showPicker,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: spacing, right: 3.w),
                         child: SizedBox(
                           height: 0,
                           child: Row(
@@ -149,10 +127,10 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                 AppUtils.countryCodeToEmoji(
                                     country?.countryCode ?? 'US'),
                                 style: const TextStyle(
-                                  fontSize: 22,
+                                  fontSize: 24,
                                 ),
                               ),
-                              addWidth(5),
+                              addWidth(padding),
                               Text(
                                 country?.countryCode ?? 'US',
                                 style: TextStyles.hintThemeText,
@@ -171,6 +149,10 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                 endIndent: 10,
                                 color: AppColors.hintTextColor,
                               ),
+                              country?.phoneCode != null
+                                  ? Text('(+${country!.phoneCode})',
+                                      style: TextStyles.fieldHeader)
+                                  : const SizedBox.shrink(),
                             ],
                           ),
                         ),
@@ -199,12 +181,11 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                   ),
                 ),
               ),
-              addHeight(12),
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: AppButton(
-                  onPress: () {},
+                  onPress: () => context.pushNamed('signup-pass'),
                   text: 'Continue',
                 ),
               ),

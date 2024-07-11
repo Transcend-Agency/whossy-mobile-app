@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
+import 'package:whossy_mobile_app/common/utils/app_utils.dart';
 import 'package:whossy_mobile_app/common/utils/extensions.dart';
 import 'package:whossy_mobile_app/common/utils/widget_functions.dart';
 import 'package:whossy_mobile_app/view_model/auth_provider.dart';
@@ -102,6 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool expand = ScreenUtil().screenWidth > 500;
     return AppScaffold(
       padding: pagePadding,
       body: Consumer<AuthenticationProvider>(
@@ -112,7 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
               addHeight(24),
               Text(
                 AppStrings.welBack,
-                style: TextStyles.title,
+                style:
+                    TextStyles.title.copyWith(fontSize: expand ? 24.sp : null),
               ),
               Text(
                 AppStrings.loginSub,
@@ -194,14 +197,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.center,
                 children: [
                   const Divider(
-                    color: AppColors.black,
+                    color: AppColors.hintTextColor,
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     color: Colors.white,
                     child: Text(
                       AppStrings.orDivider,
-                      style: TextStyles.fieldHeader,
+                      style: TextStyles.fieldHeader
+                          .copyWith(color: AppColors.hintTextColor),
                     ),
                   ),
                 ],
@@ -213,17 +217,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.apple_rounded,
-                      color: Colors.black,
-                      size: 32.r,
+                      Icons.facebook,
+                      color: AppColors.faceBookColor,
+                      size: 28.r,
                     ),
-                    addWidth(4),
+                    addWidth(6),
                     Padding(
                       padding: EdgeInsets.only(top: 3.h),
                       child: Text(
                         AppStrings.signInApple,
-                        style:
-                            TextStyles.buttonText.copyWith(color: Colors.black),
+                        style: TextStyles.buttonText.copyWith(
+                          color: AppColors.hintTextColor,
+                          fontSize: AppUtils.scale(17),
+                        ),
                       ),
                     ),
                   ],
@@ -242,8 +248,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     addWidth(8),
                     Text(
                       AppStrings.signInGoogle,
-                      style:
-                          TextStyles.buttonText.copyWith(color: Colors.black),
+                      style: TextStyles.buttonText.copyWith(
+                        color: AppColors.hintTextColor,
+                        fontSize: AppUtils.scale(17),
+                      ),
                     ),
                   ],
                 ),

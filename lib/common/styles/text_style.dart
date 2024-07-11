@@ -13,11 +13,11 @@ class TextStyles {
   );
 
   static TextStyle title = TextStyle(
-    fontWeight: FontWeight.w600,
-    fontFamily: 'NeueMontreal',
-    color: AppColors.black,
-    fontSize: 26.sp,
-  );
+      fontWeight: FontWeight.w600,
+      fontFamily: 'NeueMontreal',
+      color: AppColors.black,
+      fontSize: 26.sp,
+      height: 1.2);
 
   static TextStyle buttonText = const TextStyle(
     fontSize: 15,

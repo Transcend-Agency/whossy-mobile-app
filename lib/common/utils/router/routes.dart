@@ -3,6 +3,7 @@ import 'package:whossy_mobile_app/feature/auth/login_screen.dart';
 import 'package:whossy_mobile_app/feature/auth/reset_pass_screen.dart';
 import 'package:whossy_mobile_app/feature/auth/sign_up/signup.dart';
 import 'package:whossy_mobile_app/feature/auth/sign_up/signup_details.dart';
+import 'package:whossy_mobile_app/feature/auth/sign_up/signup_password.dart';
 import 'package:whossy_mobile_app/feature/splash/splash_screen.dart';
 
 /// The route configuration.
@@ -40,6 +41,11 @@ final signUpRoute = GoRoute(
       name: 'signup-det',
       path: "signup-details",
       builder: (context, state) => const SignUpDetailsScreen(),
+    ),
+    GoRoute(
+      name: 'signup-pass',
+      path: "signup-password",
+      builder: (context, state) => const SignUpPassword(),
     )
   ],
 );

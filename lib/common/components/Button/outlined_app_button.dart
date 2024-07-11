@@ -4,6 +4,7 @@ import 'package:whossy_mobile_app/common/styles/component_style.dart';
 
 import '../../../constants/colors.dart';
 import '../../styles/text_style.dart';
+import '../../utils/app_utils.dart';
 import '../Loader/app_loader.dart';
 
 class OutlinedAppButton extends StatelessWidget {
@@ -22,21 +23,21 @@ class OutlinedAppButton extends StatelessWidget {
     this.height = 50,
     this.loading = false,
     this.text,
-    this.textColor = AppColors.black,
+    this.textColor = AppColors.hintTextColor,
     this.child,
   }) : assert(text != null || child != null,
             'Either text or child must be provided.');
 
   @override
   Widget build(BuildContext context) {
-    double? fontSize = ScreenUtil().screenWidth > 500 ? 17 : null;
+    double? fontSize = AppUtils.scale(17);
 
     return OutlinedButton(
       onPressed: onPress,
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.primaryColor,
         minimumSize: Size(double.infinity, height.h),
-        side: BorderSide(color: borderColor ?? AppColors.black),
+        side: BorderSide(color: borderColor ?? AppColors.hintTextColor),
         shape: circularBorder,
       ),
       child: loading

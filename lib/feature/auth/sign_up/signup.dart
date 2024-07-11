@@ -43,7 +43,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               addHeight(24),
               Text(
                 AppStrings.signUpTitle,
-                style: TextStyles.title.copyWith(height: 1.2),
+                style: TextStyles.title.copyWith(fontSize: 24.sp),
               ),
               addHeight(8),
               Text(
