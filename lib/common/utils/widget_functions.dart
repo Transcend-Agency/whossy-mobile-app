@@ -4,13 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/colors.dart';
 import '../styles/text_style.dart';
 
-Widget addHeight(double height) => SizedBox(height: height.h);
+SizedBox addHeight(double height) => SizedBox(height: height.h);
 
-Widget addWidth(double width) => SizedBox(width: width.w);
+SizedBox addWidth(double width) => SizedBox(width: width.w);
 
 Icon visibilityIcon(bool isVisible, Color passwordColor) {
   return Icon(
-    // Based on passwordVisible state choose the icon
     isVisible ? Icons.visibility_off : Icons.visibility,
     color: passwordColor,
     size: 20,
@@ -25,7 +24,23 @@ Icon searchIcon() {
   );
 }
 
-Widget passwordRequirementRow(String text) {
+Icon fbIcon() {
+  return Icon(
+    Icons.facebook,
+    color: AppColors.faceBookColor,
+    size: 28.r,
+  );
+}
+
+Icon cancelIcon() {
+  return const Icon(
+    Icons.cancel,
+    color: AppColors.black,
+    size: 24,
+  );
+}
+
+Row passwordRequirementRow(String text) {
   return Row(
     children: [
       const Icon(
@@ -37,7 +52,9 @@ Widget passwordRequirementRow(String text) {
       Expanded(
         child: Text(
           text,
-          style: TextStyles.hintThemeText,
+          style: ScreenUtil().screenWidth > 500
+              ? TextStyles.hintThemeText
+              : TextStyles.hintText,
           softWrap: true,
           overflow: TextOverflow.visible,
         ),

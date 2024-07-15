@@ -7,6 +7,10 @@ final pagePadding = EdgeInsets.symmetric(horizontal: 14.w);
 
 final textTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);
 
+final roundedTop = RoundedRectangleBorder(
+  borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
+);
+
 final circularTop = BorderRadius.only(
   topLeft: Radius.circular(12.r),
   topRight: Radius.circular(12.r),

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_mobile_app/constants/strings.dart';
 
-import '../common/utils/router/routes.dart';
-import '../common/utils/theme/theme.dart';
+import '../common/utils/index.dart';
 
 class Whossy extends StatelessWidget {
-  const Whossy({super.key});
+  Whossy({super.key});
+
+  final _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +17,10 @@ class Whossy extends StatelessWidget {
       splitScreenMode: true,
       child: MaterialApp.router(
         title: AppStrings.appName,
-        theme: AppTheme().appTheme(),
+        theme: AppTheme().theme(),
         themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
-        routerConfig: router,
+        routerConfig: _appRouter.config(),
       ),
     );
   }

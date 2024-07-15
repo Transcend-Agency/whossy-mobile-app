@@ -1,23 +1,26 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
+import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import 'package:whossy_mobile_app/view_model/auth_provider.dart';
 
 import '../../../common/styles/text_style.dart';
+import '../../../common/utils/router/router.dart';
 import '../../../common/utils/widget_functions.dart';
 import '../../../constants/index.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+@RoutePage()
+class SignUpNameScreen extends StatefulWidget {
+  const SignUpNameScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignUpNameScreen> createState() => _SignUpNameScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpNameScreenState extends State<SignUpNameScreen> {
   final myFirstController = TextEditingController();
   final myLastController = TextEditingController();
 
@@ -94,7 +97,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: AppButton(
-                  onPress: () => context.pushNamed('signup-det'),
+                  onPress: () => Nav.push(context, const SignUpPhoneRoute()),
                   text: 'Continue',
                 ),
               ),

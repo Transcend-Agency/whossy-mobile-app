@@ -1,16 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/common/utils/widget_functions.dart';
 
 import '../../common/components/index.dart';
 import '../../common/styles/text_style.dart';
-import '../../constants/asset_paths.dart';
-import '../../constants/colors.dart';
-import '../../constants/strings.dart';
+import '../../common/utils/index.dart';
+import '../../common/utils/router/router.dart';
+import '../../common/utils/router/router.gr.dart';
+import '../../constants/index.dart';
 
+@RoutePage()
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -160,7 +161,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         ),
                         addHeight(32),
                         AppButton(
-                          onPress: () => context.pushNamed('login'),
+                          onPress: () => Nav.push(context, const LoginRoute()),
                           text: 'Login',
                         ),
                         addHeight(8),
@@ -175,7 +176,8 @@ class _SplashScreenState extends State<SplashScreen> {
                               WidgetSpan(
                                 alignment: PlaceholderAlignment.middle,
                                 child: GestureDetector(
-                                  onTap: () => context.pushNamed('signup'),
+                                  onTap: () => Nav.push(
+                                      context, const SignUpCreateRoute()),
                                   child: Container(
                                     margin: textTouchable,
                                     child: Text(

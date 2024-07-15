@@ -1,28 +1,27 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/common/utils/app_utils.dart';
-import 'package:whossy_mobile_app/common/utils/extensions.dart';
-import 'package:whossy_mobile_app/common/utils/theme/theme.dart';
+import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import 'package:whossy_mobile_app/view_model/auth_provider.dart';
 
 import '../../../common/styles/text_style.dart';
-import '../../../common/utils/widget_functions.dart';
+import '../../../common/utils/index.dart';
 import '../../../constants/index.dart';
 
-class SignUpDetailsScreen extends StatefulWidget {
-  const SignUpDetailsScreen({super.key});
+@RoutePage()
+class SignUpPhoneScreen extends StatefulWidget {
+  const SignUpPhoneScreen({super.key});
 
   @override
-  State<SignUpDetailsScreen> createState() => _SignUpDetailsScreenState();
+  State<SignUpPhoneScreen> createState() => _SignUpPhoneScreenState();
 }
 
-class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
+class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
   Country? country;
 
   // Controllers
@@ -67,13 +66,12 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
         context: context,
         moveAlongWithKeyboard: true,
         showPhoneCode: true,
-        countryListTheme: AppTheme().cLThemeData(),
+        countryListTheme: AppTheme().countryListTheme(),
         onSelect: updateCountry,
       );
 
   @override
   Widget build(BuildContext context) {
-    double? spacing = ScreenUtil().screenWidth > 500 ? 10.w : 10.w;
     double? padding = ScreenUtil().screenWidth > 500 ? 5 : 8;
 
     return AppScaffold(
@@ -116,7 +114,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                     prefixIcon: GestureDetector(
                       onTap: showPicker,
                       child: Padding(
-                        padding: EdgeInsets.only(left: spacing, right: 3.w),
+                        padding: EdgeInsets.only(left: 10.w, right: 3.w),
                         child: SizedBox(
                           height: 0,
                           child: Row(
@@ -127,7 +125,7 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
                                 AppUtils.countryCodeToEmoji(
                                     country?.countryCode ?? 'US'),
                                 style: const TextStyle(
-                                  fontSize: 24,
+                                  fontSize: 23,
                                 ),
                               ),
                               addWidth(padding),
@@ -185,7 +183,8 @@ class _SignUpDetailsScreenState extends State<SignUpDetailsScreen> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: AppButton(
-                  onPress: () => context.pushNamed('signup-pass'),
+                  onPress: () => Nav.push(context, const SignUpGenderRoute()),
+                  // onPress: () => Navigator.of(context).push(createRoute()),
                   text: 'Continue',
                 ),
               ),

@@ -1,26 +1,27 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/common/utils/app_utils.dart';
-import 'package:whossy_mobile_app/common/utils/extensions.dart';
+import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
+import 'package:whossy_mobile_app/feature/auth/sign_up/options_sheet.dart';
 import 'package:whossy_mobile_app/view_model/auth_provider.dart';
 
 import '../../../common/styles/text_style.dart';
-import '../../../common/utils/widget_functions.dart';
+import '../../../common/utils/index.dart';
 import '../../../constants/index.dart';
 
-class SignUpPassword extends StatefulWidget {
-  const SignUpPassword({super.key});
+@RoutePage()
+class SignUpCreateScreen extends StatefulWidget {
+  const SignUpCreateScreen({super.key});
 
   @override
-  State<SignUpPassword> createState() => _SignUpPasswordState();
+  State<SignUpCreateScreen> createState() => _SignUpCreateScreenState();
 }
 
-class _SignUpPasswordState extends State<SignUpPassword> {
+class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
   final myPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final emailController = TextEditingController();
@@ -219,14 +220,14 @@ class _SignUpPasswordState extends State<SignUpPassword> {
               Padding(
                 padding: EdgeInsets.only(top: 16.h),
                 child: AppButton(
-                  onPress: () => context.pushNamed('signup-pass'),
+                  onPress: () => Nav.push(context, const SignUpNameRoute()),
                   text: 'Create Account',
                 ),
               ),
               Padding(
                 padding: EdgeInsets.only(top: 14.h),
                 child: OutlinedAppButton(
-                  onPress: auth.signGoogle,
+                  onPress: () => showCustomModalBottomSheet(context),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -251,10 +252,23 @@ class _SignUpPasswordState extends State<SignUpPassword> {
                 ),
               ),
               const Spacer(),
+              PrivacyText(
+                auth: auth,
+                text: AppStrings.createAgreement,
+              )
             ],
           );
         },
       ),
     );
   }
+}
+
+void showCustomModalBottomSheet(BuildContext context) {
+  showModalBottomSheet<void>(
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => const SignupOptions(),
+  );
 }

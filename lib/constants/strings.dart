@@ -19,6 +19,8 @@ class AppStrings {
   static const String signInGoogle = 'Sign in with Google';
   static const String createAccountButton = 'Create new account';
   static const String loginAgreement = 'By clicking "Login" you agree to our';
+  static const String createAgreement =
+      'By clicking "Create account" you agree to our';
   static const String termsAndConditions = ' Terms and conditions.';
   static const String privacyPolicy = ' Privacy Policy.';
   static const String dataProcessingInfo =

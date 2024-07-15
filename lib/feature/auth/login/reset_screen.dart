@@ -1,15 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/common/utils/extensions.dart';
 import 'package:whossy_mobile_app/view_model/auth_provider.dart';
 
-import '../../common/components/index.dart';
-import '../../common/styles/text_style.dart';
-import '../../common/utils/widget_functions.dart';
-import '../../constants/index.dart';
+import '../../../common/components/index.dart';
+import '../../../common/styles/text_style.dart';
+import '../../../common/utils/index.dart';
+import '../../../constants/index.dart';
 
+@RoutePage()
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
 

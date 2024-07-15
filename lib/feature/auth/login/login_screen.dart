@@ -1,19 +1,18 @@
-import 'package:flutter/gestures.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/common/utils/app_utils.dart';
-import 'package:whossy_mobile_app/common/utils/extensions.dart';
-import 'package:whossy_mobile_app/common/utils/widget_functions.dart';
+import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import 'package:whossy_mobile_app/view_model/auth_provider.dart';
 
-import '../../common/styles/text_style.dart';
-import '../../constants/index.dart';
+import '../../../common/styles/text_style.dart';
+import '../../../common/utils/index.dart';
+import '../../../constants/index.dart';
 
+@RoutePage()
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -173,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
-                    onTap: () => context.pushNamed('reset-1'),
+                    onTap: () => Nav.push(context, const ResetPasswordRoute()),
                     child: Container(
                       margin: textTouchable,
                       child: Text(
@@ -216,11 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.facebook,
-                      color: AppColors.faceBookColor,
-                      size: 28.r,
-                    ),
+                    fbIcon(),
                     addWidth(6),
                     Padding(
                       padding: EdgeInsets.only(top: 3.h),
@@ -235,66 +230,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
-              addHeight(12),
-              OutlinedAppButton(
-                onPress: auth.signGoogle,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Transform.scale(
-                      scale: 0.9,
-                      child: SvgPicture.asset(AppAssets.googleLogo),
-                    ),
-                    addWidth(8),
-                    Text(
-                      AppStrings.signInGoogle,
-                      style: TextStyles.buttonText.copyWith(
-                        color: AppColors.hintTextColor,
-                        fontSize: AppUtils.scale(17),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 12.r),
+                child: OutlinedAppButton(
+                  onPress: auth.signGoogle,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Transform.scale(
+                        scale: 0.9,
+                        child: SvgPicture.asset(AppAssets.googleLogo),
                       ),
-                    ),
-                  ],
+                      addWidth(8),
+                      Text(
+                        AppStrings.signInGoogle,
+                        style: TextStyles.buttonText.copyWith(
+                          color: AppColors.hintTextColor,
+                          fontSize: AppUtils.scale(17),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              addHeight(12),
               OutlinedAppButton(
                 onPress: auth.createNew,
                 text: AppStrings.createAccountButton,
               ),
               const Spacer(),
-              Padding(
-                padding: EdgeInsets.only(bottom: 18.h, right: 8.w, left: 8.w),
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: const TextStyle(
-                      color: AppColors.black,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: AppStrings.loginAgreement,
-                        style: TextStyles.fieldHeader,
-                      ),
-                      TextSpan(
-                        text: AppStrings.termsAndConditions,
-                        style: TextStyles.underlineText,
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = auth.launchTC,
-                      ),
-                      TextSpan(
-                        text: AppStrings.dataProcessingInfo,
-                        style: TextStyles.fieldHeader,
-                      ),
-                      TextSpan(
-                        text: AppStrings.privacyPolicy,
-                        style: TextStyles.underlineText,
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = auth.launchTC,
-                      ),
-                    ], //
-                  ),
-                ),
-              ),
+              PrivacyText(
+                auth: auth,
+                text: AppStrings.loginAgreement,
+              )
             ],
           );
         },

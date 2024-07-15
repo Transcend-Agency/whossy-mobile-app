@@ -8,7 +8,7 @@ import '../../styles/component_style.dart';
 import '../widget_functions.dart';
 
 class AppTheme {
-  ThemeData appTheme() {
+  ThemeData theme() {
     return ThemeData(
       outlinedButtonTheme: const OutlinedButtonThemeData(style: ButtonStyle()),
       visualDensity: VisualDensity.compact,
@@ -32,7 +32,7 @@ class AppTheme {
     );
   }
 
-  CountryListThemeData cLThemeData() {
+  CountryListThemeData countryListTheme() {
     return CountryListThemeData(
       flagSize: 22,
       backgroundColor: Colors.white,

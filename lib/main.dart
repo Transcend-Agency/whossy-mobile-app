@@ -22,7 +22,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationProvider())
       ],
-      child: const Whossy(),
+      child: Whossy(),
     ),
   );
 }
