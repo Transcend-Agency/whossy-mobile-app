@@ -19,7 +19,7 @@ class PrivacyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 18.h, right: 8.w, left: 8.w),
+      padding: EdgeInsets.only(bottom: 16.h, right: 8.w, left: 8.w),
       child: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(

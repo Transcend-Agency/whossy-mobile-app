@@ -8,8 +8,7 @@ import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import 'package:whossy_mobile_app/view_model/auth_provider.dart';
 
 import '../../../common/styles/text_style.dart';
-import '../../../common/utils/router/router.dart';
-import '../../../common/utils/widget_functions.dart';
+import '../../../common/utils/index.dart';
 import '../../../constants/index.dart';
 
 @RoutePage()
@@ -36,6 +35,7 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      back: true,
       resizeToAvoidBottomInset: true,
       padding: pagePadding,
       body: Consumer<AuthenticationProvider>(
@@ -51,7 +51,8 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
               addHeight(8),
               Text(
                 AppStrings.signUpSubtitle,
-                style: TextStyles.hintText,
+                style: TextStyles.hintText
+                    .copyWith(fontSize: AppUtils.scale(11.5.sp)),
               ),
               addHeight(24),
               Padding(

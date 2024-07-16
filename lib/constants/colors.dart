@@ -12,6 +12,8 @@ class AppColors {
   static const Color selectedFieldColor = Color(0xFFD9D9D9);
 
   static const Color hintTextColor = Color(0xFF8a8a8e);
+  static const Color outlinedColor = Color(0xFFD9D9D9);
+  static const Color optionsSheetDivider = Color(0xFFECECEC);
   static const Color errorBorderColor = AppColors.primaryColor;
   // Color(0xFFFF0A0A);
 

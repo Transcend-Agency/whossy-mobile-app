@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -31,12 +30,12 @@ class SignupOptions extends StatelessWidget {
                   children: [
                     Text(
                       'Sign up options',
-                      style: TextStyles.fieldHeader.copyWith(
-                        fontWeight: FontWeight.w500,
+                      style: TextStyles.buttonText.copyWith(
+                        fontSize: AppUtils.scale(17),
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => context.back(),
+                      onTap: () => Navigator.pop(context),
                       child:
                           SizedBox.square(dimension: 30.r, child: cancelIcon()),
                     )
@@ -44,7 +43,7 @@ class SignupOptions extends StatelessWidget {
                 ),
               ),
               const Divider(
-                color: AppColors.hintTextColor,
+                color: AppColors.outlinedColor,
                 height: 0,
               ),
               addHeight(16),
@@ -57,14 +56,11 @@ class SignupOptions extends StatelessWidget {
                     children: [
                       fbIcon(),
                       addWidth(6),
-                      Padding(
-                        padding: EdgeInsets.only(top: 3.h),
-                        child: Text(
-                          "Sign up with Facebook",
-                          style: TextStyles.buttonText.copyWith(
-                            color: AppColors.hintTextColor,
-                            fontSize: AppUtils.scale(17),
-                          ),
+                      Text(
+                        "Sign up with Facebook",
+                        style: TextStyles.buttonText.copyWith(
+                          color: AppColors.hintTextColor,
+                          fontSize: AppUtils.scale(17),
                         ),
                       ),
                     ],
@@ -98,7 +94,24 @@ class SignupOptions extends StatelessWidget {
                 padding: pagePadding,
                 child: OutlinedAppButton(
                   onPress: auth.createNew,
-                  text: AppStrings.createAccountButton,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.phone,
+                        color: AppColors.black,
+                        size: 22.r,
+                      ),
+                      addWidth(4),
+                      Text(
+                        "Sign up with Phone number",
+                        style: TextStyles.buttonText.copyWith(
+                          color: AppColors.hintTextColor,
+                          fontSize: AppUtils.scale(17),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               addHeight(18)

@@ -1,13 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_mobile_app/common/styles/component_style.dart';
 
 import '../../common/components/index.dart';
 import '../../common/styles/text_style.dart';
 import '../../common/utils/index.dart';
-import '../../common/utils/router/router.dart';
 import '../../common/utils/router/router.gr.dart';
 import '../../constants/index.dart';
 
@@ -165,30 +164,31 @@ class _SplashScreenState extends State<SplashScreen> {
                           text: 'Login',
                         ),
                         addHeight(8),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: AppStrings.noAccount,
-                                style: TextStyles.fieldHeader,
-                                // .copyWith(fontSize: 15) try with a smaller screen
+                        Padding(
+                          padding: EdgeInsets.only(
+                              right: 8.w, left: 8.w, top: 8.h, bottom: 4.h),
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(
+                                color: AppColors.black,
                               ),
-                              WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
-                                child: GestureDetector(
-                                  onTap: () => Nav.push(
-                                      context, const SignUpCreateRoute()),
-                                  child: Container(
-                                    margin: textTouchable,
-                                    child: Text(
-                                      AppStrings.cAccount,
-                                      style: TextStyles.underlineText,
-                                      // .copyWith(fontSize: 14) try with a smaller screen
-                                    ),
-                                  ),
+                              children: [
+                                TextSpan(
+                                  text: AppStrings.noAccount,
+                                  style: TextStyles.fieldHeader,
                                 ),
-                              ),
-                            ],
+                                TextSpan(
+                                  text: AppStrings.cAccount,
+                                  style: TextStyles.underlineText,
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => Nav.push(
+                                          context,
+                                          const SignUpCreateRoute(),
+                                        ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                         addHeight(12),

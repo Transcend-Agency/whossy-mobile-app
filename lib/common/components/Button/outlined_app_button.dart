@@ -37,7 +37,7 @@ class OutlinedAppButton extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.primaryColor,
         minimumSize: Size(double.infinity, height.h),
-        side: BorderSide(color: borderColor ?? AppColors.hintTextColor),
+        side: BorderSide(color: borderColor ?? AppColors.outlinedColor),
         shape: circularBorder,
       ),
       child: loading

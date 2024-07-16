@@ -75,6 +75,7 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
     double? padding = ScreenUtil().screenWidth > 500 ? 5 : 8;
 
     return AppScaffold(
+      back: true,
       padding: pagePadding,
       body: Consumer<AuthenticationProvider>(
         builder: (_, auth, __) {

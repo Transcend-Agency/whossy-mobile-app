@@ -116,6 +116,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      back: true,
       padding: pagePadding,
       body: Consumer<AuthenticationProvider>(
         builder: (context, auth, child) {
@@ -125,14 +126,14 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
               addHeight(24),
               Text(
                 "Create account",
-                style: TextStyles.title.copyWith(fontSize: 24.sp),
+                style:
+                    TextStyles.title.copyWith(fontSize: AppUtils.scale(24.sp)),
               ),
               addHeight(4),
               Text(
                 "Your perfect match is a swipe away :)",
-                style: TextStyles.hintText.copyWith(
-                  fontSize: AppUtils.scale(11.5.sp),
-                ),
+                style: TextStyles.hintText
+                    .copyWith(fontSize: AppUtils.scale(11.5.sp)),
               ),
               addHeight(24),
               Padding(

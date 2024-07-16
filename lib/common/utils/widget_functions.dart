@@ -32,6 +32,12 @@ Icon fbIcon() {
   );
 }
 
+Icon backIcon() {
+  return const Icon(
+    Icons.arrow_back_ios_new_rounded,
+  );
+}
+
 Icon cancelIcon() {
   return const Icon(
     Icons.cancel,

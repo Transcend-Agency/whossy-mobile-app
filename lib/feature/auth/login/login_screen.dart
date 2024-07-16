@@ -102,7 +102,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool expand = ScreenUtil().screenWidth > 500;
     return AppScaffold(
       padding: pagePadding,
       body: Consumer<AuthenticationProvider>(
@@ -110,15 +109,16 @@ class _LoginScreenState extends State<LoginScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              addHeight(24),
+              addHeight(20),
               Text(
                 AppStrings.welBack,
                 style:
-                    TextStyles.title.copyWith(fontSize: expand ? 24.sp : null),
+                    TextStyles.title.copyWith(fontSize: AppUtils.scale(24.sp)),
               ),
               Text(
                 AppStrings.loginSub,
-                style: TextStyles.hintText,
+                style: TextStyles.hintText
+                    .copyWith(fontSize: AppUtils.scale(11.5.sp)),
               ),
               addHeight(24),
               Padding(
@@ -254,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               OutlinedAppButton(
-                onPress: auth.createNew,
+                onPress: () => Nav.replace(context, const SignUpCreateRoute()),
                 text: AppStrings.createAccountButton,
               ),
               const Spacer(),
