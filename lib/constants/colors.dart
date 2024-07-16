@@ -25,6 +25,13 @@ class AppColors {
     end: Alignment.bottomCenter,
   );
 
+  static const splashVariation = LinearGradient(
+    colors: [AppColors.warmYellow, AppColors.primaryColor],
+    stops: [0.3, 0.6],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   static LinearGradient splashShade = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

@@ -185,7 +185,6 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
                 padding: const EdgeInsets.only(bottom: 20),
                 child: AppButton(
                   onPress: () => Nav.push(context, const SignUpGenderRoute()),
-                  // onPress: () => Navigator.of(context).push(createRoute()),
                   text: 'Continue',
                 ),
               ),
