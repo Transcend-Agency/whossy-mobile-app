@@ -166,7 +166,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         addHeight(8),
                         Padding(
                           padding: EdgeInsets.only(
-                              right: 8.w, left: 8.w, top: 8.h, bottom: 4.h),
+                              right: 8.w, left: 8.w, top: 8.h, bottom: 8.h),
                           child: RichText(
                             textAlign: TextAlign.center,
                             text: TextSpan(
