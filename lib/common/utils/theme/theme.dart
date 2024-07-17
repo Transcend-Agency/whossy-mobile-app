@@ -17,7 +17,7 @@ class AppTheme {
         color: Colors.white,
       ),
       colorScheme: const ColorScheme.light(
-        background: Colors.white,
+        surface: Colors.white,
       ),
 
       // Configure the input decoration theme for form fields.

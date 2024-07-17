@@ -15,7 +15,7 @@ class AppStrings {
   static const String forgotPassword = "Forgot Password ?";
   static const String loginButton = 'Login';
   static const String orDivider = 'or';
-  static const String signInApple = 'Sign in with Apple';
+  static const String signInApple = 'Sign in with Facebook';
   static const String signInGoogle = 'Sign in with Google';
   static const String createAccountButton = 'Create new account';
   static const String loginAgreement = 'By clicking "Login" you agree to our';
@@ -46,5 +46,26 @@ class AppStrings {
     'At least 1 uppercase and lowercase letter',
     'Must contain a digit or a number',
     "Must contain a special character e.g'@\$!%*?&'. ",
+  ];
+
+  static const List<String> leadingEmojis = [
+    '🎉',
+    '‼️',
+    '🤝',
+    '😡',
+  ];
+
+  static const List<String> titles = [
+    'Be real',
+    'DO NOT share personal data or information',
+    'Respect others',
+    'Report bad behaviour',
+  ];
+
+  static const List<String> subtitles = [
+    "Ensure your photos, age, and bio are true. This will increase your chances of getting matched.",
+    "Always keep your personal information and do not be too quick to share with anyone.",
+    "Treat others the way you would like to be treated, avoid being rude, and chat safely.",
+    "Don’t hesitate to hit the report button whenever you feel threatened or see a bad behavior.",
   ];
 }

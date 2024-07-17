@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/constants/colors.dart';
 
 import '../../../common/styles/text_style.dart';
 import '../../../common/utils/index.dart';
+import '../../../constants/index.dart';
 
 @RoutePage()
 class WelcomeScreen extends StatelessWidget {
@@ -46,27 +46,28 @@ class WelcomeScreen extends StatelessWidget {
               color: AppColors.black,
             ),
           ),
-          addHeight(24),
-          ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-            visualDensity: VisualDensity.compact,
-            leading: Text(' 🎉', style: TextStyle(fontSize: 20.sp)),
-            subtitle: Text(
-              "Please follow these community rules when looking for a match",
-              style: TextStyles.hintText.copyWith(
-                fontSize: AppUtils.scale(10.sp),
-                color: AppColors.black,
-              ),
+          addHeight(20),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: AppStrings.titles.length,
+            itemBuilder: (_, index) {
+              return CustomTile(
+                leading: AppStrings.leadingEmojis[index],
+                title: AppStrings.titles[index],
+                subTitle: AppStrings.subtitles[index],
+                useSvg: (index == 1),
+                svgPath: (index == 1) ? AppAssets.exclamation : null,
+              );
+            },
+          ),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: AppButton(
+              onPress: () {},
+              text: 'I Agree',
             ),
-            title: Text(
-              'Be real',
-              style: TextStyles.hintText.copyWith(
-                fontSize: AppUtils.scale(12.sp),
-                color: AppColors.black,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          )
+          ),
         ],
       ),
     );

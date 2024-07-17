@@ -70,7 +70,7 @@ class AppTextField extends StatelessWidget {
           ),
         ),
         isDense: true,
-        fillColor: AppColors.inputBackGround.withOpacity(0.6),
+        fillColor: AppColors.inputBackGround.withOpacity(0.9),
         hintText: hintText,
         contentPadding: const EdgeInsets.all(18),
         suffixIcon: suffixIcon,
