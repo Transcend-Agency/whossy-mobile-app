@@ -25,23 +25,25 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialButton(
-      height: height.h,
-      minWidth: double.infinity,
-      onPressed: onPress,
-      color: AppColors.buttonColor,
-      textColor: Colors.white,
-      elevation: 0,
-      shape: circularBorder,
-      disabledColor: AppColors.buttonColor.withOpacity(0.7),
-      child: loading
-          ? const AppLoader()
-          : Text(
-              text,
-              style: TextStyles.buttonText.copyWith(
-                fontSize: AppUtils.scale(18),
+    return Expanded(
+      child: MaterialButton(
+        height: height.h,
+        onPressed: onPress,
+        color: AppColors.buttonColor,
+        textColor: Colors.white,
+        elevation: 0,
+        highlightElevation: 0,
+        shape: circularBorder,
+        disabledColor: AppColors.buttonColor.withOpacity(0.7),
+        child: loading
+            ? const AppLoader()
+            : Text(
+                text,
+                style: TextStyles.buttonText.copyWith(
+                  fontSize: AppUtils.scale(18),
+                ),
               ),
-            ),
+      ),
     );
   }
 }
