@@ -8,11 +8,13 @@ import '../../../constants/index.dart';
 class OnboardingHeaderText extends StatelessWidget {
   final String title;
   final String subtitle;
+  final bool skip;
 
   const OnboardingHeaderText({
     super.key,
     required this.title,
     required this.subtitle,
+    this.skip = false,
   });
 
   @override

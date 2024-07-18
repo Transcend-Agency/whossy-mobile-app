@@ -20,7 +20,7 @@ class OutlinedAppButton extends StatelessWidget {
     super.key,
     required this.onPress,
     this.borderColor,
-    this.height = 50,
+    this.height = 46,
     this.loading = false,
     this.text,
     this.textColor = AppColors.hintTextColor,

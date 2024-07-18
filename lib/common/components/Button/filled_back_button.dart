@@ -14,13 +14,13 @@ class FilledBackButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox.square(
-        dimension: 44.r,
+        dimension: 46.r,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.r),
             color: AppColors.backButtonColor,
           ),
-          padding: const EdgeInsets.all(8),
+          //padding: const EdgeInsets.all(8),
           child: backIcon(),
         ),
       ),

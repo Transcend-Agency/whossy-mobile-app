@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
+import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 
 import '../../../common/styles/text_style.dart';
 import '../../../common/utils/index.dart';
@@ -47,10 +48,9 @@ class WelcomeScreen extends StatelessWidget {
             ),
           ),
           addHeight(20),
-          ListView.builder(
+          ListView(
             shrinkWrap: true,
-            itemCount: AppStrings.titles.length,
-            itemBuilder: (_, index) {
+            children: List.generate(AppStrings.titles.length, (index) {
               return CustomTile(
                 leading: AppStrings.leadingEmojis[index],
                 title: AppStrings.titles[index],
@@ -58,13 +58,13 @@ class WelcomeScreen extends StatelessWidget {
                 useSvg: (index == 1),
                 svgPath: (index == 1) ? AppAssets.exclamation : null,
               );
-            },
+            }),
           ),
           const Spacer(),
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: AppButton(
-              onPress: () {},
+              onPress: () => Nav.push(context, const Wrapper()),
               text: 'I Agree',
             ),
           ),

@@ -19,6 +19,7 @@ class AppColors {
 
   static const Color faceBookColor = Color(0xFF1877f2);
   static const Color backButtonColor = Color(0xFFF8F8F8);
+  static const Color listTileColor = Color(0xFFF6F6F6);
 
   static const splashGradient = LinearGradient(
     colors: [AppColors.warmYellow, AppColors.primaryColor],

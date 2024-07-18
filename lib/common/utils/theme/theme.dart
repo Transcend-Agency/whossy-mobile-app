@@ -11,7 +11,7 @@ class AppTheme {
   ThemeData theme() {
     return ThemeData(
       outlinedButtonTheme: const OutlinedButtonThemeData(style: ButtonStyle()),
-      visualDensity: VisualDensity.compact,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         circularTrackColor: AppColors.buttonColor,
         color: Colors.white,
