@@ -9,14 +9,18 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i10;
-import 'package:whossy_mobile_app/feature/auth/login/login_screen.dart' as _i1;
-import 'package:whossy_mobile_app/feature/auth/login/reset_screen.dart' as _i2;
-import 'package:whossy_mobile_app/feature/auth/onboarding/wrapper.dart' as _i9;
-import 'package:whossy_mobile_app/feature/auth/sign_up/create.dart' as _i3;
-import 'package:whossy_mobile_app/feature/auth/sign_up/gender.dart' as _i4;
-import 'package:whossy_mobile_app/feature/auth/sign_up/name.dart' as _i5;
-import 'package:whossy_mobile_app/feature/auth/sign_up/phone.dart' as _i6;
-import 'package:whossy_mobile_app/feature/auth/sign_up/welcome.dart' as _i8;
+import 'package:whossy_mobile_app/feature/auth/login/view/login_screen.dart'
+    as _i1;
+import 'package:whossy_mobile_app/feature/auth/login/view/reset_screen.dart'
+    as _i2;
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/wrapper.dart'
+    as _i9;
+import 'package:whossy_mobile_app/feature/auth/sign_up/view/create.dart' as _i3;
+import 'package:whossy_mobile_app/feature/auth/sign_up/view/gender.dart' as _i4;
+import 'package:whossy_mobile_app/feature/auth/sign_up/view/name.dart' as _i5;
+import 'package:whossy_mobile_app/feature/auth/sign_up/view/phone.dart' as _i6;
+import 'package:whossy_mobile_app/feature/auth/sign_up/view/welcome.dart'
+    as _i8;
 import 'package:whossy_mobile_app/feature/splash/splash_screen.dart' as _i7;
 
 abstract class $AppRouter extends _i10.RootStackRouter {

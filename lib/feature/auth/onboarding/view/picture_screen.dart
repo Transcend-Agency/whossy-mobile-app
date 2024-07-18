@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/components/index.dart';
-import '../../../common/utils/index.dart';
+import '../../../../common/components/index.dart';
+import '../../../../common/utils/index.dart';
 
-class SmokerScreen extends StatelessWidget {
-  const SmokerScreen({super.key});
+class PictureScreen extends StatelessWidget {
+  const PictureScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +12,8 @@ class SmokerScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const OnboardingHeaderText(
-          title: "Are you a smoker?",
-          subtitle: 'This will be shown on your profile',
+          title: "Share a snapshot of you",
+          subtitle: "Add at least 2 recent photos of yourself 🤗",
         ),
         addHeight(8),
         const Spacer(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/components/index.dart';
-import '../../../common/utils/index.dart';
+import '../../../../common/components/index.dart';
+import '../../../../common/utils/index.dart';
 
 class DistanceScreen extends StatelessWidget {
   const DistanceScreen({super.key});

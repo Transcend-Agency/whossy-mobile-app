@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../common/utils/index.dart';
-import '../models/meet_data.dart';
-import '../models/preference_data.dart';
+import '../feature/auth/onboarding/model/meet_data.dart';
+import '../feature/auth/onboarding/model/preference_data.dart';
 import 'index.dart';
 
 class AppConstants {

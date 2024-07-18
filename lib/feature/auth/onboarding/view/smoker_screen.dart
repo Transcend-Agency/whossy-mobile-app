@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/components/index.dart';
-import '../../../common/utils/index.dart';
+import '../../../../common/components/index.dart';
+import '../../../../common/utils/index.dart';
 
-class BioScreen extends StatelessWidget {
-  const BioScreen({super.key});
+class SmokerScreen extends StatelessWidget {
+  const SmokerScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +12,8 @@ class BioScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const OnboardingHeaderText(
-          title: "Your bio: Let others know who you are :)",
-          subtitle: 'A short introduction about who you are',
+          title: "Are you a smoker?",
+          subtitle: 'This will be shown on your profile',
         ),
         addHeight(8),
         const Spacer(),

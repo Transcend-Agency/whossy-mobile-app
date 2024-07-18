@@ -7,9 +7,9 @@ import 'package:whossy_mobile_app/common/styles/component_style.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import 'package:whossy_mobile_app/view_model/auth_provider.dart';
 
-import '../../../common/styles/text_style.dart';
-import '../../../common/utils/index.dart';
-import '../../../constants/index.dart';
+import '../../../../common/styles/text_style.dart';
+import '../../../../common/utils/index.dart';
+import '../../../../constants/index.dart';
 
 @RoutePage()
 class SignUpNameScreen extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 
-import '../../../feature/auth/sign_up/create.dart';
+import '../../../feature/auth/sign_up/view/create.dart';
 
 @AutoRouterConfig()
 class AppRouter extends $AppRouter {

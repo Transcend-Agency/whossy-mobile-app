@@ -8,7 +8,7 @@ import 'package:whossy_mobile_app/common/utils/index.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import 'package:whossy_mobile_app/view_model/auth_provider.dart';
 
-import '../../../common/styles/text_style.dart';
+import '../../../../common/styles/text_style.dart';
 
 @RoutePage()
 class SignUpGenderScreen extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../common/utils/index.dart';
+import '../../../../common/utils/index.dart';
 
 class MeetData {
   final IconData? icon;

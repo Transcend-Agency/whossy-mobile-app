@@ -158,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             )
                           ],
                         ),
-                        addHeight(32),
+                        addHeight(30),
                         AppButton(
                           onPress: () => Nav.push(context, const LoginRoute()),
                           text: 'Login',

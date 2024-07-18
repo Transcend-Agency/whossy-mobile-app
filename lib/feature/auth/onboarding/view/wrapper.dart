@@ -1,20 +1,22 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/age_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/bio_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/distance_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/drink_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/education_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/meet_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/pets_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/picture_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/rel_pref_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/smoker_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/tick_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/age_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/bio_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/distance_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/drink_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/education_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/meet_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/pets_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/picture_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/rel_pref_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/smoker_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/tick_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view_model/onboarding_provider.dart';
 
-import '../../../common/utils/index.dart';
+import '../../../../common/utils/index.dart';
 
 @RoutePage()
 class Wrapper extends StatefulWidget {
@@ -28,12 +30,7 @@ class _WrapperState extends State<Wrapper> {
   late PageController _pageController;
   late List<Widget> _pages;
 
-  Preference? _selectedPreference;
   int _activePage = 0;
-
-  void updatePreference(Preference? pref) {
-    setState(() => _selectedPreference = pref);
-  }
 
   @override
   void initState() {
@@ -42,8 +39,8 @@ class _WrapperState extends State<Wrapper> {
     _pageController = PageController();
 
     _pages = [
-      RelPrefScreen(onPreferenceSelected: updatePreference),
-      const MeetScreen(),
+      const RelPrefScreen(pageIndex: 0),
+      const MeetScreen(pageIndex: 1),
       const AgeScreen(),
       const DistanceScreen(),
       const TickScreen(),
@@ -70,7 +67,7 @@ class _WrapperState extends State<Wrapper> {
   }
 
   void _handleContinueButton() {
-    if (_selectedPreference != null && _activePage < _pages.length - 1) {
+    if (_activePage < _pages.length - 1) {
       _onPageUpdate(_activePage + 1);
     }
   }
@@ -130,11 +127,15 @@ class _WrapperState extends State<Wrapper> {
                         : const SizedBox.shrink(),
                   ),
                   Expanded(
-                    child: AppButton(
-                      onPress: _selectedPreference != null
-                          ? _handleContinueButton
-                          : null,
-                      text: 'Continue',
+                    child: Consumer<OnboardingProvider>(
+                      builder: (_, boarding, __) {
+                        return AppButton(
+                          onPress: boarding.isSelected(_activePage)
+                              ? _handleContinueButton
+                              : null,
+                          text: 'Continue',
+                        );
+                      },
                     ),
                   ),
                 ],

@@ -1,33 +1,35 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/utils/index.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view_model/onboarding_provider.dart';
 
-import '../../../common/components/index.dart';
-import '../../../constants/index.dart';
+import '../../../../common/components/index.dart';
+import '../../../../constants/index.dart';
 
 class RelPrefScreen extends StatefulWidget {
-  final void Function(Preference? selectedPreference) onPreferenceSelected;
+  final int pageIndex;
 
   const RelPrefScreen({
     super.key,
-    required this.onPreferenceSelected,
+    required this.pageIndex,
   });
 
   @override
   State<RelPrefScreen> createState() => _RelPrefScreenState();
 }
 
-class _RelPrefScreenState extends State<RelPrefScreen> {
+class _RelPrefScreenState extends State<RelPrefScreen>
+    with AutomaticKeepAliveClientMixin<RelPrefScreen> {
   Preference? _pref;
 
   @override
-  void initState() {
-    super.initState();
-  }
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -43,18 +45,20 @@ class _RelPrefScreenState extends State<RelPrefScreen> {
         ListView(
           shrinkWrap: true,
           children: AppConstants.preferenceData.map((data) {
-            return RadioTile(
-              leadingAsset: data.leadingAsset,
-              value: data.value,
-              groupValue: _pref,
-              onChanged: (value) {
-                setState(() {
-                  _pref = value;
-                });
-                widget.onPreferenceSelected(value); // Notify Wrapper
+            return Consumer<OnboardingProvider>(
+              builder: (_, boarding, __) {
+                return RadioTile(
+                  leadingAsset: data.leadingAsset,
+                  value: data.value,
+                  groupValue: _pref,
+                  onChanged: (value) {
+                    setState(() => _pref = value);
+                    context.read<OnboardingProvider>().select(widget.pageIndex);
+                  },
+                  title: data.title,
+                  subtitle: data.subtitle,
+                );
               },
-              title: data.title,
-              subtitle: data.subtitle,
             );
           }).toList(),
         ),

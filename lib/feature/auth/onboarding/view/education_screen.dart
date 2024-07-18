@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/components/index.dart';
-import '../../../common/utils/index.dart';
+import '../../../../common/components/index.dart';
+import '../../../../common/utils/index.dart';
 
-class DrinkScreen extends StatelessWidget {
-  const DrinkScreen({super.key});
+class EducationScreen extends StatelessWidget {
+  const EducationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class DrinkScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const OnboardingHeaderText(
-          title: "Do you drink?",
+          title: "Is education your thing?",
           subtitle: 'This will be shown on your profile',
         ),
         addHeight(8),

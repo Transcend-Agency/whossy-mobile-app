@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/components/index.dart';
-import '../../../common/utils/index.dart';
+import '../../../../common/components/index.dart';
+import '../../../../common/utils/index.dart';
 
-class TickScreen extends StatelessWidget {
-  const TickScreen({super.key});
+class DrinkScreen extends StatelessWidget {
+  const DrinkScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +12,8 @@ class TickScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const OnboardingHeaderText(
-          title: "What makes you tick?",
-          subtitle: 'Share the interests and habits that define you.',
+          title: "Do you drink?",
+          subtitle: 'This will be shown on your profile',
         ),
         addHeight(8),
         const Spacer(),

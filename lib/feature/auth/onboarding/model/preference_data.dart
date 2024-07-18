@@ -1,4 +1,4 @@
-import '../common/utils/index.dart';
+import '../../../../common/utils/index.dart';
 
 class PreferenceData {
   final String leadingAsset;

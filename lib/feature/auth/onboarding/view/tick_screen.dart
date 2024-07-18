@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/components/index.dart';
-import '../../../common/utils/index.dart';
+import '../../../../common/components/index.dart';
+import '../../../../common/utils/index.dart';
 
-class PetsScreen extends StatelessWidget {
-  const PetsScreen({super.key});
+class TickScreen extends StatelessWidget {
+  const TickScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +12,8 @@ class PetsScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const OnboardingHeaderText(
-          title: "Do you own any pets?",
-          subtitle: 'This will be shown on your profile',
+          title: "What makes you tick?",
+          subtitle: 'Share the interests and habits that define you.',
         ),
         addHeight(8),
         const Spacer(),
