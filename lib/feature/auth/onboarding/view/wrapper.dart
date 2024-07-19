@@ -1,19 +1,12 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:whossy_mobile_app/common/components/Button/skip_button.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/age_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/bio_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/distance_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/drink_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/education_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/meet_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/pets_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/picture_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/rel_pref_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/smoker_screen.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/tick_screen.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/index.dart';
 import 'package:whossy_mobile_app/feature/auth/onboarding/view_model/onboarding_provider.dart';
 
 import '../../../../common/utils/index.dart';
@@ -41,15 +34,15 @@ class _WrapperState extends State<Wrapper> {
     _pages = [
       const RelPrefScreen(pageIndex: 0),
       const MeetScreen(pageIndex: 1),
-      const AgeScreen(),
-      const DistanceScreen(),
-      const TickScreen(),
-      const EducationScreen(),
-      const DrinkScreen(),
-      const SmokerScreen(),
-      const PetsScreen(),
-      const BioScreen(),
-      const PictureScreen(),
+      const AgeScreen(pageIndex: 2),
+      const DistanceScreen(pageIndex: 3),
+      const TickScreen(pageIndex: 4),
+      const EducationScreen(pageIndex: 5),
+      const DrinkScreen(pageIndex: 6),
+      const SmokerScreen(pageIndex: 7),
+      const PetsScreen(pageIndex: 8),
+      const BioScreen(pageIndex: 9),
+      const PictureScreen(pageIndex: 10),
     ];
   }
 
@@ -60,6 +53,10 @@ class _WrapperState extends State<Wrapper> {
     _pageController.dispose();
   }
 
+  String buttonText() {
+    return _activePage == _pages.length - 1 ? 'Get Started' : 'Continue';
+  }
+
   void _onPageChange(int page) {
     setState(() {
       _activePage = page;
@@ -67,6 +64,7 @@ class _WrapperState extends State<Wrapper> {
   }
 
   void _handleContinueButton() {
+    log('Bams D');
     if (_activePage < _pages.length - 1) {
       _onPageUpdate(_activePage + 1);
     }
@@ -93,7 +91,7 @@ class _WrapperState extends State<Wrapper> {
             ),
           ),
           PageView.builder(
-            physics: const NeverScrollableScrollPhysics(),
+            // physics: const NeverScrollableScrollPhysics(),
             controller: _pageController,
             itemCount: _pages.length,
             onPageChanged: _onPageChange,
@@ -133,13 +131,20 @@ class _WrapperState extends State<Wrapper> {
                           onPress: boarding.isSelected(_activePage)
                               ? _handleContinueButton
                               : null,
-                          text: 'Continue',
+                          text: buttonText(),
                         );
                       },
                     ),
                   ),
                 ],
               ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 38.h, left: 14.w),
+            child: SkipButton(
+              page: _activePage,
+              onTap: _handleContinueButton,
             ),
           ),
         ],

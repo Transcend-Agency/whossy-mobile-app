@@ -5,14 +5,14 @@ import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
 import '../../utils/index.dart';
 
-class GenderTile<T> extends StatelessWidget {
+class GenericTile<T> extends StatelessWidget {
   final Widget? leadingWidget;
   final T value;
   final T groupValue;
   final ValueChanged<T?> onChanged;
   final String title;
 
-  const GenderTile({
+  const GenericTile({
     super.key,
     required this.value,
     required this.groupValue,

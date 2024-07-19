@@ -22,11 +22,12 @@ class OnboardingHeaderText extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        skip ? addHeight(36) : const SizedBox.shrink(),
         Text(
           title,
           style: TextStyles.title.copyWith(fontSize: 24.sp),
         ),
-        addHeight(8),
+        addHeight(4),
         Text(
           subtitle,
           style: TextStyles.hintText.copyWith(

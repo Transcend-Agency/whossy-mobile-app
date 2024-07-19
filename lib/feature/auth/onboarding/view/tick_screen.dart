@@ -4,7 +4,8 @@ import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 
 class TickScreen extends StatelessWidget {
-  const TickScreen({super.key});
+  final int pageIndex;
+  const TickScreen({super.key, required this.pageIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +15,7 @@ class TickScreen extends StatelessWidget {
         const OnboardingHeaderText(
           title: "What makes you tick?",
           subtitle: 'Share the interests and habits that define you.',
+          skip: true,
         ),
         addHeight(8),
         const Spacer(),

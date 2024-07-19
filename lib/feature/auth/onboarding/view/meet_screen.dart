@@ -42,7 +42,7 @@ class _MeetScreenState extends State<MeetScreen>
         ListView(
           shrinkWrap: true,
           children: AppConstants.meetData.map((data) {
-            return GenderTile(
+            return GenericTile(
               value: data.value,
               groupValue: _meet,
               onChanged: (value) {

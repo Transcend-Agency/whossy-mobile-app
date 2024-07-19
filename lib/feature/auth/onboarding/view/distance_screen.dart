@@ -4,7 +4,8 @@ import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 
 class DistanceScreen extends StatelessWidget {
-  const DistanceScreen({super.key});
+  final int pageIndex;
+  const DistanceScreen({super.key, required this.pageIndex});
 
   @override
   Widget build(BuildContext context) {

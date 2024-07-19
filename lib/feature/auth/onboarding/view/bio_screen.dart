@@ -4,7 +4,9 @@ import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 
 class BioScreen extends StatelessWidget {
-  const BioScreen({super.key});
+  final int pageIndex;
+
+  const BioScreen({super.key, required this.pageIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +16,7 @@ class BioScreen extends StatelessWidget {
         const OnboardingHeaderText(
           title: "Your bio: Let others know who you are :)",
           subtitle: 'A short introduction about who you are',
+          skip: true,
         ),
         addHeight(8),
         const Spacer(),

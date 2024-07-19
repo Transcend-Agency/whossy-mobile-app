@@ -4,7 +4,9 @@ import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 
 class PictureScreen extends StatelessWidget {
-  const PictureScreen({super.key});
+  final int pageIndex;
+
+  const PictureScreen({super.key, required this.pageIndex});
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,12 @@ import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 
 class AgeScreen extends StatelessWidget {
-  const AgeScreen({super.key});
+  final int pageIndex;
+
+  const AgeScreen({
+    super.key,
+    required this.pageIndex,
+  });
 
   @override
   Widget build(BuildContext context) {

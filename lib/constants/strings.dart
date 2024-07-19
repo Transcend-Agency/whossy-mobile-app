@@ -50,7 +50,7 @@ class AppStrings {
 
   static const List<String> leadingEmojis = [
     '🎉',
-    '‼️',
+    '',
     '🤝',
     '😡',
   ];
@@ -67,5 +67,21 @@ class AppStrings {
     "Always keep your personal information and do not be too quick to share with anyone.",
     "Treat others the way you would like to be treated, avoid being rude, and chat safely.",
     "Don’t hesitate to hit the report button whenever you feel threatened or see a bad behavior.",
+  ];
+
+  static const List<String> pets = [
+    "🐕  Dog",
+    "🐈  Cat",
+    "🐍  Reptile",
+    "🐸  Amphibian",
+    "🐦  Bird",
+    "🐟  Fish",
+    "😒  Don't like pets",
+    "🐇  Rabbits",
+    "🐁  Mouse",
+    "😉  Planning on getting",
+    "🤧  Allergic",
+    "🐴  Other",
+    "😊  Want a pet",
   ];
 }
