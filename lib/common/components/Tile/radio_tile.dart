@@ -49,14 +49,14 @@ class RadioTile<T> extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(9.r),
             ),
-            tileColor: AppColors.listTileColor,
+            tileColor: AppColors.whiteShade200,
             trailing: Padding(
               padding: EdgeInsets.only(right: 10.w),
               child: Container(
                 width: 16.r,
                 height: 16.r,
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.listTileColor : Colors.white,
+                  color: isSelected ? AppColors.whiteShade200 : Colors.white,
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: isSelected

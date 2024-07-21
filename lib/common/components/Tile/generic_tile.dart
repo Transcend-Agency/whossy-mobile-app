@@ -26,7 +26,7 @@ class GenericTile<T> extends StatelessWidget {
     bool isSelected = value == groupValue;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.only(bottom: 6.h),
       child: GestureDetector(
         onTap: () => onChanged(value),
         child: AnimatedContainer(
@@ -44,12 +44,12 @@ class GenericTile<T> extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(9.r),
             ),
-            tileColor: AppColors.listTileColor,
+            tileColor: AppColors.whiteShade200,
             trailing: Container(
               width: 16.r,
               height: 16.r,
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.listTileColor : Colors.white,
+                color: isSelected ? AppColors.whiteShade200 : Colors.white,
                 shape: BoxShape.circle,
                 border: Border.all(
                   color:

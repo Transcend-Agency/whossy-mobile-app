@@ -22,7 +22,7 @@ class SkipButton extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6.r),
-                    color: AppColors.listTileColor,
+                    color: AppColors.whiteShade200,
                   ),
                   padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 6.w),
                   margin: EdgeInsets.only(top: 4.h, bottom: 6.h),

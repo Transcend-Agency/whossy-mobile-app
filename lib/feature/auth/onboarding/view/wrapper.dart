@@ -29,7 +29,7 @@ class _WrapperState extends State<Wrapper> {
   void initState() {
     super.initState();
 
-    _pageController = PageController();
+    _pageController = PageController(initialPage: 10);
 
     _pages = [
       const RelPrefScreen(pageIndex: 0),

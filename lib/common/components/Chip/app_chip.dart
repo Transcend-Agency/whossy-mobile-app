@@ -21,7 +21,8 @@ class AppChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 350),
         decoration: BoxDecoration(
           border: Border.all(
             color: isSelected ? AppColors.black : AppColors.hintTextColor,
@@ -31,7 +32,7 @@ class AppChip extends StatelessWidget {
           color: isSelected ? AppColors.black : Colors.white,
         ),
         padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 5.w),
-        margin: EdgeInsets.only(right: 4.w, bottom: 4.h),
+        margin: EdgeInsets.only(right: 4.w, bottom: 6.h),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconly/iconly.dart';
 
 import '../../constants/colors.dart';
 import '../styles/text_style.dart';
@@ -46,6 +47,22 @@ Icon cancelIcon() {
   );
 }
 
+Icon camera({double size = 42, Color color = AppColors.midWay}) {
+  return Icon(
+    IconlyBold.camera,
+    size: size.r,
+    color: color,
+  );
+}
+
+Icon add({Color color = AppColors.midWay, double size = 26}) {
+  return Icon(
+    Icons.add_circle_rounded,
+    size: size.r,
+    color: color,
+  );
+}
+
 Row passwordRequirementRow(String text) {
   return Row(
     children: [
@@ -64,6 +81,60 @@ Row passwordRequirementRow(String text) {
           softWrap: true,
           overflow: TextOverflow.visible,
         ),
+      ),
+    ],
+  );
+}
+
+Widget bigCamera() {
+  return Stack(
+    clipBehavior: Clip.none,
+    children: [
+      camera(size: 46, color: Colors.white),
+      camera(),
+      Positioned(
+        right: -3.5,
+        bottom: -3.5,
+        child: Container(
+          height: 35,
+          width: 35,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
+      Positioned(
+        right: -1.5,
+        bottom: -1.5,
+        child: add(),
+      ),
+    ],
+  );
+}
+
+Widget smallCamera({Color color = AppColors.hintTextColor}) {
+  return Stack(
+    clipBehavior: Clip.none,
+    children: [
+      camera(size: 29, color: Colors.white),
+      camera(color: color, size: 25),
+      Positioned(
+        right: -3.5,
+        bottom: -3.5,
+        child: Container(
+          height: 23.5,
+          width: 23.5,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
+      Positioned(
+        right: -1.5,
+        bottom: -1.5,
+        child: add(color: color, size: 16.5),
       ),
     ],
   );

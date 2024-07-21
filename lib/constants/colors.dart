@@ -21,6 +21,9 @@ class AppColors {
   static const Color backButtonColor = Color(0xFFF8F8F8);
   static const Color listTileColor = Color(0xFFF6F6F6);
 
+  static const Color whiteShade100 = Color(0xFFF0F0F0);
+  static const Color whiteShade200 = Color(0xFFF7F7F7);
+
   static const splashGradient = LinearGradient(
     colors: [AppColors.warmYellow, AppColors.primaryColor],
     begin: Alignment.topCenter,
@@ -32,13 +35,6 @@ class AppColors {
     stops: [0.3, 0.6],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-  );
-
-  static const pageIndicatorColor = LinearGradient(
-    colors: [AppColors.warmYellow, AppColors.primaryColor],
-    stops: [0.3, 0.6],
-    begin: Alignment.centerLeft,
-    end: Alignment.centerRight,
   );
 
   static LinearGradient splashShade = LinearGradient(

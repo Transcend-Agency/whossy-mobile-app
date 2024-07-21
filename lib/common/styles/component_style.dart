@@ -27,6 +27,10 @@ const inputBorder = OutlineInputBorder(
   ),
 );
 
+const underlinedInputBorder = UnderlineInputBorder(
+  borderSide: BorderSide(color: AppColors.outlinedColor, width: 1),
+);
+
 final errorBorder = inputBorder.copyWith(
   borderSide: const BorderSide(
     color: AppColors.errorBorderColor,
