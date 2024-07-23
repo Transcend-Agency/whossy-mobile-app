@@ -63,6 +63,14 @@ Icon add({Color color = AppColors.midWay, double size = 26}) {
   );
 }
 
+Icon search() {
+  return Icon(
+    IconlyLight.search,
+    color: AppColors.hintTextColor,
+    size: 18.r,
+  );
+}
+
 Row passwordRequirementRow(String text) {
   return Row(
     children: [
@@ -96,8 +104,8 @@ Widget bigCamera() {
         right: -3.5,
         bottom: -3.5,
         child: Container(
-          height: 35,
-          width: 35,
+          height: 29.r,
+          width: 29.r,
           decoration: const BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
@@ -123,8 +131,8 @@ Widget smallCamera({Color color = AppColors.hintTextColor}) {
         right: -3.5,
         bottom: -3.5,
         child: Container(
-          height: 23.5,
-          width: 23.5,
+          height: 19.r,
+          width: 19.r,
           decoration: const BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
@@ -132,8 +140,8 @@ Widget smallCamera({Color color = AppColors.hintTextColor}) {
         ),
       ),
       Positioned(
-        right: -1.5,
-        bottom: -1.5,
+        right: -2,
+        bottom: -2,
         child: add(color: color, size: 16.5),
       ),
     ],

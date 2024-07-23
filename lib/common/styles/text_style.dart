@@ -67,6 +67,12 @@ class TextStyles {
     color: AppColors.black,
   );
 
+  static TextStyle tickTitle = TextStyle(
+    fontSize: 14.sp,
+    color: AppColors.black,
+    fontWeight: FontWeight.w500,
+  );
+
   static TextStyle underlineText = const TextStyle(
     color: AppColors.black,
     fontFamily: 'NeueMontreal',

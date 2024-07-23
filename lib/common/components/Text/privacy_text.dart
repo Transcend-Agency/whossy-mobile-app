@@ -16,6 +16,7 @@ class PrivacyText extends StatelessWidget {
   final AuthenticationProvider auth;
   final String text;
 
+  // Todo: Make responsive for smaller screens
   @override
   Widget build(BuildContext context) {
     return Padding(

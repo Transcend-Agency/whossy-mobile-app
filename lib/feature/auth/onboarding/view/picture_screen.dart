@@ -89,6 +89,7 @@ class _PictureScreenState extends State<PictureScreen>
         SizedBox(
           height: 76.r,
           child: ListView(
+            clipBehavior: Clip.none,
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
             children: List.generate(5, (_) {

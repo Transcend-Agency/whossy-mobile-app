@@ -51,7 +51,8 @@ class AppTheme {
         hintText: 'Search country',
         prefixIcon: Padding(
           padding: EdgeInsets.only(left: 3.w, right: 1.w),
-          child: searchIcon(),
+          child:
+              searchIcon(), // Todo : Check this out later and change to search()
         ),
         focusedBorder: inputBorder
           ..borderSide.copyWith(

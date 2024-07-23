@@ -70,7 +70,7 @@ class _BioScreenState extends State<BioScreen>
           alignment: Alignment.centerLeft,
           child: Text(
             '$_characterCount/$_maxCharacterCount characters',
-            style: TextStyles.hintThemeText.copyWith(
+            style: TextStyles.hintText.copyWith(
               fontSize: AppUtils.scale(9.5.sp),
             ),
           ),

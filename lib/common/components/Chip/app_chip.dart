@@ -32,7 +32,6 @@ class AppChip extends StatelessWidget {
           color: isSelected ? AppColors.black : Colors.white,
         ),
         padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 5.w),
-        margin: EdgeInsets.only(right: 4.w, bottom: 6.h),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

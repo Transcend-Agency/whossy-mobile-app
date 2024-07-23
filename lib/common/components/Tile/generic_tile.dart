@@ -39,7 +39,7 @@ class GenericTile<T> extends StatelessWidget {
             ),
           ),
           child: ListTile(
-            // contentPadding: EdgeInsets.symmetric(vertical: 2.h),
+            contentPadding: EdgeInsets.only(left: 16, right: 12.w),
             leading: leadingWidget,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(9.r),

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +8,7 @@ import 'package:whossy_mobile_app/feature/auth/onboarding/view/index.dart';
 import 'package:whossy_mobile_app/feature/auth/onboarding/view_model/onboarding_provider.dart';
 
 import '../../../../common/utils/index.dart';
+import '../../../../constants/index.dart';
 
 @RoutePage()
 class Wrapper extends StatefulWidget {
@@ -29,7 +28,7 @@ class _WrapperState extends State<Wrapper> {
   void initState() {
     super.initState();
 
-    _pageController = PageController(initialPage: 10);
+    _pageController = PageController();
 
     _pages = [
       const RelPrefScreen(pageIndex: 0),
@@ -53,18 +52,29 @@ class _WrapperState extends State<Wrapper> {
     _pageController.dispose();
   }
 
-  String buttonText() {
-    return _activePage == _pages.length - 1 ? 'Get Started' : 'Continue';
+  String buttonText(int count) {
+    return _activePage == 4
+        ? count < 5
+            ? 'Select $count / 5'
+            : 'Continue'
+        : _activePage == _pages.length - 1
+            ? 'Get Started'
+            : 'Continue';
+  }
+
+  Color? updateColor(int count) {
+    if (_activePage == 4 && count < 5) {
+      return AppColors.backButtonColor;
+    }
+
+    return null;
   }
 
   void _onPageChange(int page) {
-    setState(() {
-      _activePage = page;
-    });
+    setState(() => _activePage = page);
   }
 
   void _handleContinueButton() {
-    log('Bams D');
     if (_activePage < _pages.length - 1) {
       _onPageUpdate(_activePage + 1);
     }
@@ -107,7 +117,11 @@ class _WrapperState extends State<Wrapper> {
             right: 0,
             bottom: 0,
             child: Padding(
-              padding: EdgeInsets.only(bottom: 20, left: 14.w, right: 14.w),
+              padding: EdgeInsets.only(
+                  bottom: 20,
+                  left: 14.w,
+                  right: 14
+                      .w), // Todo: Fix the bottom look on a smaller screen, add .h
               child: Row(
                 children: [
                   AnimatedOpacity(
@@ -128,10 +142,11 @@ class _WrapperState extends State<Wrapper> {
                     child: Consumer<OnboardingProvider>(
                       builder: (_, boarding, __) {
                         return AppButton(
+                          color: updateColor(boarding.selectedCount),
                           onPress: boarding.isSelected(_activePage)
                               ? _handleContinueButton
                               : null,
-                          text: buttonText(),
+                          text: buttonText(boarding.selectedCount),
                         );
                       },
                     ),

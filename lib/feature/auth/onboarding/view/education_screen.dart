@@ -38,7 +38,8 @@ class _EducationScreenState extends State<EducationScreen>
           padding: EdgeInsets.only(bottom: 6.h),
           child: Text(
             'School or University',
-            style: TextStyles.fieldHeader,
+            style: TextStyles
+                .fieldHeader, // Todo: Fix the responsiveness here on smaller devices
           ),
         ),
         Form(

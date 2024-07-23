@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_mobile_app/common/utils/index.dart';
@@ -32,7 +31,7 @@ class AppScaffold extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 6.w, top: 16.h),
                   child: GestureDetector(
-                    onTap: context.back,
+                    onTap: () => Navigator.pop(context),
                     child: Padding(
                       padding: EdgeInsets.all(6.r),
                       child: backIcon(),

@@ -12,11 +12,13 @@ class UnderlineTextField extends StatelessWidget {
     required this.focusNode,
     required this.textController,
     this.onFieldSubmitted,
-    required this.maxLength,
+    this.maxLength,
+    this.hintText,
   });
 
   final FocusNode focusNode;
-  final int maxLength;
+  final int? maxLength;
+  final String? hintText;
   final TextEditingController textController;
   final void Function(String)? onFieldSubmitted;
 
@@ -25,7 +27,7 @@ class UnderlineTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: TextStyles.hintThemeText.copyWith(
+      style: TextStyles.hintText.copyWith(
         color: textColor,
         fontSize: AppUtils.scale(10.5.sp),
       ),
@@ -39,6 +41,7 @@ class UnderlineTextField extends StatelessWidget {
       keyboardType: TextInputType.multiline,
       decoration: InputDecoration(
         counterText: '',
+        hintText: hintText,
         focusedBorder: underlinedInputBorder,
         enabledBorder: underlinedInputBorder.copyWith(
             borderSide:

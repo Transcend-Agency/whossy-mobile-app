@@ -38,6 +38,8 @@ class _PetsScreenState extends State<PetsScreen>
         ),
         addHeight(24),
         Wrap(
+          spacing: 4.w,
+          runSpacing: 6.h,
           children: [...AppStrings.pets.map((_) => _buildAppChip(_))],
         ),
         addHeight(16),
