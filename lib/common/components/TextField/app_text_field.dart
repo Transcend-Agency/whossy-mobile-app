@@ -14,6 +14,7 @@ class AppTextField extends StatelessWidget {
     this.validation,
     this.suffixIcon,
     this.obscureText = false,
+    this.error = false,
     this.action = TextInputAction.next,
     this.onFieldSubmitted,
     this.focusedBorderColor,
@@ -22,6 +23,7 @@ class AppTextField extends StatelessWidget {
     this.isPhone = false,
     this.isUsername = false,
     this.prefixIcon,
+    this.enabled = true,
   });
 
   final FocusNode focusNode;
@@ -40,12 +42,17 @@ class AppTextField extends StatelessWidget {
   final int? lengthLimit;
   final bool isPhone;
   final bool isUsername;
+  final bool enabled;
+  final bool error;
 
   @override
   Widget build(BuildContext context) {
+    final Color effectiveTextColor =
+        enabled ? textColor : textColor.withOpacity(0.7);
+
     return TextFormField(
       keyboardType: isPhone ? TextInputType.phone : null,
-      style: TextStyles.hintThemeText.copyWith(color: textColor),
+      style: TextStyles.hintThemeText.copyWith(color: effectiveTextColor),
       maxLength: maxLength,
       cursorColor: textColor,
       focusNode: focusNode,
@@ -55,6 +62,7 @@ class AppTextField extends StatelessWidget {
       textInputAction: action,
       validator: validation,
       onFieldSubmitted: onFieldSubmitted,
+      enabled: enabled,
       inputFormatters: [
         isPhone
             ? _PhoneNumberFormatter()
@@ -72,7 +80,7 @@ class AppTextField extends StatelessWidget {
         isDense: true,
         fillColor: AppColors.inputBackGround.withOpacity(0.9),
         hintText: hintText,
-        contentPadding: const EdgeInsets.all(18),
+        contentPadding: const EdgeInsets.all(16),
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
       ),

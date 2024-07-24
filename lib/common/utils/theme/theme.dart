@@ -13,13 +13,8 @@ class AppTheme {
       outlinedButtonTheme: const OutlinedButtonThemeData(style: ButtonStyle()),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       progressIndicatorTheme: const ProgressIndicatorThemeData(
-        circularTrackColor: AppColors.buttonColor,
         color: Colors.white,
       ),
-      colorScheme: const ColorScheme.light(
-        surface: Colors.white,
-      ),
-
       // Configure the input decoration theme for form fields.
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -28,6 +23,7 @@ class AppTheme {
         enabledBorder: enabledBorder,
         errorBorder: errorBorder,
         focusedErrorBorder: focusedErrorBorder,
+        disabledBorder: enabledBorder,
       ),
     );
   }
@@ -51,8 +47,7 @@ class AppTheme {
         hintText: 'Search country',
         prefixIcon: Padding(
           padding: EdgeInsets.only(left: 3.w, right: 1.w),
-          child:
-              searchIcon(), // Todo : Check this out later and change to search()
+          child: search(),
         ),
         focusedBorder: inputBorder
           ..borderSide.copyWith(

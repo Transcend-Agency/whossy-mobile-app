@@ -158,7 +158,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     action: TextInputAction.done,
                     hintText: AppStrings.passwordHint,
                     obscureText: _passwordVisible,
-                    validation: (value) => value.validatePassword(),
                     onFieldSubmitted: (password) => onLogin(),
                     suffixIcon: IconButton(
                       icon: visibilityIcon(_passwordVisible, passwordColor),
@@ -259,7 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const Spacer(),
               PrivacyText(
-                auth: auth,
+                action: auth.launchTC,
                 text: AppStrings.loginAgreement,
               )
             ],

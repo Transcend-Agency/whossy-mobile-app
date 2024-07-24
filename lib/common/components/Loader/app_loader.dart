@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AppLoader extends StatelessWidget {
   const AppLoader({
     super.key,
-    this.size = 24,
+    this.size = 20,
   });
   final double size;
 
@@ -14,6 +14,7 @@ class AppLoader extends StatelessWidget {
       child: SizedBox.square(
         dimension: size.r,
         child: const CircularProgressIndicator.adaptive(
+          backgroundColor: Colors.transparent,
           strokeWidth: 2.5,
         ),
       ), //

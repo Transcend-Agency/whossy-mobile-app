@@ -29,8 +29,8 @@ class AppButton extends StatelessWidget {
       width: double.infinity,
       child: MaterialButton(
         height: height.h,
-        onPressed: onPress,
         color: AppColors.buttonColor,
+        onPressed: loading ? null : onPress,
         textColor: Colors.white,
         elevation: 0,
         highlightElevation: 0,

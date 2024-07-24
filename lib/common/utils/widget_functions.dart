@@ -17,11 +17,11 @@ Icon visibilityIcon(bool isVisible, Color passwordColor) {
   );
 }
 
-Icon searchIcon() {
+Icon dropDownIcon({double size = 20}) {
   return Icon(
-    Icons.search,
+    IconlyLight.arrow_down_2,
+    size: size.r,
     color: AppColors.hintTextColor,
-    size: 18.r,
   );
 }
 
@@ -71,21 +71,24 @@ Icon search() {
   );
 }
 
-Row passwordRequirementRow(String text) {
+Row passwordRequirementRow(String text, {required bool checked}) {
+  TextStyle textStyle = ScreenUtil().screenWidth > 500
+      ? TextStyles.hintThemeText
+      : TextStyles.hintText;
+
   return Row(
     children: [
-      const Icon(
+      Icon(
         Icons.check,
-        color: AppColors.hintTextColor,
+        color: checked ? Colors.green.shade300 : AppColors.hintTextColor,
         size: 18,
       ),
       addWidth(8),
       Expanded(
         child: Text(
           text,
-          style: ScreenUtil().screenWidth > 500
-              ? TextStyles.hintThemeText
-              : TextStyles.hintText,
+          style:
+              textStyle.copyWith(color: checked ? Colors.green.shade300 : null),
           softWrap: true,
           overflow: TextOverflow.visible,
         ),

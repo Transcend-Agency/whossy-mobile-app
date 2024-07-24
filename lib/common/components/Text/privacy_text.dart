@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_mobile_app/view_model/auth_provider.dart';
 
 import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
@@ -9,11 +8,11 @@ import '../../styles/text_style.dart';
 class PrivacyText extends StatelessWidget {
   const PrivacyText({
     super.key,
-    required this.auth,
+    required this.action,
     required this.text,
   });
 
-  final AuthenticationProvider auth;
+  final VoidCallback action;
   final String text;
 
   // Todo: Make responsive for smaller screens
@@ -35,7 +34,7 @@ class PrivacyText extends StatelessWidget {
             TextSpan(
               text: AppStrings.termsAndConditions,
               style: TextStyles.underlineText,
-              recognizer: TapGestureRecognizer()..onTap = auth.launchTC,
+              recognizer: TapGestureRecognizer()..onTap = action,
             ),
             TextSpan(
               text: AppStrings.dataProcessingInfo,
@@ -44,7 +43,7 @@ class PrivacyText extends StatelessWidget {
             TextSpan(
               text: AppStrings.privacyPolicy,
               style: TextStyles.underlineText,
-              recognizer: TapGestureRecognizer()..onTap = auth.launchTC,
+              recognizer: TapGestureRecognizer()..onTap = action,
             ),
           ], //
         ),

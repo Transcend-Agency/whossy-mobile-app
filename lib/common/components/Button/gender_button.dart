@@ -5,23 +5,27 @@ import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
 import '../../utils/index.dart';
 
-class GenderButton extends StatelessWidget {
+class GenderButton<T> extends StatelessWidget {
   final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
+  final T value;
+  final T groupValue;
+  final ValueChanged<T?> onChanged;
 
   const GenderButton({
     super.key,
     required this.label,
-    required this.isSelected,
-    required this.onTap,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    bool isSelected = value == groupValue;
+
     return Expanded(
       child: GestureDetector(
-        onTap: onTap,
+        onTap: () => onChanged(value),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.r),

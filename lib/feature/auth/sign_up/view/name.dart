@@ -5,11 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
-import 'package:whossy_mobile_app/view_model/auth_provider.dart';
 
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
+import '../view_model/sign_up_provider.dart';
 
 @RoutePage()
 class SignUpNameScreen extends StatefulWidget {
@@ -20,6 +20,8 @@ class SignUpNameScreen extends StatefulWidget {
 }
 
 class _SignUpNameScreenState extends State<SignUpNameScreen> {
+  late SignUpProvider signUpProvider;
+
   final myFirstController = TextEditingController();
   final myLastController = TextEditingController();
 
@@ -32,15 +34,58 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
   final firstFocusNode = FocusNode();
   final lastFocusNode = FocusNode();
 
+  void validate() {
+    final isFirstValid = formKey1.currentState?.validate() ?? false;
+    final isLastValid = formKey2.currentState?.validate() ?? false;
+
+    if (isFirstValid && isLastValid) {
+      setValue();
+      return;
+    }
+
+    if (!isFirstValid) shakeState1.currentState?.shake();
+    if (!isLastValid) shakeState2.currentState?.shake();
+  }
+
+  setValue() {
+    final first = myFirstController.text.trim();
+    final last = myLastController.text.trim();
+
+    signUpProvider.setName(first, last);
+
+    Nav.push(context, const SignUpPhoneRoute());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    signUpProvider = Provider.of<SignUpProvider>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    formKey1.currentState?.dispose();
+    formKey2.currentState?.dispose();
+
+    firstFocusNode.dispose();
+    lastFocusNode.dispose();
+
+    myFirstController.dispose();
+    myLastController.dispose();
+
+    FocusScope.of(context).unfocus(); //Todo: Check if this works
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       back: true,
-      resizeToAvoidBottomInset: true,
       padding: pagePadding,
-      body: Consumer<AuthenticationProvider>(
-        builder: (_, auth, __) {
-          return Column(
+      body: Stack(
+        children: [
+          Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               addHeight(24),
@@ -70,6 +115,7 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
                     focusNode: firstFocusNode,
                     textController: myFirstController,
                     hintText: AppStrings.firstNameHint,
+                    validation: (name) => name?.trim().validateName(),
                   ),
                 ),
               ),
@@ -90,7 +136,8 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
                     textController: myLastController,
                     action: TextInputAction.done,
                     hintText: AppStrings.lastNameHint,
-                    onFieldSubmitted: (password) => {},
+                    onFieldSubmitted: (password) => validate,
+                    validation: (name) => name?.trim().validateName(),
                   ),
                 ),
               ),
@@ -98,13 +145,13 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: AppButton(
-                  onPress: () => Nav.push(context, const SignUpPhoneRoute()),
+                  onPress: validate,
                   text: 'Continue',
                 ),
               ),
             ],
-          );
-        },
+          ),
+        ],
       ),
     );
   }

@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
 import 'package:whossy_mobile_app/common/utils/index.dart';
-import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
-import 'package:whossy_mobile_app/view_model/auth_provider.dart';
+import 'package:whossy_mobile_app/feature/auth/sign_up/view_model/sign_up_provider.dart';
 
 import '../../../../common/styles/text_style.dart';
+import '../../../../common/utils/router/router.gr.dart';
 
 @RoutePage()
 class SignUpGenderScreen extends StatefulWidget {
@@ -19,33 +19,14 @@ class SignUpGenderScreen extends StatefulWidget {
 }
 
 class _SignUpGenderScreenState extends State<SignUpGenderScreen> {
-  bool isSelectedMale = false;
-  bool isSelectedFemale = false;
-
-  void selectMale() {
-    if (!isSelectedMale) {
-      setState(() {
-        isSelectedMale = true;
-        isSelectedFemale = false;
-      });
-    }
-  }
-
-  void selectFemale() {
-    if (!isSelectedFemale) {
-      setState(() {
-        isSelectedMale = false;
-        isSelectedFemale = true;
-      });
-    }
-  }
+  Gender? _gender;
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       back: true,
       padding: pagePadding,
-      body: Consumer<AuthenticationProvider>(
+      body: Consumer<SignUpProvider>(
         builder: (_, auth, __) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -67,14 +48,20 @@ class _SignUpGenderScreenState extends State<SignUpGenderScreen> {
                 children: [
                   GenderButton(
                     label: 'Male',
-                    isSelected: isSelectedMale,
-                    onTap: selectMale,
+                    value: Gender.male,
+                    groupValue: _gender,
+                    onChanged: (_) {
+                      setState(() => _gender = _);
+                    },
                   ),
                   addWidth(6.w),
                   GenderButton(
                     label: 'Female',
-                    isSelected: isSelectedFemale,
-                    onTap: selectFemale,
+                    value: Gender.female,
+                    groupValue: _gender,
+                    onChanged: (_) {
+                      setState(() => _gender = _);
+                    },
                   ),
                 ],
               ),
@@ -82,8 +69,12 @@ class _SignUpGenderScreenState extends State<SignUpGenderScreen> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: AppButton(
-                  onPress: isSelectedFemale || isSelectedMale
-                      ? () => Nav.push(context, const WelcomeRoute())
+                  onPress: _gender != null
+                      ? () {
+                          auth.setGender(_gender!);
+
+                          Nav.push(context, const WelcomeRoute());
+                        }
                       : null,
                   text: 'Continue',
                 ),
