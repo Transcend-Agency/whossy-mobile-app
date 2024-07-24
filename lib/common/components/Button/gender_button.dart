@@ -5,11 +5,11 @@ import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
 import '../../utils/index.dart';
 
-class GenderButton<T> extends StatelessWidget {
+class GenderButton extends StatelessWidget {
   final String label;
-  final T value;
-  final T groupValue;
-  final ValueChanged<T?> onChanged;
+  final Gender? value;
+  final Gender? groupValue;
+  final ValueChanged<Gender?> onChanged;
 
   const GenderButton({
     super.key,
@@ -31,18 +31,30 @@ class GenderButton<T> extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.r),
             color: isSelected ? AppColors.black : AppColors.inputBackGround,
           ),
-          padding: EdgeInsets.symmetric(vertical: 10.h),
+          padding: EdgeInsets.symmetric(vertical: 12.h),
           child: Row(
             children: [
               Expanded(
                 child: Align(
                   alignment: Alignment.center,
-                  child: Text(
-                    label,
-                    style: TextStyles.hintText.copyWith(
-                      fontSize: AppUtils.scale(11.5.sp),
-                      color: isSelected ? Colors.white : null,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        value.icon,
+                        size: 24.r,
+                        color:
+                            isSelected ? Colors.white : AppColors.hintTextColor,
+                      ),
+                      addWidth(2),
+                      Text(
+                        label,
+                        style: TextStyles.hintText.copyWith(
+                          fontSize: AppUtils.scale(11.5.sp),
+                          color: isSelected ? Colors.white : null,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

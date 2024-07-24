@@ -180,7 +180,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                 ),
                                 TextSpan(
                                   text: AppStrings.cAccount,
-                                  style: TextStyles.underlineText,
+                                  style: TextStyles.privacyText,
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () => Nav.push(
                                           context,

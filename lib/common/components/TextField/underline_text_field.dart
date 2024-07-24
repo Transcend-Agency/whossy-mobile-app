@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
 
@@ -14,6 +15,11 @@ class UnderlineTextField extends StatelessWidget {
     this.onFieldSubmitted,
     this.maxLength,
     this.hintText,
+    this.filled = false,
+    this.action = TextInputAction.done,
+    this.align = TextAlign.start,
+    this.keyType = TextInputType.number,
+    this.format,
   });
 
   final FocusNode focusNode;
@@ -21,31 +27,40 @@ class UnderlineTextField extends StatelessWidget {
   final String? hintText;
   final TextEditingController textController;
   final void Function(String)? onFieldSubmitted;
+  final TextInputAction action;
+  final bool filled;
+  final TextAlign align;
+  final TextInputType keyType;
+  final List<TextInputFormatter>? format;
 
   final Color textColor = AppColors.black;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: TextStyles.hintText.copyWith(
+      style: TextStyles.underlineText.copyWith(
         color: textColor,
-        fontSize: AppUtils.scale(10.5.sp),
+        fontSize: AppUtils.scale(13.5.sp),
       ),
       cursorColor: textColor,
       focusNode: focusNode,
+      textAlign: align,
       controller: textController,
-      textInputAction: TextInputAction.done,
+      textInputAction: action,
       onFieldSubmitted: onFieldSubmitted,
       maxLength: maxLength,
       maxLines: null,
-      keyboardType: TextInputType.multiline,
+      keyboardType: keyType,
+      inputFormatters: keyType == TextInputType.number ? format : null,
       decoration: InputDecoration(
+        filled: filled,
         counterText: '',
         hintText: hintText,
         focusedBorder: underlinedInputBorder,
         enabledBorder: underlinedInputBorder.copyWith(
-            borderSide:
-                const BorderSide(width: 0.5, color: AppColors.outlinedColor)),
+          borderSide:
+              const BorderSide(width: 0.5, color: AppColors.outlinedColor),
+        ),
         contentPadding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 8.h),
       ),
     );

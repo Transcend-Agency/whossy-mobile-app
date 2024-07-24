@@ -52,6 +52,11 @@ class TextStyles {
     fontSize: 13.sp,
   );
 
+  static TextStyle underlineText = hintThemeText.copyWith(
+    fontSize: 16.sp,
+    letterSpacing: 1.2,
+  );
+
   static TextStyle errorStyle = TextStyle(
     color: AppColors.errorBorderColor.withOpacity(0.7),
     fontSize: 13,
@@ -73,11 +78,15 @@ class TextStyles {
     fontWeight: FontWeight.w500,
   );
 
-  static TextStyle underlineText = const TextStyle(
+  static TextStyle privacyText = const TextStyle(
     color: AppColors.black,
     fontFamily: 'NeueMontreal',
     fontWeight: FontWeight.w500,
     decoration: TextDecoration.underline,
     fontSize: 16,
+  );
+
+  static TextStyle iconText = TextStyle(
+    fontSize: 24.sp,
   );
 }

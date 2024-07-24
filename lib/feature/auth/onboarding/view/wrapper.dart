@@ -117,11 +117,7 @@ class _WrapperState extends State<Wrapper> {
             right: 0,
             bottom: 0,
             child: Padding(
-              padding: EdgeInsets.only(
-                  bottom: 20,
-                  left: 14.w,
-                  right: 14
-                      .w), // Todo: Fix the bottom look on a smaller screen, add .h
+              padding: EdgeInsets.only(bottom: 10.h, left: 14.w, right: 14.w),
               child: Row(
                 children: [
                   AnimatedOpacity(

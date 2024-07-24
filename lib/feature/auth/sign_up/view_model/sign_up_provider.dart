@@ -68,7 +68,7 @@ class SignUpProvider extends ChangeNotifier {
           .get(const GetOptions(source: Source.server));
 
       if (query.docs.isNotEmpty) {
-        log('An account already exists for that email.');
+        showSnackbar('An account already exists for that email.');
       } else {
         setEmailAndPassword(email, password);
 

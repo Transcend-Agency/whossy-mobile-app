@@ -33,7 +33,7 @@ class PrivacyText extends StatelessWidget {
             ),
             TextSpan(
               text: AppStrings.termsAndConditions,
-              style: TextStyles.underlineText,
+              style: TextStyles.privacyText,
               recognizer: TapGestureRecognizer()..onTap = action,
             ),
             TextSpan(
@@ -42,7 +42,7 @@ class PrivacyText extends StatelessWidget {
             ),
             TextSpan(
               text: AppStrings.privacyPolicy,
-              style: TextStyles.underlineText,
+              style: TextStyles.privacyText,
               recognizer: TapGestureRecognizer()..onTap = action,
             ),
           ], //

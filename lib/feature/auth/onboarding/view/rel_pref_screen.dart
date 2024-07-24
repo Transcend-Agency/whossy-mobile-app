@@ -46,14 +46,15 @@ class _RelPrefScreenState extends State<RelPrefScreen>
           shrinkWrap: true,
           children: AppConstants.preferenceData.map((data) {
             return Consumer<OnboardingProvider>(
-              builder: (_, boarding, __) {
+              builder: (_, onboarding, __) {
                 return RadioTile(
                   leadingAsset: data.leadingAsset,
                   value: data.value,
                   groupValue: _pref,
-                  onChanged: (value) {
-                    setState(() => _pref = value);
-                    context.read<OnboardingProvider>().select(widget.pageIndex);
+                  onChanged: (_) {
+                    setState(() => _pref = _);
+                    onboarding.select(widget.pageIndex);
+                    onboarding.updateUserProfile(relationshipPref: _.pref);
                   },
                   title: data.title,
                   subtitle: data.subtitle,

@@ -40,8 +40,8 @@ class _DrinkScreenState extends State<DrinkScreen>
             return GenericTile(
               value: data.value,
               groupValue: _drink,
-              onChanged: (value) {
-                setState(() => _drink = value);
+              onChanged: (_) {
+                setState(() => _drink = _);
                 context.read<OnboardingProvider>().select(widget.pageIndex);
               },
               title: data.text,

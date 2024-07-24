@@ -42,27 +42,32 @@ class _MeetScreenState extends State<MeetScreen>
         ListView(
           shrinkWrap: true,
           children: AppConstants.meetData.map((data) {
-            return GenericTile(
-              value: data.value,
-              groupValue: _meet,
-              onChanged: (value) {
-                setState(() => _meet = value);
-                context.read<OnboardingProvider>().select(widget.pageIndex);
+            return Consumer<OnboardingProvider>(
+              builder: (_, onboarding, __) {
+                return GenericTile(
+                  value: data.value,
+                  groupValue: _meet,
+                  onChanged: (value) {
+                    setState(() => _meet = value);
+                    onboarding.select(widget.pageIndex);
+                    onboarding.updateUserProfile(meet: value?.name);
+                  },
+                  title: data.text,
+                  leadingWidget: data.icon != null
+                      ? Icon(
+                          data.icon,
+                          size: 26.r,
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(left: 6.w),
+                          child: SvgPicture.asset(
+                            data.asset!,
+                            width: 20.r,
+                            height: 20.r,
+                          ),
+                        ),
+                );
               },
-              title: data.text,
-              leadingWidget: data.icon != null
-                  ? Icon(
-                      data.icon,
-                      size: 26.r,
-                    )
-                  : Padding(
-                      padding: EdgeInsets.only(left: 6.w),
-                      child: SvgPicture.asset(
-                        data.asset!,
-                        width: 20.r,
-                        height: 20.r,
-                      ),
-                    ),
             );
           }).toList(),
         ),

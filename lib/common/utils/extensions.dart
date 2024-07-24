@@ -1,5 +1,39 @@
 import 'package:email_validator/email_validator.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import 'enums.dart';
+
+extension GenderExtension on Gender? {
+  IconData get icon {
+    switch (this) {
+      case Gender.male:
+        return Icons.male_rounded;
+      case Gender.female:
+        return Icons.female_rounded;
+      default:
+        return Icons.help;
+    }
+  }
+}
+
+extension PreferenceExtension on Preference? {
+  String get pref {
+    switch (this) {
+      case Preference.lookingToDate:
+        return 'Looking to Date';
+      case Preference.chattingAndConnecting:
+        return 'Chatting and Connecting';
+      case Preference.readyForCommitment:
+        return 'Ready for Commitment';
+      case Preference.justForFun:
+        return 'Just for Fun';
+      case Preference.undecidedOrExploring:
+        return 'Undecided or Exploring';
+      case null:
+        return 'Not specified';
+    }
+  }
+}
 
 extension StringExtention on String? {
   /// Validate the email input (checks if it's a valid email format)
@@ -88,5 +122,25 @@ extension StringExtention on String? {
       return 'Country name cannot contain special characters';
     }
     return null; // Return null if the country name is valid
+  }
+
+  // Validate if the string represents a valid month
+  bool isValidMonth() {
+    final int? value = int.tryParse(this!);
+    return value != null && value >= 1 && value <= 12;
+  }
+
+  // Validate if the string represents a valid day
+  bool isValidDay() {
+    final int? value = int.tryParse(this!);
+    return value != null && value >= 1 && value <= 31;
+  }
+
+  // Validate if the string represents a valid year within the range of the current year to 100 years back
+  bool isValidYear() {
+    final int? value = int.tryParse(this!);
+    final int currentYear = DateTime.now().year;
+    final int minYear = currentYear - 100;
+    return value != null && value >= minYear && value <= currentYear - 10;
   }
 }

@@ -63,6 +63,7 @@ class _BioScreenState extends State<BioScreen>
             focusNode: focusNode,
             textController: textController,
             maxLength: _maxCharacterCount,
+            keyType: TextInputType.multiline,
           ),
         ),
         addHeight(2),
