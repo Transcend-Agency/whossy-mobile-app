@@ -6,6 +6,7 @@ import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
+import '../view_model/notifier_set.dart';
 import '../view_model/onboarding_provider.dart';
 
 class PetsScreen extends StatefulWidget {
@@ -20,7 +21,38 @@ class PetsScreen extends StatefulWidget {
 class _PetsScreenState extends State<PetsScreen>
     with AutomaticKeepAliveClientMixin<PetsScreen> {
   WorkOut? _workOut;
-  final Set<String> _selectedPets = {};
+  late NotifierSet<String> _selectedPets;
+  late OnboardingProvider onboardingProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPets = NotifierSet<String>();
+    _selectedPets.addListener(_update);
+
+    onboardingProvider =
+        Provider.of<OnboardingProvider>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    _selectedPets.removeListener(_update);
+
+    _selectedPets.dispose();
+    super.dispose();
+  }
+
+  void _update() {
+    onboardingProvider.updateUserProfile(pets: _selectedPets.items);
+    _checkCompletion();
+  }
+
+  void _checkCompletion() {
+    final isComplete = _selectedPets.isNotEmpty && _workOut != null;
+    if (onboardingProvider.isSelected(widget.pageIndex) != isComplete) {
+      onboardingProvider.select(widget.pageIndex, value: isComplete);
+    }
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -40,7 +72,7 @@ class _PetsScreenState extends State<PetsScreen>
         Wrap(
           spacing: 4.w,
           runSpacing: 6.h,
-          children: [...AppStrings.pets.map((_) => _buildAppChip(_))],
+          children: [...AppStrings.pets.map((pet) => _buildAppChip(pet))],
         ),
         addHeight(16),
         const Divider(
@@ -61,14 +93,21 @@ class _PetsScreenState extends State<PetsScreen>
         ListView(
           shrinkWrap: true,
           children: AppConstants.workOutData.map((data) {
-            return GenericTile(
-              value: data.value,
-              groupValue: _workOut,
-              onChanged: (value) {
-                setState(() => _workOut = value);
-                context.read<OnboardingProvider>().select(widget.pageIndex);
+            return Consumer<OnboardingProvider>(
+              builder: (_, onboarding, __) {
+                return GenericTile(
+                  value: data.value,
+                  groupValue: _workOut,
+                  onChanged: (value) {
+                    if (_workOut != value) {
+                      setState(() => _workOut = value);
+                      onboarding.updateUserProfile(workOut: value?.name);
+                      _checkCompletion();
+                    }
+                  },
+                  title: data.text,
+                );
               },
-              title: data.text,
             );
           }).toList(),
         ),

@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';
@@ -20,6 +22,22 @@ class PictureScreen extends StatefulWidget {
 class _PictureScreenState extends State<PictureScreen>
     with AutomaticKeepAliveClientMixin<PictureScreen> {
   final double rotationAngle = 5 * math.pi / 180;
+
+  final _picker = ImagePicker();
+  List<XFile> _imageFileList = [];
+
+  /// Select image from gallery
+  Future<void> _pickImage() async {
+    if (_imageFileList.length < 6) {
+      final pickedImages = await _picker.pickMultiImage(limit: 5);
+
+      setState(() {
+        _imageFileList = pickedImages;
+      });
+    } else {
+      log('Show snackbar');
+    }
+  }
 
   @override
   bool get wantKeepAlive => true;

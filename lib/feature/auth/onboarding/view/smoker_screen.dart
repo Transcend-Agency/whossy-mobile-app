@@ -37,14 +37,19 @@ class _SmokerScreenState extends State<SmokerScreen>
         ListView(
           shrinkWrap: true,
           children: AppConstants.smokeData.map((data) {
-            return GenericTile(
-              value: data.value,
-              groupValue: _smoke,
-              onChanged: (value) {
-                setState(() => _smoke = value);
-                context.read<OnboardingProvider>().select(widget.pageIndex);
+            return Consumer<OnboardingProvider>(
+              builder: (_, onboarding, __) {
+                return GenericTile(
+                  value: data.value,
+                  groupValue: _smoke,
+                  onChanged: (value) {
+                    setState(() => _smoke = value);
+                    onboarding.select(widget.pageIndex);
+                    onboarding.updateUserProfile(smoker: value?.name);
+                  },
+                  title: data.text,
+                );
               },
-              title: data.text,
             );
           }).toList(),
         ),

@@ -51,6 +51,8 @@ dependencies:
   iconly: ^1.0.1
   auto_route: ^8.2.0
 
+  image_picker: ^1.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

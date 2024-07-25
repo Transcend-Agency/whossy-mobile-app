@@ -54,7 +54,7 @@ class _RelPrefScreenState extends State<RelPrefScreen>
                   onChanged: (_) {
                     setState(() => _pref = _);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(relationshipPref: _.pref);
+                    onboarding.updateUserProfile(relationshipPref: _.name);
                   },
                   title: data.title,
                   subtitle: data.subtitle,

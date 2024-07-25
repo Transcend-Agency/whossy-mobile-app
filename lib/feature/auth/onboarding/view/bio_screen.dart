@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_mobile_app/common/components/TextField/underline_text_field.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
+import '../view_model/onboarding_provider.dart';
 
 class BioScreen extends StatefulWidget {
   final int pageIndex;
@@ -17,17 +18,38 @@ class BioScreen extends StatefulWidget {
 
 class _BioScreenState extends State<BioScreen>
     with AutomaticKeepAliveClientMixin<BioScreen> {
-  final formKey1 = GlobalKey<FormState>();
+  late OnboardingProvider onboardingProvider;
+
   final textController = TextEditingController();
   final focusNode = FocusNode();
 
   int _characterCount = 0;
   static const int _maxCharacterCount = 500;
+  final _debouncer = Debouncer(milliseconds: 1000);
+
+  void _update() {
+    final bio = textController.text;
+
+    if (bio.isValidBio()) {
+      onboardingProvider.select(widget.pageIndex);
+
+      onboardingProvider.updateUserProfile(bio: bio.trim());
+    } else {
+      onboardingProvider.select(widget.pageIndex, value: false);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    textController.addListener(updateCounter);
+
+    textController.addListener(() {
+      updateCounter();
+      _debouncer.run(_update);
+    });
+
+    onboardingProvider =
+        Provider.of<OnboardingProvider>(context, listen: false);
   }
 
   @override
@@ -57,14 +79,11 @@ class _BioScreenState extends State<BioScreen>
           skip: true,
         ),
         addHeight(24),
-        Form(
-          key: formKey1,
-          child: UnderlineTextField(
-            focusNode: focusNode,
-            textController: textController,
-            maxLength: _maxCharacterCount,
-            keyType: TextInputType.multiline,
-          ),
+        UnderlineTextField(
+          focusNode: focusNode,
+          textController: textController,
+          maxLength: _maxCharacterCount,
+          keyType: TextInputType.multiline,
         ),
         addHeight(2),
         Align(

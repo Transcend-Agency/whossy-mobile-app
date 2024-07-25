@@ -37,14 +37,19 @@ class _DrinkScreenState extends State<DrinkScreen>
         ListView(
           shrinkWrap: true,
           children: AppConstants.drinkData.map((data) {
-            return GenericTile(
-              value: data.value,
-              groupValue: _drink,
-              onChanged: (_) {
-                setState(() => _drink = _);
-                context.read<OnboardingProvider>().select(widget.pageIndex);
+            return Consumer<OnboardingProvider>(
+              builder: (_, onboarding, __) {
+                return GenericTile(
+                  value: data.value,
+                  groupValue: _drink,
+                  onChanged: (_) {
+                    setState(() => _drink = _);
+                    onboarding.select(widget.pageIndex);
+                    onboarding.updateUserProfile(drink: _?.name);
+                  },
+                  title: data.text,
+                );
               },
-              title: data.text,
             );
           }).toList(),
         ),

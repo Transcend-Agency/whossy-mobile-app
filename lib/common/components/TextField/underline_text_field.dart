@@ -35,13 +35,39 @@ class UnderlineTextField extends StatelessWidget {
 
   final Color textColor = AppColors.black;
 
+  TextStyle get _textStyle {
+    final baseTextStyle = keyType == TextInputType.number
+        ? TextStyles.underlineText
+        : TextStyles.bioText;
+
+    final fontSize = keyType == TextInputType.number
+        ? AppUtils.scale(13.5.sp)
+        : AppUtils.scale(10.5.sp);
+
+    return baseTextStyle.copyWith(
+      color: textColor,
+      fontSize: fontSize,
+    );
+  }
+
+  InputDecoration get _inputDecoration {
+    return InputDecoration(
+      filled: filled,
+      counterText: '',
+      hintText: hintText,
+      focusedBorder: underlinedInputBorder,
+      enabledBorder: underlinedInputBorder.copyWith(
+        borderSide:
+            const BorderSide(width: 0.5, color: AppColors.outlinedColor),
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 8.h),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: TextStyles.underlineText.copyWith(
-        color: textColor,
-        fontSize: AppUtils.scale(13.5.sp),
-      ),
+      style: _textStyle,
       cursorColor: textColor,
       focusNode: focusNode,
       textAlign: align,
@@ -52,17 +78,7 @@ class UnderlineTextField extends StatelessWidget {
       maxLines: null,
       keyboardType: keyType,
       inputFormatters: keyType == TextInputType.number ? format : null,
-      decoration: InputDecoration(
-        filled: filled,
-        counterText: '',
-        hintText: hintText,
-        focusedBorder: underlinedInputBorder,
-        enabledBorder: underlinedInputBorder.copyWith(
-          borderSide:
-              const BorderSide(width: 0.5, color: AppColors.outlinedColor),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 8.h),
-      ),
+      decoration: _inputDecoration,
     );
   }
 }

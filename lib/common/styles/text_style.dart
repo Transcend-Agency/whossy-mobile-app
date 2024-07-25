@@ -52,6 +52,10 @@ class TextStyles {
     fontSize: 13.sp,
   );
 
+  static TextStyle bioText = hintThemeText.copyWith(
+    fontSize: 14.sp,
+  );
+
   static TextStyle underlineText = hintThemeText.copyWith(
     fontSize: 16.sp,
     letterSpacing: 1.2,

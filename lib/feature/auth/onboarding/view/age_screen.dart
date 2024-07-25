@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view_model/onboarding_provider.dart';
 
 import '../../../../common/components/TextField/underline_text_field.dart';
 import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
+import '../view_model/onboarding_provider.dart';
 
 class AgeScreen extends StatefulWidget {
   final int pageIndex;

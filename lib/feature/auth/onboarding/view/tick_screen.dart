@@ -7,6 +7,7 @@ import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
 import '../model/alphabet.dart';
+import '../view_model/notifier_set.dart';
 import '../view_model/onboarding_provider.dart';
 
 class TickScreen extends StatefulWidget {
@@ -19,9 +20,45 @@ class TickScreen extends StatefulWidget {
 
 class _TickScreenState extends State<TickScreen>
     with AutomaticKeepAliveClientMixin<TickScreen> {
+  late NotifierSet<String> _selectedTicks;
+  late OnboardingProvider onboardingProvider;
+
   final formKey1 = GlobalKey<FormState>();
   final searchController = TextEditingController();
   final searchFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTicks = NotifierSet<String>();
+    _selectedTicks.addListener(_update);
+
+    onboardingProvider =
+        Provider.of<OnboardingProvider>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    _selectedTicks.removeListener(_update);
+
+    _selectedTicks.dispose();
+    super.dispose();
+  }
+
+  void _update() {
+    int length = _selectedTicks.length;
+
+    onboardingProvider.ticks = length;
+    onboardingProvider.updateUserProfile(ticks: _selectedTicks.items);
+    _checkCompletion(length);
+  }
+
+  void _checkCompletion(int length) {
+    final isComplete = length >= 5;
+    if (onboardingProvider.isSelected(widget.pageIndex) != isComplete) {
+      onboardingProvider.select(widget.pageIndex, value: isComplete);
+    }
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -93,11 +130,19 @@ class _TickScreenState extends State<TickScreen>
   Widget _buildAppChip(String data) {
     return Consumer<OnboardingProvider>(
       builder: (_, onboardingProvider, __) {
-        final isSelected = onboardingProvider.isSelectedTile(data);
+        final isSelected = _selectedTicks.contains(data);
         return AppChip(
           data: data,
           isSelected: isSelected,
-          onTap: () => onboardingProvider.toggleSelection(data),
+          onTap: () {
+            setState(() {
+              if (_selectedTicks.contains(data)) {
+                _selectedTicks.remove(data);
+              } else {
+                _selectedTicks.add(data);
+              }
+            });
+          },
         );
       },
     );

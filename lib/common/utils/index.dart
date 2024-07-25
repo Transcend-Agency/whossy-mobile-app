@@ -1,5 +1,6 @@
 // index.dart
 export 'app_utils.dart';
+export 'debouncer.dart';
 export 'enums.dart';
 export 'extensions.dart';
 export 'input_formatter.dart';

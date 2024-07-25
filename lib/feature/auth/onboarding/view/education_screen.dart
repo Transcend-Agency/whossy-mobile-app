@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
+import '../view_model/onboarding_provider.dart';
 
 class EducationScreen extends StatefulWidget {
   final int pageIndex;
@@ -15,12 +17,38 @@ class EducationScreen extends StatefulWidget {
 
 class _EducationScreenState extends State<EducationScreen>
     with AutomaticKeepAliveClientMixin<EducationScreen> {
+  late OnboardingProvider onboardingProvider;
+
   final formKey1 = GlobalKey<FormState>();
   final uniController = TextEditingController();
   final uniFocusNode = FocusNode();
 
+  final _debouncer = Debouncer(milliseconds: 1000);
+
+  void _update() {
+    final university = uniController.text;
+
+    if (university.isValidUniversity()) {
+      onboardingProvider.select(widget.pageIndex);
+
+      onboardingProvider.updateUserProfile(education: university.trim());
+    } else {
+      onboardingProvider.select(widget.pageIndex, value: false);
+    }
+  }
+
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    uniController.addListener(() => _debouncer.run(_update));
+
+    onboardingProvider =
+        Provider.of<OnboardingProvider>(context, listen: false);
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

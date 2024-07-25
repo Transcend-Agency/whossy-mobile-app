@@ -138,11 +138,11 @@ class _WrapperState extends State<Wrapper> {
                     child: Consumer<OnboardingProvider>(
                       builder: (_, boarding, __) {
                         return AppButton(
-                          color: updateColor(boarding.selectedCount),
+                          color: updateColor(boarding.ticks),
                           onPress: boarding.isSelected(_activePage)
                               ? _handleContinueButton
                               : null,
-                          text: buttonText(boarding.selectedCount),
+                          text: buttonText(boarding.ticks),
                         );
                       },
                     ),

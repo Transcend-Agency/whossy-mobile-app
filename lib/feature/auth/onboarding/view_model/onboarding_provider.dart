@@ -5,35 +5,18 @@ import 'package:flutter/material.dart';
 import '../model/user_profile.dart';
 
 class OnboardingProvider extends ChangeNotifier {
-  // Selected items set
-  final Set<String> _selectedItems = {};
-
-  // Getter to access selected items
-  Set<String> get selectedItems => _selectedItems;
-
-  // Getter to access the count of selected items
-  int get selectedCount => _selectedItems.length;
-
-  // Method to check if an item is selected
-  bool isSelectedTile(String item) => _selectedItems.contains(item);
-
-  // Method to toggle the selection of an item
-  void toggleSelection(String item) {
-    if (_selectedItems.contains(item)) {
-      _selectedItems.remove(item);
-    } else {
-      _selectedItems.add(item);
-    }
-    notifyListeners();
-  }
+  int ticks = 0;
 
   // Page selections map
   final Map<int, bool> _selections = {};
 
+  // User profile data
+  final UserProfile _userProfile = UserProfile();
+
   // Method to check if a page is selected
   bool isSelected(int pageIndex) {
     // Special condition for page index 4
-    if (pageIndex == 4 && selectedItems.length > 4) {
+    if (pageIndex == 4 && ticks > 4) {
       return true;
     }
     return _selections[pageIndex] ?? false;
@@ -44,9 +27,6 @@ class OnboardingProvider extends ChangeNotifier {
     _selections[pageIndex] = value;
     notifyListeners();
   }
-
-  // User profile data
-  final UserProfile _userProfile = UserProfile();
 
   // Update user profile fields and notify listeners
   void updateUserProfile({
@@ -63,20 +43,20 @@ class OnboardingProvider extends ChangeNotifier {
     String? bio,
     List<File>? profilePics,
   }) {
-    if (relationshipPref != null) {
-      _userProfile.relationshipPref = relationshipPref;
-    }
-    if (meet != null) _userProfile.meet = meet;
-    if (dateOfBirth != null) _userProfile.dateOfBirth = dateOfBirth;
-    if (search != null) _userProfile.search = search;
-    if (ticks != null) _userProfile.ticks = ticks;
-    if (education != null) _userProfile.education = education;
-    if (drink != null) _userProfile.drink = drink;
-    if (smoker != null) _userProfile.smoker = smoker;
-    if (pets != null) _userProfile.pets = pets;
-    if (workOut != null) _userProfile.workOut = workOut;
-    if (bio != null) _userProfile.bio = bio;
-    if (profilePics != null) _userProfile.profilePics = profilePics;
+    _userProfile.updateUserProfile(
+      relationshipPref: relationshipPref,
+      meet: meet,
+      dateOfBirth: dateOfBirth,
+      search: search,
+      ticks: ticks,
+      education: education,
+      drink: drink,
+      smoker: smoker,
+      pets: pets,
+      workOut: workOut,
+      bio: bio,
+      profilePics: profilePics,
+    );
 
     notifyListeners();
   }

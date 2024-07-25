@@ -17,18 +17,90 @@ extension GenderExtension on Gender? {
 }
 
 extension PreferenceExtension on Preference? {
-  String get pref {
+  String get name {
     switch (this) {
       case Preference.lookingToDate:
-        return 'Looking to Date';
+        return 'Looking to date';
       case Preference.chattingAndConnecting:
-        return 'Chatting and Connecting';
+        return 'Chatting and connecting';
       case Preference.readyForCommitment:
-        return 'Ready for Commitment';
+        return 'Ready for commitment';
       case Preference.justForFun:
-        return 'Just for Fun';
+        return 'Just for fun';
       case Preference.undecidedOrExploring:
-        return 'Undecided or Exploring';
+        return 'Undecided or exploring';
+      case null:
+        return 'Not specified';
+    }
+  }
+}
+
+extension MeetExtension on Meet? {
+  String get name {
+    switch (this) {
+      case Meet.men:
+        return 'Men';
+      case Meet.women:
+        return 'Women';
+      case Meet.everyone:
+        return 'Everyone';
+      case null:
+        return 'Not specified';
+    }
+  }
+}
+
+extension DrinkExtension on Drink? {
+  String get name {
+    switch (this) {
+      case Drink.mindful:
+        return 'Mindful drinking';
+      case Drink.sober:
+        return '100% Sober';
+      case Drink.special:
+        return 'Special moments only';
+      case Drink.regular:
+        return 'Regular nights out';
+      case Drink.no:
+        return 'Not my thing';
+      case null:
+        return 'Not specified';
+    }
+  }
+}
+
+extension SmokeExtension on Smoke? {
+  String get name {
+    switch (this) {
+      case Smoke.working:
+        return 'Working on quitting';
+      case Smoke.dAndS:
+        return 'Drinks and smoke';
+      case Smoke.occasional:
+        return 'Occasional smoker';
+      case Smoke.frequent:
+        return 'Frequent smoker';
+      case Smoke.no:
+        return "Doesn't smoke";
+      case null:
+        return 'Not specified';
+    }
+  }
+}
+
+extension WorkOutExtension on WorkOut? {
+  String get name {
+    switch (this) {
+      case WorkOut.yes:
+        return 'Yes, regularly';
+      case WorkOut.occasionally:
+        return 'Occasionally';
+      case WorkOut.weekends:
+        return 'Only on weekends';
+      case WorkOut.rarely:
+        return 'Rarely';
+      case WorkOut.no:
+        return 'Not at all';
       case null:
         return 'Not specified';
     }
@@ -141,6 +213,24 @@ extension StringExtention on String? {
     final int? value = int.tryParse(this!);
     final int currentYear = DateTime.now().year;
     final int minYear = currentYear - 100;
-    return value != null && value >= minYear && value <= currentYear - 10;
+    return value != null && value >= minYear && value <= currentYear - 18;
+  }
+
+  // Validate if the string represents a valid university name
+  bool isValidUniversity() {
+    final value = this?.trim();
+    return value != null &&
+        value.isNotEmpty &&
+        value.length > 4 &&
+        RegExp(r'^[a-zA-Z\s]+$').hasMatch(value);
+  }
+
+  bool isValidBio() {
+    final value = this?.trim();
+    return value != null &&
+        value.isNotEmpty &&
+        value.length >= 10 &&
+        value.length <= 500 &&
+        RegExp(r'^[a-zA-Z0-9\s,.!?\-\"]+$').hasMatch(value);
   }
 }

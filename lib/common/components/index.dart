@@ -14,6 +14,7 @@ export 'package:whossy_mobile_app/common/components/Text/gradient_text.dart';
 export 'package:whossy_mobile_app/common/components/Text/onboarding_header_text.dart';
 export 'package:whossy_mobile_app/common/components/Text/privacy_text.dart';
 export 'package:whossy_mobile_app/common/components/TextField/app_text_field.dart';
+export 'package:whossy_mobile_app/common/components/TextField/underline_text_field.dart';
 export 'package:whossy_mobile_app/common/components/Tile/custom_tile.dart';
 export 'package:whossy_mobile_app/common/components/Tile/generic_tile.dart';
 export 'package:whossy_mobile_app/common/components/Tile/radio_tile.dart';
