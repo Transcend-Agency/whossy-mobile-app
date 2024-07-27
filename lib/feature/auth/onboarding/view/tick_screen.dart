@@ -6,9 +6,9 @@ import 'package:whossy_mobile_app/common/styles/text_style.dart';
 import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
+import '../data/state/notifier_set.dart';
+import '../data/state/onboarding_notifier.dart';
 import '../model/alphabet.dart';
-import '../view_model/notifier_set.dart';
-import '../view_model/onboarding_provider.dart';
 
 class TickScreen extends StatefulWidget {
   final int pageIndex;
@@ -21,7 +21,7 @@ class TickScreen extends StatefulWidget {
 class _TickScreenState extends State<TickScreen>
     with AutomaticKeepAliveClientMixin<TickScreen> {
   late NotifierSet<String> _selectedTicks;
-  late OnboardingProvider onboardingProvider;
+  late OnboardingNotifier onboardingProvider;
 
   final formKey1 = GlobalKey<FormState>();
   final searchController = TextEditingController();
@@ -34,7 +34,7 @@ class _TickScreenState extends State<TickScreen>
     _selectedTicks.addListener(_update);
 
     onboardingProvider =
-        Provider.of<OnboardingProvider>(context, listen: false);
+        Provider.of<OnboardingNotifier>(context, listen: false);
   }
 
   @override
@@ -128,7 +128,7 @@ class _TickScreenState extends State<TickScreen>
   }
 
   Widget _buildAppChip(String data) {
-    return Consumer<OnboardingProvider>(
+    return Consumer<OnboardingNotifier>(
       builder: (_, onboardingProvider, __) {
         final isSelected = _selectedTicks.contains(data);
         return AppChip(

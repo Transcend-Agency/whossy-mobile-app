@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
-import '../view_model/onboarding_provider.dart';
+import '../data/state/onboarding_notifier.dart';
 
 class BioScreen extends StatefulWidget {
   final int pageIndex;
@@ -18,7 +18,7 @@ class BioScreen extends StatefulWidget {
 
 class _BioScreenState extends State<BioScreen>
     with AutomaticKeepAliveClientMixin<BioScreen> {
-  late OnboardingProvider onboardingProvider;
+  late OnboardingNotifier onboardingProvider;
 
   final textController = TextEditingController();
   final focusNode = FocusNode();
@@ -49,7 +49,7 @@ class _BioScreenState extends State<BioScreen>
     });
 
     onboardingProvider =
-        Provider.of<OnboardingProvider>(context, listen: false);
+        Provider.of<OnboardingNotifier>(context, listen: false);
   }
 
   @override

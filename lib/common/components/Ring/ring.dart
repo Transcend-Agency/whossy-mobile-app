@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../constants/index.dart';
+
 class RingPainter extends CustomPainter {
   final double externalRadius;
   final double internalRadius;
@@ -9,7 +11,7 @@ class RingPainter extends CustomPainter {
   RingPainter({
     required this.externalRadius,
     required this.internalRadius,
-    this.ringColor = Colors.blue,
+    this.ringColor = AppColors.ringColor,
     this.innerColor = Colors.white,
   });
 

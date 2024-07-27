@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/constants/extras.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view_model/onboarding_provider.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
 
 import '../../../../common/utils/index.dart';
 
@@ -42,7 +42,7 @@ class _MeetScreenState extends State<MeetScreen>
         ListView(
           shrinkWrap: true,
           children: AppConstants.meetData.map((data) {
-            return Consumer<OnboardingProvider>(
+            return Consumer<OnboardingNotifier>(
               builder: (_, onboarding, __) {
                 return GenericTile(
                   value: data.value,
@@ -50,7 +50,7 @@ class _MeetScreenState extends State<MeetScreen>
                   onChanged: (value) {
                     setState(() => _meet = value);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(meet: value?.name);
+                    onboarding.updateUserProfile(meet: value?.index);
                   },
                   title: data.text,
                   leadingWidget: data.icon != null

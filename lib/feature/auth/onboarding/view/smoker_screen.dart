@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
-import '../view_model/onboarding_provider.dart';
+import '../data/state/onboarding_notifier.dart';
 
 class SmokerScreen extends StatefulWidget {
   final int pageIndex;
@@ -37,7 +37,7 @@ class _SmokerScreenState extends State<SmokerScreen>
         ListView(
           shrinkWrap: true,
           children: AppConstants.smokeData.map((data) {
-            return Consumer<OnboardingProvider>(
+            return Consumer<OnboardingNotifier>(
               builder: (_, onboarding, __) {
                 return GenericTile(
                   value: data.value,
@@ -45,7 +45,7 @@ class _SmokerScreenState extends State<SmokerScreen>
                   onChanged: (value) {
                     setState(() => _smoke = value);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(smoker: value?.name);
+                    onboarding.updateUserProfile(smoker: value?.index);
                   },
                   title: data.text,
                 );

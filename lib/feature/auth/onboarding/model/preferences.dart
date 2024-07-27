@@ -1,18 +1,49 @@
-import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'preferences.g.dart';
+
+@JsonSerializable()
 class Preferences {
-  String? relationshipPref;
-  String? meet;
+  @JsonKey(name: 'preference')
+  int? relationshipPref;
+
+  @JsonKey(name: 'meet')
+  int? meet;
+
+  @JsonKey(
+    name: 'date_of_birth',
+    fromJson: _dateTimeFromJson,
+    toJson: _dateTimeToJson,
+  )
   DateTime? dateOfBirth;
+
+  @JsonKey(name: 'distance')
   int? search;
+
+  @JsonKey(name: 'interests')
   List<String>? ticks;
+
+  @JsonKey(name: 'education')
   String? education;
-  String? drink;
-  String? smoker;
+
+  @JsonKey(name: 'drink')
+  int? drink;
+
+  @JsonKey(name: 'smoke')
+  int? smoker;
+
+  @JsonKey(name: 'pets')
   List<String>? pets;
-  String? workOut;
+
+  @JsonKey(name: 'workout')
+  int? workOut;
+
+  @JsonKey(name: 'bio')
   String? bio;
-  List<File>? profilePics;
+
+  @JsonKey(name: 'photos')
+  List<String>? profilePics;
 
   Preferences({
     this.relationshipPref,
@@ -30,18 +61,18 @@ class Preferences {
   });
 
   void update({
-    String? relationshipPref,
-    String? meet,
+    int? relationshipPref,
+    int? meet,
     DateTime? dateOfBirth,
     int? search,
     List<String>? ticks,
     String? education,
-    String? drink,
-    String? smoker,
+    int? drink,
+    int? smoker,
     List<String>? pets,
-    String? workOut,
+    int? workOut,
     String? bio,
-    List<File>? profilePics,
+    List<String>? profilePics,
   }) {
     if (relationshipPref != null) this.relationshipPref = relationshipPref;
     if (meet != null) this.meet = meet;
@@ -55,5 +86,25 @@ class Preferences {
     if (workOut != null) this.workOut = workOut;
     if (bio != null) this.bio = bio;
     if (profilePics != null) this.profilePics = profilePics;
+  }
+
+  factory Preferences.fromJson(Map<String, dynamic> json) =>
+      _$PreferencesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PreferencesToJson(this);
+
+  // Custom fromJson method for dateOfBirth
+  static DateTime? _dateTimeFromJson(dynamic json) {
+    if (json is Timestamp) {
+      return json.toDate();
+    } else if (json is String) {
+      return DateTime.parse(json);
+    }
+    return null;
+  }
+
+  // Custom toJson method for dateOfBirth
+  static dynamic _dateTimeToJson(DateTime? date) {
+    return date != null ? Timestamp.fromDate(date) : null;
   }
 }

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/utils/index.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view_model/onboarding_provider.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../constants/index.dart';
@@ -45,7 +45,7 @@ class _RelPrefScreenState extends State<RelPrefScreen>
         ListView(
           shrinkWrap: true,
           children: AppConstants.preferenceData.map((data) {
-            return Consumer<OnboardingProvider>(
+            return Consumer<OnboardingNotifier>(
               builder: (_, onboarding, __) {
                 return RadioTile(
                   leadingAsset: data.leadingAsset,
@@ -54,7 +54,7 @@ class _RelPrefScreenState extends State<RelPrefScreen>
                   onChanged: (_) {
                     setState(() => _pref = _);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(relationshipPref: _.name);
+                    onboarding.updateUserProfile(relationshipPref: _.index);
                   },
                   title: data.title,
                   subtitle: data.subtitle,

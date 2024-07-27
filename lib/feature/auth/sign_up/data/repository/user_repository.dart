@@ -5,7 +5,7 @@ import '../../model/app_user.dart';
 
 /// Interacting with the database [Firebase](www.firebase.com) directly
 class UserRepository {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _usersFirestore = FirebaseFirestore.instance.collection('users');
 
   Future<UserCredential> createUser(String email, String password) async {
     return await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -15,12 +15,11 @@ class UserRepository {
   }
 
   Future<void> setUserData(AppUser user) async {
-    await _firestore.collection('users').doc(user.uid).set(user.toJson());
+    await _usersFirestore.doc(user.uid).set(user.toJson());
   }
 
   Future<bool> isPhoneUnique(String phone) async {
-    var result = await _firestore
-        .collection('users')
+    var result = await _usersFirestore
         .where('phone_number', isEqualTo: phone)
         .get(const GetOptions(source: Source.server));
 
@@ -37,9 +36,6 @@ class UserRepository {
   Future<void> updateUserData(Map<String, dynamic> updatedData) async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .set(updatedData, SetOptions(merge: true));
+    await _usersFirestore.doc(uid).set(updatedData, SetOptions(merge: true));
   }
 }

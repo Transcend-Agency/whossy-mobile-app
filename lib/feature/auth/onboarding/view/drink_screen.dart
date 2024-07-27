@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
-import '../view_model/onboarding_provider.dart';
+import '../data/state/onboarding_notifier.dart';
 
 class DrinkScreen extends StatefulWidget {
   final int pageIndex;
@@ -37,7 +37,7 @@ class _DrinkScreenState extends State<DrinkScreen>
         ListView(
           shrinkWrap: true,
           children: AppConstants.drinkData.map((data) {
-            return Consumer<OnboardingProvider>(
+            return Consumer<OnboardingNotifier>(
               builder: (_, onboarding, __) {
                 return GenericTile(
                   value: data.value,
@@ -45,7 +45,7 @@ class _DrinkScreenState extends State<DrinkScreen>
                   onChanged: (_) {
                     setState(() => _drink = _);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(drink: _?.name);
+                    onboarding.updateUserProfile(drink: _?.index);
                   },
                   title: data.text,
                 );

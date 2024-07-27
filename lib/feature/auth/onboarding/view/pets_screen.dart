@@ -6,8 +6,8 @@ import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
-import '../view_model/notifier_set.dart';
-import '../view_model/onboarding_provider.dart';
+import '../data/state/notifier_set.dart';
+import '../data/state/onboarding_notifier.dart';
 
 class PetsScreen extends StatefulWidget {
   final int pageIndex;
@@ -22,7 +22,7 @@ class _PetsScreenState extends State<PetsScreen>
     with AutomaticKeepAliveClientMixin<PetsScreen> {
   WorkOut? _workOut;
   late NotifierSet<String> _selectedPets;
-  late OnboardingProvider onboardingProvider;
+  late OnboardingNotifier onboardingProvider;
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _PetsScreenState extends State<PetsScreen>
     _selectedPets.addListener(_update);
 
     onboardingProvider =
-        Provider.of<OnboardingProvider>(context, listen: false);
+        Provider.of<OnboardingNotifier>(context, listen: false);
   }
 
   @override
@@ -70,9 +70,9 @@ class _PetsScreenState extends State<PetsScreen>
         ),
         addHeight(24),
         Wrap(
-          spacing: 4.w,
-          runSpacing: 6.h,
-          children: [...AppStrings.pets.map((pet) => _buildAppChip(pet))],
+          spacing: 8,
+          runSpacing: 8,
+          children: AppStrings.pets.map((pet) => _buildAppChip(pet)).toList(),
         ),
         addHeight(16),
         const Divider(
@@ -93,7 +93,7 @@ class _PetsScreenState extends State<PetsScreen>
         ListView(
           shrinkWrap: true,
           children: AppConstants.workOutData.map((data) {
-            return Consumer<OnboardingProvider>(
+            return Consumer<OnboardingNotifier>(
               builder: (_, onboarding, __) {
                 return GenericTile(
                   value: data.value,
@@ -101,7 +101,7 @@ class _PetsScreenState extends State<PetsScreen>
                   onChanged: (value) {
                     if (_workOut != value) {
                       setState(() => _workOut = value);
-                      onboarding.updateUserProfile(workOut: value?.name);
+                      onboarding.updateUserProfile(workOut: value?.index);
                       _checkCompletion();
                     }
                   },

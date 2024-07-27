@@ -28,92 +28,92 @@ extension GenderExtension on Gender? {
 }
 
 extension PreferenceExtension on Preference? {
-  String get name {
+  int get index {
     switch (this) {
       case Preference.lookingToDate:
-        return 'Looking to date';
+        return 0;
       case Preference.chattingAndConnecting:
-        return 'Chatting and connecting';
+        return 1;
       case Preference.readyForCommitment:
-        return 'Ready for commitment';
+        return 2;
       case Preference.justForFun:
-        return 'Just for fun';
+        return 3;
       case Preference.undecidedOrExploring:
-        return 'Undecided or exploring';
+        return 4;
       case null:
-        return 'Not specified';
+        return -1;
     }
   }
 }
 
 extension MeetExtension on Meet? {
-  String get name {
+  int get index {
     switch (this) {
       case Meet.men:
-        return 'Men';
+        return 0;
       case Meet.women:
-        return 'Women';
+        return 1;
       case Meet.everyone:
-        return 'Everyone';
+        return 2;
       case null:
-        return 'Not specified';
+        return -1;
     }
   }
 }
 
 extension DrinkExtension on Drink? {
-  String get name {
+  int get index {
     switch (this) {
       case Drink.mindful:
-        return 'Mindful drinking';
+        return 0;
       case Drink.sober:
-        return '100% Sober';
+        return 1;
       case Drink.special:
-        return 'Special moments only';
+        return 2;
       case Drink.regular:
-        return 'Regular nights out';
+        return 3;
       case Drink.no:
-        return 'Not my thing';
+        return 4;
       case null:
-        return 'Not specified';
+        return -1;
     }
   }
 }
 
 extension SmokeExtension on Smoke? {
-  String get name {
+  int get index {
     switch (this) {
       case Smoke.working:
-        return 'Working on quitting';
+        return 0;
       case Smoke.dAndS:
-        return 'Drinks and smoke';
+        return 1;
       case Smoke.occasional:
-        return 'Occasional smoker';
+        return 2;
       case Smoke.frequent:
-        return 'Frequent smoker';
+        return 3;
       case Smoke.no:
-        return "Doesn't smoke";
+        return 4;
       case null:
-        return 'Not specified';
+        return -1;
     }
   }
 }
 
 extension WorkOutExtension on WorkOut? {
-  String get name {
+  int get index {
     switch (this) {
       case WorkOut.yes:
-        return 'Yes, regularly';
+        return 0;
       case WorkOut.occasionally:
-        return 'Occasionally';
+        return 1;
       case WorkOut.weekends:
-        return 'Only on weekends';
+        return 2;
       case WorkOut.rarely:
-        return 'Rarely';
+        return 3;
       case WorkOut.no:
-        return 'Not at all';
+        return 4;
       case null:
-        return 'Not specified';
+        return -1;
     }
   }
 }

@@ -5,14 +5,15 @@ import '../../../constants/index.dart';
 import '../../utils/index.dart';
 
 class FilledBackButton extends StatelessWidget {
-  const FilledBackButton({super.key, this.onTap});
+  const FilledBackButton({super.key, this.onTap, this.isDisabled = false});
 
+  final bool isDisabled;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: isDisabled ? null : onTap,
       child: SizedBox.square(
         dimension: 46.r,
         child: Container(
@@ -20,8 +21,19 @@ class FilledBackButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.r),
             color: AppColors.backButtonColor,
           ),
-          //padding: const EdgeInsets.all(8),
-          child: backIcon(),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              backIcon(),
+              if (isDisabled)
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.backButtonColor.withOpacity(0.4),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -4,11 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/Button/skip_button.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/index.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view_model/onboarding_provider.dart';
+import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
 
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
+import 'index.dart';
 
 @RoutePage()
 class Wrapper extends StatefulWidget {
@@ -74,11 +75,20 @@ class _WrapperState extends State<Wrapper> {
     setState(() => _activePage = page);
   }
 
-  void _handleContinueButton() {
+  void _handleContinueButton({OnboardingNotifier? boarding}) {
     if (_activePage < _pages.length - 1) {
       _onPageUpdate(_activePage + 1);
+    } else {
+      boarding!.uploadPreferences(
+        showSnackbar: showSnackbar,
+        onAuthenticate: goToNext,
+      );
     }
   }
+
+  goToNext() => Nav.replace(context, const HomeRoute());
+
+  showSnackbar(String message) {}
 
   void _onPageUpdate(int index) {
     _pageController.animateToPage(
@@ -120,27 +130,34 @@ class _WrapperState extends State<Wrapper> {
               padding: EdgeInsets.only(bottom: 10.h, left: 14.w, right: 14.w),
               child: Row(
                 children: [
-                  AnimatedOpacity(
-                    opacity: _activePage != 0 ? 1.0 : 0.0,
-                    duration: const Duration(seconds: 1),
-                    child: _activePage != 0
-                        ? Row(
-                            children: [
-                              FilledBackButton(
-                                onTap: () => _onPageUpdate(_activePage - 1),
-                              ),
-                              addWidth(4.w),
-                            ],
-                          )
-                        : const SizedBox.shrink(),
+                  Selector<OnboardingNotifier, bool>(
+                    selector: (_, auth) => auth.spinnerState,
+                    builder: (_, spinner, __) {
+                      return AnimatedOpacity(
+                        opacity: _activePage != 0 ? 1.0 : 0.0,
+                        duration: const Duration(seconds: 1),
+                        child: _activePage != 0
+                            ? Row(
+                                children: [
+                                  FilledBackButton(
+                                    onTap: () => _onPageUpdate(_activePage - 1),
+                                    isDisabled: spinner,
+                                  ),
+                                  addWidth(4.w),
+                                ],
+                              )
+                            : const SizedBox.shrink(),
+                      );
+                    },
                   ),
                   Expanded(
-                    child: Consumer<OnboardingProvider>(
+                    child: Consumer<OnboardingNotifier>(
                       builder: (_, boarding, __) {
                         return AppButton(
+                          loading: boarding.spinnerState,
                           color: updateColor(boarding.ticks),
                           onPress: boarding.isSelected(_activePage)
-                              ? _handleContinueButton
+                              ? () => _handleContinueButton(boarding: boarding)
                               : null,
                           text: buttonText(boarding.ticks),
                         );
@@ -155,7 +172,7 @@ class _WrapperState extends State<Wrapper> {
             padding: EdgeInsets.only(top: 38.h, left: 14.w),
             child: SkipButton(
               page: _activePage,
-              onTap: _handleContinueButton,
+              onTap: () => _handleContinueButton(),
             ),
           ),
         ],

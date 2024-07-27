@@ -27,7 +27,7 @@ class AppTheme {
       ),
       sliderTheme: SliderThemeData(
         thumbColor: AppColors.black,
-        activeTrackColor: AppColors.black,
+        activeTrackColor: AppColors.outlinedColor,
         inactiveTrackColor: AppColors.outlinedColor,
         overlayShape: SliderComponentShape.noOverlay,
       ),

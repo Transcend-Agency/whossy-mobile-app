@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../common/components/TextField/underline_text_field.dart';
 import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
-import '../view_model/onboarding_provider.dart';
+import '../data/state/onboarding_notifier.dart';
 
 class AgeScreen extends StatefulWidget {
   final int pageIndex;
@@ -18,7 +17,7 @@ class AgeScreen extends StatefulWidget {
 
 class _AgeScreenState extends State<AgeScreen>
     with AutomaticKeepAliveClientMixin<AgeScreen> {
-  late OnboardingProvider onboardingProvider;
+  late OnboardingNotifier onboardingProvider;
   final formKey1 = GlobalKey<FormState>();
 
   final monthController = TextEditingController();
@@ -52,7 +51,7 @@ class _AgeScreenState extends State<AgeScreen>
     yearController.addListener(_update);
 
     onboardingProvider =
-        Provider.of<OnboardingProvider>(context, listen: false);
+        Provider.of<OnboardingNotifier>(context, listen: false);
 
     super.initState();
   }

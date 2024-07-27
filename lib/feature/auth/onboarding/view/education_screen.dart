@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
-import '../view_model/onboarding_provider.dart';
+import '../data/state/onboarding_notifier.dart';
 
 class EducationScreen extends StatefulWidget {
   final int pageIndex;
@@ -17,7 +17,7 @@ class EducationScreen extends StatefulWidget {
 
 class _EducationScreenState extends State<EducationScreen>
     with AutomaticKeepAliveClientMixin<EducationScreen> {
-  late OnboardingProvider onboardingProvider;
+  late OnboardingNotifier onboardingProvider;
 
   final formKey1 = GlobalKey<FormState>();
   final uniController = TextEditingController();
@@ -45,7 +45,7 @@ class _EducationScreenState extends State<EducationScreen>
     uniController.addListener(() => _debouncer.run(_update));
 
     onboardingProvider =
-        Provider.of<OnboardingProvider>(context, listen: false);
+        Provider.of<OnboardingNotifier>(context, listen: false);
 
     super.initState();
   }

@@ -55,9 +55,10 @@ class SignUpNotifier extends ChangeNotifier {
     try {
       spinnerState = true;
 
+      // Update the remaining fields
       updateAppUser(gender: gender, hasCompletedAccountCreation: true);
 
-      // Update Firebase
+      // Upload to Firebase
       await _userRepository.updateUserData(_user.toUpdateCreate());
 
       // Update the display name

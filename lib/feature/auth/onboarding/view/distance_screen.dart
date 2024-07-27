@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';
+import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
 
-// Todo : Wrap this up
 class DistanceScreen extends StatefulWidget {
   final int pageIndex;
   const DistanceScreen({super.key, required this.pageIndex});
@@ -14,34 +16,50 @@ class DistanceScreen extends StatefulWidget {
   State<DistanceScreen> createState() => _DistanceScreenState();
 }
 
-class _DistanceScreenState extends State<DistanceScreen> {
+class _DistanceScreenState extends State<DistanceScreen>
+    with AutomaticKeepAliveClientMixin<DistanceScreen> {
+  late OnboardingNotifier onboardingProvider;
+  final _debouncer = Debouncer(milliseconds: 1000);
+
+  @override
+  void initState() {
+    super.initState();
+    onboardingProvider =
+        Provider.of<OnboardingNotifier>(context, listen: false);
+  }
+
   double distance = 50;
-  double outRadius = 117;
-  double inRadius = 70; // Correct initial internal radius
+  double outRadius = 137.5;
+  double inRadius = 120;
 
   void updateRadii(double external, double internal) {
     setState(() {
       outRadius = external;
-      inRadius = internal.clamp(0.0, external);
+      inRadius = internal;
     });
   }
 
   void onChanged(double newValue) {
-    // Map the slider value from 0-100 to 100-175
-    double mapRadius = (newValue / 100) * (175 - 100) + 100;
+    double mapExt = (newValue / 100) * (175 - 100) + 100;
+    double mapInt = (newValue / 100) * (170 - 70) + 70;
 
-    // Calculate the internal radius based on the slider value
-    //double newInternalRadius = mapRadius - (45 * (1 - (newValue / 100)) + 5);
+    updateRadii(mapExt, mapInt);
 
-    updateRadii(mapRadius, 92.5);
+    setState(() => distance = newValue);
 
-    setState(() {
-      distance = newValue;
-    });
+    _debouncer.run(
+        () => onboardingProvider.updateUserProfile(search: distance.toInt()));
+
+    final valid = newValue >= 1;
+
+    if (onboardingProvider.isSelected(widget.pageIndex) != valid) {
+      onboardingProvider.select(widget.pageIndex, value: valid);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -55,7 +73,7 @@ class _DistanceScreenState extends State<DistanceScreen> {
           children: [
             Ring(
               externalRadius: outRadius,
-              internalRadius: 70,
+              internalRadius: inRadius,
             ),
             Container(
               width: 144,
@@ -75,7 +93,7 @@ class _DistanceScreenState extends State<DistanceScreen> {
         ),
         const Spacer(),
         Padding(
-          padding: EdgeInsets.fromLTRB(8.w, 0, 8.w, 80.h),
+          padding: EdgeInsets.fromLTRB(12.w, 0, 12.w, 90.h),
           child: Slider.adaptive(
             value: distance,
             onChanged: onChanged,
@@ -86,4 +104,7 @@ class _DistanceScreenState extends State<DistanceScreen> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
