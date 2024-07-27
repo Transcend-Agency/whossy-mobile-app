@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../model/user_profile.dart';
+import '../model/preferences.dart';
 
 class OnboardingProvider extends ChangeNotifier {
   int ticks = 0;
@@ -11,7 +11,7 @@ class OnboardingProvider extends ChangeNotifier {
   final Map<int, bool> _selections = {};
 
   // User profile data
-  final UserProfile _userProfile = UserProfile();
+  final _userPreferences = Preferences();
 
   // Method to check if a page is selected
   bool isSelected(int pageIndex) {
@@ -43,7 +43,7 @@ class OnboardingProvider extends ChangeNotifier {
     String? bio,
     List<File>? profilePics,
   }) {
-    _userProfile.updateUserProfile(
+    _userPreferences.update(
       relationshipPref: relationshipPref,
       meet: meet,
       dateOfBirth: dateOfBirth,

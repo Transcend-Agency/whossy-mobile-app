@@ -24,6 +24,7 @@ class AppTextField extends StatelessWidget {
     this.isUsername = false,
     this.prefixIcon,
     this.enabled = true,
+    this.keyboardType,
   });
 
   final FocusNode focusNode;
@@ -44,6 +45,7 @@ class AppTextField extends StatelessWidget {
   final bool isUsername;
   final bool enabled;
   final bool error;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +53,7 @@ class AppTextField extends StatelessWidget {
         enabled ? textColor : textColor.withOpacity(0.7);
 
     return TextFormField(
-      keyboardType: isPhone ? TextInputType.phone : null,
+      keyboardType: isPhone ? TextInputType.phone : keyboardType,
       style: TextStyles.hintThemeText.copyWith(color: effectiveTextColor),
       maxLength: maxLength,
       cursorColor: textColor,

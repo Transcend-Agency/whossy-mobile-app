@@ -1,6 +1,6 @@
 import 'dart:io';
 
-class UserProfile {
+class Preferences {
   String? relationshipPref;
   String? meet;
   DateTime? dateOfBirth;
@@ -14,7 +14,7 @@ class UserProfile {
   String? bio;
   List<File>? profilePics;
 
-  UserProfile({
+  Preferences({
     this.relationshipPref,
     this.meet,
     this.dateOfBirth,
@@ -29,7 +29,7 @@ class UserProfile {
     this.profilePics,
   });
 
-  void updateUserProfile({
+  void update({
     String? relationshipPref,
     String? meet,
     DateTime? dateOfBirth,

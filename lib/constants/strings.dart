@@ -1,5 +1,3 @@
-// app_strings.dart
-
 class AppStrings {
   static const String appName = 'Whossy';
   static const String splashText1 = 'Heartfelt Connections Await.';
@@ -40,6 +38,10 @@ class AppStrings {
   static const String firstNameHint = 'John';
   static const String lastNameLabel = 'Last name';
   static const String lastNameHint = 'Doe';
+
+  // Onboarding texts
+  static const String distanceSubHeader =
+      'Use the slider below to set a radius of how far you want our system to search for matches within your current location. You can always change this later in the settings.';
 
   static const requirements = [
     'Be at least 8 characters or more',
@@ -84,4 +86,15 @@ class AppStrings {
     "🐴  Other",
     "😊  Want a pet",
   ];
+
+  // Error messages for create account
+  static const String errorEmailInUse =
+      'Registration failed, please use different credentials.';
+  static const String errorInvalidEmail = 'The email address is not valid.';
+  static const String errorOperationNotAllowed =
+      'Email/password accounts are not enabled.';
+  static const String errorWeakPassword = 'The password provided is too weak.';
+  static const String errorNetworkRequestFailed = 'Poor internet connection';
+  static const String errorUnknown =
+      'An unknown error occurred. Please try again.';
 }

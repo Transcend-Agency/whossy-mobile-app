@@ -5,10 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
 import 'package:whossy_mobile_app/common/utils/index.dart';
-import 'package:whossy_mobile_app/feature/auth/sign_up/view_model/sign_up_provider.dart';
 
-import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/router/router.gr.dart';
+import '../data/state/sign_up_notifier.dart';
 
 @RoutePage()
 class SignUpGenderScreen extends StatefulWidget {
@@ -19,70 +18,77 @@ class SignUpGenderScreen extends StatefulWidget {
 }
 
 class _SignUpGenderScreenState extends State<SignUpGenderScreen> {
+  late SignUpNotifier signUpProvider;
   Gender? _gender;
+
+  @override
+  void initState() {
+    signUpProvider = Provider.of<SignUpNotifier>(context, listen: false);
+
+    super.initState();
+  }
+
+  void onPress() {
+    signUpProvider.completeCreation(
+      gender: _gender!.name,
+      showSnackbar: showSnackbar,
+      onAuthenticate: goToNext,
+    );
+  }
+
+  goToNext() =>
+      Nav.pushAndPopUntil(context, SignUpVerificationRoute(), SplashRoute.name);
+
+  showSnackbar(String message) {}
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      back: true,
-      padding: pagePadding,
-      body: Consumer<SignUpProvider>(
-        builder: (_, auth, __) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              addHeight(24),
-              Text(
-                "Your account is almost ready",
-                style: TextStyles.title.copyWith(fontSize: 24.sp),
-              ),
-              addHeight(4),
-              Text(
-                "Select your gender",
-                style: TextStyles.hintText.copyWith(
-                  fontSize: AppUtils.scale(11.5.sp),
+        back: true,
+        padding: pagePadding,
+        body: Selector<SignUpNotifier, bool>(
+          selector: (_, auth) => auth.spinnerState,
+          builder: (_, spinner, __) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SignupHeaderText(
+                  title: "Your account is almost ready",
+                  subtitle: "Select your gender",
                 ),
-              ),
-              addHeight(24),
-              Row(
-                children: [
-                  GenderButton(
-                    label: 'Male',
-                    value: Gender.male,
-                    groupValue: _gender,
-                    onChanged: (_) {
-                      setState(() => _gender = _);
-                    },
-                  ),
-                  addWidth(6.w),
-                  GenderButton(
-                    label: 'Female',
-                    value: Gender.female,
-                    groupValue: _gender,
-                    onChanged: (_) {
-                      setState(() => _gender = _);
-                    },
-                  ),
-                ],
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: AppButton(
-                  onPress: _gender != null
-                      ? () {
-                          auth.setGender(_gender!);
-
-                          Nav.push(context, const WelcomeRoute());
-                        }
-                      : null,
-                  text: 'Continue',
+                Row(
+                  children: [
+                    GenderButton(
+                      label: 'Male',
+                      value: Gender.male,
+                      groupValue: _gender,
+                      onChanged: (_) {
+                        setState(() => _gender = _);
+                      },
+                    ),
+                    addWidth(6.w),
+                    GenderButton(
+                      label: 'Female',
+                      value: Gender.female,
+                      groupValue: _gender,
+                      onChanged: (_) {
+                        setState(() => _gender = _);
+                      },
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: AppButton(
+                    onPress: _gender != null ? onPress : null,
+                    text: 'Continue',
+                    loading: spinner,
+                  ),
+                ),
+              ],
+            );
+          },
+        ));
   }
 }

@@ -14,6 +14,17 @@ extension GenderExtension on Gender? {
         return Icons.help;
     }
   }
+
+  String get name {
+    switch (this) {
+      case Gender.male:
+        return 'Male';
+      case Gender.female:
+        return 'Female';
+      default:
+        return 'Not specified';
+    }
+  }
 }
 
 extension PreferenceExtension on Preference? {

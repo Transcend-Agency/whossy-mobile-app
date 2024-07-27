@@ -9,7 +9,7 @@ import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
-import '../view_model/sign_up_provider.dart';
+import '../data/state/sign_up_notifier.dart';
 
 @RoutePage()
 class SignUpNameScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class SignUpNameScreen extends StatefulWidget {
 }
 
 class _SignUpNameScreenState extends State<SignUpNameScreen> {
-  late SignUpProvider signUpProvider;
+  late SignUpNotifier signUpProvider;
 
   final myFirstController = TextEditingController();
   final myLastController = TextEditingController();
@@ -51,7 +51,7 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
     final first = myFirstController.text.trim();
     final last = myLastController.text.trim();
 
-    signUpProvider.setName(first, last);
+    signUpProvider.updateAppUser(firstName: first, lastName: last);
 
     Nav.push(context, const SignUpPhoneRoute());
   }
@@ -59,7 +59,7 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
   @override
   void initState() {
     super.initState();
-    signUpProvider = Provider.of<SignUpProvider>(context, listen: false);
+    signUpProvider = Provider.of<SignUpNotifier>(context, listen: false);
   }
 
   @override
@@ -72,8 +72,6 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
 
     myFirstController.dispose();
     myLastController.dispose();
-
-    FocusScope.of(context).unfocus(); //Todo: Check if this works
 
     super.dispose();
   }
@@ -88,18 +86,11 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              addHeight(24),
-              Text(
-                AppStrings.signUpTitle,
-                style: TextStyles.title.copyWith(fontSize: 24.sp),
+              const SignupHeaderText(
+                title: AppStrings.signUpTitle,
+                subtitle: AppStrings.signUpSubtitle,
+                mid: 8,
               ),
-              addHeight(8),
-              Text(
-                AppStrings.signUpSubtitle,
-                style: TextStyles.hintText
-                    .copyWith(fontSize: AppUtils.scale(11.5.sp)),
-              ),
-              addHeight(24),
               Padding(
                 padding: EdgeInsets.only(bottom: 6.h),
                 child: Text(

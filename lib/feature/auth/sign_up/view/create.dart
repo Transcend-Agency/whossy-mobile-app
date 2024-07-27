@@ -11,7 +11,7 @@ import 'package:whossy_mobile_app/feature/auth/sign_up/view/options_sheet.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
-import '../view_model/sign_up_provider.dart';
+import '../data/state/sign_up_notifier.dart';
 
 @RoutePage()
 class SignUpCreateScreen extends StatefulWidget {
@@ -23,7 +23,7 @@ class SignUpCreateScreen extends StatefulWidget {
 
 class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
   final List<bool> _validationStates = List.filled(4, false);
-  late SignUpProvider signUpProvider;
+  late SignUpNotifier signUpProvider;
 
   final myPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -123,8 +123,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
     final String email = emailController.text.trim();
     final String password = myPasswordController.text;
 
-    await signUpProvider.checkEmailAndPassword(
-      context: context,
+    await signUpProvider.createAccount(
       email: email,
       password: password,
       showSnackbar: showSnackbar,
@@ -132,7 +131,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
     );
   }
 
-  goToNext() => Nav.push(context, const SignUpNameRoute());
+  goToNext() => Nav.replace(context, const SignUpNameRoute());
 
   showSnackbar(String message) {}
 
@@ -149,7 +148,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
     confirmPasswordFocusNode.addListener(_updateConfirmPasswordColor);
     confirmPasswordController.addListener(_updateConfirmPasswordEmpty);
 
-    signUpProvider = Provider.of<SignUpProvider>(context, listen: false);
+    signUpProvider = Provider.of<SignUpNotifier>(context, listen: false);
   }
 
   @override
@@ -176,24 +175,16 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
       padding: pagePadding,
       useScrollView: true,
       resizeToAvoidBottomInset: true,
-      body: Consumer<SignUpProvider>(
-        builder: (__, auth, child) {
+      body: Selector<SignUpNotifier, bool>(
+        selector: (_, auth) => auth.spinnerState,
+        builder: (_, spinner, __) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              addHeight(24),
-              Text(
-                "Create account",
-                style:
-                    TextStyles.title.copyWith(fontSize: AppUtils.scale(24.sp)),
+              const SignupHeaderText(
+                title: "Create account",
+                subtitle: "Your perfect match is a swipe away :)",
               ),
-              addHeight(4),
-              Text(
-                "Your perfect match is a swipe away :)",
-                style: TextStyles.hintText
-                    .copyWith(fontSize: AppUtils.scale(11.5.sp)),
-              ),
-              addHeight(24),
               Padding(
                 padding: EdgeInsets.only(bottom: 6.h),
                 child: Text(
@@ -209,7 +200,8 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
                     focusNode: emailFocusNode,
                     textController: emailController,
                     hintText: AppStrings.emailHint,
-                    enabled: !auth.spinnerState,
+                    enabled: !spinner,
+                    keyboardType: TextInputType.emailAddress,
                     validation: (email) => email?.trim().validateEmail(),
                   ),
                 ),
@@ -227,9 +219,8 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
                 child: AppTextField(
                   focusNode: passwordFocusNode,
                   textController: myPasswordController,
-                  action: TextInputAction.done,
                   hintText: AppStrings.passwordHint,
-                  enabled: !auth.spinnerState,
+                  enabled: !spinner,
                   obscureText: _passwordVisible,
                   onFieldSubmitted: (password) => {},
                   suffixIcon: IconButton(
@@ -272,7 +263,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
                 child: Shake(
                   key: shakeState3,
                   child: AppTextField(
-                    enabled: !auth.spinnerState,
+                    enabled: !spinner,
                     focusNode: confirmPasswordFocusNode,
                     textController: confirmPasswordController,
                     action: TextInputAction.done,
@@ -294,7 +285,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
                 child: AppButton(
                   onPress: validate,
                   text: 'Create Account',
-                  loading: auth.spinnerState,
+                  loading: spinner,
                 ),
               ),
               Padding(
@@ -326,7 +317,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
               ),
               addHeight(40),
               PrivacyText(
-                action: auth.launchTC,
+                action: () {},
                 text: AppStrings.createAgreement,
               )
             ],

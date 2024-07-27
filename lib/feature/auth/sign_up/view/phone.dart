@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
-import 'package:whossy_mobile_app/feature/auth/sign_up/view_model/sign_up_provider.dart';
+import 'package:whossy_mobile_app/feature/auth/sign_up/data/state/sign_up_notifier.dart';
 
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
@@ -23,7 +23,7 @@ class SignUpPhoneScreen extends StatefulWidget {
 }
 
 class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
-  late SignUpProvider signUpProvider;
+  late SignUpNotifier signUpProvider;
 
   Country? country;
   Country? origin;
@@ -123,14 +123,14 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
         phoneController.text.trim().formatNumber('+${this.country!.phoneCode}');
     final country = countryController.text.trim();
 
-    signUpProvider.setPhoneAndCountry(phone, country);
+    signUpProvider.updateAppUser(phoneNumber: phone, countryOfOrigin: country);
 
     Nav.push(context, const SignUpGenderRoute());
   }
 
   @override
   void initState() {
-    signUpProvider = Provider.of<SignUpProvider>(context, listen: false);
+    signUpProvider = Provider.of<SignUpNotifier>(context, listen: false);
 
     phoneController.addListener(_onPhoneNumberChanged);
 
@@ -181,19 +181,11 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          addHeight(24),
-          Text(
-            "Just a few more steps to go!",
-            style: TextStyles.title.copyWith(fontSize: 24.sp),
+          const SignupHeaderText(
+            title: "Just a few more steps to go!",
+            subtitle:
+                "Ensure you have access to the phone number entered in order to receive otp code.",
           ),
-          addHeight(4),
-          Text(
-            "Ensure you have access to the phone number entered in order to receive otp code.",
-            style: TextStyles.hintText.copyWith(
-              fontSize: AppUtils.scale(11.5.sp),
-            ),
-          ),
-          addHeight(24),
           Padding(
             padding: EdgeInsets.only(bottom: 6.h),
             child: Text(

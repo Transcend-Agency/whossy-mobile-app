@@ -25,6 +25,12 @@ class AppTheme {
         focusedErrorBorder: focusedErrorBorder,
         disabledBorder: enabledBorder,
       ),
+      sliderTheme: SliderThemeData(
+        thumbColor: AppColors.black,
+        activeTrackColor: AppColors.black,
+        inactiveTrackColor: AppColors.outlinedColor,
+        overlayShape: SliderComponentShape.noOverlay,
+      ),
     );
   }
 

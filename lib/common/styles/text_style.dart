@@ -91,6 +91,6 @@ class TextStyles {
   );
 
   static TextStyle iconText = TextStyle(
-    fontSize: 24.sp,
+    fontSize: 27.sp,
   );
 }

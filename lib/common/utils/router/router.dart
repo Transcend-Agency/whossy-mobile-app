@@ -8,7 +8,7 @@ import '../../../feature/auth/sign_up/view/create.dart';
 class AppRouter extends $AppRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: SplashRoute.page),
+        AutoRoute(page: SplashRoute.page, initial: true),
 
         // LOGIN
         AutoRoute(page: LoginRoute.page),
@@ -19,10 +19,11 @@ class AppRouter extends $AppRouter {
         AutoRoute(page: SignUpGenderRoute.page),
         AutoRoute(page: SignUpNameRoute.page),
         AutoRoute(page: SignUpPhoneRoute.page),
+        AutoRoute(page: SignUpVerificationRoute.page),
         AutoRoute(page: WelcomeRoute.page),
 
         // ONBOARDING
-        AutoRoute(page: Wrapper.page, initial: true),
+        AutoRoute(page: Wrapper.page),
       ];
 }
 
@@ -37,6 +38,14 @@ class Nav {
   static Future<void> replaceAll(
       BuildContext context, List<PageRouteInfo<dynamic>> routes) async {
     await context.router.replaceAll(routes);
+  }
+
+  static Future<void> pushAndPopUntil(
+      BuildContext context, PageRouteInfo<dynamic> route, String name) async {
+    await context.router.pushAndPopUntil(
+      route,
+      predicate: (route) => route.settings.name == name,
+    );
   }
 
   static Future<void> replace(

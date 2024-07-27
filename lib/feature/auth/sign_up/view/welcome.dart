@@ -64,7 +64,7 @@ class WelcomeScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: AppButton(
-              onPress: () => Nav.push(context, const Wrapper()),
+              onPress: () => Nav.replace(context, const Wrapper()),
               text: 'I Agree',
             ),
           ),
