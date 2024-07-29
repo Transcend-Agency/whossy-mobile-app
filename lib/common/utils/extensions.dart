@@ -127,6 +127,20 @@ extension StringExtention on String? {
     return null; // Return null if the email is valid
   }
 
+  String? checkLoginPassword() {
+    if (this == null || this!.isEmpty) {
+      return 'Password is required';
+    }
+    return null;
+  }
+
+  String? checkPassword() {
+    if (this == null || this!.isEmpty) {
+      return 'Confirm password is required';
+    }
+    return null;
+  }
+
   bool validatePassword() {
     final requirements = [
       RegExp(r'.{8,}'),
@@ -242,6 +256,6 @@ extension StringExtention on String? {
         value.isNotEmpty &&
         value.length >= 10 &&
         value.length <= 500 &&
-        RegExp(r'^[a-zA-Z0-9\s,.!?\-\"]+$').hasMatch(value);
+        RegExp(r'^[a-zA-Z0-9\s,.!?\-]+$').hasMatch(value);
   }
 }

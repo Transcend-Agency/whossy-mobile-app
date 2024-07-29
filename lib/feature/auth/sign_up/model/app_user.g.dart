@@ -21,16 +21,25 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           json['has_completed_account_onboarding'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
-      'uid': instance.uid,
-      'email': instance.email,
-      'first_name': instance.firstName,
-      'last_name': instance.lastName,
-      'gender': instance.gender,
-      'phone_number': instance.phoneNumber,
-      'country_of_origin': instance.countryOfOrigin,
-      'authProvider': instance.authProvider,
-      'has_completed_account_creation': instance.hasCompletedAccountCreation,
-      'has_completed_account_onboarding':
-          instance.hasCompletedAccountOnboarding,
-    };
+Map<String, dynamic> _$AppUserToJson(AppUser instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('uid', instance.uid);
+  writeNotNull('email', instance.email);
+  writeNotNull('first_name', instance.firstName);
+  writeNotNull('last_name', instance.lastName);
+  writeNotNull('gender', instance.gender);
+  writeNotNull('phone_number', instance.phoneNumber);
+  writeNotNull('country_of_origin', instance.countryOfOrigin);
+  writeNotNull('authProvider', instance.authProvider);
+  val['has_completed_account_creation'] = instance.hasCompletedAccountCreation;
+  val['has_completed_account_onboarding'] =
+      instance.hasCompletedAccountOnboarding;
+  return val;
+}

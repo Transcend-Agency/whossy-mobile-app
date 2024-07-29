@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:whossy_mobile_app/feature/auth/onboarding/data/repository/preference_repository.dart';
@@ -50,6 +51,12 @@ class OnboardingNotifier extends ChangeNotifier {
     try {
       spinnerState = true;
 
+      // Upload to storage and get urls
+      final urls = await _userRepository
+          .uploadProfilePictures(_userPreferences.picFiles ?? []);
+
+      updateUserProfile(profilePics: urls);
+
       // Send the preferences to Firebase
       await _prefRepository.uploadPreferences(_userPreferences);
 
@@ -80,6 +87,7 @@ class OnboardingNotifier extends ChangeNotifier {
     int? workOut,
     String? bio,
     List<String>? profilePics,
+    List<File>? picFiles,
   }) {
     _userPreferences.update(
       relationshipPref: relationshipPref,
@@ -94,6 +102,7 @@ class OnboardingNotifier extends ChangeNotifier {
       workOut: workOut,
       bio: bio,
       profilePics: profilePics,
+      picFiles: picFiles,
     );
 
     notifyListeners();

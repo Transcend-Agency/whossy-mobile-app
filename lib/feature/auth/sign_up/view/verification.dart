@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/feature/auth/sign_up/data/state/sign_up_notifier.dart';
+import 'package:whossy_mobile_app/provider/providers.dart';
 
 import '../../../../common/styles/component_style.dart';
 import '../../../../common/styles/text_style.dart';
@@ -61,8 +61,9 @@ class _SignUpVerificationScreenState extends State<SignUpVerificationScreen> {
   Widget build(BuildContext context) {
     return AppScaffold(
       padding: pagePadding,
-      body: Selector<SignUpNotifier, User?>(
-        selector: (_, auth) => auth.userCredential!.user,
+      body: Selector2<SignUpNotifier, LoginNotifier, User?>(
+        selector: (_, s, l) =>
+            widget.pop ? l.userCredential!.user : s.userCredential!.user,
         builder: (_, user, __) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -74,7 +75,6 @@ class _SignUpVerificationScreenState extends State<SignUpVerificationScreen> {
                     " Kindly verify to complete account set up",
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Didn’t receive any email?',

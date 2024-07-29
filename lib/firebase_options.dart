@@ -63,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '332139466657',
     projectId: 'whossy-app',
     storageBucket: 'whossy-app.appspot.com',
+    iosClientId: '332139466657-qbhs9p8997hmgue97nhkaij3qk5pjng1.apps.googleusercontent.com',
     iosBundleId: 'com.transcend.whossymobileapp.whossyMobileApp',
   );
 

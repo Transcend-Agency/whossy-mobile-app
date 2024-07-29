@@ -24,18 +24,27 @@ Preferences _$PreferencesFromJson(Map<String, dynamic> json) => Preferences(
           (json['photos'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$PreferencesToJson(Preferences instance) =>
-    <String, dynamic>{
-      'preference': instance.relationshipPref,
-      'meet': instance.meet,
-      'date_of_birth': Preferences._dateTimeToJson(instance.dateOfBirth),
-      'distance': instance.search,
-      'interests': instance.ticks,
-      'education': instance.education,
-      'drink': instance.drink,
-      'smoke': instance.smoker,
-      'pets': instance.pets,
-      'workout': instance.workOut,
-      'bio': instance.bio,
-      'photos': instance.profilePics,
-    };
+Map<String, dynamic> _$PreferencesToJson(Preferences instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('preference', instance.relationshipPref);
+  writeNotNull('meet', instance.meet);
+  writeNotNull(
+      'date_of_birth', Preferences._dateTimeToJson(instance.dateOfBirth));
+  writeNotNull('distance', instance.search);
+  writeNotNull('interests', instance.ticks);
+  writeNotNull('education', instance.education);
+  writeNotNull('drink', instance.drink);
+  writeNotNull('smoke', instance.smoker);
+  writeNotNull('pets', instance.pets);
+  writeNotNull('workout', instance.workOut);
+  writeNotNull('bio', instance.bio);
+  writeNotNull('photos', instance.profilePics);
+  return val;
+}

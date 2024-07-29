@@ -12,7 +12,7 @@ class AppAssets {
   static const i5 = 'assets/icons/i5.png';
 
   static const biGender = 'assets/icons/biGender.svg';
-  static const cam1 = 'assets/icons/cam1.svg';
-  static const cam2 = 'assets/icons/cam2.svg';
-  static const success = 'assets/icons/success.svg';
+  static const cam1 = 'assets/icons/camera.svg';
+  static const cam2 = 'assets/icons/camera2.svg';
+  static const success = 'assets/icons/success_icon.png';
 }

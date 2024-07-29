@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
@@ -39,7 +40,6 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
   final formKey3 = GlobalKey<FormState>();
 
   final shakeState1 = GlobalKey<ShakeState>();
-  final shakeState2 = GlobalKey<ShakeState>();
   final shakeState3 = GlobalKey<ShakeState>();
 
   late bool _passwordVisible;
@@ -115,13 +115,12 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
     }
 
     if (!isEmailValid) shakeState1.currentState?.shake();
-    if (!isPasswordValid) shakeState2.currentState?.shake();
     if (!isConPasswordValid) shakeState3.currentState?.shake();
   }
 
   Future<void> checkEmailAndPassword() async {
-    final String email = emailController.text.trim();
-    final String password = myPasswordController.text;
+    final email = emailController.text.trim();
+    final password = myPasswordController.text;
 
     await signUpProvider.createAccount(
       email: email,
@@ -133,7 +132,11 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
 
   goToNext() => Nav.replace(context, const SignUpNameRoute());
 
-  showSnackbar(String message) {}
+  showSnackbar(String message) {
+    if (mounted) {
+      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+    }
+  }
 
   @override
   void initState() {

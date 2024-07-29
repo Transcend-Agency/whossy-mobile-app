@@ -1,12 +1,14 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
-import 'package:whossy_mobile_app/view_model/auth_provider.dart';
+import 'package:whossy_mobile_app/feature/auth/login/data/state/login_notifier.dart';
 
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
@@ -21,6 +23,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late LoginNotifier loginNotifier;
+
   final myEmailController = TextEditingController();
   final myPasswordController = TextEditingController();
 
@@ -58,22 +62,68 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void onLogin() {
-    final email = formKey1.currentState?.validate();
-    final password = formKey2.currentState?.validate();
+  void validate() {
+    final isEmailValid = formKey1.currentState?.validate() ?? false;
+    final isPasswordValid = formKey2.currentState?.validate() ?? false;
 
-    if (!email! && !password!) {
-      shakeState1.currentState?.shake();
-      shakeState2.currentState?.shake();
-    } else if (!email) {
-      shakeState1.currentState?.shake();
-    } else if (!password!) {
-      shakeState2.currentState?.shake();
-    } else {
+    if (isEmailValid && isPasswordValid) {
+      loginWithEmailAndPassword();
       return;
     }
-    // Vibrate.feedback(FeedbackType.success);
+
+    if (!isEmailValid) shakeState1.currentState?.shake();
+    if (!isPasswordValid) shakeState2.currentState?.shake();
   }
+
+  Future<void> loginWithEmailAndPassword() async {
+    final email = myEmailController.text.trim();
+    final password = myPasswordController.text;
+
+    await loginNotifier.loginWithEmailAndPassword(
+      email: email,
+      password: password,
+      showSnackbar: showSnackbar,
+      onAuthenticate: onAuthenticate,
+      showEmailSnackbar: showEmailSnackbar,
+      toCreateAccount: toCreateAccount,
+      toOnboarding: toOnboarding,
+    );
+  }
+
+  // Function to show the "Email not verified" Snackbar
+  void showEmailSnackbar(UserCredential credential) {
+    if (mounted) {
+      final user = credential.user!;
+
+      showTopSnackBar(
+        Overlay.of(context),
+        displayDuration: const Duration(seconds: 5),
+        AppSnackbar(
+          text: 'Email not verified',
+          label: 'Verify',
+          onLabelTapped: () async {
+            await user.sendEmailVerification();
+            onVerifyTapped(credential);
+          },
+        ),
+      );
+    }
+  }
+
+  showSnackbar(String message) {
+    if (mounted) {
+      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+    }
+  }
+
+  onAuthenticate() => Nav.replaceAll(context, [const HomeRoute()]);
+
+  toCreateAccount() => Nav.push(context, const SignUpNameRoute());
+
+  toOnboarding() => Nav.push(context, const Wrapper());
+
+  void onVerifyTapped(UserCredential credential) =>
+      Nav.push(context, SignUpVerificationRoute(pop: true));
 
   @override
   void initState() {
@@ -81,6 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordVisible = true;
     passwordFocusNode.addListener(_updatePasswordColor);
     myPasswordController.addListener(_updatePasswordEmpty);
+
+    loginNotifier = Provider.of<LoginNotifier>(context, listen: false);
   }
 
   @override
@@ -104,23 +156,16 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return AppScaffold(
       padding: pagePadding,
-      body: Consumer<AuthenticationProvider>(
-        builder: (_, auth, __) {
+      body: Selector<LoginNotifier, bool>(
+        selector: (_, auth) => auth.spinnerState,
+        builder: (_, spinner, __) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              addHeight(20),
-              Text(
-                AppStrings.welBack,
-                style:
-                    TextStyles.title.copyWith(fontSize: AppUtils.scale(24.sp)),
+              const SignupHeaderText(
+                title: AppStrings.welBack,
+                subtitle: AppStrings.loginSub,
               ),
-              Text(
-                AppStrings.loginSub,
-                style: TextStyles.hintText
-                    .copyWith(fontSize: AppUtils.scale(11.5.sp)),
-              ),
-              addHeight(24),
               Padding(
                 padding: EdgeInsets.only(bottom: 6.h),
                 child: Text(
@@ -133,6 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Shake(
                   key: shakeState1,
                   child: AppTextField(
+                    enabled: !spinner,
                     focusNode: emailFocusNode,
                     textController: myEmailController,
                     hintText: AppStrings.emailHint,
@@ -153,12 +199,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Shake(
                   key: shakeState2,
                   child: AppTextField(
+                    enabled: !spinner,
                     focusNode: passwordFocusNode,
                     textController: myPasswordController,
                     action: TextInputAction.done,
                     hintText: AppStrings.passwordHint,
                     obscureText: _passwordVisible,
-                    onFieldSubmitted: (password) => onLogin(),
+                    onFieldSubmitted: (password) => validate(),
+                    validation: (pass) => pass?.checkLoginPassword(),
                     suffixIcon: IconButton(
                       icon: visibilityIcon(_passwordVisible, passwordColor),
                       onPressed: toggleVisibility,
@@ -173,29 +221,30 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: GestureDetector(
                     onTap: () => Nav.push(context, const ResetPasswordRoute()),
                     child: Container(
-                      margin: textTouchable,
+                      margin: forgotTouchable,
                       child: Text(
                         AppStrings.forgotPassword,
                         style: TextStyles.fieldHeader.copyWith(
                           decoration: TextDecoration.underline,
                         ),
                       ),
-                    ), //
+                    ),
                   ),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 20.h),
                 child: AppButton(
-                  onPress: onLogin,
+                  onPress: validate,
                   text: AppStrings.loginButton,
+                  loading: spinner,
                 ),
               ),
               Stack(
                 alignment: Alignment.center,
                 children: [
                   const Divider(
-                    color: AppColors.hintTextColor,
+                    color: AppColors.outlinedColor,
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -210,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               addHeight(20),
               OutlinedAppButton(
-                onPress: auth.signApple,
+                onPress: () {},
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -219,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Padding(
                       padding: EdgeInsets.only(top: 3.h),
                       child: Text(
-                        AppStrings.signInApple,
+                        AppStrings.signInFacebook,
                         style: TextStyles.buttonText.copyWith(
                           color: AppColors.hintTextColor,
                           fontSize: AppUtils.scale(17),
@@ -232,7 +281,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 12.r),
                 child: OutlinedAppButton(
-                  onPress: auth.signGoogle,
+                  onPress: () {},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -258,7 +307,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const Spacer(),
               PrivacyText(
-                action: auth.launchTC,
+                action: () {},
                 text: AppStrings.loginAgreement,
               )
             ],

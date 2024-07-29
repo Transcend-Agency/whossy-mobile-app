@@ -29,10 +29,7 @@ class CustomTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       visualDensity: VisualDensity.standard,
       leading: useSvg
-          ? Padding(
-              padding: const EdgeInsets.only(right: 3),
-              child: SvgPicture.asset(svgPath!, height: 35.r),
-            )
+          ? SvgPicture.asset(svgPath!, height: 35.r)
           : Text(
               leading,
               style: TextStyles.iconText.copyWith(

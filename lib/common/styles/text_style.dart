@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../constants/index.dart';
+import '../utils/index.dart';
 
 class TextStyles {
   static TextStyle header = TextStyle(
@@ -53,7 +54,13 @@ class TextStyles {
   );
 
   static TextStyle bioText = hintThemeText.copyWith(
-    fontSize: 14.sp,
+    fontSize: 13.sp,
+  );
+
+  static TextStyle snackBarText = bioText.copyWith(
+    fontSize: AppUtils.scale(10.5.sp),
+    color: AppColors.sbErrorBorderColor,
+    decoration: TextDecoration.none,
   );
 
   static TextStyle underlineText = hintThemeText.copyWith(

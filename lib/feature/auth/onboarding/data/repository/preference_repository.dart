@@ -8,6 +8,6 @@ class PreferenceRepository {
   Future<void> uploadPreferences(Preferences pref) async {
     final id = FirebaseAuth.instance.currentUser?.uid;
 
-    await _prefFirestore.doc(id).set(pref.toJson());
+    await _prefFirestore.doc(id).set(pref.toJson(), SetOptions(merge: true));
   }
 }

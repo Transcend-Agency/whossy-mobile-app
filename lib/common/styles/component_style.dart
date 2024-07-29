@@ -5,7 +5,9 @@ import '../../constants/colors.dart';
 
 final pagePadding = EdgeInsets.symmetric(horizontal: 14.w);
 
-final textTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);
+final forgotTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);
+
+const verifyTouchable = EdgeInsets.all(6);
 
 final roundedTop = RoundedRectangleBorder(
   borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
@@ -48,5 +50,14 @@ final focusedErrorBorder = inputBorder.copyWith(
   borderSide: BorderSide(
     color: AppColors.errorBorderColor.withOpacity(0.7),
     width: 1.5,
+  ),
+);
+
+final snackbarDecoration = BoxDecoration(
+  color: AppColors.sbErrorFillColor,
+  borderRadius: BorderRadius.circular(8.r),
+  border: Border.all(
+    width: 1,
+    color: AppColors.sbErrorBorderColor,
   ),
 );

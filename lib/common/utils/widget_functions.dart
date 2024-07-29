@@ -9,6 +9,14 @@ SizedBox addHeight(double height) => SizedBox(height: height.h);
 
 SizedBox addWidth(double width) => SizedBox(width: width.w);
 
+Icon alert() {
+  return const Icon(
+    Icons.warning_rounded,
+    color: AppColors.sbErrorBorderColor,
+    size: 24,
+  );
+}
+
 Icon visibilityIcon(bool isVisible, Color passwordColor) {
   return Icon(
     isVisible ? Icons.visibility_off : Icons.visibility,

@@ -181,11 +181,12 @@ class _SplashScreenState extends State<SplashScreen> {
                                 TextSpan(
                                   text: AppStrings.cAccount,
                                   style: TextStyles.privacyText,
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => Nav.push(
-                                          context,
-                                          const SignUpCreateRoute(),
-                                        ),
+                                  recognizer:
+                                      TapGestureRecognizer() //TODO: Increase tap size
+                                        ..onTap = () => Nav.push(
+                                              context,
+                                              const SignUpCreateRoute(),
+                                            ),
                                 )
                               ],
                             ),

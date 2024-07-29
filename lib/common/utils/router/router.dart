@@ -8,11 +8,12 @@ import '../../../feature/auth/sign_up/view/create.dart';
 class AppRouter extends $AppRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: SplashRoute.page),
+        AutoRoute(page: SplashRoute.page, initial: true),
 
         // LOGIN
         AutoRoute(page: LoginRoute.page),
         AutoRoute(page: ResetPasswordRoute.page),
+        AutoRoute(page: ResetSuccessRoute.page),
 
         // SIGN-UP
         AutoRoute(page: SignUpCreateRoute.page),
@@ -23,7 +24,7 @@ class AppRouter extends $AppRouter {
         AutoRoute(page: WelcomeRoute.page),
 
         // ONBOARDING
-        AutoRoute(page: Wrapper.page, initial: true),
+        AutoRoute(page: Wrapper.page),
 
         // MAIN APP
         AutoRoute(page: HomeRoute.page),

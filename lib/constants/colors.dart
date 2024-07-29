@@ -15,9 +15,12 @@ class AppColors {
   static const Color outlinedColor = Color(0xFFD9D9D9);
   static const Color optionsSheetDivider = Color(0xFFECECEC);
   static const Color ringColor = Color(0xFFCDCDCD);
-  static const Color errorBorderColor = AppColors.primaryColor;
+  static const Color errorBorderColor = primaryColor;
   // Color(0xFFFF0A0A);
 
+  static const Color sbErrorBorderColor = Color(0xFFf2243e);
+  static const Color sbErrorFillColor = listTileColor;
+//Color(0xFFFEECEE);
   static const Color faceBookColor = Color(0xFF1877f2);
   static const Color backButtonColor = Color(0xFFF8F8F8);
   static const Color listTileColor = Color(0xFFF6F6F6);
@@ -26,13 +29,13 @@ class AppColors {
   static const Color whiteShade200 = Color(0xFFF7F7F7);
 
   static const splashGradient = LinearGradient(
-    colors: [AppColors.warmYellow, AppColors.primaryColor],
+    colors: [warmYellow, primaryColor],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
 
   static const splashVariation = LinearGradient(
-    colors: [AppColors.warmYellow, AppColors.primaryColor],
+    colors: [warmYellow, primaryColor],
     stops: [0.3, 0.6],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

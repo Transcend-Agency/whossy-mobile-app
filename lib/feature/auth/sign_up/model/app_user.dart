@@ -4,34 +4,34 @@ part 'app_user.g.dart';
 
 @JsonSerializable()
 class AppUser {
-  @JsonKey(name: 'uid')
+  @JsonKey(name: 'uid', includeIfNull: false)
   final String? uid;
 
-  @JsonKey(name: 'email')
+  @JsonKey(name: 'email', includeIfNull: false)
   final String? email;
 
-  @JsonKey(name: 'first_name')
+  @JsonKey(name: 'first_name', includeIfNull: false)
   final String? firstName;
 
-  @JsonKey(name: 'last_name')
+  @JsonKey(name: 'last_name', includeIfNull: false)
   final String? lastName;
 
-  @JsonKey(name: 'gender')
+  @JsonKey(name: 'gender', includeIfNull: false)
   final String? gender;
 
-  @JsonKey(name: 'phone_number')
+  @JsonKey(name: 'phone_number', includeIfNull: false)
   final String? phoneNumber;
 
-  @JsonKey(name: 'country_of_origin')
+  @JsonKey(name: 'country_of_origin', includeIfNull: false)
   final String? countryOfOrigin;
 
-  @JsonKey(name: 'authProvider')
+  @JsonKey(name: 'authProvider', includeIfNull: false)
   final String? authProvider;
 
-  @JsonKey(name: 'has_completed_account_creation')
+  @JsonKey(name: 'has_completed_account_creation', includeIfNull: false)
   final bool hasCompletedAccountCreation;
 
-  @JsonKey(name: 'has_completed_account_onboarding')
+  @JsonKey(name: 'has_completed_account_onboarding', includeIfNull: false)
   final bool hasCompletedAccountOnboarding;
 
   AppUser({

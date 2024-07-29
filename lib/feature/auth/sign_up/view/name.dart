@@ -127,7 +127,7 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
                     textController: myLastController,
                     action: TextInputAction.done,
                     hintText: AppStrings.lastNameHint,
-                    onFieldSubmitted: (password) => validate,
+                    onFieldSubmitted: (password) => validate(),
                     validation: (name) => name?.trim().validateName(),
                   ),
                 ),

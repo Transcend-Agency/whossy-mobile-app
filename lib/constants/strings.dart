@@ -6,14 +6,14 @@ class AppStrings {
   static const String cAccount = 'Create account';
   static const String welBack = 'Welcome back';
   static const String loginSub = "Login to see who you've matched with ✌️";
-  static const String emailPhoneLabel = "Email/Phone";
+  static const String emailPhoneLabel = "Email";
   static const String emailHint = 'example@gmail.com';
   static const String passwordLabel = "Password";
   static const String passwordHint = 'Password';
   static const String forgotPassword = "Forgot Password ?";
   static const String loginButton = 'Login';
   static const String orDivider = 'or';
-  static const String signInApple = 'Sign in with Facebook';
+  static const String signInFacebook = 'Sign in with Facebook';
   static const String signInGoogle = 'Sign in with Google';
   static const String createAccountButton = 'Create new account';
   static const String loginAgreement = 'By clicking "Login" you agree to our';
@@ -28,7 +28,7 @@ class AppStrings {
   static const String resetPasswordTitle = 'Reset your password';
   static const String resetPasswordSubtitle =
       'Enter your email to receive otp code.';
-  static const String sendCodeButton = 'Send Code';
+  static const String sendLinkButton = 'Send link';
 
   // Strings for SignUpScreen
   static const String signUpTitle = "Welcome to Whossy, Let's get you Started!";
@@ -89,12 +89,22 @@ class AppStrings {
 
   // Error messages for create account
   static const String errorEmailInUse =
-      'Registration failed, please use different credentials.';
+      'Account creation failed, please use different credentials.';
   static const String errorInvalidEmail = 'The email address is not valid.';
   static const String errorOperationNotAllowed =
       'Email/password accounts are not enabled.';
   static const String errorWeakPassword = 'The password provided is too weak.';
   static const String errorNetworkRequestFailed = 'Poor internet connection';
   static const String errorUnknown =
-      'An unknown error occurred. Please try again.';
+      'An unknown error occurred. Please try again later.';
+
+  // Error messages for Login User
+  static const String disabledAccount = 'Your account has been disabled';
+  static const String userNotFound = 'Invalid email or password';
+  static const String tooManyRequests = 'Too many requests, try again later';
+
+  static const String success = 'Successful';
+
+  static const String reset =
+      'A link has been sent to your email to reset your password.';
 }

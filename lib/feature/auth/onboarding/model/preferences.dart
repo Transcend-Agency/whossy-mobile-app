@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -5,45 +7,52 @@ part 'preferences.g.dart';
 
 @JsonSerializable()
 class Preferences {
-  @JsonKey(name: 'preference')
+  @JsonKey(name: 'preference', includeIfNull: false)
   int? relationshipPref;
 
-  @JsonKey(name: 'meet')
+  @JsonKey(name: 'meet', includeIfNull: false)
   int? meet;
 
   @JsonKey(
-    name: 'date_of_birth',
-    fromJson: _dateTimeFromJson,
-    toJson: _dateTimeToJson,
-  )
+      name: 'date_of_birth',
+      fromJson: _dateTimeFromJson,
+      toJson: _dateTimeToJson,
+      includeIfNull: false)
   DateTime? dateOfBirth;
 
-  @JsonKey(name: 'distance')
+  @JsonKey(name: 'distance', includeIfNull: false)
   int? search;
 
-  @JsonKey(name: 'interests')
+  @JsonKey(name: 'interests', includeIfNull: false)
   List<String>? ticks;
 
-  @JsonKey(name: 'education')
+  @JsonKey(name: 'education', includeIfNull: false)
   String? education;
 
-  @JsonKey(name: 'drink')
+  @JsonKey(name: 'drink', includeIfNull: false)
   int? drink;
 
-  @JsonKey(name: 'smoke')
+  @JsonKey(name: 'smoke', includeIfNull: false)
   int? smoker;
 
-  @JsonKey(name: 'pets')
+  @JsonKey(name: 'pets', includeIfNull: false)
   List<String>? pets;
 
-  @JsonKey(name: 'workout')
+  @JsonKey(name: 'workout', includeIfNull: false)
   int? workOut;
 
-  @JsonKey(name: 'bio')
+  @JsonKey(name: 'bio', includeIfNull: false)
   String? bio;
 
-  @JsonKey(name: 'photos')
+  @JsonKey(name: 'photos', includeIfNull: false)
   List<String>? profilePics;
+
+  @JsonKey(
+    includeFromJson: false,
+    includeToJson: false,
+    includeIfNull: false,
+  )
+  List<File>? picFiles;
 
   Preferences({
     this.relationshipPref,
@@ -58,6 +67,7 @@ class Preferences {
     this.workOut,
     this.bio,
     this.profilePics,
+    this.picFiles,
   });
 
   void update({
@@ -73,6 +83,7 @@ class Preferences {
     int? workOut,
     String? bio,
     List<String>? profilePics,
+    List<File>? picFiles,
   }) {
     if (relationshipPref != null) this.relationshipPref = relationshipPref;
     if (meet != null) this.meet = meet;
@@ -86,6 +97,7 @@ class Preferences {
     if (workOut != null) this.workOut = workOut;
     if (bio != null) this.bio = bio;
     if (profilePics != null) this.profilePics = profilePics;
+    if (picFiles != null) this.picFiles = picFiles;
   }
 
   factory Preferences.fromJson(Map<String, dynamic> json) =>

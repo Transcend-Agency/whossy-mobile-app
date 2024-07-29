@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../../constants/index.dart';
 import '../../model/app_user.dart';
 import '../repository/user_repository.dart';
-import 'helper.dart';
 
 class SignUpNotifier extends ChangeNotifier {
   final _userRepository = UserRepository();
@@ -50,7 +49,8 @@ class SignUpNotifier extends ChangeNotifier {
   Future<void> completeCreation({
     required String gender,
     required void Function(String) showSnackbar,
-    required VoidCallback onAuthenticate,
+    required VoidCallback onVerifyMail,
+    required VoidCallback toWelcome,
   }) async {
     try {
       spinnerState = true;
@@ -61,20 +61,27 @@ class SignUpNotifier extends ChangeNotifier {
       // Upload to Firebase
       await _userRepository.updateUserData(_user.toUpdateCreate());
 
-      // Update the display name
-      await userCredential!.user!.updateDisplayName(_user.firstName);
+      User? user = userCredential?.user;
 
-      // Send email verification to new user
-      await userCredential!.user!.sendEmailVerification();
+      if (user != null) {
+        // Update the display name
+        await user.updateDisplayName(_user.firstName);
 
-      // Call the onAuthenticate callback if the update is successful
-      onAuthenticate();
-    } on FirebaseException catch (e) {
-      if (e.code == 'network-request-failed') {
-        showSnackbar(AppStrings.errorNetworkRequestFailed);
+        if (user.emailVerified) {
+          toWelcome();
+          return;
+        }
+        // Send email verification to new user
+        await user.sendEmailVerification();
+
+        // Call the function to proceed to verify mail screen
+        onVerifyMail();
       } else {
+        // User is null
         showSnackbar(AppStrings.errorUnknown);
       }
+    } on FirebaseException catch (e) {
+      handleFirebaseAuthError(e, showSnackbar);
     } catch (e) {
       log('Unexpected error: $e');
       showSnackbar(AppStrings.errorUnknown);

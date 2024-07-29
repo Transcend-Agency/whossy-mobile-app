@@ -1,4 +1,5 @@
-export 'package:whossy_mobile_app/constants/asset_paths.dart';
-export 'package:whossy_mobile_app/constants/colors.dart';
-export 'package:whossy_mobile_app/constants/extras.dart';
-export 'package:whossy_mobile_app/constants/strings.dart';
+export 'asset_paths.dart';
+export 'colors.dart';
+export 'error_handler.dart';
+export 'extras.dart';
+export 'strings.dart';

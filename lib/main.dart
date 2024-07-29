@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/app/whossy.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
-import 'package:whossy_mobile_app/feature/auth/sign_up/data/state/sign_up_notifier.dart';
-import 'package:whossy_mobile_app/view_model/auth_provider.dart';
+import 'package:whossy_mobile_app/provider/providers.dart';
 
 import 'firebase_options.dart';
 
@@ -22,9 +20,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
         ChangeNotifierProvider(create: (_) => OnboardingNotifier()),
         ChangeNotifierProvider(create: (_) => SignUpNotifier()),
+        ChangeNotifierProvider(create: (_) => LoginNotifier()),
       ],
       child: Whossy(),
     ),
