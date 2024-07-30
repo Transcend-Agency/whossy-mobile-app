@@ -107,4 +107,12 @@ class AppStrings {
 
   static const String reset =
       'A link has been sent to your email to reset your password.';
+
+  static const String unregisteredEmail =
+      'Account not registered with app, consider signing up instead';
+
+  static const String differentCredentials =
+      'Account exists with different credential';
+
+  static const String accUnselected = 'No account selected';
 }

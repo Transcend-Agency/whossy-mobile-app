@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:whossy_mobile_app/feature/auth/login/model/reset_response.dart';
 
 import '../../model/app_user.dart';
 
@@ -11,20 +10,6 @@ import '../../model/app_user.dart';
 class UserRepository {
   final _usersFirestore = FirebaseFirestore.instance.collection('users');
   final _storage = FirebaseStorage.instance;
-
-  Future<UserCredential> createUser(String email, String password) async {
-    return await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-  }
-
-  Future<UserCredential> loginUser(String email, String password) async {
-    return await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-  }
 
   Future<void> setUserData(AppUser user) async {
     await _usersFirestore.doc(user.uid).set(user.toJson());
@@ -52,21 +37,12 @@ class UserRepository {
     return null;
   }
 
-  Future<ResetResponse> resetPassword(String email) async {
-    final auth = FirebaseAuth.instance;
-
+  Future<bool> doesEmailExist(String email) async {
     var result = await _usersFirestore
         .where('email', isEqualTo: email)
         .get(const GetOptions(source: Source.server));
 
-    if (result.docs.isNotEmpty) {
-      await auth.sendPasswordResetEmail(email: email);
-
-      return ResetResponse(isSuccess: true, message: 'Verification email sent');
-    }
-
-    return ResetResponse(
-        isSuccess: false, message: 'Email is not registered with the app');
+    return result.docs.isNotEmpty;
   }
 
   // Update specific fields of user data

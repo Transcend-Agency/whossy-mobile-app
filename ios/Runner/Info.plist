@@ -46,11 +46,38 @@
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
     <!-- Add the following key -->
-   <key>NSPhotoLibraryUsageDescription</key>
-   <string>We need access to your photo library to allow you to upload and select photos for your profile.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photo library to allow you to upload and select photos for your profile.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>We need access to your camera to let you capture and upload photos directly for your profile.</string>
 
-   <key>NSCameraUsageDescription</key>
-   <string>We need access to your camera to let you capture and upload photos directly for your profile.</string>
+    <!-- Facebook SDK configuration -->
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>fb1186517119037913</string>
+                <string>com.googleusercontent.apps.332139466657-qbhs9p8997hmgue97nhkaij3qk5pjng1</string>
+            </array>
+        </dict>
+    </array>
 
+    <key>FacebookAppID</key>
+    <string>1186517119037913</string>
+
+    <key>FacebookClientToken</key>
+    <string>1534eeb56bd8cc2f364b581f0e4924b1</string>
+
+    <key>FacebookDisplayName</key>
+    <string>Whossy</string>
+
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>fbapi</string>
+      <string>fb-messenger-share-api</string>
+    </array>
 </dict>
 </plist>

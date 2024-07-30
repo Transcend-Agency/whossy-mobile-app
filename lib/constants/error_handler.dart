@@ -37,6 +37,9 @@ void handleFirebaseAuthError(
     case 'network-request-failed':
       showSnackbar(AppStrings.errorNetworkRequestFailed);
       break;
+    case 'account-exists-with-different-credential':
+      showSnackbar(AppStrings.differentCredentials);
+      break;
     default:
       showSnackbar(AppStrings.errorUnknown);
   }

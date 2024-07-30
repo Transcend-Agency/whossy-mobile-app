@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../constants/index.dart';
+import '../../../login/data/repository/authentication_repository.dart';
 import '../../model/app_user.dart';
 import '../repository/user_repository.dart';
 
 class SignUpNotifier extends ChangeNotifier {
   final _userRepository = UserRepository();
+  final _authRepository = AuthenticationRepository();
   AppUser _user = AppUser();
   UserCredential? userCredential;
 
@@ -99,7 +101,7 @@ class SignUpNotifier extends ChangeNotifier {
     try {
       spinnerState = true;
 
-      userCredential = await _userRepository.createUser(email, password);
+      userCredential = await _authRepository.createUser(email, password);
 
       // Update data in firebase
       setBaseData(email: email);

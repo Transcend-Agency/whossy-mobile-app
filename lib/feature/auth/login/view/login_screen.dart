@@ -90,6 +90,22 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<void> loginWithGoogle() async {
+    await loginNotifier.loginWithGoogle(
+      showSnackbar: showSnackbar,
+      onAuthenticate: onAuthenticate,
+      showEmailSnackbar: showEmailSnackbar,
+      toCreateAccount: toCreateAccount,
+      toOnboarding: toOnboarding,
+    );
+  }
+
+  Future<void> loginWithFacebook() async {
+    await loginNotifier.loginWithFacebook(
+      showSnackbar: showSnackbar,
+    );
+  }
+
   // Function to show the "Email not verified" Snackbar
   void showEmailSnackbar(UserCredential credential) {
     if (mounted) {
@@ -259,7 +275,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               addHeight(20),
               OutlinedAppButton(
-                onPress: () {},
+                onPress: loginWithFacebook,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -281,7 +297,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 12.r),
                 child: OutlinedAppButton(
-                  onPress: () {},
+                  onPress: loginWithGoogle,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

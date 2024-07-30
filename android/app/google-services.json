@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "332139466657-t725bl7kn9c688oeprb0gvmv291lhafb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.transcend.whossy_mobile_app.whossy_mobile_app",
+            "certificate_hash": "2d4c1e040004d6e57a11a41dcfc7dd4b290a7323"
+          }
+        },
+        {
           "client_id": "332139466657-jf3p239ic82afjmajov9b9as4tpbveje.apps.googleusercontent.com",
           "client_type": 3
         }

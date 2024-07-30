@@ -19,7 +19,7 @@ class AppColors {
   // Color(0xFFFF0A0A);
 
   static const Color sbErrorBorderColor = Color(0xFFf2243e);
-  static const Color sbErrorFillColor = listTileColor;
+  static const Color sbErrorFillColor = Color(0xFFFAFBFC);
 //Color(0xFFFEECEE);
   static const Color faceBookColor = Color(0xFF1877f2);
   static const Color backButtonColor = Color(0xFFF8F8F8);

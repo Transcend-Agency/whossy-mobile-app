@@ -14,10 +14,11 @@ class Preferences {
   int? meet;
 
   @JsonKey(
-      name: 'date_of_birth',
-      fromJson: _dateTimeFromJson,
-      toJson: _dateTimeToJson,
-      includeIfNull: false)
+    name: 'date_of_birth',
+    fromJson: _dateTimeFromJson,
+    toJson: _dateTimeToJson,
+    includeIfNull: false,
+  )
   DateTime? dateOfBirth;
 
   @JsonKey(name: 'distance', includeIfNull: false)
