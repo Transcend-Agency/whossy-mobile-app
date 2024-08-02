@@ -55,7 +55,7 @@ class AppScaffold extends StatelessWidget {
             ),
           ),
         Padding(
-          padding: finalPadding.add(EdgeInsets.only(top: back ? 28.h : 0)),
+          padding: finalPadding.add(EdgeInsets.only(top: back ? 32.h : 0)),
           child: body,
         ),
       ], //

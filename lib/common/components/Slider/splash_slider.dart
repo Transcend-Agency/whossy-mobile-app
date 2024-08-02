@@ -28,8 +28,9 @@ class SplashSlider extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.fromLTRB(1.5, 4, 1.5, 0),
             child: Container(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Image.asset(
                 paths[index],

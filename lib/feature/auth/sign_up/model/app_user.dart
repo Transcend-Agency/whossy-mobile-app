@@ -31,8 +31,8 @@ class AppUser {
   @JsonKey(name: 'has_completed_account_creation', includeIfNull: false)
   final bool hasCompletedAccountCreation;
 
-  @JsonKey(name: 'has_completed_account_onboarding', includeIfNull: false)
-  final bool hasCompletedAccountOnboarding;
+  @JsonKey(name: 'has_completed_onboarding', includeIfNull: false)
+  final bool hasCompletedOnboarding;
 
   AppUser({
     this.uid,
@@ -44,7 +44,7 @@ class AppUser {
     this.countryOfOrigin,
     this.authProvider,
     this.hasCompletedAccountCreation = false, // Default value
-    this.hasCompletedAccountOnboarding = false, // Default value
+    this.hasCompletedOnboarding = false, // Default value
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>

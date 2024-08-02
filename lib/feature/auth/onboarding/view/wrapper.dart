@@ -1,15 +1,22 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_mobile_app/common/components/Button/skip_button.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
 
+import '../../../../common/styles/component_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
 import 'index.dart';
+import 'onboarding_upload.dart';
 
 @RoutePage()
 class Wrapper extends StatefulWidget {
@@ -19,15 +26,27 @@ class Wrapper extends StatefulWidget {
   State<Wrapper> createState() => _WrapperState();
 }
 
-class _WrapperState extends State<Wrapper> {
+class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
+  late StreamSubscription subscription;
+  late AnimationController _controller;
   late PageController _pageController;
   late List<Widget> _pages;
+
+  late bool _isConnected;
+
+  set connected(bool value) {
+    setState(() => _isConnected = value);
+  }
 
   int _activePage = 0;
 
   @override
   void initState() {
     super.initState();
+
+    _controller = BottomSheet.createAnimationController(this)
+      ..duration = const Duration(milliseconds: 400)
+      ..reverseDuration = const Duration(milliseconds: 400);
 
     _pageController = PageController();
 
@@ -44,12 +63,17 @@ class _WrapperState extends State<Wrapper> {
       const BioScreen(pageIndex: 9),
       const PictureScreen(pageIndex: 10),
     ];
+
+    subscription = Connectivity().onConnectivityChanged.listen((_) async {
+      connected = await InternetConnectionChecker().hasConnection;
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
 
+    _controller.dispose();
     _pageController.dispose();
   }
 
@@ -79,16 +103,26 @@ class _WrapperState extends State<Wrapper> {
     if (_activePage < _pages.length - 1) {
       _onPageUpdate(_activePage + 1);
     } else {
-      boarding!.uploadPreferences(
-        showSnackbar: showSnackbar,
-        onAuthenticate: goToNext,
-      );
+      if (_isConnected) {
+        showLoadingSheet(context, _controller);
+        boarding!.uploadPreferences(
+          showSnackbar: (_) => showSnackbar(context, _),
+          onAuthenticate: goToNext,
+        );
+      } else {
+        showSnackbar(context, AppStrings.deviceOffline, pop: false);
+      }
     }
   }
 
   goToNext() => Nav.replace(context, const HomeRoute());
 
-  showSnackbar(String message) {}
+  showSnackbar(BuildContext context, String message, {bool pop = true}) {
+    if (mounted) {
+      if (pop) Navigator.of(context).pop();
+      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+    }
+  }
 
   void _onPageUpdate(int index) {
     _pageController.animateToPage(
@@ -111,7 +145,7 @@ class _WrapperState extends State<Wrapper> {
             ),
           ),
           PageView.builder(
-            // physics: const NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             controller: _pageController,
             itemCount: _pages.length,
             onPageChanged: _onPageChange,
@@ -179,4 +213,31 @@ class _WrapperState extends State<Wrapper> {
       ),
     );
   }
+}
+
+const minSize = 0.4;
+const maxSize = 0.5;
+
+void showLoadingSheet(BuildContext ctx, AnimationController ctr) {
+  showModalBottomSheet<void>(
+    transitionAnimationController: ctr,
+    showDragHandle: false,
+    enableDrag: false,
+    isScrollControlled: true,
+    clipBehavior: Clip.hardEdge,
+    isDismissible: false,
+    context: ctx,
+    shape: roundedTop,
+    builder: (_) => PopScope(
+      canPop: false,
+      child: DraggableScrollableSheet(
+        shouldCloseOnMinExtent: false,
+        expand: false,
+        initialChildSize: minSize,
+        minChildSize: minSize,
+        maxChildSize: maxSize,
+        builder: (_, __) => const OnboardingUpload(),
+      ),
+    ),
+  );
 }

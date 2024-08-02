@@ -42,20 +42,53 @@ class AuthenticationRepository {
     );
   }
 
-  Future<UserCredential?> handleGoogleLogin() async {
+  Future<void> sendOTPCode(
+    String phone,
+    void Function(String, String) onSend,
+    void Function(String) showSnackbar,
+  ) async {
+    FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: phone,
+      verificationCompleted: (phoneAuthCredential) {
+        log('Verification completed $phoneAuthCredential');
+      },
+      verificationFailed: (error) {
+        log('Verification failed$error');
+        showSnackbar('An error occurred while attempting to send code');
+      },
+      codeSent: (verificationId, forceResendingToken) {
+        onSend(phone, verificationId);
+      },
+      codeAutoRetrievalTimeout: (verificationId) {
+        log('Auto retrieval timeout');
+      },
+    );
+  }
+
+  Future<UserCredential?> handlePhoneAuthentication(
+      String id, String code) async {
+    final credential =
+        PhoneAuthProvider.credential(verificationId: id, smsCode: code);
+
+    final user = FirebaseAuth.instance.currentUser;
+
+    // Link up
+    if (user != null) return await user.linkWithCredential(credential);
+
+    // Sign in with phone credential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  Future<UserCredential?> handleGoogleAuthentication(
+      {bool isLogin = true}) async {
     final isSignedIn = await GoogleSignIn().isSignedIn();
 
-    if (isSignedIn) {
-      await GoogleSignIn().disconnect();
-    }
+    if (isSignedIn) await GoogleSignIn().disconnect();
 
     // Trigger the authentication flow
     final googleUser = await GoogleSignIn().signIn();
 
-    if (googleUser == null) {
-      // User canceled the Google sign-in
-      return null;
-    }
+    if (googleUser == null) return null;
 
     // Obtain the auth details from the request
     final googleAuth = await googleUser.authentication;
@@ -66,24 +99,42 @@ class AuthenticationRepository {
       idToken: googleAuth.idToken,
     );
 
-    // Check if the email associated with the Google account is already registered
-    final email = googleUser.email;
-
     // Check if the email is registered with the app
-    final emailExists = await _userRepository.doesEmailExist(email);
+    final emailExists = await _userRepository.doesEmailExist(googleUser.email);
 
-    if (!emailExists) {
+    if (emailExists && !isLogin) {
+      throw RegisteredEmailException(AppStrings.registeredEmail);
+    }
+
+    if (!emailExists && isLogin) {
       throw UnregisteredEmailException(AppStrings.unregisteredEmail);
     }
 
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    final user = FirebaseAuth.instance.currentUser;
+
+    try {
+      // Link up
+      if (user != null) {
+        return await user.linkWithCredential(credential);
+      }
+
+      // Sign in with Google credential
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'provider-already-linked') {
+        // Sign in with Google credential if provider is already linked
+        return await FirebaseAuth.instance.signInWithCredential(credential);
+      } else {
+        // Rethrow the exception if it's not provider-already-linked
+        rethrow;
+      }
+    }
   }
 
   Future<void> handleFacebookLogin() async {
     final auth = FacebookAuth.instance;
 
-    final result = await auth.login();
+    final result = await auth.login(loginTracking: LoginTracking.enabled);
 
     if (result.status == LoginStatus.success) {
       // you are logged

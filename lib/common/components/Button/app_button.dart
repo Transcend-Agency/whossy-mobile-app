@@ -30,7 +30,7 @@ class AppButton extends StatelessWidget {
       child: MaterialButton(
         height: height.h,
         color: AppColors.buttonColor,
-        onPressed: loading ? null : onPress,
+        onPressed: loading || onPress == null ? null : onPress,
         textColor: Colors.white,
         elevation: 0,
         highlightElevation: 0,

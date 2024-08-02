@@ -91,12 +91,15 @@ class AppStrings {
   static const String errorEmailInUse =
       'Account creation failed, please use different credentials.';
   static const String errorInvalidEmail = 'The email address is not valid.';
+  static const String errorInvalidCode = 'Invalid code';
   static const String errorOperationNotAllowed =
-      'Email/password accounts are not enabled.';
+      'This authentication method is not enabled.';
   static const String errorWeakPassword = 'The password provided is too weak.';
   static const String errorNetworkRequestFailed = 'Poor internet connection';
   static const String errorUnknown =
       'An unknown error occurred. Please try again later.';
+  static const String deviceOffline =
+      'Network unavailable. Please try again later.';
 
   // Error messages for Login User
   static const String disabledAccount = 'Your account has been disabled';
@@ -110,6 +113,8 @@ class AppStrings {
 
   static const String unregisteredEmail =
       'Account not registered with app, consider signing up instead';
+
+  static const String registeredEmail = 'Account already registered';
 
   static const String differentCredentials =
       'Account exists with different credential';

@@ -122,7 +122,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
     final email = emailController.text.trim();
     final password = myPasswordController.text;
 
-    await signUpProvider.createAccount(
+    await signUpProvider.signUpWithEmail(
       email: email,
       password: password,
       showSnackbar: showSnackbar,

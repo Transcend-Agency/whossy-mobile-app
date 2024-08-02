@@ -10,7 +10,7 @@ final forgotTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);
 const verifyTouchable = EdgeInsets.all(6);
 
 final roundedTop = RoundedRectangleBorder(
-  borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
+  borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
 );
 
 final circularTop = BorderRadius.only(
@@ -23,10 +23,8 @@ final circularBorder = RoundedRectangleBorder(
 );
 
 const inputBorder = OutlineInputBorder(
-  borderSide: BorderSide(color: AppColors.inputBackGround),
-  borderRadius: BorderRadius.all(
-    Radius.circular(8),
-  ),
+  borderSide: BorderSide(color: Colors.transparent),
+  borderRadius: BorderRadius.all(Radius.circular(8)),
 );
 
 const underlinedInputBorder = UnderlineInputBorder(
@@ -37,12 +35,6 @@ final errorBorder = inputBorder.copyWith(
   borderSide: const BorderSide(
     color: AppColors.errorBorderColor,
     width: 1,
-  ),
-);
-
-final enabledBorder = inputBorder.copyWith(
-  borderSide: const BorderSide(
-    color: Colors.transparent,
   ),
 );
 
@@ -59,5 +51,12 @@ final snackbarDecoration = BoxDecoration(
   border: Border.all(
     width: 1,
     color: AppColors.sbErrorBorderColor,
+  ),
+);
+
+final focusedBorder = inputBorder.copyWith(
+  borderSide: const BorderSide(
+    color: AppColors.selectedFieldColor,
+    width: 1,
   ),
 );

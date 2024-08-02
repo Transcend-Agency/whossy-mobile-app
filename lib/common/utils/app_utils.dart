@@ -16,4 +16,13 @@ class AppUtils {
   static double? scale(double size) {
     return ScreenUtil().screenWidth > 500 ? size : null;
   }
+
+  static void moveItemToTop<T>(List<T> list, int index) {
+    if (index < 0 || index >= list.length) {
+      throw RangeError.index(index, list, 'index');
+    }
+
+    T item = list.removeAt(index);
+    list.insert(0, item);
+  }
 }

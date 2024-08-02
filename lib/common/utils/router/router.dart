@@ -14,6 +14,8 @@ class AppRouter extends $AppRouter {
         AutoRoute(page: LoginRoute.page),
         AutoRoute(page: ResetPasswordRoute.page),
         AutoRoute(page: ResetSuccessRoute.page),
+        AutoRoute(page: PhoneNumberRoute.page),
+        AutoRoute(page: VerificationCodeRoute.page),
 
         // SIGN-UP
         AutoRoute(page: SignUpCreateRoute.page),
@@ -25,7 +27,6 @@ class AppRouter extends $AppRouter {
 
         // ONBOARDING
         AutoRoute(page: Wrapper.page),
-
         // MAIN APP
         AutoRoute(page: HomeRoute.page),
       ];

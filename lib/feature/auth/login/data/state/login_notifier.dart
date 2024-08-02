@@ -25,11 +25,12 @@ class LoginNotifier extends ChangeNotifier {
   Future<void> accountCheck({
     User? user,
     bool showIfNull = false,
+    bool disableEmailCheck = false,
     required void Function(String) showSnackbar,
     required VoidCallback onAuthenticate,
     required VoidCallback toCreateAccount,
     required VoidCallback toOnboarding,
-    required void Function(UserCredential) showEmailSnackbar,
+    void Function(UserCredential)? showEmailSnackbar,
   }) async {
     if (user == null) {
       if (showIfNull) showSnackbar(AppStrings.errorUnknown);
@@ -37,7 +38,7 @@ class LoginNotifier extends ChangeNotifier {
       return;
     }
 
-    if (user.emailVerified) {
+    if (user.emailVerified || disableEmailCheck) {
       final appUser = await _userRepository.getUserData(user.uid);
 
       if (appUser != null) {
@@ -46,7 +47,7 @@ class LoginNotifier extends ChangeNotifier {
           return;
         }
 
-        if (!appUser.hasCompletedAccountOnboarding) {
+        if (!appUser.hasCompletedOnboarding) {
           toOnboarding();
           return;
         }
@@ -55,7 +56,7 @@ class LoginNotifier extends ChangeNotifier {
       onAuthenticate();
     } else {
       // Email is not verified, show the Snackbar
-      showEmailSnackbar(userCredential!);
+      showEmailSnackbar!(userCredential!);
     }
   }
 
@@ -100,7 +101,7 @@ class LoginNotifier extends ChangeNotifier {
     required void Function(UserCredential) showEmailSnackbar,
   }) async {
     try {
-      userCredential = await _authRepository.handleGoogleLogin();
+      userCredential = await _authRepository.handleGoogleAuthentication();
 
       await accountCheck(
         user: userCredential?.user,
@@ -132,6 +133,58 @@ class LoginNotifier extends ChangeNotifier {
     } catch (e) {
       showSnackbar(AppStrings.accUnselected);
     } finally {}
+  }
+
+  Future<void> loginWithPhoneNumber({
+    required String id,
+    required String code,
+    required void Function(String) showSnackbar,
+    required VoidCallback toCreateAccount,
+    required VoidCallback toOnboarding,
+    required VoidCallback onAuthenticate,
+  }) async {
+    try {
+      spinnerState = true;
+
+      userCredential =
+          await _authRepository.handlePhoneAuthentication(id, code);
+
+      await accountCheck(
+        user: userCredential?.user,
+        showSnackbar: showSnackbar,
+        onAuthenticate: onAuthenticate,
+        toCreateAccount: toCreateAccount,
+        toOnboarding: toOnboarding,
+        disableEmailCheck: true,
+      );
+    } on FirebaseException catch (e) {
+      handleFirebaseAuthError(e, showSnackbar);
+    } catch (e) {
+      showSnackbar(AppStrings.errorUnknown);
+      log(e.toString());
+    } finally {
+      spinnerState = false;
+    }
+  }
+
+  Future<void> sendPhoneNumberCode({
+    required String phone,
+    required void Function(String) showSnackbar,
+    required void Function(String, String) onSend,
+  }) async {
+    try {
+      spinnerState = true;
+
+      log('I am cooking');
+      await _authRepository.sendOTPCode(phone, onSend, showSnackbar);
+    } on FirebaseException catch (e) {
+      handleFirebaseAuthError(e, showSnackbar);
+    } catch (e) {
+      showSnackbar(AppStrings.errorUnknown);
+      log(e.toString());
+    } finally {
+      spinnerState = false;
+    }
   }
 
   Future<void> sendPasswordResetEmail({

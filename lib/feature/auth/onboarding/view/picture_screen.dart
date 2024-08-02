@@ -9,8 +9,10 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
+import 'package:whossy_mobile_app/feature/auth/onboarding/view/edit_sheet.dart';
 
 import '../../../../common/components/index.dart';
+import '../../../../common/styles/component_style.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
@@ -75,6 +77,30 @@ class _PictureScreenState extends State<PictureScreen>
     return File(croppedImage.path);
   }
 
+  /// Move image to the top of the list
+  void _moveImageToTop(int index) {
+    setState(() {
+      AppUtils.moveItemToTop(_images, index);
+    });
+
+    // Call updateUserProfile after reordering the images
+    onboarding.updateUserProfile(picFiles: _images);
+  }
+
+  void _deleteImage(int index) {
+    setState(() {
+      _images.removeAt(index);
+      // Ensure to update the onboarding status if necessary
+      final valid = _images.length >= 3;
+      if (onboarding.isSelected(widget.pageIndex) != valid) {
+        onboarding.select(widget.pageIndex, value: valid);
+      }
+    });
+
+    // Call updateUserProfile after deleting an image
+    onboarding.updateUserProfile(picFiles: _images);
+  }
+
   @override
   void initState() {
     onboarding = Provider.of<OnboardingNotifier>(context, listen: false);
@@ -92,7 +118,7 @@ class _PictureScreenState extends State<PictureScreen>
       children: [
         const OnboardingHeaderText(
           title: "Share a snapshot of you",
-          subtitle: "Add at least 2 recent photos of yourself 🤗",
+          subtitle: "Add at least 3 recent photos of yourself 🤗",
         ),
         addHeight(8),
         Text(
@@ -141,14 +167,60 @@ class _PictureScreenState extends State<PictureScreen>
                               : null,
                         ),
                       ),
-                      Positioned(
-                        top: -15,
-                        left: 0,
-                        child: GestureDetector(
-                          onTap: _pickImages,
-                          child: SvgPicture.asset(AppAssets.cam1),
-                        ),
-                      ),
+                      _images.isNotEmpty
+                          ? Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Positioned(
+                                  left: -13,
+                                  top: -13,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: SvgPicture.asset(
+                                      AppAssets.dots,
+                                      width: 28,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: -23,
+                                  left: -24,
+                                  child: SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: GestureDetector(
+                                      onTap: () => showCustomModalBottomSheet(
+                                          context, () => _deleteImage(0)),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
+                          : Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Positioned(
+                                  top: -15,
+                                  left: 0,
+                                  child: SvgPicture.asset(AppAssets.cam1),
+                                ),
+                                Positioned(
+                                  top: -23,
+                                  left: -9,
+                                  child: SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: GestureDetector(
+                                      onTap: _pickImages,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                     ],
                   ),
                 ),
@@ -158,7 +230,7 @@ class _PictureScreenState extends State<PictureScreen>
         ),
         addHeight(96),
         SizedBox(
-          height: 76.r,
+          height: 80.r,
           child: ListView(
             clipBehavior: Clip.none,
             scrollDirection: Axis.horizontal,
@@ -166,26 +238,57 @@ class _PictureScreenState extends State<PictureScreen>
             children: List.generate(5, (_) {
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5.w),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      width: 80.r,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      decoration: BoxDecoration(
-                        color: AppColors.listTileColor,
-                        borderRadius: BorderRadius.circular(6.r),
+                child: GestureDetector(
+                  onTap: _images.length - 1 > _
+                      ? () => _moveImageToTop(_ + 1)
+                      : null,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: 82.r,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        decoration: BoxDecoration(
+                          color: AppColors.listTileColor,
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: _images.length - 1 > _
+                            ? Image.file(_images[_ + 1], fit: BoxFit.cover)
+                            : null,
                       ),
-                      child: _images.length - 1 > _
-                          ? Image.file(_images[_ + 1], fit: BoxFit.cover)
-                          : null,
-                    ),
-                    Positioned(
-                      top: -4,
-                      left: -2,
-                      child: SvgPicture.asset(AppAssets.cam2, width: 25.r),
-                    ),
-                  ],
+                      _images.length - 1 > _
+                          ? Positioned(
+                              top: -4,
+                              left: -4,
+                              child: GestureDetector(
+                                onTap: () => showCustomModalBottomSheet(
+                                    context, () => _deleteImage(_ + 1)),
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: SvgPicture.asset(
+                                    AppAssets.dots,
+                                    width: 23,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Positioned(
+                              top: -4,
+                              left: -2,
+                              child: GestureDetector(
+                                onTap: _pickImages,
+                                child: SvgPicture.asset(
+                                  AppAssets.cam2,
+                                  width: 27.r,
+                                ),
+                              ),
+                            )
+                    ],
+                  ),
                 ),
               );
             }),
@@ -195,4 +298,16 @@ class _PictureScreenState extends State<PictureScreen>
       ],
     );
   }
+}
+
+void showCustomModalBottomSheet(
+  BuildContext context,
+  VoidCallback onDelete,
+) {
+  showModalBottomSheet<void>(
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => EditSheet(onDelete: onDelete),
+  );
 }

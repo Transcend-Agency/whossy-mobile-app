@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +11,7 @@ import 'package:whossy_mobile_app/feature/auth/sign_up/data/state/sign_up_notifi
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
+import '../data/repository/user_repository.dart';
 
 @RoutePage()
 class SignUpPhoneScreen extends StatefulWidget {
@@ -24,13 +23,14 @@ class SignUpPhoneScreen extends StatefulWidget {
 
 class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
   late SignUpNotifier signUpProvider;
+  late UserRepository _userRepository;
 
   Country? country;
   Country? origin;
   bool isLoading = false;
 
   String? existingPhoneNumber;
-  Timer? _debounce;
+  final _debouncer = Debouncer(milliseconds: 1500);
 
   // Controllers
   final countryController = TextEditingController();
@@ -75,14 +75,12 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
         existingPhoneNumber = 'Checking ...';
       });
 
-      if (_debounce?.isActive ?? false) _debounce?.cancel();
-      _debounce = Timer(
-        const Duration(milliseconds: 1500),
+      _debouncer.run(
         () async {
           final countryCode = '+${country?.phoneCode ?? ''}';
           // Perform the phone number availability check here
-          final result = await signUpProvider
-              .isPhoneUnique(text.formatNumber(countryCode));
+          final result =
+              await _userRepository.checkPhone(text.formatNumber(countryCode));
 
           final unique = result['isEmpty'] ?? false;
           final message =
@@ -132,6 +130,8 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
   void initState() {
     signUpProvider = Provider.of<SignUpNotifier>(context, listen: false);
 
+    _userRepository = UserRepository();
+
     phoneController.addListener(_onPhoneNumberChanged);
 
     super.initState();
@@ -152,8 +152,6 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
 
     shakeState2.currentState?.dispose();
     shakeState3.currentState?.dispose();
-
-    _debounce?.cancel();
 
     super.dispose();
   }

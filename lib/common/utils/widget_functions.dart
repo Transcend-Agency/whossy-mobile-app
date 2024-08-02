@@ -41,6 +41,14 @@ Icon fbIcon() {
   );
 }
 
+Icon phone() {
+  return Icon(
+    Icons.phone,
+    color: AppColors.black,
+    size: 22.r,
+  );
+}
+
 Icon backIcon() {
   return const Icon(
     Icons.arrow_back_ios_new_rounded,

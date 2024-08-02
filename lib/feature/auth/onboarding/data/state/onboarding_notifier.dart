@@ -61,8 +61,7 @@ class OnboardingNotifier extends ChangeNotifier {
       await _prefRepository.uploadPreferences(_userPreferences);
 
       // the user has now completed the account onboarding
-      _userRepository
-          .updateUserData({"has_completed_account_onboarding": true});
+      _userRepository.updateUserData({"has_completed_onboarding": true});
 
       onAuthenticate();
     } catch (e) {

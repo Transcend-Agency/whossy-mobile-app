@@ -17,8 +17,8 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       authProvider: json['authProvider'] as String?,
       hasCompletedAccountCreation:
           json['has_completed_account_creation'] as bool? ?? false,
-      hasCompletedAccountOnboarding:
-          json['has_completed_account_onboarding'] as bool? ?? false,
+      hasCompletedOnboarding:
+          json['has_completed_onboarding'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) {
@@ -39,7 +39,6 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   writeNotNull('country_of_origin', instance.countryOfOrigin);
   writeNotNull('authProvider', instance.authProvider);
   val['has_completed_account_creation'] = instance.hasCompletedAccountCreation;
-  val['has_completed_account_onboarding'] =
-      instance.hasCompletedAccountOnboarding;
+  val['has_completed_onboarding'] = instance.hasCompletedOnboarding;
   return val;
 }

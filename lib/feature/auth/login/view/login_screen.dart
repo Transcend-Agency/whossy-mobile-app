@@ -252,6 +252,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: EdgeInsets.symmetric(vertical: 20.h),
                 child: AppButton(
                   onPress: validate,
+                  /*
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const DemoPage()),
+                  )
+                   */
                   text: AppStrings.loginButton,
                   loading: spinner,
                 ),
@@ -295,7 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.r),
+                padding: EdgeInsets.symmetric(vertical: 12.h),
                 child: OutlinedAppButton(
                   onPress: loginWithGoogle,
                   child: Row(
@@ -317,6 +323,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+              OutlinedAppButton(
+                onPress: () => Nav.push(context, PhoneNumberRoute()),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    phone(),
+                    addWidth(6),
+                    Padding(
+                      padding: EdgeInsets.only(top: 3.h),
+                      child: Text(
+                        "Sign in with Phone number",
+                        style: TextStyles.buttonText.copyWith(
+                          color: AppColors.hintTextColor,
+                          fontSize: AppUtils.scale(17),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              addHeight(12),
               OutlinedAppButton(
                 onPress: () => Nav.replace(context, const SignUpCreateRoute()),
                 text: AppStrings.createAccountButton,

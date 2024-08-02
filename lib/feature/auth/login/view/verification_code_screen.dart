@@ -1,0 +1,211 @@
+import 'package:auto_route/annotations.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:whossy_mobile_app/common/components/index.dart';
+
+import '../../../../common/styles/component_style.dart';
+import '../../../../common/styles/text_style.dart';
+import '../../../../common/utils/index.dart';
+import '../../../../common/utils/router/router.gr.dart';
+import '../../../../constants/index.dart';
+import '../../../../provider/providers.dart';
+
+@RoutePage()
+class VerificationCodeScreen extends StatefulWidget {
+  const VerificationCodeScreen({
+    super.key,
+    required this.phone,
+    required this.verId,
+    this.signIn = true,
+  });
+
+  final String phone;
+  final String verId;
+  final bool signIn;
+
+  @override
+  State<VerificationCodeScreen> createState() => _VerificationCodeScreenState();
+}
+
+class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
+  final _countdownTimerKey = GlobalKey<CountdownTextState>();
+  final otpController = TextEditingController();
+  late LoginNotifier loginNotifier;
+  late SignUpNotifier signUpNotifier;
+
+  bool activateResend = false;
+  int countDownDuration = 59;
+  bool _isButtonEnabled = false;
+
+  @override
+  void initState() {
+    otpController.addListener(_handleOTPChange);
+
+    loginNotifier = Provider.of<LoginNotifier>(context, listen: false);
+    signUpNotifier = Provider.of<SignUpNotifier>(context, listen: false);
+
+    super.initState();
+  }
+
+  void _handleOTPChange() {
+    setState(() => _isButtonEnabled = otpController.text.length == 6);
+  }
+
+  onFinished() {
+    setState(() => activateResend = true);
+  }
+
+  @override
+  void dispose() {
+    otpController.dispose();
+    super.dispose();
+  }
+
+  resendCode() async {
+    if (_countdownTimerKey.currentState != null) {
+      _countdownTimerKey.currentState!.restartTimer();
+    }
+
+    setState(() {
+      activateResend = false;
+    });
+
+    // Re-send email verification to new user
+    //await user!.sendEmailVerification();
+  }
+
+  continueSignUp() {
+    signUpNotifier.signUpWithPhone(
+      id: widget.verId,
+      phone: widget.phone,
+      code: otpController.text,
+      showSnackbar: showSnackbar,
+      onAuthenticate: onSignUpAuthenticate,
+    );
+  }
+
+  continueLogin() {
+    loginNotifier.loginWithPhoneNumber(
+      id: widget.verId,
+      code: otpController.text,
+      showSnackbar: showSnackbar,
+      toCreateAccount: toCreateAccount,
+      toOnboarding: toOnboarding,
+      onAuthenticate: onLoginAuthenticate,
+    );
+  }
+
+  toOnboarding() =>
+      Nav.pushAndPopUntil(context, const Wrapper(), LoginRoute.name);
+
+  onLoginAuthenticate() => Nav.replaceAll(context, [const HomeRoute()]);
+
+  onSignUpAuthenticate() => Nav.pushAndPopUntil(
+      context, const SignUpNameRoute(), SignUpCreateRoute.name);
+
+  toCreateAccount() =>
+      Nav.pushAndPopUntil(context, const SignUpNameRoute(), LoginRoute.name);
+
+  showSnackbar(String message) {
+    if (mounted) {
+      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppScaffold(
+      back: true,
+      padding: pagePadding,
+      body: Selector2<LoginNotifier, SignUpNotifier, bool>(
+        selector: (_, login, signUp) {
+          return widget.signIn ? login.spinnerState : signUp.spinnerState;
+        },
+        builder: (_, spinner, __) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SignupHeaderText(
+                title: "Phone number Sign in",
+                subtitle:
+                    "A code has been sent to ${widget.phone}, enter to sign in",
+              ),
+              PinOTPField(controller: otpController),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Didn’t receive the code?',
+                    style: TextStyles.bioText.copyWith(
+                      fontSize: AppUtils.scale(11.5.sp),
+                    ),
+                  ),
+                  addWidth(4),
+                  !activateResend
+                      ? Row(
+                          children: [
+                            Text(
+                              'Resend in ',
+                              style: TextStyles.bioText.copyWith(
+                                fontSize: AppUtils.scale(11.5.sp),
+                              ),
+                            ),
+                            CountdownText(
+                              key: _countdownTimerKey,
+                              textStyle: TextStyles.bioText.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.black,
+                                fontSize: AppUtils.scale(11.5.sp),
+                              ),
+                              durationInSeconds: countDownDuration,
+                              onTimerTick: (duration) => setState(() {}),
+                              onFinished: onFinished,
+                            ),
+                            addWidth(3),
+                            Text(
+                              's',
+                              style: TextStyles.bioText.copyWith(
+                                fontSize: AppUtils.scale(11.5.sp),
+                              ),
+                            )
+                          ],
+                        )
+                      : GestureDetector(
+                          onTap: () => resendCode(),
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            child: Text(
+                              'Resend',
+                              style: TextStyles.bioText.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.black,
+                                fontSize: AppUtils.scale(11.5.sp),
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ),
+                ],
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: AppButton(
+                  loading: spinner,
+                  onPress: _isButtonEnabled
+                      ? widget.signIn
+                          ? continueLogin
+                          : continueSignUp
+                      : null,
+                  text: 'Continue',
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}

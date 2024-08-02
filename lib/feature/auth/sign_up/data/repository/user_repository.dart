@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,6 +22,33 @@ class UserRepository {
         .get(const GetOptions(source: Source.server));
 
     return result.docs.isEmpty;
+  }
+
+  Future<Map<String, dynamic>> checkPhone(
+    String phone, {
+    bool exists = false,
+  }) async {
+    try {
+      bool isEmpty = await isPhoneUnique(phone);
+
+      return {
+        'isEmpty': exists ? !isEmpty : isEmpty,
+      };
+    } on FirebaseException catch (e) {
+      const message = 'Unable to check, device offline';
+
+      log('Error checking if phone number is unique, '
+          'A Firebase Exception occurred ${e.toString()}');
+
+      return {
+        'message': message,
+      };
+    } catch (e) {
+      log('Error checking for unique phone number ${e.toString()}');
+    }
+    return {
+      'message': 'Oops, an unknown error occurred',
+    };
   }
 
   Future<AppUser?> getUserData(String uid) async {

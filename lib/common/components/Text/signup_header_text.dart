@@ -10,6 +10,7 @@ class SignupHeaderText extends StatelessWidget {
   final double top;
   final double bottom;
   final double mid;
+  final bool center;
 
   const SignupHeaderText({
     super.key,
@@ -18,6 +19,7 @@ class SignupHeaderText extends StatelessWidget {
     this.top = 24,
     this.bottom = 24,
     this.mid = 4,
+    this.center = false,
   });
 
   @override
@@ -28,11 +30,13 @@ class SignupHeaderText extends StatelessWidget {
         addHeight(top),
         Text(
           title,
+          textAlign: center ? TextAlign.center : null,
           style: TextStyles.title.copyWith(fontSize: 24.sp),
         ),
         addHeight(mid),
         Text(
           subtitle,
+          textAlign: center ? TextAlign.center : null,
           style: TextStyles.bioText.copyWith(
             fontSize: AppUtils.scale(11.5.sp),
           ),

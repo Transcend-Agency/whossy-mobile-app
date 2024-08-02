@@ -15,4 +15,10 @@ class AppAssets {
   static const cam1 = 'assets/icons/camera.svg';
   static const cam2 = 'assets/icons/camera2.svg';
   static const success = 'assets/icons/success_icon.png';
+
+  static const dots = 'assets/icons/dots.svg';
+  static const upload = 'assets/icons/upload.svg';
+  static const bin = 'assets/icons/bin.svg';
+
+  static const loading = 'assets/animations/loading.lottie';
 }

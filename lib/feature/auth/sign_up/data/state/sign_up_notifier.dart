@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import '../../../login/data/repository/authentication_repository.dart';
 import '../../model/app_user.dart';
@@ -34,7 +35,8 @@ class SignUpNotifier extends ChangeNotifier {
   }
 
   Future<void> setBaseData({
-    required String email,
+    String? email,
+    String? phone,
     String provider = 'local',
   }) async {
     final uid = userCredential!.user!.uid;
@@ -92,7 +94,35 @@ class SignUpNotifier extends ChangeNotifier {
     }
   }
 
-  Future<void> createAccount({
+  Future<void> signUpWithPhone({
+    required String id,
+    required String code,
+    required String phone,
+    required void Function(String) showSnackbar,
+    required VoidCallback onAuthenticate,
+  }) async {
+    try {
+      spinnerState = true;
+
+      userCredential =
+          await _authRepository.handlePhoneAuthentication(id, code);
+
+      // Update data in firebase
+      setBaseData(phone: phone, provider: 'phone');
+
+      // Account creation successful, handle accordingly
+      onAuthenticate();
+    } on FirebaseException catch (e) {
+      handleFirebaseAuthError(e, showSnackbar);
+    } catch (e) {
+      showSnackbar(AppStrings.errorUnknown);
+      log(e.toString());
+    } finally {
+      spinnerState = false;
+    }
+  }
+
+  Future<void> signUpWithEmail({
     required String email,
     required String password,
     required void Function(String) showSnackbar,
@@ -119,28 +149,31 @@ class SignUpNotifier extends ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> isPhoneUnique(String phone) async {
+  Future<void> signUpWithGoogle({
+    required void Function(String) showSnackbar,
+    required VoidCallback onAuthenticate,
+  }) async {
     try {
-      bool isEmpty = await _userRepository.isPhoneUnique(phone);
+      spinnerState = true;
 
-      return {
-        'isEmpty': isEmpty,
-      };
-    } on FirebaseException catch (e) {
-      const message = 'Unable to check, device offline';
+      userCredential =
+          await _authRepository.handleGoogleAuthentication(isLogin: false);
 
-      log('Error checking if phone number is unique, '
-          'A Firebase Exception occurred ${e.toString()}');
+      // Update data in firebase
+      setBaseData(provider: 'google', email: userCredential!.user!.email);
 
-      return {
-        'message': message,
-      };
-    } catch (e) {
-      log('Error checking for unique phone number ${e.toString()}');
+      // Account creation successful, handle accordingly
+      onAuthenticate();
+    } on Exception catch (e) {
+      if (e is UnregisteredEmailException || e is RegisteredEmailException) {
+        showSnackbar((e as dynamic).message);
+      } else {
+        showSnackbar(AppStrings.errorUnknown);
+        log(e.toString());
+      }
+    } finally {
+      spinnerState = false;
     }
-    return {
-      'message': 'Oops, an unknown error occurred',
-    };
   }
 
   void updateAppUser({
@@ -167,8 +200,8 @@ class SignUpNotifier extends ChangeNotifier {
       authProvider: authProvider ?? _user.authProvider,
       hasCompletedAccountCreation:
           hasCompletedAccountCreation ?? _user.hasCompletedAccountCreation,
-      hasCompletedAccountOnboarding:
-          hasCompletedAccountOnboarding ?? _user.hasCompletedAccountOnboarding,
+      hasCompletedOnboarding:
+          hasCompletedAccountOnboarding ?? _user.hasCompletedOnboarding,
     );
 
     // Notify listeners about the change

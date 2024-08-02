@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../constants/colors.dart';
-import '../../styles/component_style.dart';
 import '../../styles/text_style.dart';
 
 class AppTextField extends StatelessWidget {
@@ -21,7 +20,6 @@ class AppTextField extends StatelessWidget {
     this.maxLength,
     this.lengthLimit,
     this.isPhone = false,
-    this.isUsername = false,
     this.prefixIcon,
     this.enabled = true,
     this.keyboardType,
@@ -42,7 +40,6 @@ class AppTextField extends StatelessWidget {
   final int? maxLength;
   final int? lengthLimit;
   final bool isPhone;
-  final bool isUsername;
   final bool enabled;
   final bool error;
   final TextInputType? keyboardType;
@@ -70,19 +67,12 @@ class AppTextField extends StatelessWidget {
             ? _PhoneNumberFormatter()
             : FilteringTextInputFormatter(RegExp('.'), allow: true),
         LengthLimitingTextInputFormatter(maxLength ?? lengthLimit),
-        if (isUsername) LowercaseTextFormatter()
       ],
       decoration: InputDecoration(
-        focusedBorder: inputBorder.copyWith(
-          borderSide: BorderSide(
-            color: focusedBorderColor ?? AppColors.selectedFieldColor,
-            width: focusedBorderColor == null ? 1 : 0.5,
-          ),
-        ),
         isDense: true,
         fillColor: AppColors.inputBackGround.withOpacity(0.9),
         hintText: hintText,
-        contentPadding: const EdgeInsets.all(16),
+        contentPadding: const EdgeInsets.all(17),
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
       ),
@@ -118,19 +108,6 @@ class _PhoneNumberFormatter extends TextInputFormatter {
     return TextEditingValue(
       text: buffer.toString(),
       selection: TextSelection.collapsed(offset: buffer.length),
-    );
-  }
-}
-
-class LowercaseTextFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    return TextEditingValue(
-      text: newValue.text.toLowerCase(),
-      selection: newValue.selection,
     );
   }
 }
