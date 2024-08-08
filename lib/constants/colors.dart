@@ -13,15 +13,23 @@ class AppColors {
 
   static const Color hintTextColor = Color(0xFF8a8a8e);
   static const Color outlinedColor = Color(0xFFD9D9D9);
+  static const Color activeTrackColor = Color(0xFFc4c4c7);
+
   static const Color optionsSheetDivider = Color(0xFFECECEC);
   static const Color ringColor = Color(0xFFCDCDCD);
   static const Color errorBorderColor = primaryColor;
   // Color(0xFFFF0A0A);
 
   static const Color sbErrorBorderColor = Color(0xFFf2243e);
+  static const Color selectedTabIconColor = sbErrorBorderColor;
+  static const Color unSelectedTabIconColor = hintTextColor;
+
   static const Color sbErrorFillColor = Color(0xFFFAFBFC);
 //Color(0xFFFEECEE);
   static const Color faceBookColor = Color(0xFF1877f2);
+  static const Color saveColor = Color(0xFF485fe6);
+
+  // 485fe6
   static const Color backButtonColor = Color(0xFFF8F8F8);
   static const Color listTileColor = Color(0xFFF6F6F6);
 

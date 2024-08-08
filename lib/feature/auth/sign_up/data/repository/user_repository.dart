@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:whossy_mobile_app/common/utils/exceptions/failed_upload.dart';
 
 import '../../model/app_user.dart';
 
@@ -82,18 +83,23 @@ class UserRepository {
 
   // Method to upload files and return download URLs
   Future<List<String>> uploadProfilePictures(List<File> files) async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    final List<String> downloadUrls = [];
+    try {
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final List<String> downloadUrls = [];
 
-    for (var file in files) {
-      final fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      final storageRef =
-          _storage.ref().child('users/$uid/profile_pictures/$fileName');
-      final uploadTask = await storageRef.putFile(file);
-      final downloadUrl = await uploadTask.ref.getDownloadURL();
-      downloadUrls.add(downloadUrl);
+      for (var file in files) {
+        final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+        final storageRef =
+            _storage.ref().child('users/$uid/profile_pictures/$fileName');
+        final uploadTask = await storageRef.putFile(file);
+        final downloadUrl = await uploadTask.ref.getDownloadURL();
+        downloadUrls.add(downloadUrl);
+      }
+
+      return downloadUrls;
+    } catch (e) {
+      log(e.toString());
+      throw FailedUploadException('Poor network, please try again later');
     }
-
-    return downloadUrls;
   }
 }

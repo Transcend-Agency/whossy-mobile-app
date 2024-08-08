@@ -21,4 +21,11 @@ class AppAssets {
   static const bin = 'assets/icons/bin.svg';
 
   static const loading = 'assets/animations/loading.lottie';
+
+  // Tab bar icons
+  static const fire = 'assets/icons/fire.svg';
+  static const globalSearch = 'assets/icons/global_search.svg';
+  static const heart = 'assets/icons/heart.svg';
+  static const chat = 'assets/icons/chat.svg';
+  static const user = 'assets/icons/user.svg';
 }

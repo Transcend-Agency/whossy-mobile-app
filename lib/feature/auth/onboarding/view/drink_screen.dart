@@ -34,11 +34,12 @@ class _DrinkScreenState extends State<DrinkScreen>
           skip: true,
         ),
         addHeight(24),
-        ListView(
-          shrinkWrap: true,
-          children: AppConstants.drinkData.map((data) {
-            return Consumer<OnboardingNotifier>(
-              builder: (_, onboarding, __) {
+        Consumer<OnboardingNotifier>(
+          builder: (_, onboarding, __) {
+            return ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: AppConstants.drinkData.map((data) {
                 return GenericTile(
                   value: data.value,
                   groupValue: _drink,
@@ -49,9 +50,9 @@ class _DrinkScreenState extends State<DrinkScreen>
                   },
                   title: data.text,
                 );
-              },
+              }).toList(),
             );
-          }).toList(),
+          },
         ),
         const Spacer(),
       ],

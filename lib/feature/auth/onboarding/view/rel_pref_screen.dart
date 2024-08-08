@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/utils/index.dart';
@@ -33,20 +31,19 @@ class _RelPrefScreenState extends State<RelPrefScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        GestureDetector(
-          onTap: () => log('The preference value is $_pref'),
-          child: const OnboardingHeaderText(
-            title: "Specify your relationship preference",
-            subtitle:
-                'Everyone has a choice, feel free to choose. You can can always change later.',
-          ),
+        const OnboardingHeaderText(
+          title: "Specify your relationship preference",
+          subtitle:
+              'Everyone has a choice, feel free to choose. You can can always change later.',
         ),
         addHeight(24),
-        ListView(
-          shrinkWrap: true,
-          children: AppConstants.preferenceData.map((data) {
-            return Consumer<OnboardingNotifier>(
-              builder: (_, onboarding, __) {
+        Consumer<OnboardingNotifier>(
+          builder: (_, onboarding, __) {
+            return ListView(
+              // Todo: Use this for onboarding screens
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: AppConstants.preferenceData.map((data) {
                 return RadioTile(
                   leadingAsset: data.leadingAsset,
                   value: data.value,
@@ -54,14 +51,14 @@ class _RelPrefScreenState extends State<RelPrefScreen>
                   onChanged: (_) {
                     setState(() => _pref = _);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(relationshipPref: _.index);
+                    onboarding.updateUserProfile(relationshipPref: _?.index);
                   },
                   title: data.title,
                   subtitle: data.subtitle,
                 );
-              },
+              }).toList(),
             );
-          }).toList(),
+          },
         ),
         const Spacer(),
       ],

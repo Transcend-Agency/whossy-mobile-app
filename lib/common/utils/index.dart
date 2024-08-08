@@ -2,6 +2,7 @@
 export 'app_utils.dart';
 export 'debouncer.dart';
 export 'enums.dart';
+export 'exceptions/failed_upload.dart';
 export 'exceptions/registered_email.dart';
 export 'exceptions/unregistered_email.dart';
 export 'extensions.dart';

@@ -87,6 +87,14 @@ Icon search() {
   );
 }
 
+Icon checkIcon() {
+  return const Icon(
+    Icons.check,
+    color: Colors.black,
+    size: 22,
+  );
+}
+
 Row passwordRequirementRow(String text, {required bool checked}) {
   TextStyle textStyle = ScreenUtil().screenWidth > 500
       ? TextStyles.hintThemeText

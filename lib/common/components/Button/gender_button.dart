@@ -41,7 +41,7 @@ class GenderButton extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        value.icon,
+                        value?.icon,
                         size: 24.r,
                         color:
                             isSelected ? Colors.white : AppColors.hintTextColor,

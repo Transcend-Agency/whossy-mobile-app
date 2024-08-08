@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:whossy_mobile_app/common/styles/component_style.dart';
 
 import '../../../constants/colors.dart';
 import '../../styles/text_style.dart';
@@ -23,6 +24,8 @@ class AppTextField extends StatelessWidget {
     this.prefixIcon,
     this.enabled = true,
     this.keyboardType,
+    this.padding = 17,
+    this.curvierEdges = false,
   });
 
   final FocusNode focusNode;
@@ -42,6 +45,8 @@ class AppTextField extends StatelessWidget {
   final bool isPhone;
   final bool enabled;
   final bool error;
+  final double padding;
+  final bool curvierEdges;
   final TextInputType? keyboardType;
 
   @override
@@ -69,10 +74,24 @@ class AppTextField extends StatelessWidget {
         LengthLimitingTextInputFormatter(maxLength ?? lengthLimit),
       ],
       decoration: InputDecoration(
+        enabledBorder:
+            curvierEdges ? inputBorder.copyWith(borderRadius: curvySide) : null,
+        focusedBorder: curvierEdges
+            ? focusedBorder.copyWith(borderRadius: curvySide)
+            : null,
+        errorBorder:
+            curvierEdges ? errorBorder.copyWith(borderRadius: curvySide) : null,
+        focusedErrorBorder: curvierEdges
+            ? focusedErrorBorder.copyWith(borderRadius: curvySide)
+            : null,
+        disabledBorder:
+            curvierEdges ? inputBorder.copyWith(borderRadius: curvySide) : null,
+        border:
+            curvierEdges ? inputBorder.copyWith(borderRadius: curvySide) : null,
         isDense: true,
         fillColor: AppColors.inputBackGround.withOpacity(0.9),
         hintText: hintText,
-        contentPadding: const EdgeInsets.all(17),
+        contentPadding: EdgeInsets.all(padding),
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
       ),

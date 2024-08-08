@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:whossy_mobile_app/common/utils/exceptions/failed_upload.dart';
 import 'package:whossy_mobile_app/feature/auth/onboarding/data/repository/preference_repository.dart';
 
 import '../../../../../constants/index.dart';
@@ -64,9 +65,13 @@ class OnboardingNotifier extends ChangeNotifier {
       _userRepository.updateUserData({"has_completed_onboarding": true});
 
       onAuthenticate();
-    } catch (e) {
-      showSnackbar(AppStrings.errorUnknown);
-      log(e.toString());
+    } on Exception catch (e) {
+      if (e is FailedUploadException) {
+        showSnackbar((e as dynamic).message);
+      } else {
+        showSnackbar(AppStrings.errorUnknown);
+        log(e.toString());
+      }
     } finally {
       spinnerState = false;
     }

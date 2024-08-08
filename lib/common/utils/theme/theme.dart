@@ -10,6 +10,11 @@ import '../widget_functions.dart';
 class AppTheme {
   ThemeData theme() {
     return ThemeData(
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
+        ),
+      ),
       outlinedButtonTheme: const OutlinedButtonThemeData(style: ButtonStyle()),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       progressIndicatorTheme: const ProgressIndicatorThemeData(
@@ -32,6 +37,7 @@ class AppTheme {
         activeTrackColor: AppColors.outlinedColor,
         inactiveTrackColor: AppColors.outlinedColor,
         overlayShape: SliderComponentShape.noOverlay,
+        trackHeight: 1,
       ),
     );
   }

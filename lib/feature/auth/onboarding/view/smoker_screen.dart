@@ -34,24 +34,25 @@ class _SmokerScreenState extends State<SmokerScreen>
           skip: true,
         ),
         addHeight(24),
-        ListView(
-          shrinkWrap: true,
-          children: AppConstants.smokeData.map((data) {
-            return Consumer<OnboardingNotifier>(
-              builder: (_, onboarding, __) {
+        Consumer<OnboardingNotifier>(
+          builder: (_, onboarding, __) {
+            return ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: AppConstants.smokeData.map((data) {
                 return GenericTile(
                   value: data.value,
                   groupValue: _smoke,
-                  onChanged: (value) {
-                    setState(() => _smoke = value);
+                  onChanged: (_) {
+                    setState(() => _smoke = _);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(smoker: value?.index);
+                    onboarding.updateUserProfile(smoker: _?.index);
                   },
                   title: data.text,
                 );
-              },
+              }).toList(),
             );
-          }).toList(),
+          },
         ),
         const Spacer(),
       ],

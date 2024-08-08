@@ -8,13 +8,15 @@ import '../../utils/index.dart';
 class AppChip extends StatelessWidget {
   final String data;
   final bool isSelected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool outlined;
 
   const AppChip({
     super.key,
     required this.data,
     required this.isSelected,
-    required this.onTap,
+    this.onTap,
+    this.outlined = true,
   });
 
   @override
@@ -24,23 +26,30 @@ class AppChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 350),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected ? AppColors.black : AppColors.hintTextColor,
-            width: 1,
-          ),
+          border: outlined
+              ? Border.all(
+                  color: isSelected ? AppColors.black : AppColors.hintTextColor,
+                  width: 1,
+                )
+              : null,
           borderRadius: BorderRadius.circular(6.r),
           color: isSelected ? AppColors.black : Colors.white,
         ),
-        padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 5.w),
+        padding: outlined
+            ? EdgeInsets.symmetric(vertical: 3.h, horizontal: 5.w)
+            : EdgeInsets.symmetric(vertical: 2.h, horizontal: 8.w),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               data,
-              style: TextStyles.hintText.copyWith(
-                fontSize: AppUtils.scale(10.sp),
-                color: isSelected ? Colors.white : AppColors.hintTextColor,
-              ),
+              style: outlined
+                  ? TextStyles.hintText.copyWith(
+                      fontSize: AppUtils.scale(10.sp),
+                      color:
+                          isSelected ? Colors.white : AppColors.hintTextColor,
+                    )
+                  : TextStyles.prefText,
             ),
           ],
         ),

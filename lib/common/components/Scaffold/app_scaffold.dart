@@ -8,6 +8,8 @@ class AppScaffold extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final bool back;
   final bool useScrollView;
+  final Widget? bottomNavBar;
+  final PreferredSizeWidget? appBar;
 
   const AppScaffold({
     super.key,
@@ -16,6 +18,8 @@ class AppScaffold extends StatelessWidget {
     this.padding,
     this.back = false,
     this.useScrollView = false,
+    this.bottomNavBar,
+    this.appBar,
   });
 
   @override
@@ -24,6 +28,7 @@ class AppScaffold extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        appBar: appBar,
         resizeToAvoidBottomInset: resizeToAvoidBottomInset,
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -33,6 +38,7 @@ class AppScaffold extends StatelessWidget {
                 )
               : content(context: context, finalPadding: finalPadding),
         ),
+        bottomNavigationBar: bottomNavBar,
       ),
     );
   }

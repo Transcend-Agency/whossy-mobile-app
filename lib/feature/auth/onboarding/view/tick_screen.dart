@@ -84,6 +84,8 @@ class _TickScreenState extends State<TickScreen>
             textController: searchController,
             hintText: 'search',
             prefixIcon: search(),
+            padding: 13,
+            curvierEdges: true,
           ),
         ),
         addHeight(12),
@@ -130,22 +132,18 @@ class _TickScreenState extends State<TickScreen>
   }
 
   Widget _buildAppChip(String data) {
-    return Consumer<OnboardingNotifier>(
-      builder: (_, onboardingProvider, __) {
-        final isSelected = _selectedTicks.contains(data);
-        return AppChip(
-          data: data,
-          isSelected: isSelected,
-          onTap: () {
-            setState(() {
-              if (_selectedTicks.contains(data)) {
-                _selectedTicks.remove(data);
-              } else {
-                _selectedTicks.add(data);
-              }
-            });
-          },
-        );
+    final isSelected = _selectedTicks.contains(data);
+    return AppChip(
+      data: data,
+      isSelected: isSelected,
+      onTap: () {
+        setState(() {
+          if (_selectedTicks.contains(data)) {
+            _selectedTicks.remove(data);
+          } else {
+            _selectedTicks.add(data);
+          }
+        });
       },
     );
   }

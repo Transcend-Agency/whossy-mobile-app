@@ -7,14 +7,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:whossy_mobile_app/common/components/Button/skip_button.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
 
 import '../../../../common/styles/component_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
+import '../../../../provider/providers.dart';
 import 'index.dart';
 import 'onboarding_upload.dart';
 
@@ -115,7 +114,7 @@ class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
     }
   }
 
-  goToNext() => Nav.replace(context, const HomeRoute());
+  goToNext() => Nav.replace(context, const HomeWrapper());
 
   showSnackbar(BuildContext context, String message, {bool pop = true}) {
     if (mounted) {
@@ -218,6 +217,7 @@ class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
 const minSize = 0.4;
 const maxSize = 0.5;
 
+// Todo: Make responsive for bigger screens
 void showLoadingSheet(BuildContext ctx, AnimationController ctr) {
   showModalBottomSheet<void>(
     transitionAnimationController: ctr,

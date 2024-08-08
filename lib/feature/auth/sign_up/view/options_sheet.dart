@@ -36,7 +36,7 @@ class SignupOptions extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
+                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

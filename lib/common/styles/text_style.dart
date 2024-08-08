@@ -53,6 +53,20 @@ class TextStyles {
     fontSize: 13.sp,
   );
 
+  static TextStyle text = hintThemeText.copyWith(
+    fontSize: 13.sp,
+    color: AppColors.black,
+  );
+
+  static TextStyle prefText = text.copyWith(
+    fontSize: AppUtils.scale(11.5.sp),
+  );
+
+  static TextStyle boldPrefText = text.copyWith(
+    fontSize: AppUtils.scale(13.5.sp) ?? 15.sp,
+    fontWeight: FontWeight.w500,
+  );
+
   static TextStyle bioText = hintThemeText.copyWith(
     fontSize: 13.sp,
   );

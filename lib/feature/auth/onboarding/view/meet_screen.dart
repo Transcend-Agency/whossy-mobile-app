@@ -39,25 +39,23 @@ class _MeetScreenState extends State<MeetScreen>
               'This allows us to suggest the right people for you. You can always change this later.',
         ),
         addHeight(24),
-        ListView(
-          shrinkWrap: true,
-          children: AppConstants.meetData.map((data) {
-            return Consumer<OnboardingNotifier>(
-              builder: (_, onboarding, __) {
+        Consumer<OnboardingNotifier>(
+          builder: (_, onboarding, __) {
+            return ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: AppConstants.meetData.map((data) {
                 return GenericTile(
                   value: data.value,
                   groupValue: _meet,
-                  onChanged: (value) {
-                    setState(() => _meet = value);
+                  onChanged: (_) {
+                    setState(() => _meet = _);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(meet: value?.index);
+                    onboarding.updateUserProfile(meet: _?.index);
                   },
                   title: data.text,
                   leadingWidget: data.icon != null
-                      ? Icon(
-                          data.icon,
-                          size: 26.r,
-                        )
+                      ? Icon(data.icon, size: 26.r)
                       : Padding(
                           padding: EdgeInsets.only(left: 6.w),
                           child: SvgPicture.asset(
@@ -67,9 +65,9 @@ class _MeetScreenState extends State<MeetScreen>
                           ),
                         ),
                 );
-              },
+              }).toList(),
             );
-          }).toList(),
+          },
         ),
         const Spacer(),
       ],

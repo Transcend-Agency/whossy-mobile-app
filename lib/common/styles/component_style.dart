@@ -22,6 +22,8 @@ final circularBorder = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(8.r),
 );
 
+const curvySide = BorderRadius.all(Radius.circular(14));
+
 const inputBorder = OutlineInputBorder(
   borderSide: BorderSide(color: Colors.transparent),
   borderRadius: BorderRadius.all(Radius.circular(8)),

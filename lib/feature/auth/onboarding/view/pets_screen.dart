@@ -90,11 +90,11 @@ class _PetsScreenState extends State<PetsScreen>
             ),
           ),
         ),
-        ListView(
-          shrinkWrap: true,
-          children: AppConstants.workOutData.map((data) {
-            return Consumer<OnboardingNotifier>(
-              builder: (_, onboarding, __) {
+        Consumer<OnboardingNotifier>(
+          builder: (_, onboarding, __) {
+            return ListView(
+              shrinkWrap: true,
+              children: AppConstants.workOutData.map((data) {
                 return GenericTile(
                   value: data.value,
                   groupValue: _workOut,
@@ -107,9 +107,9 @@ class _PetsScreenState extends State<PetsScreen>
                   },
                   title: data.text,
                 );
-              },
+              }).toList(),
             );
-          }).toList(),
+          },
         ),
         const Spacer(),
       ],
