@@ -67,6 +67,8 @@ class _PictureScreenState extends State<PictureScreen>
   }
 
   Future<File?> _cropImage(File image) async {
+
+    // Todo: Images can be rotated on iOS, I wanted them to be fixed
     final croppedImage = await ImageCropper().cropImage(
       sourcePath: image.path,
       aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 4),
@@ -129,9 +131,10 @@ class _PictureScreenState extends State<PictureScreen>
           ),
         ),
         addHeight(42),
+        // Todo : Resizing issues in this area
         Center(
           child: SizedBox(
-            height: 340.h,
+            height: 320.h, // 340
             child: Stack(
               children: [
                 ImageCard(
@@ -228,7 +231,7 @@ class _PictureScreenState extends State<PictureScreen>
             ),
           ),
         ),
-        addHeight(96),
+        addHeight(70), // 96
         SizedBox(
           height: 80.r,
           child: ListView(

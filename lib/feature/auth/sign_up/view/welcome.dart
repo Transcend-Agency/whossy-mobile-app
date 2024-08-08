@@ -56,6 +56,8 @@ class WelcomeScreen extends StatelessWidget {
                 title: AppStrings.titles[index],
                 subTitle: AppStrings.subtitles[index],
                 useSvg: (index == 1),
+
+                // TODO: Resize better, out it in a sized box
                 svgPath: (index == 1) ? AppAssets.exclamation : null,
               );
             }),

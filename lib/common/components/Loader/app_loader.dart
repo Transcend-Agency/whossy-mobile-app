@@ -13,8 +13,8 @@ class AppLoader extends StatelessWidget {
       child: SizedBox.square(
         dimension: size,
         child: const CircularProgressIndicator.adaptive(
-          backgroundColor: Colors.transparent,
-          strokeWidth: 2.5,
+          backgroundColor: Colors.white, // Todo: Changed from transparent in iOS
+          strokeWidth: 2.5,//
         ),
       ), //
     );
