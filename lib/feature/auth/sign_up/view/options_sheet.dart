@@ -27,108 +27,110 @@ class SignupOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Consumer<SignUpNotifier>(
-        builder: (_, data, __) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Sign up options',
-                      style: TextStyles.buttonText.copyWith(
-                        fontSize: AppUtils.scale(17),
+    return SafeArea(
+      child: Container(
+        color: Colors.white,
+        child: Consumer<SignUpNotifier>(
+          builder: (_, data, __) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Sign up options',
+                        style: TextStyles.buttonText.copyWith(
+                          fontSize: AppUtils.scale(17),
+                        ),
                       ),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: SizedBox.square(
+                          dimension: 30.r,
+                          child: cancelIcon(),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const Divider(
+                  color: AppColors.outlinedColor,
+                  height: 0,
+                ),
+                addHeight(16),
+                Padding(
+                  padding: pagePadding,
+                  child: OutlinedAppButton(
+                    onPress: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        fbIcon(),
+                        addWidth(6),
+                        Text(
+                          "Sign up with Facebook",
+                          style: TextStyles.buttonText.copyWith(
+                            color: AppColors.hintTextColor,
+                            fontSize: AppUtils.scale(17),
+                          ),
+                        ),
+                      ],
                     ),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: SizedBox.square(
-                        dimension: 30.r,
-                        child: cancelIcon(),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              const Divider(
-                color: AppColors.outlinedColor,
-                height: 0,
-              ),
-              addHeight(16),
-              Padding(
-                padding: pagePadding,
-                child: OutlinedAppButton(
-                  onPress: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      fbIcon(),
-                      addWidth(6),
-                      Text(
-                        "Sign up with Facebook",
-                        style: TextStyles.buttonText.copyWith(
-                          color: AppColors.hintTextColor,
-                          fontSize: AppUtils.scale(17),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.w),
-                child: OutlinedAppButton(
-                  onPress: () => signUpWithGoogle(context, data),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Transform.scale(
-                        scale: 0.9,
-                        child: SvgPicture.asset(AppAssets.googleLogo),
-                      ),
-                      addWidth(8),
-                      Text(
-                        "Sign up with Google",
-                        style: TextStyles.buttonText.copyWith(
-                          color: AppColors.hintTextColor,
-                          fontSize: AppUtils.scale(17),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.w),
+                  child: OutlinedAppButton(
+                    onPress: () => signUpWithGoogle(context, data),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Transform.scale(
+                          scale: 0.9,
+                          child: SvgPicture.asset(AppAssets.googleLogo),
                         ),
-                      ),
-                    ],
+                        addWidth(8),
+                        Text(
+                          "Sign up with Google",
+                          style: TextStyles.buttonText.copyWith(
+                            color: AppColors.hintTextColor,
+                            fontSize: AppUtils.scale(17),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: pagePadding,
-                child: OutlinedAppButton(
-                  onPress: () =>
-                      Nav.push(context, PhoneNumberRoute(signIn: false)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      phone(),
-                      addWidth(4),
-                      Text(
-                        "Sign up with Phone number",
-                        style: TextStyles.buttonText.copyWith(
-                          color: AppColors.hintTextColor,
-                          fontSize: AppUtils.scale(17),
+                Padding(
+                  padding: pagePadding,
+                  child: OutlinedAppButton(
+                    onPress: () =>
+                        Nav.push(context, PhoneNumberRoute(signIn: false)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        phone(),
+                        addWidth(4),
+                        Text(
+                          "Sign up with Phone number",
+                          style: TextStyles.buttonText.copyWith(
+                            color: AppColors.hintTextColor,
+                            fontSize: AppUtils.scale(17),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              addHeight(18)
-            ],
-          );
-        },
+                addHeight(12)
+              ],
+            );
+          },
+        ),
       ),
     );
   }

@@ -161,6 +161,7 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
     required void Function(Country) onSelect,
   }) {
     showCountryPicker(
+      useSafeArea: true,
       context: context,
       moveAlongWithKeyboard: true,
       showPhoneCode: showCode,
@@ -216,8 +217,10 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
                           Text(
                             AppUtils.countryCodeToEmoji(
                                 country?.countryCode ?? 'US'),
+
                             style: const TextStyle(
-                              fontSize: 23,
+                              fontSize:23,
+                              fontFamily: null,
                             ),
                           ),
                           addWidth(padding),

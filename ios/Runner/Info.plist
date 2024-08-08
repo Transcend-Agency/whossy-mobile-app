@@ -13,7 +13,7 @@
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>whossy_mobile_app</string>
+    <string>Whossy</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -45,6 +45,10 @@
     <true/>
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
+
+    <key>GIDClientID</key>
+    <string>332139466657-qbhs9p8997hmgue97nhkaij3qk5pjng1.apps.googleusercontent.com</string>
+
     <!-- Add the following key -->
     <key>NSPhotoLibraryUsageDescription</key>
     <string>We need access to your photo library to allow you to upload and select photos for your profile.</string>

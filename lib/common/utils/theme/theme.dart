@@ -33,6 +33,9 @@ class AppTheme {
         inactiveTrackColor: AppColors.outlinedColor,
         overlayShape: SliderComponentShape.noOverlay,
       ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Colors.white,
+      )
     );
   }
 
