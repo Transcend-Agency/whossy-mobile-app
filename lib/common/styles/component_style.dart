@@ -22,7 +22,7 @@ final circularBorder = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(8.r),
 );
 
-const curvySide = BorderRadius.all(Radius.circular(14));
+const curvySide = BorderRadius.all(Radius.circular(12));
 
 const inputBorder = OutlineInputBorder(
   borderSide: BorderSide(color: Colors.transparent),
@@ -61,4 +61,28 @@ final focusedBorder = inputBorder.copyWith(
     color: AppColors.selectedFieldColor,
     width: 1,
   ),
+);
+
+final switchThumbColor = WidgetStateProperty.resolveWith<Color?>(
+  (Set<WidgetState> states) {
+    return AppColors.inputBackGround;
+  },
+);
+
+final switchTrackOutlineColor = WidgetStateProperty.resolveWith<Color?>(
+  (Set<WidgetState> states) {
+    if (states.contains(WidgetState.selected)) {
+      return Colors.green;
+    }
+    return Colors.black;
+  },
+);
+
+final switchTrackColor = WidgetStateProperty.resolveWith<Color?>(
+  (Set<WidgetState> states) {
+    if (states.contains(WidgetState.selected)) {
+      return Colors.green;
+    }
+    return Colors.black;
+  },
 );

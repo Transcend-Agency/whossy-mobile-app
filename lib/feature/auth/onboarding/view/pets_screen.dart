@@ -94,6 +94,7 @@ class _PetsScreenState extends State<PetsScreen>
           builder: (_, onboarding, __) {
             return ListView(
               shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               children: AppConstants.workOutData.map((data) {
                 return GenericTile(
                   value: data.value,

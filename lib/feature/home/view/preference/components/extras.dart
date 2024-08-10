@@ -70,7 +70,7 @@ class _ExtrasComponentState extends State<ExtrasComponent> {
   }
 }
 
-Future<T?> showCustomModalBottomSheet<T extends CustomType>({
+Future<T?> showCustomModalBottomSheet<T extends GenericEnum>({
   required BuildContext context,
   required ExtraPreferences<T> item,
   T? selectedItem,

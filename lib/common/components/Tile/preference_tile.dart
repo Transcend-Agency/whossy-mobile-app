@@ -7,7 +7,7 @@ import '../../../../constants/index.dart';
 
 class PreferenceTile extends StatelessWidget {
   final String text;
-  final String? trailing;
+  final String trailing;
   final VoidCallback onTap;
   final TextStyle? textStyle;
   final Color? iconColor;
@@ -20,7 +20,7 @@ class PreferenceTile extends StatelessWidget {
     this.textStyle,
     this.iconColor,
     this.showDivider = true,
-    this.trailing,
+    required this.trailing,
   });
 
   @override
@@ -42,7 +42,7 @@ class PreferenceTile extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      trailing ?? 'Choose',
+                      trailing,
                       style: (textStyle ?? TextStyles.prefText).copyWith(
                         color: AppColors.hintTextColor,
                       ),

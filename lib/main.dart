@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/app/whossy.dart';
 import 'package:whossy_mobile_app/provider/providers.dart';
 
+import 'common/utils/services/services.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -16,6 +17,9 @@ void main() async {
   ]);
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Start up necessary services
+  await CrashlyticsService().init();
 
   runApp(
     MultiProvider(

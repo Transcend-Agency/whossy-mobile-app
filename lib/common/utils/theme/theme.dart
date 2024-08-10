@@ -41,7 +41,12 @@ class AppTheme {
       ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: Colors.white,
-      )
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: switchThumbColor,
+        trackOutlineColor: switchTrackOutlineColor,
+        trackColor: switchTrackColor,
+      ),
     );
   }
 

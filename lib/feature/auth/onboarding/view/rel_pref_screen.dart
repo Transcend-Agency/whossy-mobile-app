@@ -40,7 +40,6 @@ class _RelPrefScreenState extends State<RelPrefScreen>
         Consumer<OnboardingNotifier>(
           builder: (_, onboarding, __) {
             return ListView(
-              // Todo: Use this for onboarding screens
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               children: AppConstants.preferenceData.map((data) {

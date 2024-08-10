@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +6,6 @@ import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import 'package:whossy_mobile_app/feature/home/data/state/user_notifier.dart';
 
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 
 class InterestBioComponent extends StatefulWidget {
@@ -17,12 +17,15 @@ class InterestBioComponent extends StatefulWidget {
 
 class _InterestBioComponentState extends State<InterestBioComponent> {
   late UserNotifier _userNotifier;
+  late List<String>? _interests;
   bool similarInterest = true;
   bool hasBio = false;
 
   @override
   void initState() {
     _userNotifier = Provider.of<UserNotifier>(context, listen: false);
+
+    _interests = _userNotifier.otherPreferences.interests;
     super.initState();
   }
 
@@ -30,6 +33,16 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
     setState(() => similarInterest = newValue);
 
     _userNotifier.updatePreferences(similarInterest: newValue);
+  }
+
+  void updatePersonalized() async {
+    if (!mounted) return;
+
+    _interests = await context.router
+            .push<List<String>>(InterestRoute(initialValues: _interests)) ??
+        _interests;
+
+    _userNotifier.updatePreferences(interests: _interests);
   }
 
   void updateBio(bool newValue) {
@@ -64,7 +77,6 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
                     child: Switch.adaptive(
                       value: similarInterest,
                       onChanged: updateInterest,
-                      activeTrackColor: Colors.green,
                     ),
                   ),
                 ],
@@ -74,7 +86,7 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
                 height: 0,
               ),
               InkWell(
-                onTap: () => Nav.push(context, const InterestRoute()),
+                onTap: updatePersonalized,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -109,7 +121,6 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
                     child: Switch.adaptive(
                       value: hasBio,
                       onChanged: updateBio,
-                      activeTrackColor: Colors.green,
                     ),
                   ),
                 ],

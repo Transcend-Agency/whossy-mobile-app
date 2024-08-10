@@ -10,10 +10,11 @@ import '../../../../constants/index.dart';
 import '../../../auth/onboarding/data/state/notifier_set.dart';
 import '../../../auth/onboarding/model/alphabet.dart';
 
-@RoutePage()
+@RoutePage<List<String>>()
 class InterestScreen extends StatefulWidget {
-  const InterestScreen({super.key});
+  const InterestScreen({super.key, this.initialValues});
 
+  final List<String>? initialValues;
   @override
   State<InterestScreen> createState() => _InterestScreenState();
 }
@@ -25,19 +26,59 @@ class _InterestScreenState extends State<InterestScreen> {
   final searchController = TextEditingController();
   final searchFocusNode = FocusNode();
 
+  List<Map<String, dynamic>> _filteredAlphabet = [];
+
   @override
   void initState() {
     super.initState();
     _selectedTicks = NotifierSet<String>();
-    // Register a listener here _selectedTicks.addListener();
+    _selectedTicks.addListener(_update);
+
+    _selectedTicks.addAll(widget.initialValues ?? []);
+
+    // Initialize filtered list
+    _filteredAlphabet = List.from(alphabet);
+
+    // Add listener for search functionality
+    searchController.addListener(_filterSearchResults);
+  }
+
+  void _filterSearchResults() {
+    final query = searchController.text.toLowerCase();
+    setState(() {
+      _filteredAlphabet = alphabet
+          .map((item) {
+            final letter = item['letter'] as String;
+            final options = item['options'] as List<String>;
+
+            // Filter the options list based on the query
+            final filteredOptions = options
+                .where((option) => option.toLowerCase().contains(query))
+                .toList();
+
+            // Return the letter and its filtered options if any match the query
+            return {
+              'letter': letter,
+              'options': filteredOptions,
+            };
+          })
+          .where((item) => (item['options'] as List<String>).isNotEmpty)
+          .toList();
+    });
   }
 
   @override
   void dispose() {
-    // Remove _selectedTicks.removeListener(_update);
+    _selectedTicks.removeListener(_update);
 
     _selectedTicks.dispose();
+    searchController.removeListener(_filterSearchResults);
+    searchController.dispose();
     super.dispose();
+  }
+
+  void _update() {
+    //int length = _selectedTicks.length;
   }
 
   @override
@@ -48,64 +89,99 @@ class _InterestScreenState extends State<InterestScreen> {
         title: 'Interest',
         showAction: false,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Stack(
         children: [
-          // Todo: Add search functionality here
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.h),
-            child: Form(
-              key: formKey1,
-              child: AppTextField(
-                focusNode: searchFocusNode,
-                textController: searchController,
-                hintText: 'search',
-                prefixIcon: search(),
-                padding: 13,
-                curvierEdges: true,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                child: Form(
+                  key: formKey1,
+                  child: AppTextField(
+                    focusNode: searchFocusNode,
+                    textController: searchController,
+                    hintText: 'search',
+                    prefixIcon: search(),
+                    padding: 13,
+                    curvierEdges: true,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _filteredAlphabet.length,
+                  itemBuilder: (context, index) {
+                    // if (index >= _filteredAlphabet.length) {
+                    //   // Return an empty container to avoid range errors
+                    //   return const SizedBox.shrink();
+                    // }
+
+                    final letter = _filteredAlphabet[index]['letter'] as String;
+                    final options =
+                        _filteredAlphabet[index]['options'] as List<String>;
+
+                    // if (options.isEmpty) {
+                    //   // Skip if no options are available
+                    //   return const SizedBox.shrink();
+                    // }
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          letter.toUpperCase(),
+                          style: TextStyles.tickTitle.copyWith(
+                            fontSize: AppUtils.scale(12.sp),
+                          ),
+                        ),
+                        addHeight(4),
+                        Wrap(
+                          spacing: 8.0,
+                          runSpacing: 8.0,
+                          children:
+                              options.map((_) => _buildAppChip(_)).toList(),
+                        ),
+                        addHeight(16),
+                        if (index != _filteredAlphabet.length - 1)
+                          Column(
+                            children: [
+                              const Divider(
+                                color: AppColors.outlinedColor,
+                                height: 0,
+                              ),
+                              addHeight(12),
+                            ],
+                          ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              addHeight(67),
+            ],
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 10.h),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      onPress: () => Navigator.pop<List<String>>(
+                        context,
+                        _selectedTicks.items,
+                      ),
+                      text: 'Save',
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-
-          Expanded(
-            child: ListView.builder(
-              itemCount: alphabet.length,
-              itemBuilder: (context, index) {
-                final letter = alphabet[index]['letter'] as String;
-                final options = alphabet[index]['options'] as List<String>;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      letter.toUpperCase(),
-                      style: TextStyles.tickTitle.copyWith(
-                        fontSize: AppUtils.scale(12.sp),
-                      ),
-                    ),
-                    addHeight(4),
-                    Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      children: options.map((_) => _buildAppChip(_)).toList(),
-                    ),
-                    addHeight(16),
-                    if (index != alphabet.length - 1)
-                      Column(
-                        children: [
-                          const Divider(
-                            color: AppColors.outlinedColor,
-                            height: 0,
-                          ),
-                          addHeight(12),
-                        ],
-                      ),
-                  ],
-                );
-              },
-            ),
-          ),
-
-          addHeight(8),
+          )
         ],
       ),
     );

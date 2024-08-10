@@ -27,6 +27,8 @@ class _TickScreenState extends State<TickScreen>
   final searchController = TextEditingController();
   final searchFocusNode = FocusNode();
 
+  List<Map<String, dynamic>> _filteredAlphabet = [];
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +37,12 @@ class _TickScreenState extends State<TickScreen>
 
     onboardingProvider =
         Provider.of<OnboardingNotifier>(context, listen: false);
+
+    // Initialize filtered list
+    _filteredAlphabet = List.from(alphabet);
+
+    // Add listener for search functionality
+    searchController.addListener(_filterSearchResults);
   }
 
   @override
@@ -42,7 +50,33 @@ class _TickScreenState extends State<TickScreen>
     _selectedTicks.removeListener(_update);
 
     _selectedTicks.dispose();
+    searchController.removeListener(_filterSearchResults);
+    searchController.dispose();
     super.dispose();
+  }
+
+  void _filterSearchResults() {
+    final query = searchController.text.toLowerCase();
+    setState(() {
+      _filteredAlphabet = alphabet
+          .map((item) {
+            final letter = item['letter'] as String;
+            final options = item['options'] as List<String>;
+
+            // Filter the options list based on the query
+            final filteredOptions = options
+                .where((option) => option.toLowerCase().contains(query))
+                .toList();
+
+            // Return the letter and its filtered options if any match the query
+            return {
+              'letter': letter,
+              'options': filteredOptions,
+            };
+          })
+          .where((item) => (item['options'] as List<String>).isNotEmpty)
+          .toList();
+    });
   }
 
   void _update() {
@@ -70,13 +104,11 @@ class _TickScreenState extends State<TickScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const OnboardingHeaderText(
-          title: "What makes you tick?",
+          title: "Let's get to know you",
           subtitle: 'Share the interests and habits that define you.',
           skip: true,
         ),
         addHeight(18),
-
-        // Todo: Add search functionality here
         Form(
           key: formKey1,
           child: AppTextField(
@@ -91,10 +123,11 @@ class _TickScreenState extends State<TickScreen>
         addHeight(12),
         Expanded(
           child: ListView.builder(
-            itemCount: alphabet.length,
+            itemCount: _filteredAlphabet.length,
             itemBuilder: (context, index) {
-              final letter = alphabet[index]['letter'] as String;
-              final options = alphabet[index]['options'] as List<String>;
+              final letter = _filteredAlphabet[index]['letter'] as String;
+              final options =
+                  _filteredAlphabet[index]['options'] as List<String>;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -111,7 +144,7 @@ class _TickScreenState extends State<TickScreen>
                     children: options.map((_) => _buildAppChip(_)).toList(),
                   ),
                   addHeight(16),
-                  if (index != alphabet.length - 1)
+                  if (index != _filteredAlphabet.length - 1)
                     Column(
                       children: [
                         const Divider(

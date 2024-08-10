@@ -126,6 +126,33 @@ class AppConstants {
       header: 'Pet owner',
       items: petOwnerOptions,
     ),
+    ExtraPreferences<Religion>(
+      header: 'Religion',
+      items: religionOptions,
+    ),
+    ExtraPreferences<Dietary>(
+      header: 'Dietary',
+      items: dietaryOptions,
+    ),
+    ExtraPreferences<MaritalStatus>(
+      header: 'Marital Status',
+      items: maritalStatusOptions,
+    ),
+  ];
+
+  static final List<Data<MaritalStatus>> maritalStatusOptions = [
+    Data(
+      text: MaritalStatus.single.name,
+      value: MaritalStatus.single,
+    ),
+    Data(
+      text: MaritalStatus.taken.name,
+      value: MaritalStatus.taken,
+    ),
+    Data(
+      text: MaritalStatus.open.name,
+      value: MaritalStatus.open,
+    ),
   ];
 
   static final List<Data<PetOwner>> petOwnerOptions = [
@@ -203,6 +230,52 @@ class AppConstants {
     Data(
       text: Preference.undecidedOrExploring.name,
       value: Preference.undecidedOrExploring,
+    ),
+  ];
+
+  static final List<Data<Religion>> religionOptions = [
+    Data(
+      text: Religion.christian.name,
+      value: Religion.christian,
+    ),
+    Data(
+      text: Religion.muslim.name,
+      value: Religion.muslim,
+    ),
+    Data(
+      text: Religion.other.name,
+      value: Religion.other,
+    ),
+  ];
+
+  static final List<Data<Dietary>> dietaryOptions = [
+    Data(
+      text: Dietary.vegetarian.name,
+      value: Dietary.vegetarian,
+    ),
+    Data(
+      text: Dietary.vegan.name,
+      value: Dietary.vegan,
+    ),
+    Data(
+      text: Dietary.pescatarian.name,
+      value: Dietary.pescatarian,
+    ),
+    Data(
+      text: Dietary.halal.name,
+      value: Dietary.halal,
+    ),
+    Data(
+      text: Dietary.carnivore.name,
+      value: Dietary.carnivore,
+    ),
+    Data(
+      text: Dietary.omnivore.name,
+      value: Dietary.omnivore,
+    ),
+    Data(
+      text: Dietary.other.name,
+      value: Dietary.other,
     ),
   ];
 

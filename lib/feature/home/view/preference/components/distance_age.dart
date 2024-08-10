@@ -120,7 +120,6 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
                       child: Switch.adaptive(
                         value: show,
                         onChanged: updateSwitch,
-                        activeTrackColor: Colors.green,
                       ),
                     ),
                   ],

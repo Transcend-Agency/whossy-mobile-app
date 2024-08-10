@@ -24,7 +24,7 @@ class AppTextField extends StatelessWidget {
     this.prefixIcon,
     this.enabled = true,
     this.keyboardType,
-    this.padding = 17,
+    this.padding = 15,
     this.curvierEdges = false,
   });
 
@@ -116,7 +116,7 @@ class _PhoneNumberFormatter extends TextInputFormatter {
 
     for (int i = 0; i < text.length; i++) {
       if (text[i].contains(RegExp(r'[0-9]'))) {
-        if (count == 2 || count == 5) {
+        if (count == 3 || count == 6 || count == 10) {
           buffer.write(' ');
         }
         buffer.write(text[i]);

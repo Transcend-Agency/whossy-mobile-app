@@ -37,7 +37,7 @@ class SplashSlider extends StatelessWidget {
                 fit: BoxFit.fill,
                 width: 100.r,
               ),
-            ),
+            ), //
           );
         },
       ),

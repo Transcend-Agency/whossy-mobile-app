@@ -49,9 +49,14 @@ abstract class $AppRouter extends _i17.RootStackRouter {
       );
     },
     InterestRoute.name: (routeData) {
-      return _i17.AutoRoutePage<dynamic>(
+      final args = routeData.argsAs<InterestRouteArgs>(
+          orElse: () => const InterestRouteArgs());
+      return _i17.AutoRoutePage<List<String>>(
         routeData: routeData,
-        child: const _i2.InterestScreen(),
+        child: _i2.InterestScreen(
+          key: args.key,
+          initialValues: args.initialValues,
+        ),
       );
     },
     LoginRoute.name: (routeData) {
@@ -177,16 +182,40 @@ class HomeWrapper extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.InterestScreen]
-class InterestRoute extends _i17.PageRouteInfo<void> {
-  const InterestRoute({List<_i17.PageRouteInfo>? children})
-      : super(
+class InterestRoute extends _i17.PageRouteInfo<InterestRouteArgs> {
+  InterestRoute({
+    _i18.Key? key,
+    List<String>? initialValues,
+    List<_i17.PageRouteInfo>? children,
+  }) : super(
           InterestRoute.name,
+          args: InterestRouteArgs(
+            key: key,
+            initialValues: initialValues,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'InterestRoute';
 
-  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
+  static const _i17.PageInfo<InterestRouteArgs> page =
+      _i17.PageInfo<InterestRouteArgs>(name);
+}
+
+class InterestRouteArgs {
+  const InterestRouteArgs({
+    this.key,
+    this.initialValues,
+  });
+
+  final _i18.Key? key;
+
+  final List<String>? initialValues;
+
+  @override
+  String toString() {
+    return 'InterestRouteArgs{key: $key, initialValues: $initialValues}';
+  }
 }
 
 /// generated route for

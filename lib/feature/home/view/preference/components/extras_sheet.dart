@@ -8,7 +8,7 @@ import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 
-class ExtrasSheet<T extends CustomType> extends StatefulWidget {
+class ExtrasSheet<T extends GenericEnum> extends StatefulWidget {
   const ExtrasSheet({super.key, required this.item, this.selectedItem});
 
   final ExtraPreferences<T> item;
@@ -18,7 +18,7 @@ class ExtrasSheet<T extends CustomType> extends StatefulWidget {
   State<ExtrasSheet<T>> createState() => _ExtrasSheetState<T>();
 }
 
-class _ExtrasSheetState<T extends CustomType> extends State<ExtrasSheet<T>> {
+class _ExtrasSheetState<T extends GenericEnum> extends State<ExtrasSheet<T>> {
   late T? data;
   bool hasChanged = false;
 

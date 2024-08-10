@@ -9,20 +9,19 @@ class UserNotifier extends ChangeNotifier {
   final _otherPreferences = OtherPreferences();
 
   SelectedItems get selectedItems => _selectedItems;
+  OtherPreferences get otherPreferences => _otherPreferences;
 
-  void setValue(CustomType value) {
+  void setValue(GenericEnum value) {
     _selectedItems.setValue(value);
 
     notifyListeners();
   }
 
-  String? getValue(Type type) {
+  String getValue(Type type) {
     return _selectedItems.getValue(type)?.name ?? 'Choose';
   }
 
-  CustomType? getSelected(Type type) {
-    return _selectedItems.getValue(type);
-  }
+  GenericEnum? getSelected(Type _) => _selectedItems.getValue(_);
 
   void updatePreferences({
     int? meet,
@@ -32,6 +31,7 @@ class UserNotifier extends ChangeNotifier {
     int? maxAge,
     double? distance,
     bool? outreach,
+    List<String>? interests,
   }) {
     _otherPreferences.update(
       meet: meet,
@@ -41,6 +41,7 @@ class UserNotifier extends ChangeNotifier {
       maxAge: maxAge,
       distance: distance,
       outreach: outreach,
+      interests: interests,
     );
 
     notifyListeners();

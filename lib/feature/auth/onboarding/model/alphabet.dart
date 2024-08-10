@@ -500,7 +500,6 @@ final alphabet = [
       'Toy collecting',
       'Trombone',
       'Thrift shopping',
-      'Tennis table',
       'Twerking',
       'Time travel',
       'Taxidermy',
@@ -539,7 +538,6 @@ final alphabet = [
     'letter': 'v',
     'options': [
       'Video games',
-      'Volleyball',
       'Vlogging',
       'Violin',
       'Vegetarian cooking',
@@ -634,9 +632,7 @@ final alphabet = [
       'Yarning',
       'Yard work',
       'Yachting',
-      'Yodelling',
       'Yoyos',
-      'Yodelling',
     ]
   },
   {

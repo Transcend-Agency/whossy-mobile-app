@@ -12,6 +12,9 @@ class SelectedItems {
   Drink? drinking;
   WorkOut? workout;
   PetOwner? petOwner;
+  Religion? religion;
+  Dietary? dietary;
+  MaritalStatus? maritalStatus;
 
   SelectedItems({
     this.relationshipPreference,
@@ -24,10 +27,13 @@ class SelectedItems {
     this.drinking,
     this.workout,
     this.petOwner,
+    this.religion,
+    this.dietary,
+    this.maritalStatus,
   });
 
-  CustomType? getValue(Type type) {
-    final selectedValues = <Type, CustomType?>{
+  GenericEnum? getValue(Type type) {
+    final selectedValues = <Type, GenericEnum?>{
       Preference: relationshipPreference,
       School: education,
       LoveLanguage: loveLanguage,
@@ -38,12 +44,15 @@ class SelectedItems {
       Drink: drinking,
       WorkOut: workout,
       PetOwner: petOwner,
+      Religion: religion,
+      Dietary: dietary,
+      MaritalStatus: maritalStatus,
     };
 
     return selectedValues[type];
   }
 
-  void setValue(CustomType value) {
+  void setValue(GenericEnum value) {
     if (value is Preference) {
       relationshipPreference = value;
     } else if (value is School) {
@@ -64,6 +73,12 @@ class SelectedItems {
       workout = value;
     } else if (value is PetOwner) {
       petOwner = value;
+    } else if (value is Religion) {
+      religion = value;
+    } else if (value is Dietary) {
+      dietary = value;
+    } else if (value is MaritalStatus) {
+      maritalStatus = value;
     }
   }
 }

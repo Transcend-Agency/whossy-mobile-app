@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whossy_mobile_app/common/utils/app_utils.dart';
 
 import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
@@ -15,7 +16,6 @@ class PrivacyText extends StatelessWidget {
   final VoidCallback action;
   final String text;
 
-  // Todo: Make responsive for smaller screens
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -23,26 +23,31 @@ class PrivacyText extends StatelessWidget {
       child: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(
-          style: const TextStyle(
-            color: AppColors.black,
-          ),
           children: [
             TextSpan(
               text: text,
-              style: TextStyles.fieldHeader,
+              style: TextStyles.fieldHeader.copyWith(
+                fontSize: AppUtils.scale(16),
+              ),
             ),
             TextSpan(
               text: AppStrings.termsAndConditions,
-              style: TextStyles.privacyText,
+              style: TextStyles.privacyText.copyWith(
+                fontSize: AppUtils.scale(16),
+              ),
               recognizer: TapGestureRecognizer()..onTap = action,
             ),
             TextSpan(
               text: AppStrings.dataProcessingInfo,
-              style: TextStyles.fieldHeader,
+              style: TextStyles.fieldHeader.copyWith(
+                fontSize: AppUtils.scale(16),
+              ),
             ),
             TextSpan(
               text: AppStrings.privacyPolicy,
-              style: TextStyles.privacyText,
+              style: TextStyles.privacyText.copyWith(
+                fontSize: AppUtils.scale(16),
+              ),
               recognizer: TapGestureRecognizer()..onTap = action,
             ),
           ], //

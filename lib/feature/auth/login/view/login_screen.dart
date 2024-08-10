@@ -170,7 +170,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool useScroll = ScreenUtil().screenHeight < 756;
     return AppScaffold(
+      useScrollView: useScroll,
       padding: pagePadding,
       body: Selector<LoginNotifier, bool>(
         selector: (_, auth) => auth.spinnerState,
@@ -229,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-              ),
+              ), //
               Padding(
                 padding: EdgeInsets.only(top: 6.h),
                 child: Align(
@@ -242,6 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         AppStrings.forgotPassword,
                         style: TextStyles.fieldHeader.copyWith(
                           decoration: TextDecoration.underline,
+                          fontSize: AppUtils.scale(16),
                         ),
                       ),
                     ),
@@ -249,17 +252,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.h),
+                padding: EdgeInsets.only(top: 18.h),
                 child: AppButton(
                   onPress: validate,
-                  /*
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const DemoPage()),
-                  )
-                   */
                   text: AppStrings.loginButton,
                   loading: spinner,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                child: OutlinedAppButton(
+                  onPress: () =>
+                      Nav.replace(context, const SignUpCreateRoute()),
+                  text: AppStrings.createAccountButton,
                 ),
               ),
               Stack(
@@ -279,76 +284,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              addHeight(20),
-              OutlinedAppButton(
-                onPress: loginWithFacebook,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    fbIcon(),
-                    addWidth(6),
-                    Padding(
-                      padding: EdgeInsets.only(top: 3.h),
-                      child: Text(
-                        AppStrings.signInFacebook,
-                        style: TextStyles.buttonText.copyWith(
-                          color: AppColors.hintTextColor,
-                          fontSize: AppUtils.scale(17),
-                        ),
-                      ),
+              addHeight(16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  OutlinedAppButton(
+                    onPress: loginWithFacebook,
+                    child: Center(
+                      child: fbIcon(),
                     ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-                child: OutlinedAppButton(
-                  onPress: loginWithGoogle,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Transform.scale(
+                  ),
+                  OutlinedAppButton(
+                    onPress: loginWithGoogle,
+                    child: Center(
+                      child: Transform.scale(
                         scale: 0.9,
                         child: SvgPicture.asset(AppAssets.googleLogo),
                       ),
-                      addWidth(8),
-                      Text(
-                        AppStrings.signInGoogle,
-                        style: TextStyles.buttonText.copyWith(
-                          color: AppColors.hintTextColor,
-                          fontSize: AppUtils.scale(17),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              OutlinedAppButton(
-                onPress: () => Nav.push(context, PhoneNumberRoute()),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    phone(),
-                    addWidth(6),
-                    Padding(
-                      padding: EdgeInsets.only(top: 3.h),
-                      child: Text(
-                        "Sign in with Phone number",
-                        style: TextStyles.buttonText.copyWith(
-                          color: AppColors.hintTextColor,
-                          fontSize: AppUtils.scale(17),
-                        ),
-                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  OutlinedAppButton(
+                    onPress: () => Nav.push(context, PhoneNumberRoute()),
+                    child: Center(
+                      child: phone(),
+                    ),
+                  ),
+                ],
               ),
-              addHeight(12),
-              OutlinedAppButton(
-                onPress: () => Nav.replace(context, const SignUpCreateRoute()),
-                text: AppStrings.createAccountButton,
-              ),
-              const Spacer(),
+              useScroll ? addHeight(60) : const Spacer(),
               PrivacyText(
                 action: () {},
                 text: AppStrings.loginAgreement,

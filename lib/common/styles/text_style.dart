@@ -92,7 +92,7 @@ class TextStyles {
   );
 
   static TextStyle fieldHeader = const TextStyle(
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'NeueMontreal',
     color: AppColors.black,
   );
@@ -108,7 +108,7 @@ class TextStyles {
     fontFamily: 'NeueMontreal',
     fontWeight: FontWeight.w500,
     decoration: TextDecoration.underline,
-    fontSize: 16,
+    fontSize: 15,
   );
 
   static TextStyle iconText = TextStyle(

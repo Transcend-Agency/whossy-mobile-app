@@ -2,7 +2,7 @@ class AppStrings {
   static const String appName = 'Whossy';
   static const String splashText1 = 'Heartfelt Connections Await.';
   static const String splashText2 = '\nDiscover Love on Whossy.';
-  static const String noAccount = 'Don\'t have an account? ';
+  static const String noAccount = 'Don\'t have an account?  ';
   static const String cAccount = 'Create account';
   static const String welBack = 'Welcome back';
   static const String loginSub = "Login to see who you've matched with ✌️";
@@ -12,7 +12,7 @@ class AppStrings {
   static const String passwordHint = 'Password';
   static const String forgotPassword = "Forgot Password ?";
   static const String loginButton = 'Login';
-  static const String orDivider = 'or';
+  static const String orDivider = 'or sign in with';
   static const String signInFacebook = 'Sign in with Facebook';
   static const String signInGoogle = 'Sign in with Google';
   static const String createAccountButton = 'Create new account';
@@ -88,8 +88,7 @@ class AppStrings {
   ];
 
   // Error messages for create account
-  static const String errorEmailInUse =
-      'Account creation failed, please use different credentials.';
+  static const String errorEmailInUse = 'Account already exists';
   static const String errorInvalidEmail = 'The email address is not valid.';
   static const String errorInvalidCode = 'Invalid code';
   static const String errorOperationNotAllowed =

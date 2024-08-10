@@ -1,6 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -163,36 +161,32 @@ class _SplashScreenState extends State<SplashScreen> {
                           onPress: () => Nav.push(context, const LoginRoute()),
                           text: 'Login',
                         ),
-                        addHeight(8),
                         Padding(
-                          padding: EdgeInsets.only(
-                              right: 8.w, left: 8.w, top: 8.h, bottom: 8.h),
-                          child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              style: const TextStyle(
-                                color: AppColors.black,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 2.h),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                AppStrings.noAccount,
+                                style: TextStyles.fieldHeader,
                               ),
-                              children: [
-                                TextSpan(
-                                  text: AppStrings.noAccount,
-                                  style: TextStyles.fieldHeader,
+                              TextButton(
+                                onPressed: () => Nav.push(
+                                    context, const SignUpCreateRoute()),
+                                style: TextButton.styleFrom(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 7, 11, 7),
                                 ),
-                                TextSpan(
-                                  text: AppStrings.cAccount,
+                                child: Text(
+                                  AppStrings.cAccount,
                                   style: TextStyles.privacyText,
-                                  recognizer:
-                                      TapGestureRecognizer() //TODO: Increase tap size
-                                        ..onTap = () => Nav.push(
-                                              context,
-                                              const SignUpCreateRoute(),
-                                            ),
-                                )
-                              ],
-                            ),
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                        addHeight(12),
+                        addHeight(2),
                       ],
                     ),
                   ),

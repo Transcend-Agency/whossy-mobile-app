@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 
 class AppLoader extends StatelessWidget {
@@ -12,9 +14,9 @@ class AppLoader extends StatelessWidget {
     return Center(
       child: SizedBox.square(
         dimension: size,
-        child: const CircularProgressIndicator.adaptive(
-          backgroundColor: Colors.white, // Todo: Changed from transparent in iOS
-          strokeWidth: 2.5,//
+        child: CircularProgressIndicator.adaptive(
+          backgroundColor: Platform.isIOS ? Colors.white : Colors.transparent,
+          strokeWidth: 2.5,
         ),
       ), //
     );

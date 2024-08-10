@@ -56,7 +56,7 @@ class InputFormatter {
           final int value = int.tryParse(newValue.text) ?? 0;
 
           if (newValue.text.length < 4 ||
-              (value >= minYear && value <= (currentYear - 10))) {
+              (value >= minYear && value <= (currentYear - 18))) {
             return newValue;
           }
 

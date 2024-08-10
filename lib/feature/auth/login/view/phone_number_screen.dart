@@ -160,7 +160,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
             children: [
               SignupHeaderText(
                 title: "Phone number Sign ${widget.signIn ? 'in' : 'up'}",
-                subtitle: "Enter your phone number to receive otp code",
+                subtitle: "Enter your phone number to receive an OTP code",
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 6.h),
@@ -178,7 +178,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                     focusNode: phoneFocusNode,
                     textController: phoneController,
                     hintText:
-                        '${country?.phoneCode != null ? '' : '(+1) '}00 000 0000',
+                        '${country?.phoneCode != null ? '' : '(+1) '}000 000 0000',
                     isPhone: true,
                     validation: (_) =>
                         _?.trim().validatePhoneNumber(existingPhoneNumber),

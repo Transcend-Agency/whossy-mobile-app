@@ -11,6 +11,7 @@ class OutlinedAppButton extends StatelessWidget {
   final VoidCallback? onPress;
   final Color? borderColor;
   final double height;
+  final double width;
   final bool loading;
   final String? text;
   final Color textColor;
@@ -25,6 +26,7 @@ class OutlinedAppButton extends StatelessWidget {
     this.text,
     this.textColor = AppColors.hintTextColor,
     this.child,
+    this.width = 94,
   }) : assert(text != null || child != null,
             'Either text or child must be provided.');
 
@@ -36,7 +38,7 @@ class OutlinedAppButton extends StatelessWidget {
       onPressed: onPress,
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.primaryColor,
-        minimumSize: Size(double.infinity, height.h),
+        minimumSize: Size(width.w, height.h),
         side: BorderSide(color: borderColor ?? AppColors.outlinedColor),
         shape: circularBorder,
       ),

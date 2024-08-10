@@ -3,6 +3,7 @@ class OtherPreferences {
   bool? similarInterest;
   bool? hasBio;
   Map<String, int>? ageRange;
+  List<String>? interests;
   double? distance;
   bool? outreach;
 
@@ -12,6 +13,7 @@ class OtherPreferences {
     this.hasBio,
     this.ageRange,
     this.distance,
+    this.interests,
     this.outreach,
   });
 
@@ -22,6 +24,7 @@ class OtherPreferences {
     int? minAge,
     int? maxAge,
     double? distance,
+    List<String>? interests,
     bool? outreach,
   }) {
     if (meet != null) this.meet = meet;
@@ -29,12 +32,13 @@ class OtherPreferences {
     if (hasBio != null) this.hasBio = hasBio;
 
     if (minAge != null || maxAge != null) {
-      ageRange ??= {}; // Initialize ageRange if it's null
+      ageRange ??= {};
       if (minAge != null) ageRange!['minAge'] = minAge;
       if (maxAge != null) ageRange!['maxAge'] = maxAge;
     }
 
     if (distance != null) this.distance = distance;
     if (outreach != null) this.outreach = outreach;
+    if (interests != null) this.interests = interests;
   }
 }

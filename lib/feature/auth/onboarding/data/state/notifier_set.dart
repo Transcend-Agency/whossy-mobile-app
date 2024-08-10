@@ -15,6 +15,11 @@ class NotifierSet<T> extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addAll(Iterable<T> values) {
+    _set.addAll(values);
+    notifyListeners();
+  }
+
   Set<T> toSet() => Set.from(_set);
 
   bool get isEmpty => _set.isEmpty;

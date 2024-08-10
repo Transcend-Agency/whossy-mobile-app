@@ -12,7 +12,7 @@ enum Meet {
   final String name;
 }
 
-enum Preference implements CustomType {
+enum Preference implements GenericEnum {
   lookingToDate('Looking to date', 'Seeking casual dating experience'),
   chattingAndConnecting('Chatting and connecting',
       'Open to conversations and getting to know new people'),
@@ -30,7 +30,7 @@ enum Preference implements CustomType {
   final String subtitle;
 }
 
-enum School implements CustomType {
+enum School implements GenericEnum {
   notInSchool('Not In School'),
   currentlySchooling('Currently Schooling');
 
@@ -40,7 +40,7 @@ enum School implements CustomType {
   final String name;
 }
 
-enum Zodiac implements CustomType {
+enum Zodiac implements GenericEnum {
   aries('Aries', 'March 21 - April 19'),
   taurus('Taurus', 'April 20 - May 20'),
   gemini('Gemini', 'May 21 - June 20'),
@@ -61,7 +61,7 @@ enum Zodiac implements CustomType {
   final String dateRange;
 }
 
-enum Drink implements CustomType {
+enum Drink implements GenericEnum {
   mindful('Mindful Drinking'),
   sober('100% Sober'),
   special('Special moments only'),
@@ -74,7 +74,7 @@ enum Drink implements CustomType {
   final String name;
 }
 
-enum Smoke implements CustomType {
+enum Smoke implements GenericEnum {
   working('Working on quitting'),
   dAndS('Drinks and smoke'),
   occasional('Occasional smoker'),
@@ -87,7 +87,7 @@ enum Smoke implements CustomType {
   final String name;
 }
 
-enum LoveLanguage implements CustomType {
+enum LoveLanguage implements GenericEnum {
   givingAndReceivingGifts('Giving and receiving gifts'),
   touchAndHugs('Touch and hugs'),
   heartfeltCompliments('Heartfelt compliments'),
@@ -100,7 +100,7 @@ enum LoveLanguage implements CustomType {
   final String name;
 }
 
-enum CommunicationStyle implements CustomType {
+enum CommunicationStyle implements GenericEnum {
   directAndToThePoint('Direct and to the point'),
   friendlyAndOpen('Friendly and open'),
   reservedAndThoughtful('Reserved and thoughtful'),
@@ -113,7 +113,7 @@ enum CommunicationStyle implements CustomType {
   final String name;
 }
 
-enum FutureFamilyPlans implements CustomType {
+enum FutureFamilyPlans implements GenericEnum {
   wantsChildren('I want children'),
   notSureYet('Not sure yet'),
   notInterestedForNow('Not interested for now'),
@@ -127,7 +127,44 @@ enum FutureFamilyPlans implements CustomType {
   final String name;
 }
 
-enum WorkOut implements CustomType {
+enum Religion implements GenericEnum {
+  christian('Christian'),
+  muslim('Muslim'),
+  other('Other');
+
+  const Religion(this.name);
+
+  @override
+  final String name;
+}
+
+enum Dietary implements GenericEnum {
+  vegetarian('Vegetarian'),
+  vegan('Vegan'),
+  pescatarian('Pescatarian'),
+  halal('Halal'),
+  carnivore('Carnivore'),
+  omnivore('Omnivore'),
+  other('Other');
+
+  const Dietary(this.name);
+
+  @override
+  final String name;
+}
+
+enum MaritalStatus implements GenericEnum {
+  single('Single'),
+  taken('Taken'),
+  open('Open');
+
+  const MaritalStatus(this.name);
+
+  @override
+  final String name;
+}
+
+enum WorkOut implements GenericEnum {
   yes('Yes, regularly'),
   occasionally('Occasionally'),
   weekends('Only on weekends'),
@@ -140,7 +177,7 @@ enum WorkOut implements CustomType {
   final String name;
 }
 
-enum Gender implements CustomType {
+enum Gender implements GenericEnum {
   male('Male', Icons.male_rounded),
   female('Female', Icons.female_rounded);
 
@@ -151,7 +188,7 @@ enum Gender implements CustomType {
   final IconData icon;
 }
 
-enum PetOwner implements CustomType {
+enum PetOwner implements GenericEnum {
   dog('🐕 Dog'),
   cat('🐈 Cat'),
   reptile('🐍 Reptile'),

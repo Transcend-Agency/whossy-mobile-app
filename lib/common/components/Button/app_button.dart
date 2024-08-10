@@ -35,7 +35,7 @@ class AppButton extends StatelessWidget {
         elevation: 0,
         highlightElevation: 0,
         shape: circularBorder,
-        disabledColor: AppColors.buttonColor.withOpacity(0.7),
+        disabledColor: AppColors.buttonColor.withOpacity(0.8),
         child: loading
             ? const AppLoader()
             : Text(

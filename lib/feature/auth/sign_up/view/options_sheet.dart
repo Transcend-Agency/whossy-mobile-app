@@ -37,7 +37,8 @@ class SignupOptions extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -61,7 +62,7 @@ class SignupOptions extends StatelessWidget {
                   color: AppColors.outlinedColor,
                   height: 0,
                 ),
-                addHeight(16),
+                addHeight(14),
                 Padding(
                   padding: pagePadding,
                   child: OutlinedAppButton(
@@ -83,7 +84,8 @@ class SignupOptions extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.w),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.w),
                   child: OutlinedAppButton(
                     onPress: () => signUpWithGoogle(context, data),
                     child: Row(
@@ -126,7 +128,7 @@ class SignupOptions extends StatelessWidget {
                     ),
                   ),
                 ),
-                addHeight(12) // Todo: Changed from 18
+                addHeight(14),
               ],
             );
           },
