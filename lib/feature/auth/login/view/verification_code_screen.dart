@@ -19,10 +19,12 @@ class VerificationCodeScreen extends StatefulWidget {
     required this.phone,
     required this.verId,
     this.signIn = true,
+    required this.resendToken,
   });
 
   final String phone;
   final String verId;
+  final int? resendToken;
   final bool signIn;
 
   @override
@@ -32,12 +34,15 @@ class VerificationCodeScreen extends StatefulWidget {
 class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
   final _countdownTimerKey = GlobalKey<CountdownTextState>();
   final otpController = TextEditingController();
+
   late LoginNotifier loginNotifier;
   late SignUpNotifier signUpNotifier;
 
   bool activateResend = false;
   int countDownDuration = 59;
   bool _isButtonEnabled = false;
+  int? resendingToken;
+  String? verId;
 
   @override
   void initState() {
@@ -45,6 +50,9 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
 
     loginNotifier = Provider.of<LoginNotifier>(context, listen: false);
     signUpNotifier = Provider.of<SignUpNotifier>(context, listen: false);
+
+    resendingToken = widget.resendToken;
+    verId = widget.verId;
 
     super.initState();
   }
@@ -59,7 +67,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
 
   @override
   void dispose() {
-    otpController.dispose();
+    otpController.removeListener(_handleOTPChange);
     super.dispose();
   }
 
@@ -73,12 +81,27 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
     });
 
     // Re-send email verification to new user
-    //await user!.sendEmailVerification();
+    await resendVerification();
   }
 
-  continueSignUp() {
-    signUpNotifier.signUpWithPhone(
-      id: widget.verId,
+  Future<void> resendVerification() async {
+    await loginNotifier.sendPhoneNumberCode(
+      phone: widget.phone,
+      showSnackbar: showSnackbar,
+      onSend: (_, id, token) {
+        resendingToken = token;
+        verId = id;
+      },
+      resendingToken: resendingToken,
+      toCreateAccount: toCreateAccount,
+      toOnboarding: toOnboarding,
+      onAuthenticate: onLoginAuthenticate,
+    );
+  }
+
+  Future<void> continueSignUp() async {
+    await signUpNotifier.signUpWithPhone(
+      id: verId!,
       phone: widget.phone,
       code: otpController.text,
       showSnackbar: showSnackbar,
@@ -86,9 +109,9 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
     );
   }
 
-  continueLogin() {
-    loginNotifier.loginWithPhoneNumber(
-      id: widget.verId,
+  Future<void> continueLogin() async {
+    await loginNotifier.loginWithPhoneNumber(
+      id: verId!,
       code: otpController.text,
       showSnackbar: showSnackbar,
       toCreateAccount: toCreateAccount,

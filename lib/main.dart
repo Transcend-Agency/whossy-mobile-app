@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +18,15 @@ void main() async {
   ]);
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Todo: (Prod) Test this in a production-enabled environment
+  // Getting the error
+  // E/FirebaseAuth(26281): [SmsRetrieverHelper] SMS verification code request failed:
+  // unknown status code: 18002 Invalid PlayIntegrity token; app not Recognized by Play Store.
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug,
+    appleProvider: AppleProvider.debug,
+  );
 
   // Start up necessary services
   await CrashlyticsService().init();

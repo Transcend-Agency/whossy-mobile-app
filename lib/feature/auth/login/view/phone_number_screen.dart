@@ -98,21 +98,37 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
     }
   }
 
-  void sendCode() {
+  Future<void> sendCode() async {
     final phone =
         phoneController.text.trim().formatNumber('+${country!.phoneCode}');
 
-    loginNotifier.sendPhoneNumberCode(
+    await loginNotifier.sendPhoneNumberCode(
       phone: phone,
       showSnackbar: showSnackbar,
       onSend: onSend,
+      toCreateAccount: toCreateAccount,
+      toOnboarding: toOnboarding,
+      onAuthenticate: onLoginAuthenticate,
     );
   }
 
-  onSend(String phone, String id) {
+  toOnboarding() =>
+      Nav.pushAndPopUntil(context, const Wrapper(), LoginRoute.name);
+
+  onLoginAuthenticate() => Nav.replaceAll(context, [const HomeWrapper()]);
+
+  toCreateAccount() =>
+      Nav.pushAndPopUntil(context, const SignUpNameRoute(), LoginRoute.name);
+
+  onSend(String phone, String id, int? resendToken) {
     Nav.push(
       context,
-      VerificationCodeRoute(phone: phone, verId: id, signIn: widget.signIn),
+      VerificationCodeRoute(
+        phone: phone,
+        verId: id,
+        signIn: widget.signIn,
+        resendToken: resendToken,
+      ),
     );
   }
 

@@ -26,7 +26,6 @@ class PictureScreen extends StatefulWidget {
   State<PictureScreen> createState() => _PictureScreenState();
 }
 
-// Todo: Configure App check
 class _PictureScreenState extends State<PictureScreen>
     with AutomaticKeepAliveClientMixin<PictureScreen> {
   late OnboardingNotifier onboarding;
@@ -67,7 +66,6 @@ class _PictureScreenState extends State<PictureScreen>
   }
 
   Future<File?> _cropImage(File image) async {
-
     // Todo: Images can be rotated on iOS, I wanted them to be fixed
     final croppedImage = await ImageCropper().cropImage(
       sourcePath: image.path,

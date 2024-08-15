@@ -39,55 +39,58 @@ class _ExtrasSheetState<T extends GenericEnum> extends State<ExtrasSheet<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.item.header,
-                  style: TextStyles.buttonText.copyWith(
-                    fontSize: AppUtils.scale(17),
+    return SafeArea(
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.item.header,
+                    style: TextStyles.buttonText.copyWith(
+                      fontSize: AppUtils.scale(17),
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.pop(context, hasChanged ? data : null),
-                  child: SizedBox.square(
-                    dimension: 30.r,
-                    child: hasChanged ? checkIcon() : cancelIcon(),
+                  GestureDetector(
+                    onTap: () =>
+                        Navigator.pop(context, hasChanged ? data : null),
+                    child: SizedBox.square(
+                      dimension: 30.r,
+                      child: hasChanged ? checkIcon() : cancelIcon(),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const Divider(
-            color: AppColors.outlinedColor,
-            height: 0,
-          ),
-          addHeight(16),
-          Padding(
-            padding: pagePadding,
-            child: Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              children: widget.item.items.map((item) {
-                return PreferenceChip<T?>(
-                  value: item.value,
-                  groupValue: data,
-                  onChanged: onChanged,
-                  title: item.text,
-                );
-              }).toList(),
+            const Divider(
+              color: AppColors.outlinedColor,
+              height: 0,
             ),
-          ),
-          addHeight(18)
-        ],
+            addHeight(16),
+            Padding(
+              padding: pagePadding,
+              child: Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                children: widget.item.items.map((item) {
+                  return PreferenceChip<T?>(
+                    value: item.value,
+                    groupValue: data,
+                    onChanged: onChanged,
+                    title: item.text,
+                  );
+                }).toList(),
+              ),
+            ),
+            addHeight(14)
+          ],
+        ),
       ),
     );
   }

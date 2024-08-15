@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:whossy_mobile_app/feature/auth/login/model/auth_params.dart';
 
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
@@ -42,41 +43,62 @@ class AuthenticationRepository {
     );
   }
 
-  Future<void> sendOTPCode(
+  Future<PhoneAuthCredential?> sendOTPCode(
     String phone,
-    void Function(String, String) onSend,
+    void Function(String, String, int?) onSend,
     void Function(String) showSnackbar,
+    int? resendingToken,
   ) async {
-    FirebaseAuth.instance.verifyPhoneNumber(
+    PhoneAuthCredential? phoneAuthCredential;
+
+    await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phone,
-      verificationCompleted: (phoneAuthCredential) {
-        log('Verification completed $phoneAuthCredential');
+      forceResendingToken: resendingToken,
+      timeout: const Duration(seconds: 60),
+      verificationCompleted: (credential) {
+        log('Verification completed $credential');
+        phoneAuthCredential = credential;
       },
       verificationFailed: (error) {
-        log('Verification failed$error');
-        showSnackbar('An error occurred while attempting to send code');
+        log('Verification failed: $error');
+        showSnackbar('An error occurred while attempting to send the code');
       },
       codeSent: (verificationId, forceResendingToken) {
-        onSend(phone, verificationId);
+        onSend(phone, verificationId, forceResendingToken);
       },
       codeAutoRetrievalTimeout: (verificationId) {
         log('Auto retrieval timeout');
       },
     );
+
+    return phoneAuthCredential;
   }
 
-  Future<UserCredential?> handlePhoneAuthentication(
-      String id, String code) async {
-    final credential =
-        PhoneAuthProvider.credential(verificationId: id, smsCode: code);
+  Future<UserCredential?> handlePhoneAuthentication(AuthParams params) async {
+    final credential = params.cred ??
+        (params.hasIdAndCode
+            ? PhoneAuthProvider.credential(
+                verificationId: params.id!,
+                smsCode: params.code!,
+              )
+            : null);
+
+    if (credential == null) return null;
 
     final user = FirebaseAuth.instance.currentUser;
 
-    // Link up
-    if (user != null) return await user.linkWithCredential(credential);
-
-    // Sign in with phone credential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    try {
+      // Link if a user is already signed in, otherwise sign in
+      return user != null
+          ? await user.linkWithCredential(credential)
+          : await FirebaseAuth.instance.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'provider-already-linked') {
+        // Handle provider-already-linked case
+        return await FirebaseAuth.instance.signInWithCredential(credential);
+      }
+      rethrow;
+    }
   }
 
   Future<UserCredential?> handleGoogleAuthentication(
@@ -113,13 +135,10 @@ class AuthenticationRepository {
     final user = FirebaseAuth.instance.currentUser;
 
     try {
-      // Link up
-      if (user != null) {
-        return await user.linkWithCredential(credential);
-      }
-
-      // Sign in with Google credential
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      // Link if a user is already signed in, otherwise sign in
+      return user != null
+          ? await user.linkWithCredential(credential)
+          : await FirebaseAuth.instance.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'provider-already-linked') {
         // Sign in with Google credential if provider is already linked

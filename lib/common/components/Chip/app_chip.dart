@@ -10,6 +10,7 @@ class AppChip extends StatelessWidget {
   final bool isSelected;
   final VoidCallback? onTap;
   final bool outlined;
+  final EdgeInsetsGeometry? padding;
 
   const AppChip({
     super.key,
@@ -17,6 +18,7 @@ class AppChip extends StatelessWidget {
     required this.isSelected,
     this.onTap,
     this.outlined = true,
+    this.padding,
   });
 
   @override
@@ -35,9 +37,10 @@ class AppChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(6.r),
           color: isSelected ? AppColors.black : Colors.white,
         ),
-        padding: outlined
-            ? EdgeInsets.symmetric(vertical: 3.h, horizontal: 5.w)
-            : EdgeInsets.symmetric(vertical: 2.h, horizontal: 8.w),
+        padding: padding ??
+            (outlined
+                ? EdgeInsets.symmetric(vertical: 3.h, horizontal: 5.w)
+                : EdgeInsets.symmetric(vertical: 2.h, horizontal: 8.w)),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

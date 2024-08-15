@@ -79,6 +79,8 @@ class SelectedItems {
       dietary = value;
     } else if (value is MaritalStatus) {
       maritalStatus = value;
+    } else {
+      // Do nothing
     }
   }
 }

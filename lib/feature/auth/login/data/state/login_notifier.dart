@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whossy_mobile_app/feature/auth/login/data/repository/authentication_repository.dart';
+import 'package:whossy_mobile_app/feature/auth/login/model/auth_params.dart';
 
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
@@ -146,8 +147,9 @@ class LoginNotifier extends ChangeNotifier {
     try {
       spinnerState = true;
 
-      userCredential =
-          await _authRepository.handlePhoneAuthentication(id, code);
+      final cred = AuthParams.withIdAndCode(id, code);
+
+      userCredential = await _authRepository.handlePhoneAuthentication(cred);
 
       await accountCheck(
         user: userCredential?.user,
@@ -170,17 +172,41 @@ class LoginNotifier extends ChangeNotifier {
   Future<void> sendPhoneNumberCode({
     required String phone,
     required void Function(String) showSnackbar,
-    required void Function(String, String) onSend,
+    required void Function(String, String, int?) onSend,
+    required VoidCallback toCreateAccount,
+    required VoidCallback toOnboarding,
+    required VoidCallback onAuthenticate,
+    int? resendingToken,
   }) async {
     try {
       spinnerState = true;
 
-      log('I am cooking');
-      await _authRepository.sendOTPCode(phone, onSend, showSnackbar);
+      final credential = await _authRepository.sendOTPCode(
+        phone,
+        onSend,
+        showSnackbar,
+        resendingToken,
+      );
+
+      if (credential != null) {
+        final cred = AuthParams.withCredential(credential);
+
+        userCredential = await _authRepository.handlePhoneAuthentication(cred);
+
+        await accountCheck(
+          user: userCredential?.user,
+          showSnackbar: showSnackbar,
+          onAuthenticate: onAuthenticate,
+          toCreateAccount: toCreateAccount,
+          toOnboarding: toOnboarding,
+          disableEmailCheck: true,
+        );
+      }
     } on FirebaseException catch (e) {
       handleFirebaseAuthError(e, showSnackbar);
     } catch (e) {
       showSnackbar(AppStrings.errorUnknown);
+
       log(e.toString());
     } finally {
       spinnerState = false;

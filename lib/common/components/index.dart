@@ -1,4 +1,5 @@
 export '/common/components/AppBar/custom_app_bar.dart';
+export '/common/components/BottomAppBar/bottom_app_bar.dart';
 export '/common/components/Box/icon_box.dart';
 export '/common/components/Button/app_button.dart';
 export '/common/components/Button/filled_back_button.dart';
@@ -28,4 +29,3 @@ export '/common/components/Tile/custom_tile.dart';
 export '/common/components/Tile/generic_tile.dart';
 export '/common/components/Tile/preference_tile.dart';
 export '/common/components/Tile/radio_tile.dart';
-export '/common/components/bottom_app_bar/bottom_app_bar.dart';

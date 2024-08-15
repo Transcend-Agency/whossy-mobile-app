@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import '../../../login/data/repository/authentication_repository.dart';
+import '../../../login/model/auth_params.dart';
 import '../../model/app_user.dart';
 import '../repository/user_repository.dart';
 
@@ -104,8 +105,9 @@ class SignUpNotifier extends ChangeNotifier {
     try {
       spinnerState = true;
 
-      userCredential =
-          await _authRepository.handlePhoneAuthentication(id, code);
+      final cred = AuthParams.withIdAndCode(id, code);
+
+      userCredential = await _authRepository.handlePhoneAuthentication(cred);
 
       // Update data in firebase
       setBaseData(phone: phone, provider: 'phone');

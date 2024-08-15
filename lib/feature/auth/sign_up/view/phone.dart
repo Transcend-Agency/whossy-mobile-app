@@ -75,30 +75,28 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
         existingPhoneNumber = 'Checking ...';
       });
 
-      _debouncer.run(
-        () async {
-          final countryCode = '+${country?.phoneCode ?? ''}';
-          // Perform the phone number availability check here
-          final result =
-              await _userRepository.checkPhone(text.formatNumber(countryCode));
+      _debouncer.run(() async {
+        final countryCode = '+${country?.phoneCode ?? ''}';
+        // Perform the phone number availability check here
+        final result =
+            await _userRepository.checkPhone(text.formatNumber(countryCode));
 
-          final unique = result['isEmpty'] ?? false;
-          final message =
-              result['message'] ?? 'Already registered with another account';
+        final unique = result['isEmpty'] ?? false;
+        final message =
+            result['message'] ?? 'Already registered with another account';
 
-          if (mounted) {
-            setState(() {
-              existingPhoneNumber = unique ? null : message;
+        if (mounted) {
+          setState(() {
+            existingPhoneNumber = unique ? null : message;
 
-              if (existingPhoneNumber == null && country == null) {
-                existingPhoneNumber = 'Select a country code';
-              }
+            if (existingPhoneNumber == null && country == null) {
+              existingPhoneNumber = 'Select a country code';
+            }
 
-              isLoading = false;
-            });
-          }
-        },
-      );
+            isLoading = false;
+          });
+        }
+      });
     }
   }
 
@@ -217,9 +215,8 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
                           Text(
                             AppUtils.countryCodeToEmoji(
                                 country?.countryCode ?? 'US'),
-
                             style: const TextStyle(
-                              fontSize:23,
+                              fontSize: 23,
                               fontFamily: null,
                             ),
                           ),

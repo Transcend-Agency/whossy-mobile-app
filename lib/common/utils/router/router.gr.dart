@@ -148,6 +148,7 @@ abstract class $AppRouter extends _i17.RootStackRouter {
           phone: args.phone,
           verId: args.verId,
           signIn: args.signIn,
+          resendToken: args.resendToken,
         ),
       );
     },
@@ -454,6 +455,7 @@ class VerificationCodeRoute
     required String phone,
     required String verId,
     bool signIn = true,
+    required int? resendToken,
     List<_i17.PageRouteInfo>? children,
   }) : super(
           VerificationCodeRoute.name,
@@ -462,6 +464,7 @@ class VerificationCodeRoute
             phone: phone,
             verId: verId,
             signIn: signIn,
+            resendToken: resendToken,
           ),
           initialChildren: children,
         );
@@ -478,6 +481,7 @@ class VerificationCodeRouteArgs {
     required this.phone,
     required this.verId,
     this.signIn = true,
+    required this.resendToken,
   });
 
   final _i18.Key? key;
@@ -488,9 +492,11 @@ class VerificationCodeRouteArgs {
 
   final bool signIn;
 
+  final int? resendToken;
+
   @override
   String toString() {
-    return 'VerificationCodeRouteArgs{key: $key, phone: $phone, verId: $verId, signIn: $signIn}';
+    return 'VerificationCodeRouteArgs{key: $key, phone: $phone, verId: $verId, signIn: $signIn, resendToken: $resendToken}';
   }
 }
 

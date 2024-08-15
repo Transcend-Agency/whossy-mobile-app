@@ -85,7 +85,22 @@ class AppConstants {
     WorkoutModel(text: WorkOut.no.name, value: WorkOut.no),
   ];
 
-  static final List<ExtraPreferences> extraPreferences = [
+  static final List<ExtraPreferences> extraPreferences2 = [
+    ExtraPreferences<Religion>(
+      header: 'Religion',
+      items: religionOptions,
+    ),
+    ExtraPreferences<Dietary>(
+      header: 'Dietary',
+      items: dietaryOptions,
+    ),
+    ExtraPreferences<MaritalStatus>(
+      header: 'Marital Status',
+      items: maritalStatusOptions,
+    ),
+  ];
+
+  static final List<ExtraPreferences> extraPreferences1 = [
     ExtraPreferences<Preference>(
       header: 'Relationship preference',
       items: relPrefOptions,
@@ -125,18 +140,6 @@ class AppConstants {
     ExtraPreferences<PetOwner>(
       header: 'Pet owner',
       items: petOwnerOptions,
-    ),
-    ExtraPreferences<Religion>(
-      header: 'Religion',
-      items: religionOptions,
-    ),
-    ExtraPreferences<Dietary>(
-      header: 'Dietary',
-      items: dietaryOptions,
-    ),
-    ExtraPreferences<MaritalStatus>(
-      header: 'Marital Status',
-      items: maritalStatusOptions,
     ),
   ];
 

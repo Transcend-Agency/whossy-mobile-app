@@ -22,6 +22,8 @@ class _SplashScreenState extends State<SplashScreen> {
   late ScrollController _scrollController3;
   late ScrollController _scrollController4;
 
+  int time = 25;
+
   @override
   void initState() {
     super.initState();
@@ -39,14 +41,14 @@ class _SplashScreenState extends State<SplashScreen> {
           _scrollController1.position.maxScrollExtent,
           _scrollController1.position.minScrollExtent,
           _scrollController1.position.maxScrollExtent,
-          25,
+          time,
         );
         animateToMaxMin(
           _scrollController3,
           _scrollController3.position.maxScrollExtent,
           _scrollController3.position.minScrollExtent,
           _scrollController3.position.maxScrollExtent,
-          15,
+          time,
         );
 
         // Start the second and fourth controllers from the end
@@ -56,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
           _scrollController2.position.maxScrollExtent,
           _scrollController2.position.minScrollExtent,
           _scrollController2.position.minScrollExtent,
-          20,
+          time,
         );
         _scrollController4.jumpTo(_scrollController4.position.maxScrollExtent);
         animateToMaxMin(
@@ -64,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
           _scrollController4.position.maxScrollExtent,
           _scrollController4.position.minScrollExtent,
           _scrollController4.position.minScrollExtent,
-          18,
+          time,
         );
       });
     });
@@ -82,11 +84,8 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     controller
-        .animateTo(
-      direction,
-      duration: Duration(seconds: seconds),
-      curve: Curves.linear,
-    )
+        .animateTo(direction,
+            duration: Duration(seconds: seconds), curve: Curves.linear)
         .then((_) {
       direction = direction == max ? min : max;
       animateToMaxMin(controller, max, min, direction, seconds);

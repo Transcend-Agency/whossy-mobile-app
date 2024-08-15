@@ -9,14 +9,10 @@ final forgotTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);
 
 const verifyTouchable = EdgeInsets.all(6);
 
-final roundedTop = RoundedRectangleBorder(
-  borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-);
+final circularTop = BorderRadius.vertical(top: Radius.circular(16.r));
 
-final circularTop = BorderRadius.only(
-  topLeft: Radius.circular(12.r),
-  topRight: Radius.circular(12.r),
-);
+// Use it in RoundedRectangleBorder
+final roundedTop = RoundedRectangleBorder(borderRadius: circularTop);
 
 final circularBorder = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(8.r),
