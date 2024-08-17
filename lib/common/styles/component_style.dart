@@ -5,11 +5,13 @@ import '../../constants/colors.dart';
 
 final pagePadding = EdgeInsets.symmetric(horizontal: 14.w);
 
+final modalPadding = EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w);
+
 final forgotTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);
 
 const verifyTouchable = EdgeInsets.all(6);
 
-final circularTop = BorderRadius.vertical(top: Radius.circular(16.r));
+final circularTop = BorderRadius.vertical(top: Radius.circular(14.r));
 
 // Use it in RoundedRectangleBorder
 final roundedTop = RoundedRectangleBorder(borderRadius: circularTop);

@@ -32,6 +32,12 @@ class UserNotifier extends ChangeNotifier {
     double? distance,
     bool? outreach,
     List<String>? interests,
+    String? country,
+    String? city,
+    int? minHeight,
+    int? maxHeight,
+    int? minWeight,
+    int? maxWeight,
   }) {
     _otherPreferences.update(
       meet: meet,
@@ -42,6 +48,12 @@ class UserNotifier extends ChangeNotifier {
       distance: distance,
       outreach: outreach,
       interests: interests,
+      country: country,
+      city: city,
+      minHeight: minHeight,
+      maxHeight: maxHeight,
+      minWeight: minWeight,
+      maxWeight: maxWeight,
     );
 
     notifyListeners();

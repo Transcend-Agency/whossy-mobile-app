@@ -2,6 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../../feature/home/model/extras.dart';
 
+enum RangeType {
+  height('Height', [140, 220], RangeValues(160, 200)),
+  weight('Weight', [40, 140], RangeValues(60, 120));
+
+  const RangeType(this.name, this.feasibleRange, this.placeholder);
+
+  final String name;
+  final List<double> feasibleRange;
+  final RangeValues placeholder;
+}
+
 enum Meet {
   men('Male'),
   women('Female'),

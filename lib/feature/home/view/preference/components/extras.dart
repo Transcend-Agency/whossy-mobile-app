@@ -6,8 +6,10 @@ import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
 import 'package:whossy_mobile_app/feature/home/data/state/user_notifier.dart';
 import 'package:whossy_mobile_app/feature/home/model/extras.dart';
-import 'package:whossy_mobile_app/feature/home/view/preference/components/custom_extra_sheet.dart';
+import 'package:whossy_mobile_app/feature/home/view/preference/components/city_sheet.dart';
+import 'package:whossy_mobile_app/feature/home/view/preference/components/range_sheet.dart';
 
+import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import 'extras_sheet.dart';
@@ -63,21 +65,63 @@ class _ExtrasComponentState extends State<ExtrasComponent> {
                     },
                   ),
                   PreferenceTile(
-                    text: 'Height',
-                    onTap: () async {
-                      await showCustomExtraSheet(
-                        context: context,
-                      );
-                    },
-                    trailing: 'Choose',
-                  ),
-                  PreferenceTile(
                     text: 'Country of Residence',
                     onTap: () => showPicker(
                       showCode: false,
-                      onSelect: (_) {},
+                      onSelect: (_) => user.updatePreferences(country: _.name),
                     ),
-                    trailing: 'Choose',
+                    trailing: user.otherPreferences.country ?? 'Choose',
+                  ),
+                  PreferenceTile(
+                    text: 'City of Residence',
+                    onTap: () async {
+                      final city = await showCitySheet(
+                        context: context,
+                        city: user.otherPreferences.city,
+                      );
+
+                      if (city != null) {
+                        user.updatePreferences(city: city);
+                      }
+                    },
+                    trailing: user.otherPreferences.city ?? 'Choose',
+                  ),
+                  PreferenceTile(
+                    text: 'Height',
+                    onTap: () async {
+                      final height = await showRangeSheet(
+                        context: context,
+                        range: user.otherPreferences.toHeightRange(),
+                        type: RangeType.height,
+                      );
+
+                      if (height != null) {
+                        user.updatePreferences(
+                          minHeight: height.start.round(),
+                          maxHeight: height.end.round(),
+                        );
+                      }
+                    },
+                    trailing: user.otherPreferences.heightRange.displayRange(),
+                  ),
+                  PreferenceTile(
+                    text: 'Weight',
+                    onTap: () async {
+                      final weight = await showRangeSheet(
+                        context: context,
+                        range: user.otherPreferences.toWeightRange(),
+                        type: RangeType.weight,
+                      );
+
+                      if (weight != null) {
+                        user.updatePreferences(
+                          minWeight: weight.start.round(),
+                          maxWeight: weight.end.round(),
+                        );
+                      }
+                    },
+                    trailing: user.otherPreferences.weightRange
+                        .displayRange(type: RangeType.weight),
                   ),
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -124,12 +168,37 @@ class _ExtrasComponentState extends State<ExtrasComponent> {
     required void Function(Country) onSelect,
   }) {
     showCountryPicker(
+      header: _header(),
       useSafeArea: true,
       context: context,
       moveAlongWithKeyboard: true,
       showPhoneCode: showCode,
       countryListTheme: AppTheme().countryListTheme(),
       onSelect: onSelect,
+    );
+  }
+
+  Widget _header() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Country of Residence',
+            style: TextStyles.buttonText.copyWith(
+              fontSize: AppUtils.scale(17),
+            ),
+          ),
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: SizedBox.square(
+              dimension: 30.r,
+              child: cancelIcon(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -147,13 +216,31 @@ Future<T?> showCustomModalBottomSheet<T extends GenericEnum>({
   );
 }
 
-Future showCustomExtraSheet({
+Future<String?> showCitySheet({
   required BuildContext context,
+  String? city,
 }) {
-  return showModalBottomSheet(
+  return showModalBottomSheet<String?>(
+    isScrollControlled: true,
     clipBehavior: Clip.hardEdge,
     context: context,
     shape: roundedTop,
-    builder: (_) => const CustomExtraSheet(),
+    builder: (_) => CitySheet(city: city),
+  );
+}
+
+Future<RangeValues?> showRangeSheet({
+  required RangeValues? range,
+  required BuildContext context,
+  required RangeType type,
+}) {
+  return showModalBottomSheet<RangeValues?>(
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => RangeSheet(
+      range: range,
+      type: type,
+    ),
   );
 }

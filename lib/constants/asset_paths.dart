@@ -28,4 +28,15 @@ class AppAssets {
   static const heart = 'assets/icons/heart.svg';
   static const chat = 'assets/icons/chat.svg';
   static const user = 'assets/icons/user.svg';
+
+  static const alert = 'assets/icons/alert.svg';
+  static const guide = 'assets/icons/guide.svg';
+  static const tune = 'assets/icons/tune.svg';
+  static const tick = 'assets/icons/tick.svg';
+  static const edit = 'assets/icons/edit.svg';
+
+  static const star = 'assets/icons/star.png';
+  static const flash = 'assets/icons/flash.png';
+  static const credit = 'assets/icons/credit.png';
+  static const boost = 'assets/icons/boost.png';
 }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/constants/asset_paths.dart';
 
-import '../../../common/styles/component_style.dart';
 import 'tabs/_.dart';
 
 @RoutePage()
@@ -21,11 +20,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
   @override
   void initState() {
     _pages = [
-      const One(),
+      const Matching(),
       const Two(),
       const Three(),
       const Four(),
-      const Five(),
+      const Profile(),
     ];
     super.initState();
   }
@@ -39,7 +38,6 @@ class _HomeWrapperState extends State<HomeWrapper> {
     return PopScope(
       canPop: false,
       child: AppScaffold(
-        padding: pagePadding,
         body: SizedBox(
           child: _pages.elementAt(selectedIndex),
         ),

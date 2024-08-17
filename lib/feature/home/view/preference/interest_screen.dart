@@ -32,8 +32,6 @@ class _InterestScreenState extends State<InterestScreen> {
   void initState() {
     super.initState();
     _selectedTicks = NotifierSet<String>();
-    _selectedTicks.addListener(_update);
-
     _selectedTicks.addAll(widget.initialValues ?? []);
 
     // Initialize filtered list
@@ -69,16 +67,10 @@ class _InterestScreenState extends State<InterestScreen> {
 
   @override
   void dispose() {
-    _selectedTicks.removeListener(_update);
-
     _selectedTicks.dispose();
     searchController.removeListener(_filterSearchResults);
     searchController.dispose();
     super.dispose();
-  }
-
-  void _update() {
-    //int length = _selectedTicks.length;
   }
 
   @override

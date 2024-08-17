@@ -72,11 +72,14 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
                     'Have similar interest',
                     style: TextStyles.prefText,
                   ),
-                  Transform.scale(
-                    scale: 0.7,
-                    child: Switch.adaptive(
-                      value: similarInterest,
-                      onChanged: updateInterest,
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4.h),
+                    child: Transform.scale(
+                      scale: 0.7,
+                      child: Switch.adaptive(
+                        value: similarInterest,
+                        onChanged: updateInterest,
+                      ),
                     ),
                   ),
                 ],
@@ -95,7 +98,7 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
                       style: TextStyles.prefText,
                     ),
                     Container(
-                      margin: const EdgeInsets.all(10),
+                      margin: EdgeInsets.all(13.h),
                       child: const Icon(
                         Icons.add_circle_rounded,
                         color: Colors.black,
@@ -116,11 +119,14 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
                     'Has a bio',
                     style: TextStyles.prefText,
                   ),
-                  Transform.scale(
-                    scale: 0.7,
-                    child: Switch.adaptive(
-                      value: hasBio,
-                      onChanged: updateBio,
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4.h),
+                    child: Transform.scale(
+                      scale: 0.7,
+                      child: Switch.adaptive(
+                        value: hasBio,
+                        onChanged: updateBio,
+                      ),
                     ),
                   ),
                 ],

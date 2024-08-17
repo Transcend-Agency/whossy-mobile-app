@@ -246,7 +246,6 @@ final alphabet = [
       'Japanese anime',
       'Java programming',
       'Jewelry design',
-      'Jazzercise',
     ]
   },
   {

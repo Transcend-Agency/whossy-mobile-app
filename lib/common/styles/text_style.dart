@@ -53,6 +53,13 @@ class TextStyles {
     fontSize: 13.sp,
   );
 
+  static TextStyle profileHead = const TextStyle(
+    fontFamily: 'NeueMontreal',
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -0.1,
+  );
+
   static TextStyle text = hintThemeText.copyWith(
     fontSize: 13.sp,
     color: AppColors.black,
@@ -65,6 +72,19 @@ class TextStyles {
   static TextStyle boldPrefText = text.copyWith(
     fontSize: AppUtils.scale(13.5.sp) ?? 15.sp,
     fontWeight: FontWeight.w500,
+  );
+
+  static TextStyle whossyGuideText = TextStyle(
+    fontSize: AppUtils.scale(12.5.sp) ?? 14.sp,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'NeueMontreal',
+    letterSpacing: -0.1,
+  );
+
+  static TextStyle underlineWhossyGuide = whossyGuideText.copyWith(
+    decoration: TextDecoration.underline,
+    fontWeight: FontWeight.w400,
+    fontSize: AppUtils.scale(11.5.sp) ?? 13.sp,
   );
 
   static TextStyle bioText = hintThemeText.copyWith(

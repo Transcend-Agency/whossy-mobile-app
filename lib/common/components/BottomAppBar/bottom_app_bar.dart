@@ -71,7 +71,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
               padding: EdgeInsets.all(12.r),
               child: SvgPicture.asset(
                 item,
-                height: 30,
+                height: 28,
                 colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
               ),
             ),

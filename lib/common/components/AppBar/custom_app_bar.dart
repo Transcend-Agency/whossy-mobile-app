@@ -34,9 +34,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             margin: EdgeInsets.only(
               left: 10.w,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.arrow_back_ios,
-              size: 22.r,
+              size: 22,
             ),
           ),
         ),

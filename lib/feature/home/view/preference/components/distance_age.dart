@@ -16,16 +16,23 @@ class DistanceAgeComponent extends StatefulWidget {
 }
 
 class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
-  RangeValues currentRangeValues = const RangeValues(18, 50);
   final _debouncer = Debouncer(milliseconds: 500);
+  late RangeValues ageRange;
   late UserNotifier _userNotifier;
 
-  double distance = 50;
-  bool show = true;
+  late double distance;
+  late bool show;
 
   @override
   void initState() {
     _userNotifier = Provider.of<UserNotifier>(context, listen: false);
+
+    ageRange = _userNotifier.otherPreferences.toAgeRange() ??
+        const RangeValues(18, 50);
+
+    distance = _userNotifier.otherPreferences.distance ?? 50;
+
+    show = _userNotifier.otherPreferences.hasBio ?? true;
     super.initState();
   }
 
@@ -42,7 +49,7 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
   }
 
   void updateRange(RangeValues values) {
-    setState(() => currentRangeValues = values);
+    setState(() => ageRange = values);
 
     _debouncer.run(
       () => _userNotifier.updatePreferences(
@@ -143,7 +150,7 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
                     ),
                     AppChip(
                       data:
-                          '${currentRangeValues.start.round()} - ${currentRangeValues.end.round()}',
+                          '${ageRange.start.round()} - ${ageRange.end.round()}',
                       isSelected: false,
                       outlined: false,
                     ),
@@ -163,7 +170,7 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
                     onChanged: updateRange,
                     min: 18,
                     max: 100,
-                    values: currentRangeValues,
+                    values: ageRange,
                   ),
                 ),
               ),

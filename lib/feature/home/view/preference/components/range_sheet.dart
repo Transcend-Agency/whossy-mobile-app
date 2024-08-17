@@ -1,53 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whossy_mobile_app/common/styles/component_style.dart';
 
 import '../../../../../common/components/index.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 
-class CustomExtraSheet<T> extends StatefulWidget {
-  const CustomExtraSheet({super.key});
+class RangeSheet<T> extends StatefulWidget {
+  const RangeSheet({
+    super.key,
+    this.range,
+    required this.type,
+  });
+
+  final RangeValues? range;
+  final RangeType type;
 
   @override
-  State<CustomExtraSheet<T>> createState() => _CustomExtraSheetState<T>();
+  State<RangeSheet<T>> createState() => _RangeSheetState<T>();
 }
 
-class _CustomExtraSheetState<T> extends State<CustomExtraSheet<T>> {
-  // Set initial height range values
-  RangeValues currentRangeValues = const RangeValues(160, 200);
-  late T? data;
+class _RangeSheetState<T> extends State<RangeSheet<T>> {
+  late RangeValues currentRange;
+  late RangeValues store;
   bool hasChanged = false;
 
-  // Example groupValue and onChanged function
-  void onChanged(T? value) {
+  void updateRange(RangeValues values) {
     setState(() {
-      hasChanged = data != value;
-      if (hasChanged) data = value;
+      if (currentRange != values) {
+        currentRange = values;
+      }
+
+      hasChanged = currentRange != store;
     });
   }
 
-  void updateRange(RangeValues values) {
-    setState(() => currentRangeValues = values);
-  }
+  @override
+  void initState() {
+    currentRange = widget.range ?? widget.type.placeholder;
 
-  // Helper function to convert cm to feet and inches
-  String convertCmToInches(double cm) {
-    final totalInches = cm / 2.54;
-    final feet = totalInches ~/ 12;
-    final inches = totalInches % 12;
-    return "$feet'${inches.toStringAsFixed(0)}\"";
-  }
-
-  // Function to format the height range as a string
-  String getFormattedHeightRange() {
-    final minHeightCm = currentRangeValues.start.round();
-    final maxHeightCm = currentRangeValues.end.round();
-
-    final minHeightInches = convertCmToInches(currentRangeValues.start);
-    final maxHeightInches = convertCmToInches(currentRangeValues.end);
-
-    return '$minHeightCm cm ($minHeightInches) - $maxHeightCm cm ($maxHeightInches)';
+    store = currentRange;
+    super.initState();
   }
 
   @override
@@ -60,19 +54,19 @@ class _CustomExtraSheetState<T> extends State<CustomExtraSheet<T>> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              padding: modalPadding,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Height',
+                    widget.type.name,
                     style: TextStyles.buttonText.copyWith(
                       fontSize: AppUtils.scale(17),
                     ),
                   ),
                   GestureDetector(
-                    onTap: () =>
-                        Navigator.pop(context, hasChanged ? data : null),
+                    onTap: () => Navigator.pop(
+                        context, hasChanged ? currentRange : null),
                     child: SizedBox.square(
                       dimension: 30.r,
                       child: hasChanged ? checkIcon() : cancelIcon(),
@@ -101,15 +95,18 @@ class _CustomExtraSheetState<T> extends State<CustomExtraSheet<T>> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Height Range',
+                          '${widget.type.name} Range',
                           style: TextStyles.prefText,
                         ),
                         AppChip(
-                          data: getFormattedHeightRange(),
+                          data:
+                              currentRange.getFormattedRange(type: widget.type),
                           isSelected: false,
                           outlined: false,
                           padding: EdgeInsets.symmetric(
-                              vertical: 4.h, horizontal: 8.w),
+                            vertical: 4.h,
+                            horizontal: 8.w,
+                          ),
                         ),
                       ],
                     ),
@@ -125,9 +122,9 @@ class _CustomExtraSheetState<T> extends State<CustomExtraSheet<T>> {
                       ),
                       child: RangeSlider(
                         onChanged: updateRange,
-                        min: 140,
-                        max: 220,
-                        values: currentRangeValues,
+                        min: widget.type.feasibleRange[0],
+                        max: widget.type.feasibleRange[1],
+                        values: currentRange,
                       ),
                     ),
                   ),

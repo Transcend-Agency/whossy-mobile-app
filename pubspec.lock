@@ -229,8 +229,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: master
-      resolved-ref: c735d270481ac110a191b4255ddc7e48fbd02fed
+      ref: dev
+      resolved-ref: "5a10500a9a4bdbca2f75b511c6b5d7d8c8c3dc71"
       url: "https://github.com/devBamidele/flutter_country_picker.git"
     source: git
     version: "2.0.26"

@@ -20,13 +20,15 @@ class ExtrasSheet<T extends GenericEnum> extends StatefulWidget {
 
 class _ExtrasSheetState<T extends GenericEnum> extends State<ExtrasSheet<T>> {
   late T? data;
+  late T? store;
   bool hasChanged = false;
 
-  // Example groupValue and onChanged function
   void onChanged(T? value) {
     setState(() {
-      hasChanged = data != value;
-      if (hasChanged) data = value;
+      if (data != value) {
+        data = value;
+      }
+      hasChanged = data != store;
     });
   }
 
@@ -34,6 +36,7 @@ class _ExtrasSheetState<T extends GenericEnum> extends State<ExtrasSheet<T>> {
   void initState() {
     data = widget.selectedItem;
 
+    store = data;
     super.initState();
   }
 
@@ -47,7 +50,7 @@ class _ExtrasSheetState<T extends GenericEnum> extends State<ExtrasSheet<T>> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              padding: modalPadding,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

@@ -36,6 +36,17 @@ class AppColors {
   static const Color whiteShade100 = Color(0xFFF0F0F0);
   static const Color whiteShade200 = Color(0xFFF7F7F7);
 
+  static const Color yellowContainer = Color(0xFFfdfae7);
+  static const Color yellowText = Color(0xFFeeca0c);
+
+  static const Color purpleContainer = Color(0xFFf3f3ff);
+  static const Color purpleText = Color(0xFF8785ff);
+
+  static const Color freeContainer = Color(0xFFff5c00);
+  static const Color freeContainerShade = Color(0xffffe2d2);
+  static const Color premiumContainer = Color(0xFFAAAAAA);
+  static const Color premiumContainerShade = Color(0xFFf0f0f0);
+
   static const splashGradient = LinearGradient(
     colors: [warmYellow, primaryColor],
     begin: Alignment.topCenter,
