@@ -37,7 +37,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => OnboardingNotifier()),
         ChangeNotifierProvider(create: (_) => SignUpNotifier()),
         ChangeNotifierProvider(create: (_) => LoginNotifier()),
-        ChangeNotifierProvider(create: (_) => UserNotifier()),
+        ChangeNotifierProvider(create: (_) => PreferencesNotifier()),
       ],
       child: Whossy(),
     ),

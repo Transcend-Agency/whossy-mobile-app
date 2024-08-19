@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
@@ -16,15 +15,6 @@ class SignUpNotifier extends ChangeNotifier {
   final _authRepository = AuthenticationRepository();
   AppUser _user = AppUser();
   UserCredential? userCredential;
-
-  String tc = 'https://www.google.com/';
-
-  Future<void> launchTC() async {
-    final Uri url = Uri.parse(tc);
-    if (!await launchUrl(url)) {
-      throw Exception('Could not launch $url');
-    }
-  }
 
   bool _createSpinner = false;
 

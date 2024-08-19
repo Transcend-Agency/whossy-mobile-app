@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
-import '../../../../constants/index.dart';
+import '../data/source/drink_data.dart';
 import '../data/state/onboarding_notifier.dart';
 
 class DrinkScreen extends StatefulWidget {
@@ -39,7 +39,7 @@ class _DrinkScreenState extends State<DrinkScreen>
             return ListView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              children: AppConstants.drinkData.map((data) {
+              children: drinkData.map((data) {
                 return GenericTile(
                   value: data.value,
                   groupValue: _drink,

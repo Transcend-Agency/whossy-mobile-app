@@ -6,9 +6,10 @@ import '../../utils/router/router.gr.dart';
 import '../Button/app_icon_button.dart';
 
 class HeaderBar extends StatelessWidget {
-  const HeaderBar({super.key, this.icon});
+  const HeaderBar({super.key, this.icon, this.onIconTap});
 
   final IconData? icon;
+  final VoidCallback? onIconTap;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,11 @@ class HeaderBar extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null) AppIconButton(icon: icon!),
+            if (icon != null)
+              AppIconButton(
+                icon: icon!,
+                onTap: onIconTap,
+              ),
             AppIconButton(
               path: AppAssets.tune,
               size: 24,

@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/constants/extras.dart';
 import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
 
 import '../../../../common/utils/index.dart';
+import '../data/source/meet_data.dart';
 
 class MeetScreen extends StatefulWidget {
   final int pageIndex;
@@ -44,7 +44,7 @@ class _MeetScreenState extends State<MeetScreen>
             return ListView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              children: AppConstants.meetData.map((data) {
+              children: meetData.map((data) {
                 return GenericTile(
                   value: data.value,
                   groupValue: _meet,

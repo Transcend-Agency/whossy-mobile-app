@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../feature/home/model/extras.dart';
+import '../../feature/home/preferences/model/generic_enum.dart';
 
 enum RangeType {
   height('Height', [140, 220], RangeValues(160, 200)),

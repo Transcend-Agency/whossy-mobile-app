@@ -4,7 +4,7 @@ import 'package:whossy_mobile_app/common/utils/index.dart';
 import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
 
 import '../../../../common/components/index.dart';
-import '../../../../constants/index.dart';
+import '../data/source/preference_data.dart';
 
 class RelPrefScreen extends StatefulWidget {
   final int pageIndex;
@@ -42,7 +42,7 @@ class _RelPrefScreenState extends State<RelPrefScreen>
             return ListView(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              children: AppConstants.preferenceData.map((data) {
+              children: preferenceData.map((data) {
                 return RadioTile(
                   leadingAsset: data.leadingAsset,
                   value: data.value,

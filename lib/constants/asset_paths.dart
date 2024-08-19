@@ -34,6 +34,7 @@ class AppAssets {
   static const tune = 'assets/icons/tune.svg';
   static const tick = 'assets/icons/tick.svg';
   static const edit = 'assets/icons/edit.svg';
+  static const logout = 'assets/icons/logout.svg';
 
   static const star = 'assets/icons/star.png';
   static const flash = 'assets/icons/flash.png';

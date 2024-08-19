@@ -2,36 +2,34 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'app_user.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(
+  includeIfNull: false,
+)
 class AppUser {
-  @JsonKey(name: 'uid', includeIfNull: false)
   final String? uid;
 
-  @JsonKey(name: 'email', includeIfNull: false)
   final String? email;
 
-  @JsonKey(name: 'first_name', includeIfNull: false)
+  @JsonKey(name: 'first_name')
   final String? firstName;
 
-  @JsonKey(name: 'last_name', includeIfNull: false)
+  @JsonKey(name: 'last_name')
   final String? lastName;
 
-  @JsonKey(name: 'gender', includeIfNull: false)
   final String? gender;
 
-  @JsonKey(name: 'phone_number', includeIfNull: false)
+  @JsonKey(name: 'phone_number')
   final String? phoneNumber;
 
-  @JsonKey(name: 'country_of_origin', includeIfNull: false)
+  @JsonKey(name: 'country_of_origin')
   final String? countryOfOrigin;
 
-  @JsonKey(name: 'authProvider', includeIfNull: false)
   final String? authProvider;
 
-  @JsonKey(name: 'has_completed_account_creation', includeIfNull: false)
+  @JsonKey(name: 'has_completed_account_creation')
   final bool hasCompletedAccountCreation;
 
-  @JsonKey(name: 'has_completed_onboarding', includeIfNull: false)
+  @JsonKey(name: 'has_completed_onboarding')
   final bool hasCompletedOnboarding;
 
   AppUser({
@@ -43,8 +41,8 @@ class AppUser {
     this.phoneNumber,
     this.countryOfOrigin,
     this.authProvider,
-    this.hasCompletedAccountCreation = false, // Default value
-    this.hasCompletedOnboarding = false, // Default value
+    this.hasCompletedAccountCreation = false,
+    this.hasCompletedOnboarding = false,
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>

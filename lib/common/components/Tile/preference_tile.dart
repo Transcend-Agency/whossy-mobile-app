@@ -6,12 +6,13 @@ import '../../../../common/styles/text_style.dart';
 import '../../../../constants/index.dart';
 
 class PreferenceTile extends StatelessWidget {
-  final String text;
+  final String? text;
   final String trailing;
   final VoidCallback onTap;
   final TextStyle? textStyle;
   final Color? iconColor;
   final bool showDivider;
+  final List<Widget>? customChildren;
 
   const PreferenceTile({
     super.key,
@@ -21,50 +22,62 @@ class PreferenceTile extends StatelessWidget {
     this.iconColor,
     this.showDivider = true,
     required this.trailing,
+    this.customChildren,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                text,
-                style: textStyle ?? TextStyles.prefText,
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 13.h, bottom: 13.h, left: 12.h),
+      child: customChildren != null
+          ? Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 12.r),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [...?customChildren],
+                ),
+              ),
+            )
+          : Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      trailing,
-                      style: (textStyle ?? TextStyles.prefText).copyWith(
-                        color: AppColors.hintTextColor,
+                      text!,
+                      style: textStyle ?? TextStyles.prefText,
+                    ),
+                    Container(
+                      margin:
+                          EdgeInsets.only(top: 13.r, bottom: 13.r, left: 12.h),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            trailing,
+                            style: (textStyle ?? TextStyles.prefText).copyWith(
+                              color: AppColors.hintTextColor,
+                            ),
+                          ),
+                          addWidth(6),
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: iconColor ?? AppColors.hintTextColor,
+                            size: 16,
+                          ),
+                        ],
                       ),
-                    ),
-                    addWidth(6),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      color: iconColor ?? AppColors.hintTextColor,
-                      size: 16,
-                    ),
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
-          if (showDivider)
-            const Divider(
-              color: AppColors.outlinedColor,
-              height: 0,
+                if (showDivider)
+                  const Divider(
+                    color: AppColors.outlinedColor,
+                    height: 0,
+                  ),
+              ],
             ),
-        ],
-      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
+import '../data/source/workout_data.dart';
 import '../data/state/notifier_set.dart';
 import '../data/state/onboarding_notifier.dart';
 
@@ -95,7 +96,7 @@ class _PetsScreenState extends State<PetsScreen>
             return ListView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              children: AppConstants.workOutData.map((data) {
+              children: workOutData.map((data) {
                 return GenericTile(
                   value: data.value,
                   groupValue: _workOut,

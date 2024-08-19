@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
-import '../../../../constants/index.dart';
+import '../data/source/smoke_data.dart';
 import '../data/state/onboarding_notifier.dart';
 
 class SmokerScreen extends StatefulWidget {
@@ -39,7 +39,7 @@ class _SmokerScreenState extends State<SmokerScreen>
             return ListView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              children: AppConstants.smokeData.map((data) {
+              children: smokeData.map((data) {
                 return GenericTile(
                   value: data.value,
                   groupValue: _smoke,

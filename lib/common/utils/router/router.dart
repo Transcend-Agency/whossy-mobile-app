@@ -28,10 +28,12 @@ class AppRouter extends $AppRouter {
         // ONBOARDING
         AutoRoute(page: Wrapper.page),
         // MAIN APP
-        AutoRoute(page: HomeWrapper.page, initial: true),
+        AutoRoute(page: HomeWrapper.page),
 
         AutoRoute(page: PreferenceRoute.page),
-        AutoRoute(page: InterestRoute.page)
+        AutoRoute(page: InterestRoute.page),
+
+        AutoRoute(page: Settings.page, initial: true),
       ];
 }
 
