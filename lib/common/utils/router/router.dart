@@ -33,7 +33,8 @@ class AppRouter extends $AppRouter {
         AutoRoute(page: PreferenceRoute.page),
         AutoRoute(page: InterestRoute.page),
 
-        AutoRoute(page: Settings.page, initial: true),
+        AutoRoute(page: Settings.page),
+        AutoRoute(page: EditProfile.page, initial: true),
       ];
 }
 

@@ -2,6 +2,35 @@ import 'package:flutter/material.dart';
 
 import '../../feature/home/preferences/model/generic_enum.dart';
 
+enum CoreSettings implements GenericEnum {
+  incognito(
+    'Incognito',
+    'Your profile will be hidden from public users but will be seen by people you like.',
+  ),
+  incomingMessages(
+    'Incoming messages',
+    'This will allow only verified users to message you.',
+  ),
+  hideVerificationBadge(
+    'Hide verification badge',
+    'This will hide the verification badge on your profile.',
+  ),
+  publicSearch(
+    'Public search',
+    'Other users will be able to find your profile online when they search the internet.',
+  ),
+  onlineStatus(
+    'Online status',
+    'Users won’t be able to see when you’re online.',
+  );
+
+  const CoreSettings(this.name, this.subtitle);
+
+  @override
+  final String name;
+  final String subtitle;
+}
+
 enum RangeType {
   height('Height', [140, 220], RangeValues(160, 200)),
   weight('Weight', [40, 140], RangeValues(60, 120));

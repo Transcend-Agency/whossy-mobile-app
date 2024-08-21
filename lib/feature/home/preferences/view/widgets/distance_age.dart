@@ -28,7 +28,7 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
     _userNotifier = Provider.of<PreferencesNotifier>(context, listen: false);
 
     ageRange = _userNotifier.otherPreferences.toAgeRange() ??
-        const RangeValues(18, 50);
+        const RangeValues(25, 35);
 
     distance = _userNotifier.otherPreferences.distance ?? 50;
 
@@ -91,7 +91,7 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 6.r, vertical: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 10.r, vertical: 8.h),
                 child: SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     trackHeight: 1,
@@ -159,7 +159,7 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
               ),
               Padding(
                 padding:
-                    EdgeInsets.symmetric(horizontal: 6.r).copyWith(top: 8.h),
+                    EdgeInsets.symmetric(horizontal: 10.r).copyWith(top: 8.h),
                 child: SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     activeTrackColor: AppColors.activeTrackColor,
@@ -169,7 +169,7 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
                   child: RangeSlider(
                     onChanged: updateRange,
                     min: 18,
-                    max: 100,
+                    max: 70,
                     values: ageRange,
                   ),
                 ),

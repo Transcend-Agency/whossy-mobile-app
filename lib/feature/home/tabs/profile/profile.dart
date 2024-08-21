@@ -31,6 +31,7 @@ class Profile extends StatelessWidget {
                   HeaderBar(
                     icon: Icons.settings,
                     onIconTap: () => Nav.push(context, const Settings()),
+                    onTuneTap: () => Nav.push(context, const EditProfile()),
                   ),
                   const Header(),
                   addHeight(8),

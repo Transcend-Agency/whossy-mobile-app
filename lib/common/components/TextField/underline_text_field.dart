@@ -20,6 +20,9 @@ class UnderlineTextField extends StatelessWidget {
     this.align = TextAlign.start,
     this.keyType = TextInputType.number,
     this.format,
+    this.validation,
+    this.validationMode,
+    this.contentPadding,
   });
 
   final FocusNode focusNode;
@@ -27,11 +30,14 @@ class UnderlineTextField extends StatelessWidget {
   final String? hintText;
   final TextEditingController textController;
   final void Function(String)? onFieldSubmitted;
+  final String? Function(String?)? validation;
   final TextInputAction action;
   final bool filled;
   final TextAlign align;
   final TextInputType keyType;
   final List<TextInputFormatter>? format;
+  final AutovalidateMode? validationMode;
+  final EdgeInsets? contentPadding;
 
   final Color textColor = AppColors.black;
 
@@ -60,6 +66,13 @@ class UnderlineTextField extends StatelessWidget {
         borderSide:
             const BorderSide(width: 0.5, color: AppColors.outlinedColor),
       ),
+      errorBorder: underlinedInputBorder.copyWith(
+        borderSide:
+            const BorderSide(width: 0.5, color: AppColors.sbErrorBorderColor),
+      ),
+      focusedErrorBorder: underlinedInputBorder.copyWith(
+        borderSide: const BorderSide(color: AppColors.sbErrorBorderColor),
+      ),
       contentPadding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 8.h),
     );
   }
@@ -76,9 +89,11 @@ class UnderlineTextField extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       maxLength: maxLength,
       maxLines: null,
+      validator: validation,
       keyboardType: keyType,
+      autovalidateMode: validationMode,
       inputFormatters: keyType == TextInputType.number ? format : null,
-      decoration: _inputDecoration,
+      decoration: _inputDecoration.copyWith(contentPadding: contentPadding),
     );
   }
 }

@@ -38,6 +38,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SignUpNotifier()),
         ChangeNotifierProvider(create: (_) => LoginNotifier()),
         ChangeNotifierProvider(create: (_) => PreferencesNotifier()),
+        ChangeNotifierProvider(create: (_) => SettingsNotifier()),
+        ChangeNotifierProvider(create: (_) => EditProfileNotifier()),
       ],
       child: Whossy(),
     ),

@@ -143,6 +143,40 @@ extension StringExtention on String? {
         value.length <= 500 &&
         RegExp(r'^[a-zA-Z0-9\s,.!?\-]+$').hasMatch(value);
   }
+
+  /// Validate the bio input (checks if it's a valid bio format)
+  String? validateBio() {
+    final value = this?.trim();
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+    if (value.length < 10 || value.length > 500) {
+      return 'At least 10 characters';
+    }
+    if (!RegExp(r'^[a-zA-Z0-9\s,.!?\-]+$').hasMatch(value)) {
+      return 'Special characters are not allowed';
+    }
+    return null; // Return null if the bio is valid
+  }
+
+  String toReadableFormat() {
+    // Convert camelCase to spaced words
+    final spacedField =
+        this!.replaceAllMapped(RegExp(r'([a-z])([A-Z])'), (match) {
+      return '${match.group(1)} ${match.group(2)}';
+    }).replaceAll('_', ' ');
+
+    // Capitalize the first letter of each word
+    final formattedField = spacedField.split(' ').map((word) {
+      if (word.isNotEmpty) {
+        return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+      }
+      return '';
+    }).join(' ');
+
+    // Handle specific cases for formatting
+    return formattedField == 'Phone Number' ? 'Phone number' : formattedField;
+  }
 }
 
 extension RangeValuesExtension1 on Map<String, int>? {

@@ -99,6 +99,7 @@ class _CitySheetState extends State<CitySheet> {
                 textController: cityController,
                 hintText: 'Enter city name',
                 prefixIcon: search(),
+                lengthLimit: 20,
                 padding: 13,
                 curvierEdges: true,
               ),

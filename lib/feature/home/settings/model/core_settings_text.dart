@@ -1,11 +1,8 @@
-class CoreSettingsText {
-  final String title;
-  final String subtitle;
-  final bool isPremium;
+import '../../../../common/utils/enums.dart';
 
-  CoreSettingsText({
-    required this.title,
-    required this.subtitle,
-    this.isPremium = false,
-  });
+class CoreSettingsText {
+  final bool isPremium;
+  final CoreSettings value;
+
+  CoreSettingsText({this.isPremium = false, required this.value});
 }

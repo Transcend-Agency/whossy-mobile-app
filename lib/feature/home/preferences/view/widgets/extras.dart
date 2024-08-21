@@ -4,25 +4,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/feature/home/preferences/data/state/preferences_notifier.dart';
 
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
+import '../../../../../provider/providers.dart';
 import '../../data/source/core_prefs_data.dart';
 import '../../model/generic_enum.dart';
-import '../sheets/city_sheet.dart';
-import '../sheets/extras_sheet.dart';
-import '../sheets/range_sheet.dart';
+import '../sheets/_.dart';
 
-class ExtrasComponent extends StatefulWidget {
+class ExtrasComponent extends StatelessWidget {
   const ExtrasComponent({super.key});
 
-  @override
-  State<ExtrasComponent> createState() => _ExtrasComponentState();
-}
-
-class _ExtrasComponentState extends State<ExtrasComponent> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -43,9 +36,9 @@ class _ExtrasComponentState extends State<ExtrasComponent> {
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: corePrefsDataSec1.length,
+                    itemCount: corePrefsData.length - 3,
                     itemBuilder: (_, index) {
-                      final item = corePrefsDataSec1[index];
+                      final item = corePrefsData[index];
 
                       return PreferenceTile(
                         key: ValueKey(index),
@@ -58,11 +51,11 @@ class _ExtrasComponentState extends State<ExtrasComponent> {
                           );
 
                           if (value != null) {
-                            setState(() => user.setValue(value));
+                            user.setValue(value);
                           }
                         },
                         trailing: user.getValue(item.type),
-                      ); //
+                      );
                     },
                   ),
                   PreferenceTile(
@@ -70,6 +63,7 @@ class _ExtrasComponentState extends State<ExtrasComponent> {
                     onTap: () => showPicker(
                       showCode: false,
                       onSelect: (_) => user.updatePreferences(country: _.name),
+                      context: context,
                     ),
                     trailing: user.otherPreferences.country ?? 'Choose',
                   ),
@@ -127,9 +121,9 @@ class _ExtrasComponentState extends State<ExtrasComponent> {
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: corePrefsDataSec2.length,
+                    itemCount: 3,
                     itemBuilder: (_, index) {
-                      final item = corePrefsDataSec2[index];
+                      final item = corePrefsData[index + 10];
 
                       return PreferenceTile(
                         key: ValueKey(index),
@@ -142,11 +136,11 @@ class _ExtrasComponentState extends State<ExtrasComponent> {
                           );
 
                           if (value != null) {
-                            setState(() => user.setValue(value));
+                            user.setValue(value);
                           }
                         },
                         trailing: user.getValue(item.type),
-                        showDivider: index < corePrefsDataSec2.length - 1,
+                        showDivider: index < 2,
                       ); //
                     },
                   ),
@@ -166,9 +160,10 @@ class _ExtrasComponentState extends State<ExtrasComponent> {
   void showPicker({
     bool showCode = true,
     required void Function(Country) onSelect,
+    required BuildContext context,
   }) {
     showCountryPicker(
-      header: _header(),
+      header: _header(context),
       useSafeArea: true,
       context: context,
       moveAlongWithKeyboard: true,
@@ -178,9 +173,9 @@ class _ExtrasComponentState extends State<ExtrasComponent> {
     );
   }
 
-  Widget _header() {
+  Widget _header(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+      padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 16.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

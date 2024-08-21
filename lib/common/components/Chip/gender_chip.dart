@@ -43,6 +43,7 @@ class GenderChip<T> extends StatelessWidget {
               title,
               style: TextStyles.prefText.copyWith(
                 color: isSelected ? Colors.white : null,
+                fontSize: AppUtils.scale(11.5.sp) ?? 13.sp,
               ),
             ),
           ],

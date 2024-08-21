@@ -6,10 +6,11 @@ import '../../utils/router/router.gr.dart';
 import '../Button/app_icon_button.dart';
 
 class HeaderBar extends StatelessWidget {
-  const HeaderBar({super.key, this.icon, this.onIconTap});
+  const HeaderBar({super.key, this.icon, this.onIconTap, this.onTuneTap});
 
   final IconData? icon;
   final VoidCallback? onIconTap;
+  final VoidCallback? onTuneTap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,8 @@ class HeaderBar extends StatelessWidget {
             AppIconButton(
               path: AppAssets.tune,
               size: 24,
-              onTap: () => Nav.push(context, const PreferenceRoute()),
+              onTap:
+                  onTuneTap ?? () => Nav.push(context, const PreferenceRoute()),
             ),
           ],
         )

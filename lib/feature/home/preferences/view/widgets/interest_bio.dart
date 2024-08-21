@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:whossy_mobile_app/common/utils/app_utils.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import 'package:whossy_mobile_app/feature/home/preferences/data/state/preferences_notifier.dart';
 
@@ -16,23 +17,24 @@ class InterestBioComponent extends StatefulWidget {
 }
 
 class _InterestBioComponentState extends State<InterestBioComponent> {
-  late PreferencesNotifier _userNotifier;
+  late PreferencesNotifier _preferenceNotifier;
   late List<String>? _interests;
   bool similarInterest = true;
   bool hasBio = false;
 
   @override
   void initState() {
-    _userNotifier = Provider.of<PreferencesNotifier>(context, listen: false);
+    _preferenceNotifier =
+        Provider.of<PreferencesNotifier>(context, listen: false);
 
-    _interests = _userNotifier.otherPreferences.interests;
+    _interests = _preferenceNotifier.otherPreferences.interests;
     super.initState();
   }
 
   void updateInterest(bool newValue) {
     setState(() => similarInterest = newValue);
 
-    _userNotifier.updatePreferences(similarInterest: newValue);
+    _preferenceNotifier.updatePreferences(similarInterest: newValue);
   }
 
   void updatePersonalized() async {
@@ -42,13 +44,13 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
             .push<List<String>>(InterestRoute(initialValues: _interests)) ??
         _interests;
 
-    _userNotifier.updatePreferences(interests: _interests);
+    _preferenceNotifier.updatePreferences(interests: _interests);
   }
 
   void updateBio(bool newValue) {
     setState(() => hasBio = newValue);
 
-    _userNotifier.updatePreferences(hasBio: newValue);
+    _preferenceNotifier.updatePreferences(hasBio: newValue);
   }
 
   @override
@@ -73,7 +75,8 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
                     style: TextStyles.prefText,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 3.r),
+                    padding:
+                        EdgeInsets.symmetric(vertical: AppUtils.scale(3) ?? 2),
                     child: Transform.scale(
                       scale: 0.7,
                       child: Switch.adaptive(
@@ -120,7 +123,8 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
                     style: TextStyles.prefText,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 3.r),
+                    padding:
+                        EdgeInsets.symmetric(vertical: AppUtils.scale(3) ?? 2),
                     child: Transform.scale(
                       scale: 0.7,
                       child: Switch.adaptive(

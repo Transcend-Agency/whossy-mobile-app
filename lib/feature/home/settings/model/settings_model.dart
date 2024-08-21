@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../../../common/utils/enums.dart';
+
 part 'settings_model.g.dart';
 
 @JsonSerializable(
@@ -36,19 +38,41 @@ class SettingsModel {
 
   Map<String, dynamic> toJson() => _$SettingsModelToJson(this);
 
+  bool? getValue(CoreSettings setting) {
+    final selectedValues = <CoreSettings, bool?>{
+      CoreSettings.incognito: incognito,
+      CoreSettings.incomingMessages: incomingMessages,
+      CoreSettings.hideVerificationBadge: hideBadge,
+      CoreSettings.publicSearch: publicSearch,
+      CoreSettings.onlineStatus: onlineStatus,
+    };
+
+    return selectedValues[setting];
+  }
+
+  void updateSwitch(CoreSettings setting, bool newValue) {
+    switch (setting) {
+      case CoreSettings.incognito:
+        incognito = newValue;
+        break;
+      case CoreSettings.incomingMessages:
+        incomingMessages = newValue;
+        break;
+      case CoreSettings.hideVerificationBadge:
+        hideBadge = newValue;
+        break;
+      case CoreSettings.publicSearch:
+        publicSearch = newValue;
+        break;
+      case CoreSettings.onlineStatus:
+        onlineStatus = newValue;
+        break;
+    }
+  }
+
   void update({
-    bool? incognito,
-    bool? incomingMessages,
-    bool? hideBadge,
-    bool? publicSearch,
-    bool? onlineStatus,
     List<String>? blocked,
   }) {
-    if (incognito != null) this.incognito = incognito;
-    if (incomingMessages != null) this.incomingMessages = incomingMessages;
-    if (hideBadge != null) this.hideBadge = hideBadge;
-    if (publicSearch != null) this.publicSearch = publicSearch;
-    if (onlineStatus != null) this.onlineStatus = onlineStatus;
     if (blocked != null) this.blocked = blocked;
   }
 }

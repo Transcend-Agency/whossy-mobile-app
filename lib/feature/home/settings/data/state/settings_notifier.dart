@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../common/utils/enums.dart';
 import '../../model/settings_model.dart';
 
 class SettingsNotifier extends ChangeNotifier {
@@ -7,22 +8,18 @@ class SettingsNotifier extends ChangeNotifier {
 
   SettingsModel get settings => _settings;
 
-  void updateSettings({
-    bool? incognito,
-    bool? incomingMessages,
-    bool? hideBadge,
-    bool? publicSearch,
-    bool? onlineStatus,
-    List<String>? blocked,
-  }) {
-    _settings.update(
-      incognito: incognito,
-      incomingMessages: incomingMessages,
-      hideBadge: hideBadge,
-      publicSearch: publicSearch,
-      onlineStatus: onlineStatus,
-      blocked: blocked,
-    );
+  bool getValue(CoreSettings setting) {
+    return _settings.getValue(setting) ?? false;
+  }
+
+  void updateSwitch(CoreSettings setting, bool newValue) {
+    _settings.updateSwitch(setting, newValue);
+
+    notifyListeners();
+  }
+
+  void updateSettings({List<String>? blocked}) {
+    _settings.update(blocked: blocked);
 
     notifyListeners();
   }

@@ -25,7 +25,7 @@ class Settings extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 8.h),
-            child: const CoreSettings(),
+            child: const CoreSettingsList(),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 8.h),

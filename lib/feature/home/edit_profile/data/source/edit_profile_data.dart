@@ -1,12 +1,9 @@
-import '../../../../../common/utils/index.dart';
-import '../../model/generic_enum.dart';
-import 'options.dart';
+import 'package:whossy_mobile_app/feature/home/preferences/model/generic_enum.dart';
 
-List<CorePreferencesData> corePrefsData = [
-  CorePreferencesData<Preference>(
-    header: 'Relationship preference',
-    items: Options.relPrefOptions,
-  ),
+import '../../../../../common/utils/index.dart';
+import '../../../preferences/data/source/options.dart';
+
+List<CorePreferencesData> editProfileData = [
   CorePreferencesData<School>(
     header: 'Education',
     items: Options.schoolOptions,
@@ -27,6 +24,14 @@ List<CorePreferencesData> corePrefsData = [
     header: 'How you communicate',
     items: Options.communicationStyleOptions,
   ),
+  CorePreferencesData<Religion>(
+    header: 'Religion',
+    items: Options.religionOptions,
+  ),
+  CorePreferencesData<Dietary>(
+    header: 'Dietary',
+    items: Options.dietaryOptions,
+  ),
   CorePreferencesData<Smoke>(
     header: 'Smoker',
     items: Options.smokeOptions,
@@ -43,16 +48,13 @@ List<CorePreferencesData> corePrefsData = [
     header: 'Pet owner',
     items: Options.petOwnerOptions,
   ),
-  CorePreferencesData<Religion>(
-    header: 'Religion',
-    items: Options.religionOptions,
-  ),
-  CorePreferencesData<Dietary>(
-    header: 'Dietary',
-    items: Options.dietaryOptions,
-  ),
   CorePreferencesData<MaritalStatus>(
     header: 'Marital Status',
     items: Options.maritalStatusOptions,
   ),
 ];
+
+final relationshipData = CorePreferencesData<Preference>(
+  header: 'Relationship preference',
+  items: Options.relPrefOptions,
+);

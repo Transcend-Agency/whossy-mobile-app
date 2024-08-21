@@ -11,6 +11,7 @@ class AppChip extends StatelessWidget {
   final VoidCallback? onTap;
   final bool outlined;
   final EdgeInsetsGeometry? padding;
+  final bool isBold;
 
   const AppChip({
     super.key,
@@ -19,6 +20,7 @@ class AppChip extends StatelessWidget {
     this.onTap,
     this.outlined = true,
     this.padding,
+    this.isBold = false,
   });
 
   @override
@@ -52,7 +54,12 @@ class AppChip extends StatelessWidget {
                       color:
                           isSelected ? Colors.white : AppColors.hintTextColor,
                     )
-                  : TextStyles.prefText,
+                  : TextStyles.prefText.copyWith(
+                      fontWeight: isBold ? FontWeight.w500 : null,
+                      fontSize: isBold
+                          ? AppUtils.scale(10.5.sp) ?? 12.sp
+                          : AppUtils.scale(11.5.sp) ?? 13.sp,
+                    ),
             ),
           ],
         ),
