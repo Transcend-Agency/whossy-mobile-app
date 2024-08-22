@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/feature/home/edit_profile/data/source/edit_profile_data.dart';
 import 'package:whossy_mobile_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 
-import '../../../../../common/components/index.dart';
-import '../../../../../constants/index.dart';
-import '../../../preferences/view/widgets/extras.dart';
+import '../../../../../../common/components/index.dart';
+import '../../../../../../constants/index.dart';
+import '../../../../preferences/view/widgets/extras.dart';
 
 class ExtraEditProfileList extends StatelessWidget {
   const ExtraEditProfileList({super.key});

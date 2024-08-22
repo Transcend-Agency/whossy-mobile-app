@@ -4,13 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../common/components/index.dart';
-import '../../../../../common/styles/component_style.dart';
-import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
-import '../../../../../common/utils/router/router.gr.dart';
-import '../../../../../constants/index.dart';
-import '../../../../../provider/providers.dart';
+import '../../../../../../common/components/index.dart';
+import '../../../../../../common/styles/component_style.dart';
+import '../../../../../../common/styles/text_style.dart';
+import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/router/router.gr.dart';
+import '../../../../../../constants/index.dart';
+import '../../../../../../provider/providers.dart';
 
 class InterestsTile extends StatefulWidget {
   const InterestsTile({super.key});
@@ -72,7 +72,7 @@ class _InterestsTileState extends State<InterestsTile> {
                       child: SvgPicture.asset(AppAssets.interests, width: 18),
                     ),
                     AppChip(
-                      data: '+40',
+                      data: '+40%',
                       isSelected: false,
                       outlined: false,
                       isBold: true,

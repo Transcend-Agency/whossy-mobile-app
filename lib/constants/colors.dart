@@ -5,6 +5,7 @@ class AppColors {
   static const Color midWay = Color(0xfff6352a);
   static const Color primaryColor = Color(0xffF0174B);
   static const Color black = Color(0xff121212);
+  static const Color taintedWhite = Color(0xffd1d0cf);
 
   static const Color buttonColor = Color(0xfff2243e);
 
@@ -68,5 +69,16 @@ class AppColors {
       Colors.white,
     ],
     stops: const [0.0, 0.225],
+  );
+
+  static LinearGradient profileShade = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Colors.transparent,
+      Colors.black.withOpacity(0.7),
+      Colors.black,
+    ],
+    stops: const [0.0, 0.5, 1.0],
   );
 }

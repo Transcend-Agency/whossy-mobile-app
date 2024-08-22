@@ -5,7 +5,6 @@ import '../../constants/colors.dart';
 
 final pagePadding = EdgeInsets.symmetric(horizontal: 14.w);
 
-// Todo: I changed vertical to 13.h, test on a bigger screen
 final modalPadding = EdgeInsets.symmetric(vertical: 13.h, horizontal: 16.w);
 
 final forgotTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);

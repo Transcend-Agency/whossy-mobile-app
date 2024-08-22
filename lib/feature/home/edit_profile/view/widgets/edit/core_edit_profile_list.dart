@@ -6,7 +6,7 @@ import 'package:whossy_mobile_app/common/utils/extensions.dart';
 import 'package:whossy_mobile_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 import 'package:whossy_mobile_app/feature/home/edit_profile/model/core_profile.dart';
 
-import '../../../../../constants/index.dart';
+import '../../../../../../constants/index.dart';
 
 class CoreEditProfileList extends StatelessWidget {
   const CoreEditProfileList({super.key});

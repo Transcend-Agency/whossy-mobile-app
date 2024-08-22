@@ -36,9 +36,16 @@ class AppAssets {
   static const edit = 'assets/icons/edit.svg';
   static const logout = 'assets/icons/logout.svg';
   static const interests = 'assets/icons/interests.svg';
+  static const down = 'assets/icons/down.svg';
+  static const star = 'assets/icons/star.svg';
+  static const relPref = 'assets/icons/relPref.svg';
+  static const bio = 'assets/icons/bio.svg';
+  static const about = 'assets/icons/about.svg';
+  static const call = 'assets/icons/call.svg';
+  static const love = 'assets/icons/love.svg';
 
-  static const star = 'assets/icons/star.png';
-  static const flash = 'assets/icons/flash.png';
   static const credit = 'assets/icons/credit.png';
   static const boost = 'assets/icons/boost.png';
+
+  static const profilePic = 'assets/images/me.jpg';
 }

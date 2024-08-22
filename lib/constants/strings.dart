@@ -43,6 +43,9 @@ class AppStrings {
       'Add more info to your profile to stand out.'
       ' Click on the edit button to get started.';
 
+  static const String profileBio =
+      'I am very excited to meet new people and make friends. Let’s start with that and see where it takes us 🚀';
+
   // Onboarding texts
   static const String distanceSubHeader =
       'Use the slider below to set a radius of how far you want our system to search for matches within your current location. You can always change this later in the settings.';

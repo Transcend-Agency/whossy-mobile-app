@@ -2,8 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 
-import '../../../feature/auth/sign_up/view/create.dart';
-
 @AutoRouterConfig()
 class AppRouter extends $AppRouter {
   @override
@@ -28,13 +26,15 @@ class AppRouter extends $AppRouter {
         // ONBOARDING
         AutoRoute(page: Wrapper.page),
         // MAIN APP
-        AutoRoute(page: HomeWrapper.page),
+        AutoRoute(page: HomeWrapper.page, initial: true),
 
         AutoRoute(page: PreferenceRoute.page),
         AutoRoute(page: InterestRoute.page),
 
         AutoRoute(page: Settings.page),
-        AutoRoute(page: EditProfile.page, initial: true),
+        AutoRoute(page: EditProfile.page),
+        AutoRoute(page: PreviewProfile.page),
+        AutoRoute(page: PreviewProfileMore.page),
       ];
 }
 
@@ -63,24 +63,31 @@ class Nav {
       BuildContext context, PageRouteInfo<dynamic> route) async {
     await context.router.replace(route);
   }
+}
 
-  static Route createRoute() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          const SignUpCreateScreen(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(1.0, 0.0);
-        const end = Offset.zero;
-        const curve = Curves.ease;
+class SwipeTransitionRoute extends PageRouteBuilder {
+  final Widget page;
+  final double dragExtent;
 
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+  SwipeTransitionRoute({
+    required this.page,
+    required this.dragExtent,
+  }) : super(
+          pageBuilder: (context, animation, secondaryAnimation) => page,
+          transitionDuration: const Duration(milliseconds: 300),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: Interval(0.0, dragExtent, curve: Curves.easeInOut),
+            );
 
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, 1),
+                end: const Offset(0, 0),
+              ).animate(curvedAnimation),
+              child: child,
+            );
+          },
         );
-      },
-    );
-  }
 }

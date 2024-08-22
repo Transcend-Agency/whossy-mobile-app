@@ -4,11 +4,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../constants/index.dart';
 
 class PageIndicator extends StatelessWidget {
-  const PageIndicator(
-      {super.key, required this.activePage, required this.pageNo});
+  const PageIndicator({
+    super.key,
+    required this.activePage,
+    required this.pageNo,
+    this.height = 5,
+    this.activeColor,
+    this.inActiveColor,
+  });
 
   final int activePage;
   final int pageNo;
+  final double height;
+  final Color? activeColor;
+  final Color? inActiveColor;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +27,12 @@ class PageIndicator extends StatelessWidget {
         children: List.generate(pageNo, (_) {
           return Expanded(
             child: Container(
-              height: 5,
+              height: height,
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
                 color: _ <= activePage
-                    ? AppColors.primaryColor
-                    : AppColors.outlinedColor,
+                    ? activeColor ?? AppColors.primaryColor
+                    : inActiveColor ?? AppColors.outlinedColor,
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),

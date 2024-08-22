@@ -64,7 +64,10 @@ class _CitySheetState extends State<CitySheet> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: modalPadding,
+            padding: modalPadding.copyWith(
+              top: AppUtils.scale(12.h),
+              bottom: AppUtils.scale(12.h),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

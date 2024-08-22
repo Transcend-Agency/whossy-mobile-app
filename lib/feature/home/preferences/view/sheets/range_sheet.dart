@@ -54,7 +54,10 @@ class _RangeSheetState<T> extends State<RangeSheet<T>> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: modalPadding,
+              padding: modalPadding.copyWith(
+                top: AppUtils.scale(12.h),
+                bottom: AppUtils.scale(12.h),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

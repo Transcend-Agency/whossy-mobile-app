@@ -7,6 +7,7 @@ class AppScaffold extends StatelessWidget {
   final bool resizeToAvoidBottomInset;
   final EdgeInsetsGeometry? padding;
   final bool back;
+  final bool applyTop;
   final bool useScrollView;
   final Widget? bottomNavBar;
   final PreferredSizeWidget? appBar;
@@ -20,6 +21,7 @@ class AppScaffold extends StatelessWidget {
     this.useScrollView = false,
     this.bottomNavBar,
     this.appBar,
+    this.applyTop = true,
   });
 
   @override
@@ -32,6 +34,7 @@ class AppScaffold extends StatelessWidget {
         resizeToAvoidBottomInset: resizeToAvoidBottomInset,
         backgroundColor: Colors.white,
         body: SafeArea(
+          top: applyTop,
           child: useScrollView
               ? SingleChildScrollView(
                   child: content(context: context, finalPadding: finalPadding),

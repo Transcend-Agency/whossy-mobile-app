@@ -50,13 +50,14 @@ class AppTheme {
     );
   }
 
-  CountryListThemeData countryListTheme() {
+  CountryListThemeData countryListTheme({TextStyle? textStyle}) {
     return CountryListThemeData(
       flagSize: 22,
       backgroundColor: Colors.white,
-      textStyle: TextStyles.fieldHeader.copyWith(
-        color: AppColors.hintTextColor,
-      ),
+      textStyle: textStyle ??
+          TextStyles.fieldHeader.copyWith(
+            color: AppColors.hintTextColor,
+          ),
       searchTextStyle:
           TextStyles.hintThemeText.copyWith(color: AppColors.black),
       bottomSheetHeight: ScreenUtil().screenHeight * 0.62,

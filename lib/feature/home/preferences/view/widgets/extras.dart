@@ -168,14 +168,22 @@ class ExtrasComponent extends StatelessWidget {
       context: context,
       moveAlongWithKeyboard: true,
       showPhoneCode: showCode,
-      countryListTheme: AppTheme().countryListTheme(),
+      countryListTheme: AppTheme().countryListTheme(
+        textStyle: TextStyles.prefText.copyWith(
+          color: AppColors.hintTextColor,
+          fontSize: AppUtils.scale(11.sp) ?? 9.sp,
+        ),
+      ),
       onSelect: onSelect,
     );
   }
 
   Widget _header(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 16.w),
+      padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 16.w).copyWith(
+        top: AppUtils.scale(11.h),
+        bottom: AppUtils.scale(11.h),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

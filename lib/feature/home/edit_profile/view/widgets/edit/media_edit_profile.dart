@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_mobile_app/common/utils/index.dart';
 
-import '../../../../../common/components/index.dart';
-import '../../../../../common/styles/text_style.dart';
-import '../../../../../constants/index.dart';
+import '../../../../../../common/components/index.dart';
+import '../../../../../../common/styles/text_style.dart';
+import '../../../../../../constants/index.dart';
 
 class MediaEditProfile extends StatelessWidget {
   const MediaEditProfile({super.key});
@@ -32,7 +32,7 @@ class MediaEditProfile extends StatelessWidget {
                     ),
                     addWidth(10),
                     AppChip(
-                      data: '+40',
+                      data: '+40%',
                       isSelected: false,
                       outlined: false,
                       isBold: true,

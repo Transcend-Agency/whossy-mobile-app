@@ -70,7 +70,7 @@ class TextStyles {
   );
 
   static TextStyle boldPrefText = text.copyWith(
-    fontSize: AppUtils.scale(13.5.sp) ?? 15.sp,
+    fontSize: AppUtils.scale(12.sp) ?? 14.sp,
     fontWeight: FontWeight.w500,
   );
 

@@ -56,10 +56,10 @@ Icon backIcon() {
 }
 
 Icon cancelIcon() {
-  return const Icon(
+  return Icon(
     Icons.cancel,
     color: AppColors.black,
-    size: 24,
+    size: 23.r,
   );
 }
 
@@ -88,10 +88,10 @@ Icon search() {
 }
 
 Icon checkIcon() {
-  return const Icon(
+  return Icon(
     Icons.check,
     color: Colors.black,
-    size: 22,
+    size: 21.r,
   );
 }
 

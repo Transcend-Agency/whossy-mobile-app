@@ -50,15 +50,16 @@ class _ExtrasSheetState<T extends GenericEnum> extends State<ExtrasSheet<T>> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: modalPadding,
+              padding: modalPadding.copyWith(
+                top: AppUtils.scale(12.h),
+                bottom: AppUtils.scale(12.h),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     widget.item.header,
-                    style: TextStyles.buttonText.copyWith(
-                      fontSize: AppUtils.scale(17),
-                    ),
+                    style: TextStyles.boldPrefText,
                   ),
                   GestureDetector(
                     onTap: () =>
