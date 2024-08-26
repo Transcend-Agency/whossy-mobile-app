@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/common/utils/extensions.dart';
+import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
 import 'package:whossy_mobile_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 import 'package:whossy_mobile_app/feature/home/edit_profile/model/core_profile.dart';
 
+import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
 
 class CoreEditProfileList extends StatelessWidget {
@@ -33,7 +34,7 @@ class CoreEditProfileList extends StatelessWidget {
                   String key = CoreProfile.validKeys[index];
                   return PreferenceTile(
                     text: key.toReadableFormat(),
-                    onTap: () {},
+                    onTap: handleTap(key, context, profile),
                     trailing: profile.getCoreValue(key),
                     showDivider: index != CoreProfile.validKeys.length - 2,
                   );
@@ -48,5 +49,30 @@ class CoreEditProfileList extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  VoidCallback? handleTap(
+      String key, BuildContext context, EditProfileNotifier profile) {
+    if (key == "birthday") {
+      // No action needed for "birthday"
+      return null;
+    } else {
+      return () async {
+        if (key == 'name') {
+          Nav.push(
+            context,
+            NameEditProfile(
+              names: profile.coreProfile.getName(),
+            ),
+          );
+        } else if (key == 'gender') {
+          // Handle gender case
+        } else if (key == 'email') {
+          // Handle email case
+        } else if (key == 'phoneNumber') {
+          // Handle phone number case
+        }
+      };
+    }
   }
 }

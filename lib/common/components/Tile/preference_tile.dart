@@ -8,19 +8,21 @@ import '../../../../constants/index.dart';
 class PreferenceTile extends StatelessWidget {
   final String? text;
   final String trailing;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final TextStyle? textStyle;
   final Color? iconColor;
   final bool showDivider;
+  final bool showTrailingIcon;
   final List<Widget>? customChildren;
 
   const PreferenceTile({
     super.key,
     required this.text,
-    required this.onTap,
+    this.onTap,
     this.textStyle,
     this.iconColor,
     this.showDivider = true,
+    this.showTrailingIcon = true,
     required this.trailing,
     this.customChildren,
   });
@@ -60,12 +62,14 @@ class PreferenceTile extends StatelessWidget {
                               color: AppColors.hintTextColor,
                             ),
                           ),
-                          addWidth(6),
-                          Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            color: iconColor ?? AppColors.hintTextColor,
-                            size: 16,
-                          ),
+                          if (onTap != null && showTrailingIcon) ...[
+                            addWidth(6),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: iconColor ?? AppColors.hintTextColor,
+                              size: 16,
+                            ),
+                          ]
                         ],
                       ),
                     )

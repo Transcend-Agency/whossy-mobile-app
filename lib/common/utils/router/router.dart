@@ -26,13 +26,14 @@ class AppRouter extends $AppRouter {
         // ONBOARDING
         AutoRoute(page: Wrapper.page),
         // MAIN APP
-        AutoRoute(page: HomeWrapper.page, initial: true),
+        AutoRoute(page: HomeWrapper.page),
 
         AutoRoute(page: PreferenceRoute.page),
         AutoRoute(page: InterestRoute.page),
 
         AutoRoute(page: Settings.page),
-        AutoRoute(page: EditProfile.page),
+        AutoRoute(page: EditProfile.page, initial: true),
+        AutoRoute(page: NameEditProfile.page),
         AutoRoute(page: PreviewProfile.page),
         AutoRoute(page: PreviewProfileMore.page),
       ];
@@ -40,19 +41,26 @@ class AppRouter extends $AppRouter {
 
 class Nav {
   static Future<void> push(
-      BuildContext context, PageRouteInfo<dynamic>? route) async {
+    BuildContext context,
+    PageRouteInfo<dynamic>? route,
+  ) async {
     await context.router.push(route!);
   }
 
   static bool isRoot(BuildContext context) => context.router.isRoot;
 
   static Future<void> replaceAll(
-      BuildContext context, List<PageRouteInfo<dynamic>> routes) async {
+    BuildContext context,
+    List<PageRouteInfo<dynamic>> routes,
+  ) async {
     await context.router.replaceAll(routes);
   }
 
   static Future<void> pushAndPopUntil(
-      BuildContext context, PageRouteInfo<dynamic> route, String name) async {
+    BuildContext context,
+    PageRouteInfo<dynamic> route,
+    String name,
+  ) async {
     await context.router.pushAndPopUntil(
       route,
       predicate: (route) => route.settings.name == name,
@@ -60,34 +68,9 @@ class Nav {
   }
 
   static Future<void> replace(
-      BuildContext context, PageRouteInfo<dynamic> route) async {
+    BuildContext context,
+    PageRouteInfo<dynamic> route,
+  ) async {
     await context.router.replace(route);
   }
-}
-
-class SwipeTransitionRoute extends PageRouteBuilder {
-  final Widget page;
-  final double dragExtent;
-
-  SwipeTransitionRoute({
-    required this.page,
-    required this.dragExtent,
-  }) : super(
-          pageBuilder: (context, animation, secondaryAnimation) => page,
-          transitionDuration: const Duration(milliseconds: 300),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final curvedAnimation = CurvedAnimation(
-              parent: animation,
-              curve: Interval(0.0, dragExtent, curve: Curves.easeInOut),
-            );
-
-            return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, 1),
-                end: const Offset(0, 0),
-              ).animate(curvedAnimation),
-              child: child,
-            );
-          },
-        );
 }

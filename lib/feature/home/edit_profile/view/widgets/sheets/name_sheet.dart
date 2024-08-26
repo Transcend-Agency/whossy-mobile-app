@@ -2,44 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_mobile_app/common/styles/component_style.dart';
 
-import '../../../../../common/components/index.dart';
-import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
-import '../../../../../constants/index.dart';
+import '../../../../../../common/components/index.dart';
+import '../../../../../../common/styles/text_style.dart';
+import '../../../../../../common/utils/index.dart';
+import '../../../../../../constants/index.dart';
 
-class CitySheet extends StatefulWidget {
-  const CitySheet({super.key, this.city});
+class NameSheet extends StatefulWidget {
+  final String? name;
+  final String title;
 
-  final String? city;
+  const NameSheet({super.key, this.name, required this.title});
 
   @override
-  State<CitySheet> createState() => _CitySheetState();
+  State<NameSheet> createState() => _NameSheetState();
 }
 
-class _CitySheetState extends State<CitySheet> {
-  final cityController = TextEditingController();
-  final formKey1 = GlobalKey<FormState>();
-  final cityFocusNode = FocusNode();
+class _NameSheetState extends State<NameSheet> {
+  final nameController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  final nameFocusNode = FocusNode();
 
-  late String store;
+  late String originalName;
   bool hasChanged = false;
 
   void update() {
-    setState(() => hasChanged = store != cityController.text);
+    setState(() => hasChanged = originalName != nameController.text);
   }
 
   @override
   void initState() {
-    if (widget.city != null) {
-      cityController.text = widget.city!;
+    if (widget.name != null) {
+      nameController.text = widget.name!;
     }
 
-    store = cityController.text;
+    originalName = nameController.text;
 
-    cityController.addListener(update);
+    nameController.addListener(update);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(cityFocusNode);
+      FocusScope.of(context).requestFocus(nameFocusNode);
     });
 
     super.initState();
@@ -47,7 +48,7 @@ class _CitySheetState extends State<CitySheet> {
 
   @override
   void dispose() {
-    cityController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
@@ -71,14 +72,14 @@ class _CitySheetState extends State<CitySheet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'City of residence',
+                  widget.title,
                   style: TextStyles.buttonText.copyWith(
                     fontSize: AppUtils.scale(17),
                   ),
                 ),
                 GestureDetector(
                   onTap: () => Navigator.pop(
-                      context, hasChanged ? cityController.text.trim() : null),
+                      context, hasChanged ? nameController.text.trim() : null),
                   child: SizedBox.square(
                     dimension: 30.r,
                     child: hasChanged ? checkIcon() : cancelIcon(),
@@ -95,13 +96,13 @@ class _CitySheetState extends State<CitySheet> {
           Padding(
             padding: pagePadding,
             child: Form(
-              key: formKey1,
+              key: formKey,
               child: AppTextField(
-                focusNode: cityFocusNode,
-                textController: cityController,
-                hintText: 'Enter city name',
+                focusNode: nameFocusNode,
+                textController: nameController,
+                hintText: 'Enter your name',
                 prefixIcon: search(),
-                lengthLimit: 20,
+                lengthLimit: 50, // You can adjust this limit
                 padding: 13,
                 curvierEdges: true,
               ),

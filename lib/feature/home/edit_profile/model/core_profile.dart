@@ -1,5 +1,6 @@
 class CoreProfile {
-  String? name;
+  String? firstName;
+  String? lastName;
   String? birthday; // Convert from date of birth
   String? gender;
   String? email;
@@ -19,7 +20,8 @@ class CoreProfile {
   ];
 
   CoreProfile({
-    this.name,
+    this.firstName,
+    this.lastName,
     this.birthday,
     this.gender,
     this.email,
@@ -29,13 +31,17 @@ class CoreProfile {
     this.interests,
   });
 
+  Map<String, String?> getName() {
+    return {"firstName": firstName, "lastName": lastName};
+  }
+
   dynamic getValue(String key) {
     if (!validKeys.contains(key)) {
       throw ArgumentError("Invalid key: $key");
     }
 
     final selectedValues = <String, dynamic>{
-      "name": name,
+      "name": firstName,
       "birthday": birthday,
       "gender": gender,
       "email": email,

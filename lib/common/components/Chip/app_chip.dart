@@ -28,7 +28,7 @@ class AppChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 350),
+        duration: const Duration(milliseconds: 150),
         decoration: BoxDecoration(
           border: outlined
               ? Border.all(
