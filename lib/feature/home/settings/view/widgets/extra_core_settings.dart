@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:whossy_mobile_app/common/components/index.dart';
+import 'package:whossy_app/common/components/index.dart';
 
 import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/utils/index.dart';

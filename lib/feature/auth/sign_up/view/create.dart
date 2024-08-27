@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
-import 'package:whossy_mobile_app/feature/auth/sign_up/view/options_sheet.dart';
+import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/styles/component_style.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/auth/sign_up/view/options_sheet.dart';
 
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';

@@ -3,8 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/app/whossy.dart';
-import 'package:whossy_mobile_app/provider/providers.dart';
+import 'package:whossy_app/app/whossy.dart';
+import 'package:whossy_app/provider/providers.dart';
 
 import 'common/utils/services/services.dart';
 import 'firebase_options.dart';

@@ -1,27 +1,56 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../constants/index.dart';
 import '../../model/core_preferences.dart';
 import '../../model/generic_enum.dart';
 import '../../model/other_preferences.dart';
+import '../repository/preferences_repository.dart';
 
 class PreferencesNotifier extends ChangeNotifier {
-  final _selectedItems = CorePreferences();
+  CorePreferences? _selectedItems;
   final _otherPreferences = OtherPreferences();
+  final _preferencesRepository = PreferencesRepository();
 
-  CorePreferences get selectedItems => _selectedItems;
+  bool _isLoading = false;
+
+  bool get loadingState => _isLoading;
+
+  set loadingState(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  CorePreferences? get selectedItems => _selectedItems;
   OtherPreferences get otherPreferences => _otherPreferences;
 
   void setValue(GenericEnum value) {
-    _selectedItems.setValue(value);
+    _selectedItems?.setValue(value);
 
     notifyListeners();
   }
 
-  String getValue(Type type) {
-    return _selectedItems.getValue(type)?.name ?? 'Choose';
-  }
+  String getValue(Type _) => _selectedItems?.getValue(_)?.name ?? 'Choose';
 
-  GenericEnum? getSelected(Type _) => _selectedItems.getValue(_);
+  GenericEnum? getSelected(Type _) => _selectedItems?.getValue(_);
+
+  Future<void> getFilters({
+    required void Function(String) showSnackbar,
+  }) async {
+    try {
+      _selectedItems =
+          await _preferencesRepository.fetchFilters() ?? CorePreferences();
+    } on FirebaseException catch (e) {
+      handleFirebaseError(e, showSnackbar);
+    } catch (e) {
+      showSnackbar(AppStrings.errorUnknown);
+      log(e.toString());
+    } finally {}
+
+    notifyListeners();
+  }
 
   void updatePreferences({
     int? meet,

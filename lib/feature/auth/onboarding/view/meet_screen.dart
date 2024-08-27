@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
 
+import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 import '../data/source/meet_data.dart';
+import '../data/state/onboarding_notifier.dart';
 
 class MeetScreen extends StatefulWidget {
   final int pageIndex;

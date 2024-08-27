@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
-import 'package:whossy_mobile_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
-import 'package:whossy_mobile_app/feature/home/edit_profile/model/core_profile.dart';
+import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
 
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
+import '../../../data/state/edit_profile_notifier.dart';
+import '../../../model/core_profile.dart';
 
 class CoreEditProfileList extends StatelessWidget {
   const CoreEditProfileList({super.key});

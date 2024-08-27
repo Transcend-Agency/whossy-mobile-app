@@ -1,4 +1,4 @@
-name: whossy_mobile_app
+name: whossy_app
 description: "The mobile app for Whossy"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.1+17500
+version: 1.0.0+1
 
 environment:
   sdk: '>=3.3.4 <4.0.0'
@@ -42,7 +42,6 @@ dependencies:
   cloud_firestore: ^5.0.2
   firebase_storage: ^12.1.1
   google_sign_in: ^6.2.1
-  flutter_facebook_auth: ^7.0.1
   firebase_crashlytics: ^4.0.4
 
   # App Core

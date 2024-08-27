@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
 
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';

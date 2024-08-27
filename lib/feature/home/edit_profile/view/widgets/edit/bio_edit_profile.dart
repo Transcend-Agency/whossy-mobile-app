@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/common/utils/index.dart';
-import 'package:whossy_mobile_app/feature/home/edit_profile/data/source/edit_profile_data.dart';
+import 'package:whossy_app/common/utils/index.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/providers.dart';
 import '../../../../preferences/view/widgets/extras.dart';
+import '../../../data/source/edit_profile_data.dart';
 
 class BioEditProfile extends StatefulWidget {
   const BioEditProfile({super.key});

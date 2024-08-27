@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:whossy_mobile_app/common/utils/index.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:whossy_app/common/utils/index.dart';
 
+part 'other_preferences.g.dart';
+
+@JsonSerializable()
 class OtherPreferences {
   int? meet;
   bool? similarInterest;
@@ -64,7 +68,6 @@ class OtherPreferences {
     }
 
     if (minWeight != null || maxWeight != null) {
-      // Handle weightRange
       weightRange ??= {};
       if (minWeight != null) weightRange!['min'] = minWeight;
       if (maxWeight != null) weightRange!['max'] = maxWeight;
@@ -78,4 +81,9 @@ class OtherPreferences {
   RangeValues? toAgeRange() => ageRange?.toRangeValues();
   RangeValues? toHeightRange() => heightRange?.toRangeValues();
   RangeValues? toWeightRange() => weightRange?.toRangeValues();
+
+  factory OtherPreferences.fromJson(Map<String, dynamic> json) =>
+      _$OtherPreferencesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OtherPreferencesToJson(this);
 }

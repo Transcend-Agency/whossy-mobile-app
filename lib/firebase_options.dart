@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA3qDpFpJYWJ_KmSw-6E9tnIfV0VLvw_gQ',
-    appId: '1:332139466657:android:89ebe843200d8fa72d05e0',
+    appId: '1:332139466657:android:51356c8ce9a7890c2d05e0',
     messagingSenderId: '332139466657',
     projectId: 'whossy-app',
     storageBucket: 'whossy-app.appspot.com',
@@ -59,13 +59,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyA_oRz_e1SuilF_2jxwmQj7ktZE4qdcvaI',
-    appId: '1:332139466657:ios:013d78dd3c92d8a12d05e0',
+    appId: '1:332139466657:ios:c27fc2e2540b7cbc2d05e0',
     messagingSenderId: '332139466657',
     projectId: 'whossy-app',
     storageBucket: 'whossy-app.appspot.com',
     androidClientId: '332139466657-t725bl7kn9c688oeprb0gvmv291lhafb.apps.googleusercontent.com',
-    iosClientId: '332139466657-qbhs9p8997hmgue97nhkaij3qk5pjng1.apps.googleusercontent.com',
-    iosBundleId: 'com.transcend.whossymobileapp.whossyMobileApp',
+    iosClientId: '332139466657-us1ftnf9udotuhh0oltffvd48isqe0ju.apps.googleusercontent.com',
+    iosBundleId: 'com.whossy.whossyApp',
   );
 
 }

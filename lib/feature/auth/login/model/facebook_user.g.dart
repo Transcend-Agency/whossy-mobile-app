@@ -16,13 +16,21 @@ FacebookUser _$FacebookUserFromJson(Map<String, dynamic> json) => FacebookUser(
       isFacebook: json['isFacebook'] as bool?,
     );
 
-Map<String, dynamic> _$FacebookUserToJson(FacebookUser instance) =>
-    <String, dynamic>{
-      'userId': instance.userId,
-      'email': instance.email,
-      'avatar': instance.avatar,
-      'firstName': instance.firstName,
-      'token': instance.token,
-      'loginType': instance.loginType,
-      'isFacebook': instance.isFacebook,
-    };
+Map<String, dynamic> _$FacebookUserToJson(FacebookUser instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('userId', instance.userId);
+  writeNotNull('email', instance.email);
+  writeNotNull('avatar', instance.avatar);
+  writeNotNull('firstName', instance.firstName);
+  writeNotNull('token', instance.token);
+  writeNotNull('loginType', instance.loginType);
+  writeNotNull('isFacebook', instance.isFacebook);
+  return val;
+}

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/constants/colors.dart';
+import 'package:whossy_app/common/styles/component_style.dart';
+import 'package:whossy_app/constants/colors.dart';
 
 import '../../styles/text_style.dart';
 import '../../utils/app_utils.dart';

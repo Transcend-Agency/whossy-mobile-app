@@ -2,13 +2,13 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/common/utils/index.dart';
-import 'package:whossy_mobile_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
-import 'package:whossy_mobile_app/feature/home/edit_profile/view/widgets/sheets/name_sheet.dart';
+import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/utils/index.dart';
 
 import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../constants/index.dart';
+import '../../../data/state/edit_profile_notifier.dart';
+import '../sheets/name_sheet.dart';
 
 @RoutePage()
 class NameEditProfile extends StatelessWidget {

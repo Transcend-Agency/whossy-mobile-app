@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:whossy_mobile_app/common/utils/exceptions/failed_upload.dart';
+import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
 
 import '../../model/app_user.dart';
 
@@ -58,9 +58,7 @@ class UserRepository {
     if (docSnapshot.exists) {
       final data = docSnapshot.data();
 
-      if (data != null) {
-        return AppUser.fromJson(data);
-      }
+      if (data != null) AppUser.fromJson(data);
     }
 
     return null;

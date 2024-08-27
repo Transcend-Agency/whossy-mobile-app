@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../feature/home/preferences/model/generic_enum.dart';
+import '../../../feature/home/preferences/model/generic_enum.dart';
 
 enum CoreSettings implements GenericEnum {
   incognito(

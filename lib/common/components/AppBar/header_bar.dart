@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whossy_mobile_app/constants/asset_paths.dart';
+import 'package:whossy_app/constants/asset_paths.dart';
 
 import '../../utils/index.dart';
 import '../../utils/router/router.gr.dart';

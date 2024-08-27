@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/common/utils/index.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
 
 import '../../../../common/components/index.dart';
+import '../../../../common/utils/index.dart';
 import '../data/source/preference_data.dart';
+import '../data/state/onboarding_notifier.dart';
 
 class RelPrefScreen extends StatefulWidget {
   final int pageIndex;

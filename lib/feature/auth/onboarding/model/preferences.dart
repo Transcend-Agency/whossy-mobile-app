@@ -7,10 +7,10 @@ part 'preferences.g.dart';
 
 @JsonSerializable()
 class Preferences {
-  @JsonKey(name: 'preference', includeIfNull: false)
+  @JsonKey(name: 'preference')
   int? relationshipPref;
 
-  @JsonKey(name: 'meet', includeIfNull: false)
+  @JsonKey(name: 'meet')
   int? meet;
 
   @JsonKey(
@@ -21,37 +21,36 @@ class Preferences {
   )
   DateTime? dateOfBirth;
 
-  @JsonKey(name: 'distance', includeIfNull: false)
+  @JsonKey(name: 'distance')
   int? search;
 
-  @JsonKey(name: 'interests', includeIfNull: false)
+  @JsonKey(name: 'interests')
   List<String>? ticks;
 
-  @JsonKey(name: 'education', includeIfNull: false)
+  @JsonKey(name: 'education')
   String? education;
 
-  @JsonKey(name: 'drink', includeIfNull: false)
+  @JsonKey(name: 'drink')
   int? drink;
 
-  @JsonKey(name: 'smoke', includeIfNull: false)
+  @JsonKey(name: 'smoke')
   int? smoker;
 
-  @JsonKey(name: 'pets', includeIfNull: false)
+  @JsonKey(name: 'pets')
   List<String>? pets;
 
-  @JsonKey(name: 'workout', includeIfNull: false)
+  @JsonKey(name: 'workout')
   int? workOut;
 
-  @JsonKey(name: 'bio', includeIfNull: false)
+  @JsonKey(name: 'bio')
   String? bio;
 
-  @JsonKey(name: 'photos', includeIfNull: false)
+  @JsonKey(name: 'photos')
   List<String>? profilePics;
 
   @JsonKey(
     includeFromJson: false,
     includeToJson: false,
-    includeIfNull: false,
   )
   List<File>? picFiles;
 

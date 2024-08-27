@@ -1,4 +1,4 @@
-import '../../../../common/utils/enums.dart';
+import '../../../../common/utils/enum/enums.dart';
 
 class CoreSettingsText {
   final bool isPremium;

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
 
 @AutoRouterConfig()
 class AppRouter extends $AppRouter {
@@ -26,13 +26,13 @@ class AppRouter extends $AppRouter {
         // ONBOARDING
         AutoRoute(page: Wrapper.page),
         // MAIN APP
-        AutoRoute(page: HomeWrapper.page),
+        AutoRoute(page: HomeWrapper.page, initial: true),
 
         AutoRoute(page: PreferenceRoute.page),
         AutoRoute(page: InterestRoute.page),
 
         AutoRoute(page: Settings.page),
-        AutoRoute(page: EditProfile.page, initial: true),
+        AutoRoute(page: EditProfile.page),
         AutoRoute(page: NameEditProfile.page),
         AutoRoute(page: PreviewProfile.page),
         AutoRoute(page: PreviewProfileMore.page),

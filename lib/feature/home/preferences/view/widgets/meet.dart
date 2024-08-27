@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/common/utils/index.dart';
-import 'package:whossy_mobile_app/provider/providers.dart';
+import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../common/components/index.dart';
 import '../../../../../common/styles/text_style.dart';

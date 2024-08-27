@@ -2,8 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:whossy_mobile_app/common/utils/exceptions/failed_upload.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/data/repository/preference_repository.dart';
+import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
+import 'package:whossy_app/feature/auth/onboarding/data/repository/preference_repository.dart';
 
 import '../../../../../constants/index.dart';
 import '../../../sign_up/data/repository/user_repository.dart';

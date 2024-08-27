@@ -47,3 +47,29 @@ void handleFirebaseAuthError(
       showSnackbar(AppStrings.errorUnknown);
   }
 }
+
+void handleFirebaseError(
+  FirebaseException e,
+  void Function(String) showSnackbar,
+) {
+  log('The code is ${e.code}');
+  switch (e.code) {
+    case 'user-disabled':
+      showSnackbar(AppStrings.disabledAccount);
+      break;
+    case 'user-not-found':
+      showSnackbar(AppStrings.userNotFound);
+      break;
+    case 'too-many-requests':
+      showSnackbar(AppStrings.tooManyRequests);
+      break;
+    case 'network-request-failed':
+      showSnackbar(AppStrings.errorNetworkRequestFailed);
+      break;
+    case 'unavailable':
+      showSnackbar(AppStrings.deviceOffline);
+      break;
+    default:
+      showSnackbar(AppStrings.errorUnknown);
+  }
+}

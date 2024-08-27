@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/feature/home/settings/data/state/settings_notifier.dart';
+import 'package:whossy_app/common/styles/component_style.dart';
+import 'package:whossy_app/feature/home/settings/data/state/settings_notifier.dart';
 
 import '../../../../../../constants/index.dart';
 import '../../data/source/core_settings_text_data.dart';

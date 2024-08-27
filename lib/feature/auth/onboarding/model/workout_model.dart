@@ -1,4 +1,4 @@
-import 'package:whossy_mobile_app/common/utils/enums.dart';
+import '../../../../common/utils/index.dart';
 
 class WorkoutModel {
   final String text;

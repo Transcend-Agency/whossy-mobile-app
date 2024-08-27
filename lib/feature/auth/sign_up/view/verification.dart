@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/provider/providers.dart';
+import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../common/styles/component_style.dart';
 import '../../../../common/styles/text_style.dart';

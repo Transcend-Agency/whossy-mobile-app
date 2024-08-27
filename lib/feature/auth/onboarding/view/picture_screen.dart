@@ -8,14 +8,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/data/state/onboarding_notifier.dart';
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/edit_sheet.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/component_style.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
+import '../data/state/onboarding_notifier.dart';
+import 'edit_sheet.dart';
 
 class PictureScreen extends StatefulWidget {
   final int pageIndex;

@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/constants/asset_paths.dart';
+import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/constants/asset_paths.dart';
 
 import 'tabs/_.dart';
 

@@ -1,4 +1,4 @@
-import 'package:whossy_mobile_app/feature/home/preferences/model/generic_enum.dart';
+import 'package:whossy_app/feature/home/preferences/model/generic_enum.dart';
 
 import '../../../../../common/utils/index.dart';
 import '../../../preferences/data/source/options.dart';

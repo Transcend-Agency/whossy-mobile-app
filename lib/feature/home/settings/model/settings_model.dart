@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../../common/utils/enums.dart';
+import '../../../../common/utils/enum/enums.dart';
 
 part 'settings_model.g.dart';
 

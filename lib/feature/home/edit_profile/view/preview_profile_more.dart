@@ -2,8 +2,8 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:whossy_mobile_app/common/utils/index.dart';
-import 'package:whossy_mobile_app/feature/home/edit_profile/view/widgets/_.dart';
+import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/feature/home/edit_profile/view/widgets/_.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';

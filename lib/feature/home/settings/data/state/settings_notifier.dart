@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../common/utils/enums.dart';
+import '../../../../../common/utils/enum/enums.dart';
 import '../../model/settings_model.dart';
 
 class SettingsNotifier extends ChangeNotifier {

@@ -10,44 +10,36 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i22;
 import 'package:flutter/material.dart' as _i23;
-import 'package:whossy_mobile_app/feature/auth/login/view/login_screen.dart'
-    as _i4;
-import 'package:whossy_mobile_app/feature/auth/login/view/phone_number_screen.dart'
+import 'package:whossy_app/feature/auth/login/view/login_screen.dart' as _i4;
+import 'package:whossy_app/feature/auth/login/view/phone_number_screen.dart'
     as _i6;
-import 'package:whossy_mobile_app/feature/auth/login/view/reset_screen.dart'
-    as _i10;
-import 'package:whossy_mobile_app/feature/auth/login/view/reset_success_screen.dart'
+import 'package:whossy_app/feature/auth/login/view/reset_screen.dart' as _i10;
+import 'package:whossy_app/feature/auth/login/view/reset_success_screen.dart'
     as _i11;
-import 'package:whossy_mobile_app/feature/auth/login/view/verification_code_screen.dart'
+import 'package:whossy_app/feature/auth/login/view/verification_code_screen.dart'
     as _i19;
-import 'package:whossy_mobile_app/feature/auth/onboarding/view/wrapper.dart'
-    as _i21;
-import 'package:whossy_mobile_app/feature/auth/sign_up/view/create.dart'
-    as _i13;
-import 'package:whossy_mobile_app/feature/auth/sign_up/view/gender.dart'
-    as _i14;
-import 'package:whossy_mobile_app/feature/auth/sign_up/view/name.dart' as _i15;
-import 'package:whossy_mobile_app/feature/auth/sign_up/view/phone.dart' as _i16;
-import 'package:whossy_mobile_app/feature/auth/sign_up/view/verification.dart'
-    as _i17;
-import 'package:whossy_mobile_app/feature/auth/sign_up/view/welcome.dart'
-    as _i20;
-import 'package:whossy_mobile_app/feature/home/edit_profile/view/edit_profile.dart'
+import 'package:whossy_app/feature/auth/onboarding/view/wrapper.dart' as _i21;
+import 'package:whossy_app/feature/auth/sign_up/view/create.dart' as _i13;
+import 'package:whossy_app/feature/auth/sign_up/view/gender.dart' as _i14;
+import 'package:whossy_app/feature/auth/sign_up/view/name.dart' as _i15;
+import 'package:whossy_app/feature/auth/sign_up/view/phone.dart' as _i16;
+import 'package:whossy_app/feature/auth/sign_up/view/verification.dart' as _i17;
+import 'package:whossy_app/feature/auth/sign_up/view/welcome.dart' as _i20;
+import 'package:whossy_app/feature/home/edit_profile/view/edit_profile.dart'
     as _i1;
-import 'package:whossy_mobile_app/feature/home/edit_profile/view/preview_profile.dart'
+import 'package:whossy_app/feature/home/edit_profile/view/preview_profile.dart'
     as _i8;
-import 'package:whossy_mobile_app/feature/home/edit_profile/view/preview_profile_more.dart'
+import 'package:whossy_app/feature/home/edit_profile/view/preview_profile_more.dart'
     as _i9;
-import 'package:whossy_mobile_app/feature/home/edit_profile/view/widgets/edit/name_edit_profile.dart'
+import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/name_edit_profile.dart'
     as _i5;
-import 'package:whossy_mobile_app/feature/home/home_wrapper.dart' as _i2;
-import 'package:whossy_mobile_app/feature/home/preferences/view/interest_screen.dart'
+import 'package:whossy_app/feature/home/home_wrapper.dart' as _i2;
+import 'package:whossy_app/feature/home/preferences/view/interest_screen.dart'
     as _i3;
-import 'package:whossy_mobile_app/feature/home/preferences/view/preference_screen.dart'
+import 'package:whossy_app/feature/home/preferences/view/preference_screen.dart'
     as _i7;
-import 'package:whossy_mobile_app/feature/home/settings/view/settings.dart'
-    as _i12;
-import 'package:whossy_mobile_app/feature/splash/splash_screen.dart' as _i18;
+import 'package:whossy_app/feature/home/settings/view/settings.dart' as _i12;
+import 'package:whossy_app/feature/splash/splash_screen.dart' as _i18;
 
 abstract class $AppRouter extends _i22.RootStackRouter {
   $AppRouter({super.navigatorKey});

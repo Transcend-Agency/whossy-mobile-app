@@ -3,10 +3,10 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_mobile_app/common/components/index.dart';
-import 'package:whossy_mobile_app/common/styles/component_style.dart';
-import 'package:whossy_mobile_app/common/utils/router/router.gr.dart';
-import 'package:whossy_mobile_app/feature/auth/sign_up/data/state/sign_up_notifier.dart';
+import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/styles/component_style.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/auth/sign_up/data/state/sign_up_notifier.dart';
 
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';

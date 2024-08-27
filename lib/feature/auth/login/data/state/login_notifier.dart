@@ -2,12 +2,12 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:whossy_mobile_app/feature/auth/login/data/repository/authentication_repository.dart';
-import 'package:whossy_mobile_app/feature/auth/login/model/auth_params.dart';
 
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import '../../../sign_up/data/repository/user_repository.dart';
+import '../../model/auth_params.dart';
+import '../repository/authentication_repository.dart';
 
 class LoginNotifier extends ChangeNotifier {
   final _userRepository = UserRepository();

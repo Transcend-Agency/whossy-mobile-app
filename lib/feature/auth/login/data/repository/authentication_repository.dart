@@ -1,14 +1,12 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:whossy_mobile_app/feature/auth/login/model/auth_params.dart';
 
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import '../../../sign_up/data/repository/user_repository.dart';
+import '../../model/auth_params.dart';
 import '../../model/reset_response.dart';
 
 class AuthenticationRepository {
@@ -150,37 +148,5 @@ class AuthenticationRepository {
     }
   }
 
-  Future<void> handleFacebookLogin() async {
-    final auth = FacebookAuth.instance;
-
-    final result = await auth.login(loginTracking: LoginTracking.enabled);
-
-    if (result.status == LoginStatus.success) {
-      // you are logged
-      final accessToken = result.accessToken!;
-
-      // get user data
-      final userData = await FacebookAuth.instance.getUserData();
-
-      log('Facebook user data $userData');
-      log('Facebook access token $accessToken');
-
-      // debugPrint("face book login user data: ${prettyPrint(userData)}");
-      // userModel.userId = accessToken.userId;
-      // userModel.email = userData["email"];
-      // final Map<String, dynamic> picture =
-      //     Map<String, dynamic>.from(userData["picture"]);
-      // final Map<String, dynamic> data =
-      //     Map<String, dynamic>.from(picture["data"]);
-      // userModel.avatar = data["url"];
-      // userModel.firstName = userData["name"];
-      // userModel.token = accessToken.token;
-      // userModel.loginType = loginFacebook;
-      // userModel.isFacebook = true;
-      // getSocial(context, userModel.token, true);
-    } else {
-      log(result.status.toString());
-      debugPrint(result.message);
-    }
-  }
+  Future<void> handleFacebookLogin() async {}
 }
