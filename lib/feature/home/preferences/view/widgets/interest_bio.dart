@@ -17,24 +17,28 @@ class InterestBioComponent extends StatefulWidget {
 }
 
 class _InterestBioComponentState extends State<InterestBioComponent> {
-  late PreferencesNotifier _preferenceNotifier;
+  late PreferencesNotifier _prefsNotifier;
   late List<String>? _interests;
-  bool similarInterest = true;
-  bool hasBio = false;
+  late bool _similarInterest;
+  late bool _hasBio;
 
   @override
   void initState() {
-    _preferenceNotifier =
-        Provider.of<PreferencesNotifier>(context, listen: false);
+    _prefsNotifier = Provider.of<PreferencesNotifier>(context, listen: false);
 
-    _interests = _preferenceNotifier.otherPreferences.interests;
+    _interests = _prefsNotifier.otherPreferences?.interests;
+
+    _similarInterest = _prefsNotifier.otherPreferences?.similarInterest ?? true;
+
+    _hasBio = _prefsNotifier.otherPreferences?.hasBio ?? false;
+
     super.initState();
   }
 
   void updateInterest(bool newValue) {
-    setState(() => similarInterest = newValue);
+    setState(() => _similarInterest = newValue);
 
-    _preferenceNotifier.updatePreferences(similarInterest: newValue);
+    _prefsNotifier.updatePreferences(similarInterest: newValue);
   }
 
   void updatePersonalized() async {
@@ -44,13 +48,13 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
             .push<List<String>>(InterestRoute(initialValues: _interests)) ??
         _interests;
 
-    _preferenceNotifier.updatePreferences(interests: _interests);
+    _prefsNotifier.updatePreferences(interests: _interests);
   }
 
   void updateBio(bool newValue) {
-    setState(() => hasBio = newValue);
+    setState(() => _hasBio = newValue);
 
-    _preferenceNotifier.updatePreferences(hasBio: newValue);
+    _prefsNotifier.updatePreferences(hasBio: newValue);
   }
 
   @override
@@ -80,7 +84,7 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
                     child: Transform.scale(
                       scale: 0.7,
                       child: Switch.adaptive(
-                        value: similarInterest,
+                        value: _similarInterest,
                         onChanged: updateInterest,
                       ),
                     ),
@@ -128,7 +132,7 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
                     child: Transform.scale(
                       scale: 0.7,
                       child: Switch.adaptive(
-                        value: hasBio,
+                        value: _hasBio,
                         onChanged: updateBio,
                       ),
                     ),

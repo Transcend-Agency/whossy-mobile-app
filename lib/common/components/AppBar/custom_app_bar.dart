@@ -9,10 +9,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.title,
     this.showAction = true,
+    this.action,
   });
 
   final String title;
   final bool showAction;
+  final Widget? action;
+
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
@@ -40,22 +43,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         ),
-        actions: showAction
-            ? [
-                Padding(
-                  padding: EdgeInsets.only(right: 10.w),
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Save',
-                      style: TextStyles.boldPrefText.copyWith(
-                        color: AppColors.saveColor,
-                      ),
-                    ),
-                  ),
-                )
-              ]
-            : null,
+        actions: [if (action != null) action!],
         title: Text(
           title,
           style: TextStyles.boldPrefText,

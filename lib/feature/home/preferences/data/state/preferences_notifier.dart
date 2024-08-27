@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 
 import '../../../../../constants/index.dart';
 import '../../model/core_preferences.dart';
@@ -10,38 +11,75 @@ import '../../model/other_preferences.dart';
 import '../repository/preferences_repository.dart';
 
 class PreferencesNotifier extends ChangeNotifier {
-  CorePreferences? _selectedItems;
-  final _otherPreferences = OtherPreferences();
-  final _preferencesRepository = PreferencesRepository();
+  CorePreferences? _dynCorePrefs;
+  CorePreferences? _statCorePrefs;
 
-  bool _isLoading = false;
+  OtherPreferences? _dynOtherPrefs;
+  OtherPreferences? _statOtherPrefs;
+  final _prefsRepo = PreferencesRepository();
 
-  bool get loadingState => _isLoading;
-
-  set loadingState(bool value) {
-    _isLoading = value;
-    notifyListeners();
-  }
-
-  CorePreferences? get selectedItems => _selectedItems;
-  OtherPreferences get otherPreferences => _otherPreferences;
+  CorePreferences? get selectedItems => _dynCorePrefs;
+  OtherPreferences? get otherPreferences => _dynOtherPrefs;
 
   void setValue(GenericEnum value) {
-    _selectedItems?.setValue(value);
-
+    _dynCorePrefs?.setValue(value);
     notifyListeners();
   }
 
-  String getValue(Type _) => _selectedItems?.getValue(_)?.name ?? 'Choose';
+  String getValue(Type _) => _dynCorePrefs?.getValue(_)?.name ?? 'Choose';
+  GenericEnum? getSelected(Type _) => _dynCorePrefs?.getValue(_);
 
-  GenericEnum? getSelected(Type _) => _selectedItems?.getValue(_);
+  bool get hasChanges {
+    if (_dynCorePrefs == null ||
+        _statCorePrefs == null ||
+        _dynOtherPrefs == null ||
+        _statOtherPrefs == null) {
+      return false;
+    }
+    bool corePrefs = _dynCorePrefs != _statCorePrefs;
+    bool otherPrefs = _dynOtherPrefs != _statOtherPrefs;
+
+    return corePrefs || otherPrefs;
+  }
 
   Future<void> getFilters({
     required void Function(String) showSnackbar,
   }) async {
     try {
-      _selectedItems =
-          await _preferencesRepository.fetchFilters() ?? CorePreferences();
+      final data = await _prefsRepo.fetchFilters();
+
+      _dynCorePrefs = data?.corePreferences ?? CorePreferences();
+      _dynOtherPrefs = data?.otherPreferences ?? OtherPreferences();
+
+      _statCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
+
+      _statOtherPrefs = OtherPreferences.fromJson(_dynOtherPrefs!.toJson());
+    } on FirebaseException catch (e) {
+      handleFirebaseError(e, showSnackbar);
+    } catch (e) {
+      showSnackbar(AppStrings.errorUnknown);
+      log(e.toString());
+    } finally {}
+
+    notifyListeners();
+  }
+
+  Future<void> saveFilters({
+    required void Function(String) showSnackbar,
+  }) async {
+    try {
+      final coreDiff = _dynCorePrefs?.diff(_statCorePrefs!) ?? {};
+      final otherDiff = _dynOtherPrefs?.diff(_statOtherPrefs!) ?? {};
+
+      if (coreDiff.isEmpty && otherDiff.isEmpty) {
+        return;
+      }
+
+      await _prefsRepo.updateFilters({...coreDiff, ...otherDiff});
+
+      // Once saved, update the static preferences to match the dynamic ones
+      _statCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
+      _statOtherPrefs = OtherPreferences.fromJson(_dynOtherPrefs!.toJson());
     } on FirebaseException catch (e) {
       handleFirebaseError(e, showSnackbar);
     } catch (e) {
@@ -68,7 +106,7 @@ class PreferencesNotifier extends ChangeNotifier {
     int? minWeight,
     int? maxWeight,
   }) {
-    _otherPreferences.update(
+    _dynOtherPrefs?.update(
       meet: meet,
       similarInterest: similarInterest,
       hasBio: hasBio,

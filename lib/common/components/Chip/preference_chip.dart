@@ -28,7 +28,7 @@ class PreferenceChip<T> extends StatelessWidget {
     return GestureDetector(
       onTap: () => onChanged(value),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 150),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6.r),
           color: isSelected ? AppColors.black : AppColors.listTileColor,

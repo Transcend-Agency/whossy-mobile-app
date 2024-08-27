@@ -67,28 +67,28 @@ class ExtrasComponent extends StatelessWidget {
                       onSelect: (_) => prefs.updatePreferences(country: _.name),
                       context: context,
                     ),
-                    trailing: prefs.otherPreferences.country ?? 'Choose',
+                    trailing: prefs.otherPreferences?.country ?? 'Choose',
                   ),
                   PreferenceTile(
                     text: 'City of Residence',
                     onTap: () async {
                       final city = await showCitySheet(
                         context: context,
-                        city: prefs.otherPreferences.city,
+                        city: prefs.otherPreferences?.city,
                       );
 
                       if (city != null) {
                         prefs.updatePreferences(city: city);
                       }
                     },
-                    trailing: prefs.otherPreferences.city ?? 'Choose',
+                    trailing: prefs.otherPreferences?.city ?? 'Choose',
                   ),
                   PreferenceTile(
                     text: 'Height',
                     onTap: () async {
                       final height = await showRangeSheet(
                         context: context,
-                        range: prefs.otherPreferences.toHeightRange(),
+                        range: prefs.otherPreferences?.toHeightRange(),
                         type: RangeType.height,
                       );
 
@@ -99,14 +99,16 @@ class ExtrasComponent extends StatelessWidget {
                         );
                       }
                     },
-                    trailing: prefs.otherPreferences.heightRange.displayRange(),
+                    trailing:
+                        prefs.otherPreferences?.heightRange.displayRange() ??
+                            '...Loading',
                   ),
                   PreferenceTile(
                     text: 'Weight',
                     onTap: () async {
                       final weight = await showRangeSheet(
                         context: context,
-                        range: prefs.otherPreferences.toWeightRange(),
+                        range: prefs.otherPreferences?.toWeightRange(),
                         type: RangeType.weight,
                       );
 
@@ -117,8 +119,9 @@ class ExtrasComponent extends StatelessWidget {
                         );
                       }
                     },
-                    trailing: prefs.otherPreferences.weightRange
-                        .displayRange(type: RangeType.weight),
+                    trailing: prefs.otherPreferences?.weightRange
+                            .displayRange(type: RangeType.weight) ??
+                        '...Loading',
                   ),
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -175,7 +178,8 @@ class ExtrasComponent extends StatelessWidget {
       countryListTheme: AppTheme().countryListTheme(
         textStyle: TextStyles.prefText.copyWith(
           color: AppColors.hintTextColor,
-          fontSize: AppUtils.scale(11.sp) ?? 9.sp,
+          fontSize: AppUtils.scale(11.sp) ?? 13.5.sp,
+          // fontSize: AppUtils.scale(11.sp) ?? 9.sp,
         ),
       ),
       onSelect: onSelect,

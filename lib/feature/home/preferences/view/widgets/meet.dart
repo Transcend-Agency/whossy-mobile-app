@@ -19,7 +19,18 @@ class MeetComponent extends StatefulWidget {
 }
 
 class _MeetComponentState extends State<MeetComponent> {
+  late PreferencesNotifier _prefsNotifier;
   Meet? meet;
+
+  @override
+  void initState() {
+    _prefsNotifier = Provider.of<PreferencesNotifier>(context, listen: false);
+
+    meet = Meet.values[_prefsNotifier.otherPreferences?.meet ?? 2];
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(

@@ -158,20 +158,57 @@ class CorePreferences {
 
   @override
   String toString() {
-    return 'CorePreferences('
-        'relationshipPreference: $relationshipPreference, '
-        'education: $education, '
-        'loveLanguage: $loveLanguage, '
-        'zodiac: $zodiac, '
-        'futureFamilyPlans: $futureFamilyPlans, '
-        'communicationStyle: $communicationStyle, '
-        'smoker: $smoker, '
-        'drinking: $drinking, '
-        'workout: $workout, '
-        'petOwner: $petOwner, '
-        'religion: $religion, '
-        'dietary: $dietary, '
-        'maritalStatus: $maritalStatus'
+    return 'CorePreferences(\n'
+        '  relationshipPreference: $relationshipPreference,\n'
+        '  education: $education,\n'
+        '  loveLanguage: $loveLanguage,\n'
+        '  zodiac: $zodiac,\n'
+        '  futureFamilyPlans: $futureFamilyPlans,\n'
+        '  communicationStyle: $communicationStyle,\n'
+        '  smoker: $smoker,\n'
+        '  drinking: $drinking,\n'
+        '  workout: $workout,\n'
+        '  petOwner: $petOwner,\n'
+        '  religion: $religion,\n'
+        '  dietary: $dietary,\n'
+        '  maritalStatus: $maritalStatus\n'
         ')';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is CorePreferences &&
+        other.relationshipPreference == relationshipPreference &&
+        other.education == education &&
+        other.loveLanguage == loveLanguage &&
+        other.zodiac == zodiac &&
+        other.futureFamilyPlans == futureFamilyPlans &&
+        other.communicationStyle == communicationStyle &&
+        other.smoker == smoker &&
+        other.drinking == drinking &&
+        other.workout == workout &&
+        other.petOwner == petOwner &&
+        other.religion == religion &&
+        other.dietary == dietary &&
+        other.maritalStatus == maritalStatus;
+  }
+
+  @override
+  int get hashCode {
+    return relationshipPreference.hashCode ^
+        education.hashCode ^
+        loveLanguage.hashCode ^
+        zodiac.hashCode ^
+        futureFamilyPlans.hashCode ^
+        communicationStyle.hashCode ^
+        smoker.hashCode ^
+        drinking.hashCode ^
+        workout.hashCode ^
+        petOwner.hashCode ^
+        religion.hashCode ^
+        dietary.hashCode ^
+        maritalStatus.hashCode;
   }
 }

@@ -6,6 +6,8 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/provider/providers.dart';
 
+import '../../../../common/styles/text_style.dart';
+import '../../../../constants/index.dart';
 import 'widgets/_.dart';
 
 @RoutePage()
@@ -24,9 +26,15 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
     _preferencesNotifier =
         Provider.of<PreferencesNotifier>(context, listen: false);
 
-    _preferencesNotifier.getFilters(showSnackbar: showSnackbar);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preferencesNotifier.getFilters(showSnackbar: showSnackbar);
+    });
 
     super.initState();
+  }
+
+  void onSaveTap() {
+    _preferencesNotifier.saveFilters(showSnackbar: showSnackbar);
   }
 
   showSnackbar(String message) {
@@ -39,8 +47,28 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
   Widget build(BuildContext context) {
     return AppScaffold(
       useScrollView: true,
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         title: 'Preferences',
+        showAction: false,
+        action: Selector<PreferencesNotifier, bool>(
+          selector: (_, pref) => pref.hasChanges,
+          builder: (_, save, __) {
+            return save
+                ? Padding(
+                    padding: EdgeInsets.only(right: 10.w),
+                    child: TextButton(
+                      onPressed: onSaveTap,
+                      child: Text(
+                        'Save',
+                        style: TextStyles.boldPrefText.copyWith(
+                          color: AppColors.saveColor,
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink();
+          },
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

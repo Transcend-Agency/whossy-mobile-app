@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/common/utils/index.dart';
@@ -7,15 +8,26 @@ part 'other_preferences.g.dart';
 @JsonSerializable()
 class OtherPreferences {
   int? meet;
+
+  @JsonKey(name: "similar_interest")
   bool? similarInterest;
+
+  @JsonKey(name: "has_bio")
   bool? hasBio;
+
+  @JsonKey(name: "age_range")
   Map<String, int>? ageRange;
+
   List<String>? interests;
   double? distance;
   bool? outreach;
   String? country;
   String? city;
+
+  @JsonKey(name: "height_range")
   Map<String, int>? heightRange;
+
+  @JsonKey(name: "weight_range")
   Map<String, int>? weightRange;
 
   OtherPreferences({
@@ -86,4 +98,54 @@ class OtherPreferences {
       _$OtherPreferencesFromJson(json);
 
   Map<String, dynamic> toJson() => _$OtherPreferencesToJson(this);
+
+  @override
+  String toString() {
+    return 'OtherPreferences(\n'
+        '  meet: $meet,\n'
+        '  similarInterest: $similarInterest,\n'
+        '  hasBio: $hasBio,\n'
+        '  ageRange: $ageRange,\n'
+        '  interests: $interests,\n'
+        '  distance: $distance,\n'
+        '  outreach: $outreach,\n'
+        '  country: $country,\n'
+        '  city: $city,\n'
+        '  heightRange: $heightRange,\n'
+        '  weightRange: $weightRange\n'
+        ')';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is OtherPreferences &&
+        other.meet == meet &&
+        other.similarInterest == similarInterest &&
+        other.hasBio == hasBio &&
+        mapEquals(other.ageRange, ageRange) &&
+        AppUtils.areListsEqual(other.interests, interests) &&
+        other.distance == distance &&
+        other.outreach == outreach &&
+        other.country == country &&
+        other.city == city &&
+        mapEquals(other.heightRange, heightRange) &&
+        mapEquals(other.weightRange, weightRange);
+  }
+
+  @override
+  int get hashCode {
+    return meet.hashCode ^
+        similarInterest.hashCode ^
+        hasBio.hashCode ^
+        ageRange.hashCode ^
+        interests.hashCode ^
+        distance.hashCode ^
+        outreach.hashCode ^
+        country.hashCode ^
+        city.hashCode ^
+        heightRange.hashCode ^
+        weightRange.hashCode;
+  }
 }

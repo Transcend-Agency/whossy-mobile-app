@@ -18,41 +18,42 @@ class DistanceAgeComponent extends StatefulWidget {
 class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
   final _debouncer = Debouncer(milliseconds: 500);
   late RangeValues ageRange;
-  late PreferencesNotifier _userNotifier;
+  late PreferencesNotifier _prefsNotifier;
 
   late double distance;
   late bool show;
 
   @override
   void initState() {
-    _userNotifier = Provider.of<PreferencesNotifier>(context, listen: false);
+    _prefsNotifier = Provider.of<PreferencesNotifier>(context, listen: false);
 
-    ageRange = _userNotifier.otherPreferences.toAgeRange() ??
+    ageRange = _prefsNotifier.otherPreferences?.toAgeRange() ??
         const RangeValues(25, 35);
 
-    distance = _userNotifier.otherPreferences.distance ?? 50;
+    distance = _prefsNotifier.otherPreferences?.distance ?? 50;
 
-    show = _userNotifier.otherPreferences.hasBio ?? true;
+    show = _prefsNotifier.otherPreferences?.outreach ?? true;
+
     super.initState();
   }
 
   void onChanged(double newValue) {
     setState(() => distance = newValue);
 
-    _debouncer.run(() => _userNotifier.updatePreferences(distance: newValue));
+    _debouncer.run(() => _prefsNotifier.updatePreferences(distance: newValue));
   }
 
   void updateSwitch(bool newValue) {
     setState(() => show = newValue);
 
-    _userNotifier.updatePreferences(outreach: newValue);
+    _prefsNotifier.updatePreferences(outreach: newValue);
   }
 
   void updateRange(RangeValues values) {
     setState(() => ageRange = values);
 
     _debouncer.run(
-      () => _userNotifier.updatePreferences(
+      () => _prefsNotifier.updatePreferences(
         minAge: values.start.toInt(),
         maxAge: values.end.toInt(),
       ),
