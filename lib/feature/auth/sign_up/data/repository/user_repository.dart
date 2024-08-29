@@ -13,8 +13,13 @@ class UserRepository {
   final _usersFirestore = FirebaseFirestore.instance.collection('users');
   final _storage = FirebaseStorage.instance;
 
-  Future<void> setUserData(AppUser user) async {
-    await _usersFirestore.doc(user.uid).set(user.toJson());
+  Future<void> setUserData({
+    String? id,
+    required Map<String, dynamic> data,
+  }) async {
+    // final uid = FirebaseAuth.instance.currentUser?.uid ?? id;
+
+    await _usersFirestore.doc(id).set(data, SetOptions(merge: true));
   }
 
   Future<bool> isPhoneUnique(String phone) async {
@@ -58,7 +63,7 @@ class UserRepository {
     if (docSnapshot.exists) {
       final data = docSnapshot.data();
 
-      if (data != null) AppUser.fromJson(data);
+      if (data != null) return AppUser.fromJson(data);
     }
 
     return null;
@@ -70,13 +75,6 @@ class UserRepository {
         .get(const GetOptions(source: Source.server));
 
     return result.docs.isNotEmpty;
-  }
-
-  // Update specific fields of user data
-  Future<void> updateUserData(Map<String, dynamic> updatedData) async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-
-    await _usersFirestore.doc(uid).set(updatedData, SetOptions(merge: true));
   }
 
   // Method to upload files and return download URLs

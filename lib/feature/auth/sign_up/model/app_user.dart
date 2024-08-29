@@ -2,9 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'app_user.g.dart';
 
-@JsonSerializable(
-  includeIfNull: false,
-)
+@JsonSerializable()
 class AppUser {
   final String? uid;
 
@@ -59,4 +57,18 @@ class AppUser {
         'authProvider': authProvider,
         'has_completed_account_creation': hasCompletedAccountCreation,
       };
+
+  @override
+  String toString() {
+    return 'uid: $uid\n'
+        'email: $email\n'
+        'firstName: $firstName\n'
+        'lastName: $lastName\n'
+        'gender: $gender\n'
+        'phoneNumber: $phoneNumber\n'
+        'countryOfOrigin: $countryOfOrigin\n'
+        'authProvider: $authProvider\n'
+        'hasCompletedAccountCreation: $hasCompletedAccountCreation\n'
+        'hasCompletedOnboarding: $hasCompletedOnboarding';
+  }
 }

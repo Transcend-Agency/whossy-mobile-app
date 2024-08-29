@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../../constants/index.dart';
+import '../../../../../common/utils/router/router.dart';
+import '../../../../../common/utils/router/router.gr.dart';
 
 class Header extends StatelessWidget {
   const Header({super.key});
@@ -31,7 +33,8 @@ class Header extends StatelessWidget {
                         strokeCap: StrokeCap.round,
                         strokeWidth: 6,
                         valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColors.primaryColor),
+                          AppColors.primaryColor,
+                        ),
                         backgroundColor: AppColors.selectedFieldColor,
                       ),
                     ),
@@ -53,7 +56,7 @@ class Header extends StatelessWidget {
               right: -6,
               top: -8,
               child: GestureDetector(
-                onTap: () {},
+                onTap: () => Nav.push(context, const EditProfile()),
                 child: Container(
                   margin: const EdgeInsets.all(4),
                   child: SvgPicture.asset(

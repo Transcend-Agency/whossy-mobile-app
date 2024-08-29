@@ -49,7 +49,6 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
       useScrollView: true,
       appBar: CustomAppBar(
         title: 'Preferences',
-        showAction: false,
         action: Selector<PreferencesNotifier, bool>(
           selector: (_, pref) => pref.hasChanges,
           builder: (_, save, __) {

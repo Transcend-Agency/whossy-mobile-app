@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/constants/asset_paths.dart';
 
+import '../../provider/providers.dart';
 import 'tabs/_.dart';
 
 @RoutePage()
@@ -14,6 +17,7 @@ class HomeWrapper extends StatefulWidget {
 }
 
 class _HomeWrapperState extends State<HomeWrapper> {
+  late EditProfileNotifier _editProfileNotifier;
   late List<Widget> _pages;
   int selectedIndex = 0;
 
@@ -26,11 +30,25 @@ class _HomeWrapperState extends State<HomeWrapper> {
       const Four(),
       const Profile(),
     ];
+
+    _editProfileNotifier =
+        Provider.of<EditProfileNotifier>(context, listen: false);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _editProfileNotifier.getUserData(showSnackbar: showSnackbar);
+    });
+
     super.initState();
   }
 
   void _selectedTab(int index) {
     setState(() => selectedIndex = index);
+  }
+
+  showSnackbar(String message) {
+    if (mounted) {
+      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+    }
   }
 
   @override

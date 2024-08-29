@@ -8,7 +8,7 @@ import '../../../../../constants/index.dart';
 import '../../model/core_preferences.dart';
 import '../../model/generic_enum.dart';
 import '../../model/other_preferences.dart';
-import '../repository/preferences_repository.dart';
+import '../repository/filters_repository.dart';
 
 class PreferencesNotifier extends ChangeNotifier {
   CorePreferences? _dynCorePrefs;

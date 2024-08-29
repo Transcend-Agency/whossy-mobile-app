@@ -10,14 +10,12 @@ class Preferences {
   @JsonKey(name: 'preference')
   int? relationshipPref;
 
-  @JsonKey(name: 'meet')
   int? meet;
 
   @JsonKey(
     name: 'date_of_birth',
-    fromJson: _dateTimeFromJson,
-    toJson: _dateTimeToJson,
-    includeIfNull: false,
+    fromJson: dateTimeFromJson,
+    toJson: dateTimeToJson,
   )
   DateTime? dateOfBirth;
 
@@ -27,14 +25,27 @@ class Preferences {
   @JsonKey(name: 'interests')
   List<String>? ticks;
 
-  @JsonKey(name: 'education')
-  String? education;
-
-  @JsonKey(name: 'drink')
   int? drink;
 
   @JsonKey(name: 'smoke')
   int? smoker;
+
+  int? education;
+
+  @JsonKey(name: "love_language")
+  int? loveLanguage;
+
+  @JsonKey(name: "communication_style")
+  int? communicationStyle;
+
+  int? zodiac;
+
+  int? religion;
+
+  int? dietary;
+
+  @JsonKey(name: "family_plans")
+  int? futureFamilyPlans;
 
   @JsonKey(name: 'pets')
   List<String>? pets;
@@ -42,8 +53,14 @@ class Preferences {
   @JsonKey(name: 'workout')
   int? workOut;
 
+  @JsonKey(name: "pet_owner")
+  int? petOwner;
+
   @JsonKey(name: 'bio')
   String? bio;
+
+  @JsonKey(name: "marital_status")
+  int? maritalStatus;
 
   @JsonKey(name: 'photos')
   List<String>? profilePics;
@@ -60,12 +77,20 @@ class Preferences {
     this.dateOfBirth,
     this.search,
     this.ticks,
-    this.education,
     this.drink,
     this.smoker,
+    this.education,
+    this.loveLanguage,
+    this.communicationStyle,
+    this.zodiac,
+    this.religion,
+    this.dietary,
+    this.futureFamilyPlans,
     this.pets,
     this.workOut,
+    this.petOwner,
     this.bio,
+    this.maritalStatus,
     this.profilePics,
     this.picFiles,
   });
@@ -76,12 +101,20 @@ class Preferences {
     DateTime? dateOfBirth,
     int? search,
     List<String>? ticks,
-    String? education,
     int? drink,
     int? smoker,
+    int? education,
+    int? loveLanguage,
+    int? communicationStyle,
+    int? zodiac,
+    int? religion,
+    int? dietary,
+    int? futureFamilyPlans,
     List<String>? pets,
     int? workOut,
+    int? petOwner,
     String? bio,
+    int? maritalStatus,
     List<String>? profilePics,
     List<File>? picFiles,
   }) {
@@ -90,12 +123,22 @@ class Preferences {
     if (dateOfBirth != null) this.dateOfBirth = dateOfBirth;
     if (search != null) this.search = search;
     if (ticks != null) this.ticks = ticks;
-    if (education != null) this.education = education;
     if (drink != null) this.drink = drink;
     if (smoker != null) this.smoker = smoker;
+    if (education != null) this.education = education;
+    if (loveLanguage != null) this.loveLanguage = loveLanguage;
+    if (communicationStyle != null) {
+      this.communicationStyle = communicationStyle;
+    }
+    if (zodiac != null) this.zodiac = zodiac;
+    if (religion != null) this.religion = religion;
+    if (dietary != null) this.dietary = dietary;
+    if (futureFamilyPlans != null) this.futureFamilyPlans = futureFamilyPlans;
     if (pets != null) this.pets = pets;
     if (workOut != null) this.workOut = workOut;
+    if (petOwner != null) this.petOwner = petOwner;
     if (bio != null) this.bio = bio;
+    if (maritalStatus != null) this.maritalStatus = maritalStatus;
     if (profilePics != null) this.profilePics = profilePics;
     if (picFiles != null) this.picFiles = picFiles;
   }
@@ -106,7 +149,7 @@ class Preferences {
   Map<String, dynamic> toJson() => _$PreferencesToJson(this);
 
   // Custom fromJson method for dateOfBirth
-  static DateTime? _dateTimeFromJson(dynamic json) {
+  static DateTime? dateTimeFromJson(dynamic json) {
     if (json is Timestamp) {
       return json.toDate();
     } else if (json is String) {
@@ -116,7 +159,32 @@ class Preferences {
   }
 
   // Custom toJson method for dateOfBirth
-  static dynamic _dateTimeToJson(DateTime? date) {
+  static dynamic dateTimeToJson(DateTime? date) {
     return date != null ? Timestamp.fromDate(date) : null;
+  }
+
+  @override
+  String toString() {
+    return 'relationshipPref: $relationshipPref\n'
+        'meet: $meet\n'
+        'dateOfBirth: $dateOfBirth\n'
+        'search: $search\n'
+        'ticks: ${ticks?.join(" ")}\n'
+        'drink: $drink\n'
+        'smoker: $smoker\n'
+        'education: $education\n'
+        'loveLanguage: $loveLanguage\n'
+        'communicationStyle: $communicationStyle\n'
+        'zodiac: $zodiac\n'
+        'religion: $religion\n'
+        'dietary: $dietary\n'
+        'futureFamilyPlans: $futureFamilyPlans\n'
+        'pets: ${pets?.join(" ")}\n'
+        'workOut: $workOut\n'
+        'petOwner: $petOwner\n'
+        'bio: $bio\n'
+        'maritalStatus: $maritalStatus\n'
+        'profilePics: ${profilePics?.join(" ")}\n'
+        'picFiles: ${picFiles?.map((file) => file.path).join(" ")}';
   }
 }

@@ -32,13 +32,9 @@ class SignUpNotifier extends ChangeNotifier {
   }) async {
     final uid = userCredential!.user!.uid;
 
-    try {
-      updateAppUser(uid: uid, email: email, authProvider: provider);
+    updateAppUser(uid: uid, email: email, authProvider: provider);
 
-      await _userRepository.setUserData(_user);
-    } catch (e) {
-      rethrow;
-    }
+    await _userRepository.setUserData(id: _user.uid, data: _user.toJson());
   }
 
   Future<void> completeCreation({
@@ -54,7 +50,7 @@ class SignUpNotifier extends ChangeNotifier {
       updateAppUser(gender: gender, hasCompletedAccountCreation: true);
 
       // Upload to Firebase
-      await _userRepository.updateUserData(_user.toUpdateCreate());
+      await _userRepository.setUserData(data: _user.toUpdateCreate());
 
       User? user = userCredential?.user;
 

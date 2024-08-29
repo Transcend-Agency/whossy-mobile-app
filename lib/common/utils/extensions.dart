@@ -141,7 +141,7 @@ extension StringExtention on String? {
         value.isNotEmpty &&
         value.length >= 10 &&
         value.length <= 500 &&
-        RegExp(r'^[a-zA-Z0-9\s,.!?\-]+$').hasMatch(value);
+        RegExp(r"^[a-zA-Z0-9\s,.!?\'\-]+$").hasMatch(value);
   }
 
   /// Validate the bio input (checks if it's a valid bio format)
@@ -153,7 +153,7 @@ extension StringExtention on String? {
     if (value.length < 10 || value.length > 500) {
       return 'At least 10 characters';
     }
-    if (!RegExp(r'^[a-zA-Z0-9\s,.!?\-]+$').hasMatch(value)) {
+    if (!RegExp(r"^[a-zA-Z0-9\s,.!?\'\-]+$").hasMatch(value)) {
       return 'Special characters are not allowed';
     }
     return null; // Return null if the bio is valid

@@ -35,13 +35,23 @@ class _InterestsTileState extends State<InterestsTile> {
   void initState() {
     _editNotifier = Provider.of<EditProfileNotifier>(context, listen: false);
 
-    _interests = _editNotifier.coreProfile.interests;
+    _interests = _editNotifier.coreProfile?.interests;
     super.initState();
   }
 
-  String getSelectionStatus(List<String>? items) => items == null
-      ? "Choose"
-      : (items.length < 10 ? "${items.length} Selected" : "10+ Selected");
+  String getSelectionStatus(List<String>? items) {
+    if (items == null) {
+      return "Choose";
+    }
+    int length = items.length;
+    if (length == 10) {
+      return "10 Selected";
+    } else if (length < 10) {
+      return "$length Selected";
+    } else {
+      return "10+ Selected";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +95,7 @@ class _InterestsTileState extends State<InterestsTile> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Selector<EditProfileNotifier, List<String>?>(
-                      selector: (_, edit) => edit.coreProfile.interests,
+                      selector: (_, edit) => edit.coreProfile?.interests,
                       builder: (_, data, __) {
                         return Text(
                           getSelectionStatus(data),

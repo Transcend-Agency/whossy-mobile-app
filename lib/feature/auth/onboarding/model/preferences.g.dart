@@ -9,17 +9,25 @@ part of 'preferences.dart';
 Preferences _$PreferencesFromJson(Map<String, dynamic> json) => Preferences(
       relationshipPref: (json['preference'] as num?)?.toInt(),
       meet: (json['meet'] as num?)?.toInt(),
-      dateOfBirth: Preferences._dateTimeFromJson(json['date_of_birth']),
+      dateOfBirth: Preferences.dateTimeFromJson(json['date_of_birth']),
       search: (json['distance'] as num?)?.toInt(),
       ticks: (json['interests'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      education: json['education'] as String?,
       drink: (json['drink'] as num?)?.toInt(),
       smoker: (json['smoke'] as num?)?.toInt(),
+      education: (json['education'] as num?)?.toInt(),
+      loveLanguage: (json['love_language'] as num?)?.toInt(),
+      communicationStyle: (json['communication_style'] as num?)?.toInt(),
+      zodiac: (json['zodiac'] as num?)?.toInt(),
+      religion: (json['religion'] as num?)?.toInt(),
+      dietary: (json['dietary'] as num?)?.toInt(),
+      futureFamilyPlans: (json['family_plans'] as num?)?.toInt(),
       pets: (json['pets'] as List<dynamic>?)?.map((e) => e as String).toList(),
       workOut: (json['workout'] as num?)?.toInt(),
+      petOwner: (json['pet_owner'] as num?)?.toInt(),
       bio: json['bio'] as String?,
+      maritalStatus: (json['marital_status'] as num?)?.toInt(),
       profilePics:
           (json['photos'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
@@ -36,15 +44,23 @@ Map<String, dynamic> _$PreferencesToJson(Preferences instance) {
   writeNotNull('preference', instance.relationshipPref);
   writeNotNull('meet', instance.meet);
   writeNotNull(
-      'date_of_birth', Preferences._dateTimeToJson(instance.dateOfBirth));
+      'date_of_birth', Preferences.dateTimeToJson(instance.dateOfBirth));
   writeNotNull('distance', instance.search);
   writeNotNull('interests', instance.ticks);
-  writeNotNull('education', instance.education);
   writeNotNull('drink', instance.drink);
   writeNotNull('smoke', instance.smoker);
+  writeNotNull('education', instance.education);
+  writeNotNull('love_language', instance.loveLanguage);
+  writeNotNull('communication_style', instance.communicationStyle);
+  writeNotNull('zodiac', instance.zodiac);
+  writeNotNull('religion', instance.religion);
+  writeNotNull('dietary', instance.dietary);
+  writeNotNull('family_plans', instance.futureFamilyPlans);
   writeNotNull('pets', instance.pets);
   writeNotNull('workout', instance.workOut);
+  writeNotNull('pet_owner', instance.petOwner);
   writeNotNull('bio', instance.bio);
+  writeNotNull('marital_status', instance.maritalStatus);
   writeNotNull('photos', instance.profilePics);
   return val;
 }

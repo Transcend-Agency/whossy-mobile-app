@@ -59,10 +59,10 @@ class OnboardingNotifier extends ChangeNotifier {
       updateUserProfile(profilePics: urls);
 
       // Send the preferences to Firebase
-      await _prefRepository.uploadPreferences(_userPreferences);
+      await _prefRepository.uploadPreferences(data: _userPreferences.toJson());
 
       // the user has now completed the account onboarding
-      _userRepository.updateUserData({"has_completed_onboarding": true});
+      _userRepository.setUserData(data: {"has_completed_onboarding": true});
 
       onAuthenticate();
     } on Exception catch (e) {
@@ -84,7 +84,6 @@ class OnboardingNotifier extends ChangeNotifier {
     DateTime? dateOfBirth,
     int? search,
     List<String>? ticks,
-    String? education,
     int? drink,
     int? smoker,
     List<String>? pets,
@@ -99,7 +98,6 @@ class OnboardingNotifier extends ChangeNotifier {
       dateOfBirth: dateOfBirth,
       search: search,
       ticks: ticks,
-      education: education,
       drink: drink,
       smoker: smoker,
       pets: pets,

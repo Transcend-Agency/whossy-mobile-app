@@ -53,26 +53,33 @@ class CoreEditProfileList extends StatelessWidget {
 
   VoidCallback? handleTap(
       String key, BuildContext context, EditProfileNotifier profile) {
-    if (key == "birthday") {
-      // No action needed for "birthday"
-      return null;
-    } else {
-      return () async {
-        if (key == 'name') {
-          Nav.push(
-            context,
-            NameEditProfile(
-              names: profile.coreProfile.getName(),
-            ),
-          );
-        } else if (key == 'gender') {
-          // Handle gender case
-        } else if (key == 'email') {
-          // Handle email case
-        } else if (key == 'phoneNumber') {
-          // Handle phone number case
+    final coreProfile = profile.coreProfile;
+
+    // log('The value of core profile is ${coreProfile.toString()}');
+    if (coreProfile == null) return null;
+
+    switch (key) {
+      case 'name':
+        if (coreProfile.hasFullName) {
+          return () => Nav.push(
+                context,
+                NameEditProfile(names: coreProfile.getName()),
+              );
         }
-      };
+        break;
+      case 'gender':
+        // Handle gender case
+        break;
+      case 'email':
+        // Handle email case
+        break;
+      case 'phoneNumber':
+        // Handle phone number case
+        break;
+      case 'birthday':
+        return null; // No action needed for "birthday"
     }
+
+    return null;
   }
 }

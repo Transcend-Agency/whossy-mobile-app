@@ -55,12 +55,11 @@ class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
       const AgeScreen(pageIndex: 2),
       const DistanceScreen(pageIndex: 3),
       const TickScreen(pageIndex: 4),
-      const EducationScreen(pageIndex: 5),
-      const DrinkScreen(pageIndex: 6),
-      const SmokerScreen(pageIndex: 7),
-      const PetsScreen(pageIndex: 8),
-      const BioScreen(pageIndex: 9),
-      const PictureScreen(pageIndex: 10),
+      const DrinkScreen(pageIndex: 5),
+      const SmokerScreen(pageIndex: 6),
+      const PetsScreen(pageIndex: 7),
+      const BioScreen(pageIndex: 8),
+      const PictureScreen(pageIndex: 9),
     ];
 
     subscription = Connectivity().onConnectivityChanged.listen((_) async {
