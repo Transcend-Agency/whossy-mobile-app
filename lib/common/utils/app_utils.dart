@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -35,5 +37,48 @@ class AppUtils {
     final sortedList1 = List.of(list1)..sort();
     final sortedList2 = List.of(list2)..sort();
     return listEquals(sortedList1, sortedList2);
+  }
+
+  static Size getDimensions(int index) {
+    final double screenWidth = ScreenUtil().screenWidth;
+    final double height = ScreenUtil().screenHeight * 0.4;
+
+    // Initialize default width and height
+    double width = screenWidth;
+    double calculatedHeight = height;
+
+    // Determine width and height based on index
+    switch (index) {
+      case 0:
+        width = screenWidth * 0.6;
+        calculatedHeight = height * 0.66;
+        break;
+      case 1:
+        width = screenWidth * 0.4;
+        calculatedHeight = height * 0.33;
+        break;
+      case 2:
+        width = screenWidth * 0.4;
+        calculatedHeight = height * 0.33;
+        break;
+      case 3:
+        width = screenWidth / 3;
+        calculatedHeight = height * 0.34;
+        break;
+      case 4:
+        width = screenWidth / 3;
+        calculatedHeight = height * 0.34;
+        break;
+      case 5:
+        width = screenWidth / 3;
+        calculatedHeight = height * 0.34;
+        break;
+      default:
+        width = 200.r;
+        calculatedHeight = 200.r;
+        break;
+    }
+
+    return Size(width, calculatedHeight);
   }
 }

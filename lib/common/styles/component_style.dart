@@ -45,6 +45,11 @@ final focusedErrorBorder = inputBorder.copyWith(
   ),
 );
 
+final editMediaDecoration = BoxDecoration(
+  color: Colors.white,
+  borderRadius: BorderRadius.circular(10.r),
+);
+
 final snackbarDecoration = BoxDecoration(
   color: AppColors.sbErrorFillColor,
   borderRadius: BorderRadius.circular(8.r),

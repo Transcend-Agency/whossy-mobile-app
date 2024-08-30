@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../constants/index.dart';
+import 'order_able_column.dart';
 
 class MediaEditProfile extends StatelessWidget {
   const MediaEditProfile({super.key});
@@ -23,73 +26,21 @@ class MediaEditProfile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
-                height: totalHeight,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // First Row
-                    Expanded(
-                      flex: 66,
-                      child: Row(
-                        children: [
-                          // Wide Container
-                          Expanded(
-                            flex: 6,
-                            child: Container(color: Colors.blue),
-                          ),
-
-                          addWidth(6),
-                          // Two Smaller Containers
-                          Expanded(
-                            flex: 4,
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: Container(color: Colors.red),
-                                ),
-                                addHeight(6),
-                                Expanded(
-                                  child: Container(color: Colors.green),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Spacing
-                    addHeight(6),
-
-                    // Second Row
-                    Expanded(
-                      flex: 34,
-                      child: Row(
-                        children: [
-                          // Three Equal Containers
-                          Expanded(
-                            child: Container(
-                              color: Colors.yellow,
-                            ),
-                          ),
-                          addWidth(6),
-                          Expanded(
-                            child: Container(
-                              color: Colors.orange,
-                            ),
-                          ),
-                          addWidth(6),
-                          Expanded(
-                            child: Container(
-                              color: Colors.purple,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              Text(
+                'Hold down and drag to rearrange',
+                style: TextStyles.prefText,
+                textAlign: TextAlign.left,
+              ),
+              addHeight(12),
+              Consumer<EditProfileNotifier>(
+                builder: (_, edit, __) {
+                  final profilePics = edit.coreProfile?.profilePics ?? [];
+                  return SizedBox(
+                    height: totalHeight,
+                    child:
+                        OrderAbleColumn(profilePics: profilePics, edit: edit),
+                  );
+                },
               ),
               addHeight(2),
               Padding(

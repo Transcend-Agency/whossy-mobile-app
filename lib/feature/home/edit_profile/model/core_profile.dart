@@ -90,9 +90,14 @@ class CoreProfile {
     return selectedValues[key];
   }
 
-  void update({String? bio, List<String>? interests}) {
+  void update({
+    String? bio,
+    List<String>? interests,
+    List<String>? profilePics,
+  }) {
     if (bio != null) this.bio = bio;
     if (interests != null) this.interests = interests;
+    if (profilePics != null) this.profilePics = profilePics;
   }
 
   bool get hasFullName => firstName != null && lastName != null;

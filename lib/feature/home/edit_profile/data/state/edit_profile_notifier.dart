@@ -137,10 +137,12 @@ class EditProfileNotifier extends ChangeNotifier {
   void updateProfile({
     String? bio,
     List<String>? interests,
+    List<String>? profilePics,
   }) {
     _dynCoreProfile?.update(
       bio: bio,
       interests: interests,
+      profilePics: profilePics,
     );
     notifyListeners();
   }

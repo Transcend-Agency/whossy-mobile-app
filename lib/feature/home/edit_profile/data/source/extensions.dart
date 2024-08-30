@@ -11,10 +11,6 @@ extension CoreProfileExtension on CoreProfile {
     if (lastName != other.lastName) {
       updatedFields['last_name'] = lastName;
     }
-    // if (dateOfBirth != other.dateOfBirth) {
-    //   updatedFields['date_of_birth'] = dateOfBirth
-    //       ?.toIso8601String(); // Adjust as needed for your JSON format
-    // }
     if (gender != other.gender) {
       updatedFields['gender'] = gender;
     }
@@ -35,5 +31,13 @@ extension CoreProfileExtension on CoreProfile {
     }
 
     return updatedFields;
+  }
+}
+
+extension StringExtension on String {
+  bool get isUrl {
+    return startsWith('http://') ||
+        startsWith('https://') ||
+        startsWith('www.');
   }
 }

@@ -5,9 +5,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:whossy_app/common/utils/services/file_picker_service.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/component_style.dart';
@@ -40,7 +40,7 @@ class _PictureScreenState extends State<PictureScreen>
       final pickedImages = await _picker.pickMultiImage(limit: 6);
 
       for (var file in pickedImages) {
-        final croppedImage = await _cropImage(File(file.path));
+        final croppedImage = await FilePickerService.cropImage(File(file.path));
         if (croppedImage != null) {
           setState(() {
             _images.add(croppedImage);
@@ -63,18 +63,6 @@ class _PictureScreenState extends State<PictureScreen>
     } else {
       log('Delete pictures to add more');
     }
-  }
-
-  Future<File?> _cropImage(File image) async {
-    // Todo: Images can be rotated on iOS, I wanted them to be fixed
-    final croppedImage = await ImageCropper().cropImage(
-      sourcePath: image.path,
-      aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 4),
-    );
-
-    if (croppedImage == null) return null;
-
-    return File(croppedImage.path);
   }
 
   /// Move image to the top of the list
@@ -195,7 +183,9 @@ class _PictureScreenState extends State<PictureScreen>
                                     width: 60,
                                     child: GestureDetector(
                                       onTap: () => showCustomModalBottomSheet(
-                                          context, () => _deleteImage(0)),
+                                        context,
+                                        () => _deleteImage(0),
+                                      ),
                                     ),
                                   ),
                                 )
@@ -248,7 +238,7 @@ class _PictureScreenState extends State<PictureScreen>
                     children: [
                       Container(
                         width: 82.r,
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
                           color: AppColors.listTileColor,
                           borderRadius: BorderRadius.circular(6.r),
