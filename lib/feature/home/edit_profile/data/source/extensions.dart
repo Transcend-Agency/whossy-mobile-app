@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../../../common/utils/index.dart';
 import '../../model/core_profile.dart';
 
@@ -20,7 +22,7 @@ extension CoreProfileExtension on CoreProfile {
     if (phoneNumber != other.phoneNumber) {
       updatedFields['phone_number'] = phoneNumber;
     }
-    if (!AppUtils.areListsEqual(profilePics, other.profilePics)) {
+    if (!listEquals(profilePics, other.profilePics)) {
       updatedFields['photos'] = profilePics;
     }
     if (bio != other.bio) {
@@ -39,5 +41,19 @@ extension StringExtension on String {
     return startsWith('http://') ||
         startsWith('https://') ||
         startsWith('www.');
+  }
+}
+
+extension DateTimeExtensions on DateTime {
+  int get age {
+    DateTime today = DateTime.now();
+    int age = today.year - year;
+
+    // Check if the birthday has not occurred yet this year
+    if (today.month < month || (today.month == month && today.day < day)) {
+      age--;
+    }
+
+    return age;
   }
 }

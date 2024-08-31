@@ -14,7 +14,6 @@ import '../../../../../../constants/index.dart';
 class ImageView extends StatelessWidget {
   const ImageView({
     super.key,
-    this.iconSize,
     required this.profilePics,
     required this.index,
     this.fit = BoxFit.cover,
@@ -24,7 +23,6 @@ class ImageView extends StatelessWidget {
 
   final int index;
   final BoxFit fit;
-  final double? iconSize;
   final bool isDragged;
   final List<String> profilePics;
   final VoidCallback? onEditTap;
@@ -34,13 +32,14 @@ class ImageView extends StatelessWidget {
     final imageLength = profilePics.length;
     final image = profilePics[index];
 
-    Size dimensions = Size.zero;
-    if (isDragged || !image.isUrl) dimensions = AppUtils.getDimensions(index);
+    Size dimensions = AppUtils.getDimensions(index);
 
     return Stack(
       children: [
         if (imageLength > index)
           Container(
+            height: dimensions.height,
+            width: dimensions.width,
             clipBehavior: Clip.antiAlias,
             decoration: editMediaDecoration,
             child: image.isUrl
@@ -48,8 +47,6 @@ class ImageView extends StatelessWidget {
                     imageUrl: image,
                     imageBuilder: (_, imageProvider) {
                       return Container(
-                        height: isDragged ? dimensions.height : null,
-                        width: isDragged ? dimensions.width : null,
                         decoration: BoxDecoration(
                           shape: BoxShape.rectangle,
                           image: DecorationImage(
@@ -60,22 +57,9 @@ class ImageView extends StatelessWidget {
                       );
                     },
                     placeholder: (_, __) => const ShimmerWidget.rectangular(),
-                    errorWidget: (_, __, ___) {
-                      return SizedBox.expand(
-                        child: Icon(
-                          Icons.cloud_off_rounded,
-                          size: iconSize ?? 32.r,
-                          color: AppColors.outlinedColor,
-                        ),
-                      );
-                    },
+                    errorWidget: (_, __, ___) => offline(),
                   )
-                : Image.file(
-                    File(image),
-                    fit: BoxFit.cover,
-                    width: dimensions.width,
-                    height: dimensions.height,
-                  ),
+                : Image.file(File(image), fit: BoxFit.cover),
           )
         else
           Container(
@@ -97,7 +81,7 @@ class ImageView extends StatelessWidget {
               ),
               child: SvgPicture.asset(
                 AppAssets.dots,
-                width: 24,
+                width: 22,
                 colorFilter: const ColorFilter.mode(
                   AppColors.hintTextColor,
                   BlendMode.srcIn,
@@ -121,9 +105,17 @@ class ImageView extends StatelessWidget {
 }
 
 class EmptyView extends StatelessWidget {
-  const EmptyView({super.key, this.onCamTap});
+  const EmptyView({
+    super.key,
+    this.onActionTap,
+    this.noConnection = false,
+    this.imagePath,
+  });
 
-  final VoidCallback? onCamTap;
+  final VoidCallback? onActionTap;
+
+  final String? imagePath;
+  final bool noConnection;
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +123,16 @@ class EmptyView extends StatelessWidget {
       decoration: editMediaDecoration,
       child: Stack(
         children: [
+          if (imagePath != null && !imagePath!.isUrl)
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: editMediaDecoration,
+              child: SizedBox.expand(
+                child: Image.file(File(imagePath!), fit: BoxFit.cover),
+              ),
+            )
+          else if (noConnection)
+            SizedBox.expand(child: offline()),
           Positioned(
             child: Container(
               padding: EdgeInsets.only(
@@ -144,8 +146,8 @@ class EmptyView extends StatelessWidget {
                 ),
               ),
               child: SvgPicture.asset(
-                AppAssets.cam1,
-                width: 28,
+                noConnection ? AppAssets.dots : AppAssets.cam1,
+                width: noConnection ? 22 : 26,
                 colorFilter: const ColorFilter.mode(
                   AppColors.hintTextColor,
                   BlendMode.srcIn,
@@ -158,12 +160,44 @@ class EmptyView extends StatelessWidget {
               height: 50,
               width: 50,
               child: GestureDetector(
-                onTap: onCamTap,
+                onTap: onActionTap,
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class Preview extends StatelessWidget {
+  final String image;
+
+  const Preview({super.key, required this.image});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: editMediaDecoration,
+      child: image.isUrl
+          ? CachedNetworkImage(
+              imageUrl: image,
+              imageBuilder: (_, imageProvider) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+              placeholder: (_, __) => const ShimmerWidget.rectangular(),
+              errorWidget: (_, __, ___) => offline(),
+            )
+          : Image.file(File(image), fit: BoxFit.cover),
     );
   }
 }

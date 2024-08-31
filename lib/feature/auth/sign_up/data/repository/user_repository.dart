@@ -2,9 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
+import 'package:whossy_app/globals.dart';
 
 import '../../model/app_user.dart';
 
@@ -77,20 +77,22 @@ class UserRepository {
     return result.docs.isNotEmpty;
   }
 
-  // Method to upload files and return download URLs
   Future<List<String>> uploadProfilePictures(List<File> files) async {
     try {
-      final uid = FirebaseAuth.instance.currentUser!.uid;
-      final List<String> downloadUrls = [];
+      //final uid = FirebaseAuth.instance.currentUser!.uid;
+      const uid = testId;
 
-      for (var file in files) {
+      // Create a list of Future tasks for uploading each file
+      final uploadFutures = files.map((file) async {
         final fileName = DateTime.now().millisecondsSinceEpoch.toString();
         final storageRef =
             _storage.ref().child('users/$uid/profile_pictures/$fileName');
         final uploadTask = await storageRef.putFile(file);
-        final downloadUrl = await uploadTask.ref.getDownloadURL();
-        downloadUrls.add(downloadUrl);
-      }
+        return uploadTask.ref.getDownloadURL();
+      }).toList();
+
+      // Wait for all upload tasks to complete and get their download URLs
+      final downloadUrls = await Future.wait(uploadFutures);
 
       return downloadUrls;
     } catch (e) {

@@ -7,7 +7,9 @@
     <application
         android:label="Whossy"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="upside_down_cake">
         <activity
             android:name=".MainActivity"
             android:exported="true"

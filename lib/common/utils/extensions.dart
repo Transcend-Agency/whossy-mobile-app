@@ -1,8 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
-import 'index.dart';
-
 extension StringExtention on String? {
   /// Validate the email input (checks if it's a valid email format)
   String? validateEmail() {
@@ -176,74 +174,5 @@ extension StringExtention on String? {
 
     // Handle specific cases for formatting
     return formattedField == 'Phone Number' ? 'Phone number' : formattedField;
-  }
-}
-
-extension RangeValuesExtension1 on Map<String, int>? {
-  RangeValues? toRangeValues() {
-    final min = this?['min'];
-    final max = this?['max'];
-    if (min == null || max == null) {
-      return null;
-    }
-    return RangeValues(min.toDouble(), max.toDouble());
-  }
-
-  String displayRange({RangeType type = RangeType.height}) {
-    String convertToFeetInches(int cm) {
-      final totalInches = (cm / 2.54).round();
-      final feet = totalInches ~/ 12;
-      final inches = totalInches % 12;
-      return "$feet'$inches\"";
-    }
-
-    String convertKgToPounds(int kg) {
-      final pounds = (kg * 2.20462).round(); // Convert kg to pounds
-      return '$pounds lbs';
-    }
-
-    if (this?['min'] == null || this?['max'] == null) {
-      return 'Choose';
-    }
-
-    final minValue = this!['min'];
-    final maxValue = this!['max'];
-
-    return type == RangeType.height
-        ? '${convertToFeetInches(minValue!)} - ${convertToFeetInches(maxValue!)}'
-        : type == RangeType.weight
-            ? '${convertKgToPounds(minValue!)} - ${convertKgToPounds(maxValue!)}'
-            : 'Invalid type';
-  }
-}
-
-extension RangeValuesExtension2 on RangeValues {
-  String getFormattedRange({RangeType type = RangeType.height}) {
-    String convertCmToInches(double cm) {
-      final totalInches = (cm / 2.54).round();
-      final feet = totalInches ~/ 12;
-      final inches = totalInches % 12;
-      return "$feet'$inches\"";
-    }
-
-    String convertKgToPounds(double kg) {
-      final pounds = (kg * 2.20462).round();
-      return '$pounds lbs';
-    }
-
-    final minValue = start.round();
-    final maxValue = end.round();
-
-    if (type == RangeType.height) {
-      final minHeightInches = convertCmToInches(start);
-      final maxHeightInches = convertCmToInches(end);
-      return '${minValue}cm ($minHeightInches) - ${maxValue}cm ($maxHeightInches)';
-    } else if (type == RangeType.weight) {
-      final minWeightLbs = convertKgToPounds(start);
-      final maxWeightLbs = convertKgToPounds(end);
-      return '${minValue}kg ($minWeightLbs) - ${maxValue}kg ($maxWeightLbs)';
-    } else {
-      return 'Invalid type';
-    }
   }
 }

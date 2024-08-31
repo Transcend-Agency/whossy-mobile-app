@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
-import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
+import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/image_view.dart';
+import 'package:whossy_app/provider/providers.dart';
 
-import '../../../../../../common/utils/index.dart';
-import '../../../../../../constants/index.dart';
 import 'bottom_preview_image.dart';
 
 class PreviewImage extends StatefulWidget {
@@ -14,11 +15,20 @@ class PreviewImage extends StatefulWidget {
   State<PreviewImage> createState() => _PreviewImageState();
 }
 
-class _PreviewImageState extends State<PreviewImage> {
-  double _dragExtent = 0.0;
+class _PreviewImageState extends State<PreviewImage>
+    with AutomaticKeepAliveClientMixin<PreviewImage> {
+  int _activePage = 0;
+
+  void _onPageChange(int page) {
+    setState(() => _activePage = page);
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Hero(
       tag: 'preview',
       child: Stack(
@@ -31,35 +41,37 @@ class _PreviewImageState extends State<PreviewImage> {
             padding: EdgeInsets.fromLTRB(16.r, 12.r, 16.r, 0),
             child: const ProfileCard(color: Color(0xFFE7E7E7)),
           ),
-          GestureDetector(
-            onVerticalDragUpdate: (details) {
-              if (details.delta.dy < 0) {
-                _dragExtent += details.primaryDelta!.abs();
-              }
-            },
-            onVerticalDragEnd: (details) {
-              if (_dragExtent > 20) {
-                Nav.push(context, const PreviewProfileMore());
-              }
-              _dragExtent = 0;
-            },
-            child: ProfileCard(
-              child: Stack(
-                children: [
-                  SizedBox.expand(
-                    child: Image.asset(
-                      AppAssets.profilePic,
-                      fit: BoxFit.cover,
+          Selector<EditProfileNotifier, CoreProfile>(
+            selector: (_, editProfile) => editProfile.coreProfile!,
+            builder: (_, profile, __) {
+              final images = profile.profilePics;
+              return ProfileCard(
+                color: Colors.white,
+                child: Stack(
+                  children: [
+                    PageView.builder(
+                      onPageChanged: _onPageChange,
+                      itemCount: profile.profilePics?.length,
+                      itemBuilder: (_, index) {
+                        return SizedBox.expand(
+                          child: Preview(
+                            image: images![index],
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                  const ProfileShade(heightFactor: 0.35),
-                  const Align(
-                    alignment: Alignment.bottomCenter,
-                    child: BottomPreviewImage(),
-                  ),
-                ],
-              ),
-            ),
+                    const ProfileShade(heightFactor: 0.35),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: BottomPreviewImage(
+                        profile: profile,
+                        activePage: _activePage,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),

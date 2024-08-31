@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
@@ -128,7 +129,7 @@ class CoreProfile {
         other.gender == gender &&
         other.email == email &&
         other.phoneNumber == phoneNumber &&
-        AppUtils.areListsEqual(other.profilePics, profilePics) &&
+        listEquals(other.profilePics, profilePics) &&
         other.bio == bio &&
         AppUtils.areListsEqual(other.interests, interests);
   }

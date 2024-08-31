@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/utils/services/file_picker_service.dart';
+import 'package:whossy_app/common/utils/services/file_service.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/component_style.dart';
@@ -40,7 +40,7 @@ class _PictureScreenState extends State<PictureScreen>
       final pickedImages = await _picker.pickMultiImage(limit: 6);
 
       for (var file in pickedImages) {
-        final croppedImage = await FilePickerService.cropImage(File(file.path));
+        final croppedImage = await FileService.cropImage(File(file.path));
         if (croppedImage != null) {
           setState(() {
             _images.add(croppedImage);

@@ -109,9 +109,13 @@ abstract class $AppRouter extends _i22.RootStackRouter {
       );
     },
     PreviewProfileMore.name: (routeData) {
+      final args = routeData.argsAs<PreviewProfileMoreArgs>();
       return _i22.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i9.PreviewProfileMore(),
+        child: _i9.PreviewProfileMore(
+          key: args.key,
+          index: args.index,
+        ),
       );
     },
     ResetPasswordRoute.name: (routeData) {
@@ -391,16 +395,40 @@ class PreviewProfile extends _i22.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i9.PreviewProfileMore]
-class PreviewProfileMore extends _i22.PageRouteInfo<void> {
-  const PreviewProfileMore({List<_i22.PageRouteInfo>? children})
-      : super(
+class PreviewProfileMore extends _i22.PageRouteInfo<PreviewProfileMoreArgs> {
+  PreviewProfileMore({
+    _i23.Key? key,
+    required int index,
+    List<_i22.PageRouteInfo>? children,
+  }) : super(
           PreviewProfileMore.name,
+          args: PreviewProfileMoreArgs(
+            key: key,
+            index: index,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'PreviewProfileMore';
 
-  static const _i22.PageInfo<void> page = _i22.PageInfo<void>(name);
+  static const _i22.PageInfo<PreviewProfileMoreArgs> page =
+      _i22.PageInfo<PreviewProfileMoreArgs>(name);
+}
+
+class PreviewProfileMoreArgs {
+  const PreviewProfileMoreArgs({
+    this.key,
+    required this.index,
+  });
+
+  final _i23.Key? key;
+
+  final int index;
+
+  @override
+  String toString() {
+    return 'PreviewProfileMoreArgs{key: $key, index: $index}';
+  }
 }
 
 /// generated route for

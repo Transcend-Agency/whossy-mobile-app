@@ -9,11 +9,20 @@ import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
+import '../../../data/source/extensions.dart';
+import '../../../model/core_profile.dart';
 
 class BottomPreviewImage extends StatelessWidget {
-  const BottomPreviewImage({super.key, this.showLess = false});
+  const BottomPreviewImage({
+    super.key,
+    this.showLess = false,
+    required this.profile,
+    this.activePage,
+  });
 
   final bool showLess;
+  final int? activePage;
+  final CoreProfile profile;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +31,7 @@ class BottomPreviewImage extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
@@ -56,117 +66,156 @@ class BottomPreviewImage extends StatelessWidget {
             ),
             addHeight(2),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Stephanie, ',
-                  style: TextStyles.profileHead.copyWith(
-                    fontSize: AppUtils.scale(24.sp) ?? 26.sp,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  '21',
-                  style: TextStyles.profileHead.copyWith(
-                    fontSize: AppUtils.scale(20.sp) ?? 22.sp,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
-                ),
-                addWidth(10),
-                SvgPicture.asset(
-                  AppAssets.tick,
-                  width: 24,
-                ),
-              ],
-            ),
-            Text(
-              AppStrings.profileBio,
-              style: TextStyles.prefText.copyWith(
-                color: Colors.white,
-              ),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10, top: 8),
-                  child: SvgPicture.asset(
-                    AppAssets.interests,
-                    width: 23,
-                    colorFilter:
-                        const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 8.h),
-                    child: Wrap(
-                      spacing: 8.w,
-                      runSpacing: 8.h,
-                      children: interestData.map((item) {
-                        return Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.r),
-                                color: const Color(0xFF101010),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 6.r, horizontal: 8.r),
-                              child: Text(
-                                item.name,
-                                style: TextStyles.hintText.copyWith(
-                                  fontSize: AppUtils.scale(10.sp),
-                                  color: AppColors.hintTextColor,
-                                ),
-                              ),
-                            ),
-                            if (item.isSimilar)
-                              Positioned(
-                                top: -2,
-                                right: -6,
-                                child: SvgPicture.asset(
-                                  AppAssets.star,
-                                  width: 16.r,
-                                ),
-                              ),
-                          ],
-                        );
-                      }).toList(),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "${profile.firstName ?? " "}, ",
+                      style: TextStyles.profileHead.copyWith(
+                        fontSize: AppUtils.scale(24.sp) ?? 26.sp,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
+                    Text(
+                      profile.dateOfBirth!.age.toString(),
+                      style: TextStyles.profileHead.copyWith(
+                        fontSize: AppUtils.scale(20.sp) ?? 22.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      ),
+                    ),
+                    addWidth(10),
+                    SvgPicture.asset(
+                      AppAssets.tick,
+                      width: 24,
+                    ),
+                  ],
                 ),
-                GestureDetector(
-                  onTap: () => showLess
-                      ? Navigator.pop(context)
-                      : Nav.push(context, const PreviewProfileMore()),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Transform.rotate(
-                      angle: showLess ? math.pi : 0,
-                      child: SvgPicture.asset(
-                        AppAssets.down,
-                        width: 21,
-                        colorFilter: const ColorFilter.mode(
-                            Colors.white, BlendMode.srcIn),
+                if (showLess)
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Transform.rotate(
+                        angle: math.pi,
+                        child: SvgPicture.asset(
+                          AppAssets.down,
+                          width: 21,
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white,
+                            BlendMode.srcIn,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 20.h),
-              child: PageIndicator(
-                activePage: 1,
-                pageNo: 6,
-                height: 4,
-                activeColor: Colors.white,
-                inActiveColor: Colors.white.withOpacity(0.5),
+            if (!showLess && profile.bio != null && profile.bio!.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(bottom: 4.r),
+                child: Text(
+                  profile.bio!,
+                  style: TextStyles.prefText.copyWith(
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
               ),
-            ),
+            if (!showLess)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10, top: 8),
+                    child: SvgPicture.asset(
+                      AppAssets.interests,
+                      width: 23,
+                      colorFilter:
+                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.only(top: 8.h),
+                        child: profile.interests != null
+                            ? Wrap(
+                                spacing: 8.w,
+                                runSpacing: 8.h,
+                                children:
+                                    profile.interests!.take(6).map((item) {
+                                  return Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                          color: const Color(0xFF101010),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 6.r,
+                                          horizontal: 8.r,
+                                        ),
+                                        child: Text(
+                                          item,
+                                          style: TextStyles.hintText.copyWith(
+                                            fontSize: AppUtils.scale(10.sp),
+                                            color: AppColors.hintTextColor,
+                                          ),
+                                        ),
+                                      ),
+                                      // if (item.isSimilar)
+                                      //   Positioned(
+                                      //     top: -2,
+                                      //     right: -6,
+                                      //     child: SvgPicture.asset(
+                                      //       AppAssets.star,
+                                      //       width: 16.r,
+                                      //     ),
+                                      //   ),
+                                    ],
+                                  );
+                                }).toList(),
+                              )
+                            : null),
+                  ),
+                  GestureDetector(
+                    onTap: () => Nav.push(
+                        context, PreviewProfileMore(index: activePage!)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Transform.rotate(
+                        angle: 0,
+                        child: SvgPicture.asset(
+                          AppAssets.down,
+                          width: 21,
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            if (!showLess)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 20.h),
+                child: PageIndicator(
+                  activePage: activePage!,
+                  pageNo: profile.profilePics!.length,
+                  height: 4,
+                  activeColor: Colors.white,
+                  inActiveColor: Colors.white.withOpacity(0.5),
+                ),
+              )
+            else
+              addHeight(20)
           ],
         ),
       ),

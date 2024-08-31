@@ -1,10 +1,6 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
@@ -14,6 +10,7 @@ import '../../../../common/styles/component_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
 import '../../../../provider/providers.dart';
+import '../model/selected_data.dart';
 import 'index.dart';
 import 'onboarding_upload.dart';
 
@@ -26,22 +23,19 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
-  late StreamSubscription subscription;
+  late OnboardingNotifier _onboardingNotifier;
   late AnimationController _controller;
   late PageController _pageController;
   late List<Widget> _pages;
-
-  late bool _isConnected;
-
-  set connected(bool value) {
-    setState(() => _isConnected = value);
-  }
 
   int _activePage = 0;
 
   @override
   void initState() {
     super.initState();
+
+    _onboardingNotifier =
+        Provider.of<OnboardingNotifier>(context, listen: false);
 
     _controller = BottomSheet.createAnimationController(this)
       ..duration = const Duration(milliseconds: 400)
@@ -61,10 +55,6 @@ class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
       const BioScreen(pageIndex: 8),
       const PictureScreen(pageIndex: 9),
     ];
-
-    subscription = Connectivity().onConnectivityChanged.listen((_) async {
-      connected = await InternetConnectionChecker().hasConnection;
-    });
   }
 
   @override
@@ -97,13 +87,13 @@ class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
     setState(() => _activePage = page);
   }
 
-  void _handleContinueButton({OnboardingNotifier? boarding}) {
+  void _handleContinueButton({bool isConnected = true}) {
     if (_activePage < _pages.length - 1) {
       _onPageUpdate(_activePage + 1);
     } else {
-      if (_isConnected) {
+      if (isConnected) {
         showLoadingSheet(context, _controller);
-        boarding!.uploadPreferences(
+        _onboardingNotifier.uploadPreferences(
           showSnackbar: (_) => showSnackbar(context, _),
           onAuthenticate: goToNext,
         );
@@ -183,15 +173,24 @@ class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
                     },
                   ),
                   Expanded(
-                    child: Consumer<OnboardingNotifier>(
-                      builder: (_, boarding, __) {
+                    child: Selector2<OnboardingNotifier, ConnectivityNotifier,
+                        SelectedData>(
+                      selector: (_, onboarding, connectivity) => SelectedData(
+                        spinnerState: onboarding.spinnerState,
+                        ticks: onboarding.ticks,
+                        isSelected: onboarding.isSelected(_activePage),
+                        isConnected: connectivity.isConnected,
+                      ),
+                      builder: (_, data, __) {
                         return AppButton(
-                          loading: boarding.spinnerState,
-                          color: updateColor(boarding.ticks),
-                          onPress: boarding.isSelected(_activePage)
-                              ? () => _handleContinueButton(boarding: boarding)
+                          loading: data.spinnerState,
+                          color: updateColor(data.ticks),
+                          onPress: data.isSelected && data.isConnected
+                              ? () => _handleContinueButton(
+                                    isConnected: data.isConnected,
+                                  )
                               : null,
-                          text: buttonText(boarding.ticks),
+                          text: buttonText(data.ticks),
                         );
                       },
                     ),

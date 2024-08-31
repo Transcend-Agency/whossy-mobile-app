@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 
 part 'other_preferences.g.dart';
 

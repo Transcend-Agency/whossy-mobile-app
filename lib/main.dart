@@ -40,6 +40,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => PreferencesNotifier()),
         ChangeNotifierProvider(create: (_) => SettingsNotifier()),
         ChangeNotifierProvider(create: (_) => EditProfileNotifier()),
+        ChangeNotifierProvider(create: (_) => ConnectivityNotifier()),
       ],
       child: Whossy(),
     ),

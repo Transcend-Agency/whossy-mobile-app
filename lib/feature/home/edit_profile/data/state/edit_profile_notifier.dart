@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:whossy_app/common/utils/services/file_service.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/repository/edit_profile_repository.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
@@ -105,6 +106,8 @@ class EditProfileNotifier extends ChangeNotifier {
       final corePrefsDiff = _dynCorePrefs?.diff(_staticCorePrefs!) ?? {};
       final coreProfileDiff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
 
+      log('Core prefs $coreProfileDiff, $corePrefsDiff');
+
       // Iterate through keysToTransfer and transfer matching key-value pairs
       for (final key in CoreProfile.transferKeys) {
         if (coreProfileDiff.containsKey(key)) {
@@ -112,8 +115,18 @@ class EditProfileNotifier extends ChangeNotifier {
         }
       }
 
-      if (corePrefsDiff.isEmpty && coreProfileDiff.isEmpty) {
-        return;
+      if (corePrefsDiff.isEmpty && coreProfileDiff.isEmpty) return;
+
+      if (corePrefsDiff.containsKey("photos")) {
+        final photos = corePrefsDiff["photos"];
+
+        if (photos is List) {
+          final updatedPhotos =
+              await FileService().processPhotos(photos, showSnackbar);
+
+          // Replace the photos list with the updated list
+          corePrefsDiff["photos"] = updatedPhotos;
+        }
       }
 
       await _editProfileRepo.updateProfileData(
@@ -129,9 +142,9 @@ class EditProfileNotifier extends ChangeNotifier {
     } catch (e) {
       showSnackbar(AppStrings.errorUnknown);
       log(e.toString());
-    } finally {}
-
-    notifyListeners();
+    } finally {
+      notifyListeners();
+    }
   }
 
   void updateProfile({

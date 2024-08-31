@@ -117,7 +117,9 @@ class _BioEditProfileState extends State<BioEditProfile> {
                             outlined: false,
                             isBold: true,
                             padding: EdgeInsets.symmetric(
-                                vertical: 1.h, horizontal: 6.w),
+                              vertical: 1.h,
+                              horizontal: 6.w,
+                            ),
                           ),
                         ],
                       ),

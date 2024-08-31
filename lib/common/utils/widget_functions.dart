@@ -17,6 +17,14 @@ Icon alert() {
   );
 }
 
+Icon offline() {
+  return Icon(
+    Icons.cloud_off_rounded,
+    size: 32.r,
+    color: AppColors.outlinedColor,
+  );
+}
+
 Icon visibilityIcon(bool isVisible, Color passwordColor) {
   return Icon(
     isVisible ? Icons.visibility_off : Icons.visibility,
