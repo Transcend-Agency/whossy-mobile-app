@@ -42,7 +42,8 @@ class CoreProfile {
     "gender",
     "email",
     "phoneNumber",
-    "bio"
+    "bio",
+    "full_name"
   ];
 
   CoreProfile({
@@ -86,6 +87,10 @@ class CoreProfile {
       "email": email,
       "phoneNumber": phoneNumber,
       "bio": bio,
+      "full_name": {
+        "firstName": firstName,
+        "lastName": lastName,
+      }
     };
 
     return selectedValues[key];
@@ -93,10 +98,16 @@ class CoreProfile {
 
   void update({
     String? bio,
+    String? gender,
+    String? firstName,
+    String? lastName,
     List<String>? interests,
     List<String>? profilePics,
   }) {
     if (bio != null) this.bio = bio;
+    if (gender != null) this.gender = gender;
+    if (firstName != null) this.firstName = firstName;
+    if (lastName != null) this.lastName = lastName;
     if (interests != null) this.interests = interests;
     if (profilePics != null) this.profilePics = profilePics;
   }

@@ -3,9 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/home/edit_profile/data/source/edit_profile_data.dart';
 
+import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
+import '../../../../preferences/model/generic_enum.dart';
+import '../../../../preferences/view/sheets/_.dart';
 import '../../../data/state/edit_profile_notifier.dart';
 import '../../../model/core_profile.dart';
 
@@ -29,14 +33,14 @@ class CoreEditProfileList extends StatelessWidget {
               return ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: CoreProfile.validKeys.length - 1,
+                itemCount: CoreProfile.validKeys.length - 2,
                 itemBuilder: (context, index) {
                   String key = CoreProfile.validKeys[index];
                   return PreferenceTile(
                     text: key.toReadableFormat(),
                     onTap: handleTap(key, context, profile),
                     trailing: profile.getCoreValue(key),
-                    showDivider: index != CoreProfile.validKeys.length - 2,
+                    showDivider: index != CoreProfile.validKeys.length - 3,
                   );
                 },
               );
@@ -61,15 +65,23 @@ class CoreEditProfileList extends StatelessWidget {
     switch (key) {
       case 'name':
         if (coreProfile.hasFullName) {
-          return () => Nav.push(
-                context,
-                NameEditProfile(names: coreProfile.getName()),
-              );
+          return () => Nav.push(context, const NameEditProfile());
         }
         break;
       case 'gender':
-        // Handle gender case
-        break;
+        return () async {
+          final item = genderData;
+
+          final value = await showCustomModalBottomSheet(
+            selectedItem: Gender.fromString(profile.getCoreValue("gender")),
+            context: context,
+            item: item,
+          );
+
+          if (value != null) {
+            profile.updateProfile(gender: value.name);
+          }
+        };
       case 'email':
         // Handle email case
         break;
@@ -82,4 +94,17 @@ class CoreEditProfileList extends StatelessWidget {
 
     return null;
   }
+}
+
+Future<T?> showCustomModalBottomSheet<T extends GenericEnum>({
+  required BuildContext context,
+  required CorePreferencesData<T> item,
+  T? selectedItem,
+}) {
+  return showModalBottomSheet<T?>(
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => ExtrasSheet<T>(item: item, selectedItem: selectedItem),
+  );
 }

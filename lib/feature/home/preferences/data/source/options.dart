@@ -95,6 +95,17 @@ class Options {
     ),
   ];
 
+  static final List<Data<Gender>> genderOptions = [
+    Data(
+      text: Gender.male.name,
+      value: Gender.male,
+    ),
+    Data(
+      text: Gender.female.name,
+      value: Gender.female,
+    ),
+  ];
+
   static final List<Data<Religion>> religionOptions = [
     Data(
       text: Religion.christian.name,

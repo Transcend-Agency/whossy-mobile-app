@@ -76,13 +76,9 @@ abstract class $AppRouter extends _i22.RootStackRouter {
       );
     },
     NameEditProfile.name: (routeData) {
-      final args = routeData.argsAs<NameEditProfileArgs>();
       return _i22.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i5.NameEditProfile(
-          key: args.key,
-          names: args.names,
-        ),
+        child: const _i5.NameEditProfile(),
       );
     },
     PhoneNumberRoute.name: (routeData) {
@@ -291,40 +287,16 @@ class LoginRoute extends _i22.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.NameEditProfile]
-class NameEditProfile extends _i22.PageRouteInfo<NameEditProfileArgs> {
-  NameEditProfile({
-    _i23.Key? key,
-    required Map<String, String?> names,
-    List<_i22.PageRouteInfo>? children,
-  }) : super(
+class NameEditProfile extends _i22.PageRouteInfo<void> {
+  const NameEditProfile({List<_i22.PageRouteInfo>? children})
+      : super(
           NameEditProfile.name,
-          args: NameEditProfileArgs(
-            key: key,
-            names: names,
-          ),
           initialChildren: children,
         );
 
   static const String name = 'NameEditProfile';
 
-  static const _i22.PageInfo<NameEditProfileArgs> page =
-      _i22.PageInfo<NameEditProfileArgs>(name);
-}
-
-class NameEditProfileArgs {
-  const NameEditProfileArgs({
-    this.key,
-    required this.names,
-  });
-
-  final _i23.Key? key;
-
-  final Map<String, String?> names;
-
-  @override
-  String toString() {
-    return 'NameEditProfileArgs{key: $key, names: $names}';
-  }
+  static const _i22.PageInfo<void> page = _i22.PageInfo<void>(name);
 }
 
 /// generated route for

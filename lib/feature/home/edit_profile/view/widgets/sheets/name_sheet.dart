@@ -26,7 +26,14 @@ class _NameSheetState extends State<NameSheet> {
   bool hasChanged = false;
 
   void update() {
-    setState(() => hasChanged = originalName != nameController.text);
+    String currentName = nameController.text;
+
+    bool isNameChanged = originalName != currentName;
+    bool isNameValid = currentName.validateName() == null;
+
+    setState(() {
+      hasChanged = isNameChanged && isNameValid;
+    });
   }
 
   @override
@@ -105,6 +112,7 @@ class _NameSheetState extends State<NameSheet> {
                 lengthLimit: 50, // You can adjust this limit
                 padding: 13,
                 curvierEdges: true,
+                validation: (name) => name?.trim().validateName(),
               ),
             ),
           ),

@@ -52,8 +52,8 @@ extension StringExtention on String? {
     if (this == null || this!.isEmpty) {
       return 'Cannot be empty';
     }
-    if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(this!)) {
-      return 'Name must contain only letters and spaces';
+    if (!RegExp(r'^[a-zA-Z\- ]+$').hasMatch(this!)) {
+      return 'Name must contain only letters';
     }
     return null; // Return null if the name is valid
   }
@@ -95,11 +95,11 @@ extension StringExtention on String? {
   String? validateCountry() {
     final value = this?.trim();
     if (value == null || value.isEmpty) {
-      return 'Country name cannot be empty';
+      return 'Cannot be empty';
     } else if (value.length <= 4) {
-      return 'Country name must be more than 4 characters';
+      return 'Must be more than 4 characters';
     } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-      return 'Country name cannot contain special characters';
+      return 'Cannot contain special characters';
     }
     return null; // Return null if the country name is valid
   }

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:readmore/readmore.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
@@ -116,12 +117,20 @@ class BottomPreviewImage extends StatelessWidget {
             if (!showLess && profile.bio != null && profile.bio!.isNotEmpty)
               Padding(
                 padding: EdgeInsets.only(bottom: 4.r),
-                child: Text(
+                child: ReadMoreText(
                   profile.bio!,
+                  trimLines: 2,
+                  trimMode: TrimMode.Line,
+                  textAlign: TextAlign.left,
                   style: TextStyles.prefText.copyWith(
                     color: Colors.white,
                   ),
-                  textAlign: TextAlign.left,
+                  moreStyle: TextStyles.prefText.copyWith(
+                    color: Colors.grey,
+                  ),
+                  lessStyle: TextStyles.prefText.copyWith(
+                    color: Colors.grey,
+                  ),
                 ),
               ),
             if (!showLess)
@@ -222,16 +231,6 @@ class BottomPreviewImage extends StatelessWidget {
     );
   }
 }
-
-final List<Interest> interestData = [
-  Interest(name: "🎉  Just for fun"),
-  Interest(name: "Netflix", isSimilar: true),
-  Interest(name: "Travelling"),
-  Interest(name: "Hiking", isSimilar: true),
-  Interest(name: "Chilling"),
-  Interest(name: "Skating"),
-  Interest(name: "Dancing", isSimilar: true),
-];
 
 class Interest {
   final String name;

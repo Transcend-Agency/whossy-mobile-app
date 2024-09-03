@@ -1,16 +1,16 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:whossy_app/common/utils/index.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
-import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 import 'package:whossy_app/feature/home/edit_profile/view/widgets/_.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../constants/index.dart';
+import '../model/edit_profile_data.dart';
 import '../model/info_item.dart';
 import 'widgets/edit/image_view.dart';
 
@@ -57,10 +57,14 @@ class _PreviewProfileMoreState extends State<PreviewProfileMore> {
         },
         child: SingleChildScrollView(
             controller: _scrollController,
-            child: Selector<EditProfileNotifier, CoreProfile>(
-              selector: (_, editProfile) => editProfile.coreProfile!,
-              builder: (_, profile, __) {
-                final images = profile.profilePics;
+            child: Selector<EditProfileNotifier, EditProfileData>(
+              selector: (_, editProfile) => EditProfileData(
+                editProfile.coreProfile!,
+                editProfile.corePrefs!,
+              ),
+              builder: (_, data, __) {
+                final profile = data.profile;
+                final preferences = data.preferences;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -76,26 +80,24 @@ class _PreviewProfileMoreState extends State<PreviewProfileMore> {
                             padding: EdgeInsets.fromLTRB(16.r, 12.r, 16.r, 0),
                             child: const ProfileCard(color: Color(0xFFE7E7E7)),
                           ),
-                          GestureDetector(
-                            child: ProfileCard(
-                              bottomOnly: true,
-                              child: Stack(
-                                children: [
-                                  SizedBox.expand(
-                                    child: Preview(
-                                      image: images![widget.index],
-                                    ),
+                          ProfileCard(
+                            bottomOnly: true,
+                            child: Stack(
+                              children: [
+                                SizedBox.expand(
+                                  child: Preview(
+                                    image: profile.profilePics![widget.index],
                                   ),
-                                  const ProfileShade(heightFactor: 0.25),
-                                  Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: BottomPreviewImage(
-                                      showLess: true,
-                                      profile: profile,
-                                    ),
+                                ),
+                                const ProfileShade(heightFactor: 0.25),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: BottomPreviewImage(
+                                    showLess: true,
+                                    profile: profile,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -121,7 +123,8 @@ class _PreviewProfileMoreState extends State<PreviewProfileMore> {
                                   ),
                                   addWidth(6),
                                   Text(
-                                    'Just for fun',
+                                    preferences.relationshipPreference?.name ??
+                                        'Not set',
                                     style: TextStyles.prefText.copyWith(
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -133,9 +136,18 @@ class _PreviewProfileMoreState extends State<PreviewProfileMore> {
                           ProfileDetailsCard(
                             title: 'Bio',
                             titleImage: AppAssets.bio,
-                            content: Text(
-                              AppStrings.profileBio,
+                            content: ReadMoreText(
+                              profile.bio!,
+                              trimLines: 2,
+                              trimMode: TrimMode.Line,
+                              textAlign: TextAlign.left,
                               style: TextStyles.prefText,
+                              moreStyle: TextStyles.prefText.copyWith(
+                                color: Colors.grey,
+                              ),
+                              lessStyle: TextStyles.prefText.copyWith(
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
                           ProfileDetailsCard(
@@ -145,10 +157,15 @@ class _PreviewProfileMoreState extends State<PreviewProfileMore> {
                               items: [
                                 InfoItem(
                                     label: "Stays in", value: "Lagos, Nigeria"),
-                                InfoItem(label: "Gender", value: "Female"),
                                 InfoItem(
+                                  label: "Gender",
+                                  value: profile.gender,
+                                ),
+                                if (preferences.education != null)
+                                  InfoItem(
                                     label: "Education",
-                                    value: "Crawford University"),
+                                    value: preferences.education!.name,
+                                  ),
                               ],
                             ),
                           ),
@@ -157,76 +174,99 @@ class _PreviewProfileMoreState extends State<PreviewProfileMore> {
                             titleImage: AppAssets.call,
                             content: PreviewInfoColumn(
                               items: [
-                                InfoItem(
+                                if (preferences.futureFamilyPlans != null)
+                                  InfoItem(
                                     label: "Future family goals",
-                                    value: "I want children"),
-                                InfoItem(
+                                    value: preferences.futureFamilyPlans!.name,
+                                  ),
+                                if (preferences.communicationStyle != null)
+                                  InfoItem(
                                     label: "How you communicate",
-                                    value: "Direct and to the point"),
-                                InfoItem(
+                                    value: preferences.communicationStyle!.name,
+                                  ),
+                                if (preferences.loveLanguage != null)
+                                  InfoItem(
                                     label: "Love language",
-                                    value: "Giving and receiving gifts"),
+                                    value: preferences.loveLanguage!.name,
+                                  ),
                               ],
                             ),
                           ),
-                          ProfileDetailsCard(
-                            title: 'Interests',
-                            contentSpacing: 10,
-                            titleImage: AppAssets.interests,
-                            content: Wrap(
-                              spacing: 8.w,
-                              runSpacing: 8.h,
-                              children: interestData.map((item) {
-                                return Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(8.r),
-                                        color: Colors.white,
-                                        border: Border.all(
-                                          color: const Color(0xffE7E7E7),
-                                          width: 1,
+                          if (profile.interests != null &&
+                              profile.interests!.isNotEmpty)
+                            ProfileDetailsCard(
+                              title: 'Interests',
+                              contentSpacing: 10,
+                              titleImage: AppAssets.interests,
+                              content: Wrap(
+                                spacing: 8.w,
+                                runSpacing: 8.h,
+                                children:
+                                    profile.interests!.take(8).map((item) {
+                                  return Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                          color: Colors.white,
+                                          border: Border.all(
+                                            color: const Color(0xffE7E7E7),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 6.r,
+                                          horizontal: 8.r,
+                                        ),
+                                        child: Text(
+                                          item,
+                                          style: TextStyles.hintText.copyWith(
+                                            fontSize: AppUtils.scale(10.sp),
+                                            color: AppColors.black,
+                                          ),
                                         ),
                                       ),
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 6.r, horizontal: 8.r),
-                                      child: Text(
-                                        item.name,
-                                        style: TextStyles.hintText.copyWith(
-                                          fontSize: AppUtils.scale(10.sp),
-                                          color: AppColors.black,
-                                        ),
-                                      ),
-                                    ),
-                                    if (item.isSimilar)
-                                      Positioned(
-                                        top: -2,
-                                        right: -6,
-                                        child: SvgPicture.asset(
-                                          AppAssets.star,
-                                          width: 16.r,
-                                        ),
-                                      ),
-                                  ],
-                                );
-                              }).toList(),
+                                      // if (item.isSimilar)
+                                      //   Positioned(
+                                      //     top: -2,
+                                      //     right: -6,
+                                      //     child: SvgPicture.asset(
+                                      //       AppAssets.star,
+                                      //       width: 16.r,
+                                      //     ),
+                                      //   ),
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
                             ),
-                          ),
                           ProfileDetailsCard(
                             title: 'Personal habits',
                             titleImage: AppAssets.love,
                             content: PreviewInfoColumn(
                               items: [
-                                InfoItem(
-                                    label: "Smoker", value: "Doesn't smoke"),
-                                InfoItem(
+                                if (preferences.smoker != null)
+                                  InfoItem(
+                                    label: "Smoker",
+                                    value: preferences.smoker!.name,
+                                  ),
+                                if (preferences.drinking != null)
+                                  InfoItem(
                                     label: "Do you drink",
-                                    value: "Not my thing"),
-                                InfoItem(
-                                    label: "Workout", value: "Occasionally"),
-                                InfoItem(label: "Pet owner", value: "🐕  Dog"),
+                                    value: preferences.drinking!.name,
+                                  ),
+                                if (preferences.workout != null)
+                                  InfoItem(
+                                    label: "Workout",
+                                    value: preferences.workout!.name,
+                                  ),
+                                if (preferences.petOwner != null)
+                                  InfoItem(
+                                    label: "Pet owner",
+                                    value: preferences.petOwner!.name,
+                                  ),
                               ],
                             ),
                           ),

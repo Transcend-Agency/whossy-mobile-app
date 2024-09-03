@@ -24,7 +24,7 @@ class EditProfileNotifier extends ChangeNotifier {
   final _editProfileRepo = EditProfileRepository();
 
   CoreProfile? get coreProfile => _dynCoreProfile;
-  CorePreferences? get selectedItems => _dynCorePrefs;
+  CorePreferences? get corePrefs => _dynCorePrefs;
 
   bool _hasEditFetched = false;
 
@@ -149,11 +149,17 @@ class EditProfileNotifier extends ChangeNotifier {
 
   void updateProfile({
     String? bio,
+    String? gender,
+    String? firstName,
+    String? lastName,
     List<String>? interests,
     List<String>? profilePics,
   }) {
     _dynCoreProfile?.update(
       bio: bio,
+      gender: gender,
+      lastName: lastName,
+      firstName: firstName,
       interests: interests,
       profilePics: profilePics,
     );

@@ -22,8 +22,8 @@ class ShimmerWidget extends StatelessWidget {
 
   const ShimmerWidget.circular({
     super.key,
-    required this.width,
-    required this.height,
+    this.width,
+    this.height,
     this.border = const CircleBorder(),
   });
 

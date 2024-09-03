@@ -1,12 +1,17 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../../constants/index.dart';
+import '../../../../../common/components/Shimmer/shimmer_widget.dart';
 import '../../../../../common/utils/router/router.dart';
 import '../../../../../common/utils/router/router.gr.dart';
+import '../../../../../common/utils/widget_functions.dart';
 
 class Header extends StatelessWidget {
   const Header({super.key});
@@ -15,7 +20,7 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox.square(
-        dimension: 130.r,
+        dimension: 140.r,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
@@ -25,7 +30,7 @@ class Header extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   SizedBox.square(
-                    dimension: 120.r,
+                    dimension: 140.r,
                     child: Transform.rotate(
                       angle: pi,
                       child: const CircularProgressIndicator(
@@ -40,13 +45,38 @@ class Header extends StatelessWidget {
                     ),
                   ),
                   SizedBox.square(
-                    dimension: 115.r,
+                    dimension: 136.r,
                     child: Container(
                       clipBehavior: Clip.antiAlias,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
-                      child: Image.asset('assets/images/sp_1_2.png'),
+                      child: Selector<EditProfileNotifier, String?>(
+                        selector: (_, profile) =>
+                            profile.coreProfile?.profilePics?[0],
+                        builder: (_, image, __) {
+                          return image != null
+                              ? CachedNetworkImage(
+                                  imageUrl: image,
+                                  imageBuilder: (_, imageProvider) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.rectangle,
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  placeholder: (_, __) =>
+                                      const ShimmerWidget.circular(),
+                                  errorWidget: (_, __, ___) =>
+                                      offline(size: 28),
+                                )
+                              : user();
+                        },
+                      ),
                     ),
                   ),
                 ],

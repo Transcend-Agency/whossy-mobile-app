@@ -58,3 +58,8 @@ final relationshipData = CorePreferencesData<Preference>(
   header: 'Relationship preference',
   items: Options.relPrefOptions,
 );
+
+final genderData = CorePreferencesData<Gender>(
+  header: 'Gender',
+  items: Options.genderOptions,
+);

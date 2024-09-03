@@ -25,7 +25,7 @@ class PreviewInfoColumn extends StatelessWidget {
             ),
           ),
           Text(
-            items[i].value,
+            items[i].value ?? 'Unselected',
             style: TextStyles.prefText,
           ),
           if (i < items.length - 1)

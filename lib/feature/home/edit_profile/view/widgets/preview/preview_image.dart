@@ -15,20 +15,24 @@ class PreviewImage extends StatefulWidget {
   State<PreviewImage> createState() => _PreviewImageState();
 }
 
-class _PreviewImageState extends State<PreviewImage>
-    with AutomaticKeepAliveClientMixin<PreviewImage> {
+class _PreviewImageState extends State<PreviewImage> {
   int _activePage = 0;
+  late PageController _pageController;
+
+  final _key = const PageStorageKey('pageStorageKey');
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _activePage);
+  }
 
   void _onPageChange(int page) {
     setState(() => _activePage = page);
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Hero(
       tag: 'preview',
       child: Stack(
@@ -50,6 +54,8 @@ class _PreviewImageState extends State<PreviewImage>
                 child: Stack(
                   children: [
                     PageView.builder(
+                      key: _key,
+                      controller: _pageController,
                       onPageChanged: _onPageChange,
                       itemCount: profile.profilePics?.length,
                       itemBuilder: (_, index) {

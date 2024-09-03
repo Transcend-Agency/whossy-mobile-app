@@ -17,10 +17,18 @@ Icon alert() {
   );
 }
 
-Icon offline() {
+Icon offline({double size = 32}) {
   return Icon(
     Icons.cloud_off_rounded,
-    size: 32.r,
+    size: size.r,
+    color: AppColors.outlinedColor,
+  );
+}
+
+Icon user({double size = 32}) {
+  return Icon(
+    Icons.person_2,
+    size: size.r,
     color: AppColors.outlinedColor,
   );
 }

@@ -4,7 +4,7 @@ import '../../../../../globals.dart';
 import '../../../../auth/onboarding/data/repository/preference_repository.dart';
 import '../../../../auth/onboarding/model/preferences.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
-import '../../model/edit_profile.dart';
+import '../../model/get_profile_data.dart';
 
 class EditProfileRepository {
   final _userRepository = UserRepository();

@@ -12,9 +12,7 @@ import '../sheets/name_sheet.dart';
 
 @RoutePage()
 class NameEditProfile extends StatelessWidget {
-  const NameEditProfile({super.key, required this.names});
-
-  final Map<String, String?> names;
+  const NameEditProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +41,18 @@ class NameEditProfile extends StatelessWidget {
                         onTap: () async {
                           final name = await showNameSheet(
                             context: context,
-                            name: names['firstName'],
+                            name:
+                                profile.getCoreValue("full_name")["firstName"],
                             title: "First name",
                           );
+
+                          if (name != null) {
+                            profile.updateProfile(firstName: name);
+                          }
                         },
-                        trailing: names["firstName"] ?? 'No name set',
+                        trailing:
+                            profile.getCoreValue("full_name")["firstName"] ??
+                                'No name set',
                         showTrailingIcon: false,
                         showDivider: true,
                       ),
@@ -56,11 +61,17 @@ class NameEditProfile extends StatelessWidget {
                         onTap: () async {
                           final name = await showNameSheet(
                             context: context,
-                            name: names['lastName'],
+                            name: profile.getCoreValue("full_name")["lastName"],
                             title: "Last name",
                           );
+
+                          if (name != null) {
+                            profile.updateProfile(lastName: name);
+                          }
                         },
-                        trailing: names["lastName"] ?? 'No name set',
+                        trailing:
+                            profile.getCoreValue("full_name")["lastName"] ??
+                                'No name set',
                         showTrailingIcon: false,
                         showDivider: false,
                       ),

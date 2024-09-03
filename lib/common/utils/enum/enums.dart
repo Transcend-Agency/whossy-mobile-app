@@ -226,6 +226,15 @@ enum Gender implements GenericEnum {
   @override
   final String name;
   final IconData icon;
+
+  static Gender? fromString(String name) {
+    for (Gender gender in Gender.values) {
+      if (gender.name.toLowerCase() == name.toLowerCase()) {
+        return gender;
+      }
+    }
+    return null;
+  }
 }
 
 enum PetOwner implements GenericEnum {
