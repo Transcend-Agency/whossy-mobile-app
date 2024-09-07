@@ -65,7 +65,7 @@ class CorePreferences {
   WorkOut? workout;
 
   @JsonKey(
-    name: "pet_owner",
+    name: "pet",
     toJson: enumToIndex,
     fromJson: indexToPetOwner,
   )

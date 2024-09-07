@@ -24,6 +24,10 @@ class AppUser {
 
   final String? authProvider;
 
+  final double? weight;
+
+  final double? height;
+
   @JsonKey(name: 'has_completed_account_creation')
   final bool hasCompletedAccountCreation;
 
@@ -39,6 +43,8 @@ class AppUser {
     this.phoneNumber,
     this.countryOfOrigin,
     this.authProvider,
+    this.weight,
+    this.height,
     this.hasCompletedAccountCreation = false,
     this.hasCompletedOnboarding = false,
   });
@@ -68,6 +74,8 @@ class AppUser {
         'phoneNumber: $phoneNumber\n'
         'countryOfOrigin: $countryOfOrigin\n'
         'authProvider: $authProvider\n'
+        'height: $height\n'
+        'weight: $weight\n'
         'hasCompletedAccountCreation: $hasCompletedAccountCreation\n'
         'hasCompletedOnboarding: $hasCompletedOnboarding';
   }

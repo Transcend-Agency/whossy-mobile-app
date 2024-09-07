@@ -37,7 +37,7 @@ extension CorePreferencesExtension on CorePreferences {
       updatedFields['workout'] = enumToIndex(workout);
     }
     if (petOwner != other.petOwner) {
-      updatedFields['pet_owner'] = enumToIndex(petOwner);
+      updatedFields['pet'] = enumToIndex(petOwner);
     }
     if (religion != other.religion) {
       updatedFields['religion'] = enumToIndex(religion);
@@ -130,6 +130,33 @@ extension RangeValuesExtension1 on Map<String, int>? {
         : type == RangeType.weight
             ? '${convertKgToPounds(minValue!)} - ${convertKgToPounds(maxValue!)}'
             : 'Invalid type';
+  }
+}
+
+extension DataRangeExtension on double {
+  String getFormattedRange({required RangeType type}) {
+    String convertCmToInches(double cm) {
+      final totalInches = (cm / 2.54).round();
+      final feet = totalInches ~/ 12;
+      final inches = totalInches % 12;
+      return "$feet'$inches\"";
+    }
+
+    String convertKgToPounds(double kg) {
+      final pounds = (kg * 2.20462).round();
+      return '$pounds lbs';
+    }
+
+    switch (type) {
+      case RangeType.weight:
+        final pounds = convertKgToPounds(this);
+        return '${round()}kg ($pounds)';
+      case RangeType.height:
+        final heightInches = convertCmToInches(this);
+        return "${round()}cm ($heightInches)";
+      default:
+        return 'Invalid type';
+    }
   }
 }
 

@@ -28,6 +28,12 @@ extension CoreProfileExtension on CoreProfile {
     if (bio != other.bio) {
       updatedFields['bio'] = bio;
     }
+    if (weight != other.weight) {
+      updatedFields['weight'] = weight;
+    }
+    if (height != other.height) {
+      updatedFields['height'] = height;
+    }
     if (!AppUtils.areListsEqual(interests, other.interests)) {
       updatedFields['interests'] = interests;
     }

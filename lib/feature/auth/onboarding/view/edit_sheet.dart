@@ -10,8 +10,13 @@ import '../../../../constants/index.dart';
 
 class EditSheet extends StatelessWidget {
   final VoidCallback onDelete;
+  final Future<bool> Function() onReUpload;
 
-  const EditSheet({super.key, required this.onDelete});
+  const EditSheet({
+    super.key,
+    required this.onDelete,
+    required this.onReUpload,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +55,11 @@ class EditSheet extends StatelessWidget {
           Padding(
             padding: pagePadding,
             child: OutlinedAppButton(
-              onPress: () {}, // Todo : I cannot re-upload
+              onPress: () async {
+                onReUpload().then((success) {
+                  if (success) Navigator.pop(context);
+                });
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

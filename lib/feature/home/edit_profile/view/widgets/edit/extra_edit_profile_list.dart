@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:whossy_app/feature/home/edit_profile/model/data_range.dart';
+import 'package:whossy_app/feature/home/edit_profile/view/widgets/sheets/slider_sheet.dart';
+import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 
 import '../../../../../../common/components/index.dart';
+import '../../../../../../common/styles/component_style.dart';
+import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../preferences/view/widgets/extras.dart';
 import '../../../data/source/edit_profile_data.dart';
@@ -53,43 +58,41 @@ class ExtraEditProfileList extends StatelessWidget {
                       );
                     },
                   ),
-                  // PreferenceTile(
-                  //   text: 'Height',
-                  //   onTap: () async {
-                  //     final height = await showRangeSheet(
-                  //       context: context,
-                  //       range: user.otherPreferences.toHeightRange(),
-                  //       type: RangeType.height,
-                  //     );
-                  //
-                  //     if (height != null) {
-                  //       user.updatePreferences(
-                  //         minHeight: height.start.round(),
-                  //         maxHeight: height.end.round(),
-                  //       );
-                  //     }
-                  //   },
-                  //   trailing: user.otherPreferences.heightRange.displayRange(),
-                  // ),
-                  // PreferenceTile(
-                  //   text: 'Weight',
-                  //   onTap: () async {
-                  //     final weight = await showRangeSheet(
-                  //       context: context,
-                  //       range: user.otherPreferences.toWeightRange(),
-                  //       type: RangeType.weight,
-                  //     );
-                  //
-                  //     if (weight != null) {
-                  //       user.updatePreferences(
-                  //         minWeight: weight.start.round(),
-                  //         maxWeight: weight.end.round(),
-                  //       );
-                  //     }
-                  //   },
-                  //   trailing: user.otherPreferences.weightRange
-                  //       .displayRange(type: RangeType.weight),
-                  // ),
+                  PreferenceTile(
+                    text: 'Height',
+                    onTap: () async {
+                      final height = await showRangeSheet(
+                        context: context,
+                        range: DataRange(min: 140, max: 220),
+                        type: RangeType.height,
+                        value: profile.coreProfile?.height,
+                      );
+
+                      if (height != null) {
+                        profile.updateProfile(height: height);
+                      }
+                    },
+                    trailing: profile.coreProfile?.height
+                            ?.getFormattedRange(type: RangeType.height) ??
+                        'Choose',
+                  ),
+                  PreferenceTile(
+                    text: 'Weight',
+                    onTap: () async {
+                      final weight = await showRangeSheet(
+                        context: context,
+                        range: DataRange(min: 40, max: 220),
+                        type: RangeType.weight,
+                      );
+
+                      if (weight != null) {
+                        profile.updateProfile(weight: weight);
+                      }
+                    },
+                    trailing: profile.coreProfile?.weight
+                            ?.getFormattedRange(type: RangeType.weight) ??
+                        'Choose',
+                  ),
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -128,4 +131,22 @@ class ExtraEditProfileList extends StatelessWidget {
       ],
     );
   }
+}
+
+Future<double?> showRangeSheet({
+  required BuildContext context,
+  required RangeType type,
+  required DataRange range,
+  double? value,
+}) {
+  return showModalBottomSheet<double?>(
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => SliderSheet(
+      range: range,
+      rangeType: type,
+      value: value,
+    ),
+  );
 }

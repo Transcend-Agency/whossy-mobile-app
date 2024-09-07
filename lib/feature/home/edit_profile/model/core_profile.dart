@@ -26,6 +26,10 @@ class CoreProfile {
 
   String? email;
 
+  double? weight;
+
+  double? height;
+
   @JsonKey(name: 'phone_number')
   String? phoneNumber;
 
@@ -56,6 +60,8 @@ class CoreProfile {
     this.profilePics,
     this.bio,
     this.interests,
+    this.weight,
+    this.height,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -72,8 +78,10 @@ class CoreProfile {
 
   static List<String> transferKeys = ['photos', 'bio', 'interests'];
 
-  Map<String, String?> getName() =>
-      {"firstName": firstName, "lastName": lastName};
+  Map<String, String?> getName() => {
+        "firstName": firstName,
+        "lastName": lastName,
+      };
 
   dynamic getValue(String key) {
     if (!validKeys.contains(key)) {
@@ -101,6 +109,8 @@ class CoreProfile {
     String? gender,
     String? firstName,
     String? lastName,
+    double? height,
+    double? weight,
     List<String>? interests,
     List<String>? profilePics,
   }) {
@@ -108,6 +118,8 @@ class CoreProfile {
     if (gender != null) this.gender = gender;
     if (firstName != null) this.firstName = firstName;
     if (lastName != null) this.lastName = lastName;
+    if (height != null) this.height = height;
+    if (weight != null) this.weight = weight;
     if (interests != null) this.interests = interests;
     if (profilePics != null) this.profilePics = profilePics;
   }
@@ -125,7 +137,9 @@ class CoreProfile {
         '  phoneNumber: $phoneNumber,\n'
         '  profilePics: $profilePics,\n'
         '  bio: $bio,\n'
-        '  interests: $interests\n'
+        '  interests: $interests,\n'
+        '  weight $weight,\n'
+        '  height $height,\n'
         ')';
   }
 
@@ -142,6 +156,8 @@ class CoreProfile {
         other.phoneNumber == phoneNumber &&
         listEquals(other.profilePics, profilePics) &&
         other.bio == bio &&
+        other.weight == weight &&
+        other.height == height &&
         AppUtils.areListsEqual(other.interests, interests);
   }
 
@@ -155,6 +171,8 @@ class CoreProfile {
         phoneNumber.hashCode ^
         profilePics.hashCode ^
         bio.hashCode ^
+        weight.hashCode ^
+        height.hashCode ^
         interests.hashCode;
   }
 }

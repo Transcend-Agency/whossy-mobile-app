@@ -54,8 +54,6 @@ class LoginNotifier extends ChangeNotifier {
         }
       }
 
-      // Todo: It seems I am not catching what happens if the user (app_user) does not exist
-
       onAuthenticate();
     } else {
       // Email is not verified, show the Snackbar

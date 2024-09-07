@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
           label: 'Verify',
           onLabelTapped: () async {
             await user.sendEmailVerification();
-            onVerifyTapped(credential);
+            onVerifyTapped();
           },
         ),
       );
@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   toOnboarding() => Nav.push(context, const Wrapper());
 
-  void onVerifyTapped(UserCredential credential) =>
+  void onVerifyTapped() =>
       Nav.push(context, SignUpVerificationRoute(pop: true));
 
   @override

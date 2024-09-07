@@ -53,7 +53,7 @@ class Preferences {
   @JsonKey(name: 'workout')
   int? workOut;
 
-  @JsonKey(name: "pet_owner")
+  @JsonKey(name: "pet")
   int? petOwner;
 
   @JsonKey(name: 'bio')

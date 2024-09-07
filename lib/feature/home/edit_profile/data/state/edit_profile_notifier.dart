@@ -36,6 +36,13 @@ class EditProfileNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetToStatic() {
+    _dynCoreProfile = _staticCoreProfile;
+    _dynCorePrefs = _staticCorePrefs;
+
+    notifyListeners();
+  }
+
   void setValue(GenericEnum value) {
     _dynCorePrefs?.setValue(value);
     notifyListeners();
@@ -152,6 +159,8 @@ class EditProfileNotifier extends ChangeNotifier {
     String? gender,
     String? firstName,
     String? lastName,
+    double? weight,
+    double? height,
     List<String>? interests,
     List<String>? profilePics,
   }) {
@@ -160,6 +169,8 @@ class EditProfileNotifier extends ChangeNotifier {
       gender: gender,
       lastName: lastName,
       firstName: firstName,
+      weight: weight,
+      height: height,
       interests: interests,
       profilePics: profilePics,
     );

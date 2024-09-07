@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -52,7 +52,9 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
     });
   }
 
-  Future<void> _addPhoto() async {
+  Future<bool> _addPhoto({int? index}) async {
+    bool result = false;
+
     final pickedImage = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
@@ -60,12 +62,24 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
 
       if (croppedImage != null) {
         setState(() {
-          widget.profilePics.add(pickedImage.path);
+          if (index != null &&
+              index >= 0 &&
+              index < widget.profilePics.length) {
+            // Replace the existing element at the specified index
+            widget.profilePics[index] = croppedImage.path;
+          } else {
+            // Add the new image to the end of the list
+            widget.profilePics.add(croppedImage.path);
+          }
+
+          result = true;
 
           widget.edit.updateProfile(profilePics: widget.profilePics);
         });
       }
     }
+
+    return result;
   }
 
   showSnackbar(String message) {
@@ -150,7 +164,7 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
               ),
             ),
             childWhenDragging: Container(decoration: editMediaDecoration),
-            onDragStarted: () => HapticFeedback.lightImpact(),
+            onDragStarted: () => Vibrate.feedback(FeedbackType.selection),
             child: DragTarget<int>(
               builder: (ctx, candidateData, rejectedData) {
                 bool isDraggingOver = candidateData.isNotEmpty;
@@ -162,7 +176,8 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
                       profilePics: widget.profilePics,
                       onEditTap: () => showCustomModalBottomSheet(
                         context,
-                        () => _deleteImage(index),
+                        onDelete: () => _deleteImage(index),
+                        onReUpload: () => _addPhoto(index: index),
                       ),
                     ),
                     if (isDraggingOver)
@@ -188,13 +203,17 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
 }
 
 void showCustomModalBottomSheet(
-  BuildContext context,
-  VoidCallback onDelete,
-) {
+  BuildContext context, {
+  required VoidCallback onDelete,
+  required Future<bool> Function() onReUpload,
+}) {
   showModalBottomSheet<void>(
     clipBehavior: Clip.hardEdge,
     context: context,
     shape: roundedTop,
-    builder: (_) => EditSheet(onDelete: onDelete),
+    builder: (_) => EditSheet(
+      onDelete: onDelete,
+      onReUpload: onReUpload,
+    ),
   );
 }

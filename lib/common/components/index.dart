@@ -15,6 +15,7 @@ export '/common/components/Card/profile_details_card.dart';
 export '/common/components/Chip/app_chip.dart';
 export '/common/components/Chip/gender_chip.dart';
 export '/common/components/Chip/preference_chip.dart';
+export '/common/components/Dialog/discard_dialog.dart';
 export '/common/components/Indicator/page_indicator.dart';
 export '/common/components/Loader/app_loader.dart';
 export '/common/components/Ring/ring.dart';

@@ -65,6 +65,36 @@ class _PictureScreenState extends State<PictureScreen>
     }
   }
 
+  // Todo : I need to test this
+  Future<bool> _reUploadPhoto({int? index}) async {
+    bool result = false;
+
+    final pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      final croppedImage = await FileService.cropImage(File(pickedImage.path));
+
+      if (croppedImage != null) {
+        setState(() {
+          if (index != null && index >= 0 && index < _images.length) {
+            // Replace the existing element at the specified index
+            _images[index] = croppedImage;
+          } else {
+            // Add the new image to the end of the list
+            _images.add(croppedImage);
+          }
+
+          result = true;
+
+          // Call updateUserProfile after all images are processed
+          onboarding.updateUserProfile(picFiles: _images);
+        });
+      }
+    }
+
+    return result;
+  }
+
   /// Move image to the top of the list
   void _moveImageToTop(int index) {
     setState(() {
@@ -184,7 +214,9 @@ class _PictureScreenState extends State<PictureScreen>
                                     child: GestureDetector(
                                       onTap: () => showCustomModalBottomSheet(
                                         context,
-                                        () => _deleteImage(0),
+                                        onDelete: () => _deleteImage(0),
+                                        onReUpload: () =>
+                                            _reUploadPhoto(index: 0),
                                       ),
                                     ),
                                   ),
@@ -253,7 +285,11 @@ class _PictureScreenState extends State<PictureScreen>
                               left: -4,
                               child: GestureDetector(
                                 onTap: () => showCustomModalBottomSheet(
-                                    context, () => _deleteImage(_ + 1)),
+                                  context,
+                                  onDelete: () => _deleteImage(_ + 1),
+                                  onReUpload: () =>
+                                      _reUploadPhoto(index: _ + 1),
+                                ),
                                 child: Container(
                                   padding: const EdgeInsets.all(4),
                                   decoration: BoxDecoration(
@@ -292,13 +328,17 @@ class _PictureScreenState extends State<PictureScreen>
 }
 
 void showCustomModalBottomSheet(
-  BuildContext context,
-  VoidCallback onDelete,
-) {
+  BuildContext context, {
+  required VoidCallback onDelete,
+  required Future<bool> Function() onReUpload,
+}) {
   showModalBottomSheet<void>(
     clipBehavior: Clip.hardEdge,
     context: context,
     shape: roundedTop,
-    builder: (_) => EditSheet(onDelete: onDelete),
+    builder: (_) => EditSheet(
+      onDelete: onDelete,
+      onReUpload: onReUpload,
+    ),
   );
 }
