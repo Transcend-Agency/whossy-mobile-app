@@ -11,7 +11,6 @@ import '../../../../../constants/index.dart';
 import '../../../../../provider/providers.dart';
 import '../../data/source/core_prefs_data.dart';
 import '../../data/source/extensions.dart';
-import '../../model/generic_enum.dart';
 import '../sheets/_.dart';
 
 class ExtrasComponent extends StatelessWidget {
@@ -213,19 +212,6 @@ class ExtrasComponent extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<T?> showCustomModalBottomSheet<T extends GenericEnum>({
-  required BuildContext context,
-  required CorePreferencesData<T> item,
-  T? selectedItem,
-}) {
-  return showModalBottomSheet<T?>(
-    clipBehavior: Clip.hardEdge,
-    context: context,
-    shape: roundedTop,
-    builder: (_) => ExtrasSheet<T>(item: item, selectedItem: selectedItem),
-  );
 }
 
 Future<String?> showCitySheet({

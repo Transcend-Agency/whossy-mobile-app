@@ -126,4 +126,6 @@ class AppStrings {
       'Account exists with different credential';
 
   static const String accUnselected = 'No account selected';
+
+  static const String signOutFailure = 'Failed to sign out. Please try again.';
 }

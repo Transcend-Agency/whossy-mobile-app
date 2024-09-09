@@ -28,7 +28,7 @@ class Profile extends StatelessWidget {
             Padding(
               padding: pagePadding,
               child: Selector<EditProfileNotifier, CoreProfile?>(
-                selector: (_, profile) => profile.coreProfile,
+                selector: (_, profile) => profile.staticProfile,
                 builder: (_, data, __) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,

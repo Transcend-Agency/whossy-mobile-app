@@ -49,14 +49,13 @@ class Header extends StatelessWidget {
                     SizedBox.square(
                       dimension: 136.r,
                       child: Container(
-                        //
                         clipBehavior: Clip.antiAlias,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
                         child: Selector<EditProfileNotifier, List<String>?>(
                           selector: (_, profile) =>
-                              profile.coreProfile?.profilePics,
+                              profile.staticProfile?.profilePics,
                           builder: (_, profilePics, __) {
                             if (profilePics != null && profilePics.isNotEmpty) {
                               final image = profilePics[0];

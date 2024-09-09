@@ -91,13 +91,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> loginWithGoogle() async {
-    await loginNotifier.loginWithGoogle(
-      showSnackbar: showSnackbar,
-      onAuthenticate: onAuthenticate,
-      showEmailSnackbar: showEmailSnackbar,
-      toCreateAccount: toCreateAccount,
-      toOnboarding: toOnboarding,
-    );
+    showGoogleDialog(context);
+
+    await loginNotifier
+        .loginWithGoogle(
+          showSnackbar: showSnackbar,
+          onAuthenticate: onAuthenticate,
+          showEmailSnackbar: showEmailSnackbar,
+          toCreateAccount: toCreateAccount,
+          toOnboarding: toOnboarding,
+        )
+        .whenComplete(
+            () => (context.mounted) ? Navigator.of(context).pop() : {});
   }
 
   Future<void> loginWithFacebook() async {
@@ -148,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordFocusNode.addListener(_updatePasswordColor);
     myPasswordController.addListener(_updatePasswordEmpty);
 
-    loginNotifier = Provider.of<LoginNotifier>(context, listen: false);
+    loginNotifier = context.read<LoginNotifier>();
   }
 
   @override

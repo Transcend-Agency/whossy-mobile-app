@@ -2,9 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
-import 'package:whossy_app/globals.dart';
 
 import '../../model/app_user.dart';
 
@@ -79,8 +79,7 @@ class UserRepository {
 
   Future<List<String>> uploadProfilePictures(List<File> files) async {
     try {
-      //final uid = FirebaseAuth.instance.currentUser!.uid;
-      const uid = testId;
+      final uid = FirebaseAuth.instance.currentUser!.uid;
 
       // Create a list of Future tasks for uploading each file
       final uploadFutures = files.map((file) async {

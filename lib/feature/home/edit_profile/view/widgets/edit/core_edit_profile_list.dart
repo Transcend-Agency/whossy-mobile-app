@@ -5,11 +5,8 @@ import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/edit_profile_data.dart';
 
-import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
-import '../../../../preferences/model/generic_enum.dart';
-import '../../../../preferences/view/sheets/_.dart';
 import '../../../data/state/edit_profile_notifier.dart';
 import '../../../model/core_profile.dart';
 
@@ -94,17 +91,4 @@ class CoreEditProfileList extends StatelessWidget {
 
     return null;
   }
-}
-
-Future<T?> showCustomModalBottomSheet<T extends GenericEnum>({
-  required BuildContext context,
-  required CorePreferencesData<T> item,
-  T? selectedItem,
-}) {
-  return showModalBottomSheet<T?>(
-    clipBehavior: Clip.hardEdge,
-    context: context,
-    shape: roundedTop,
-    builder: (_) => ExtrasSheet<T>(item: item, selectedItem: selectedItem),
-  );
 }

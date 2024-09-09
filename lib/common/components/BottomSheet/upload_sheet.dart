@@ -3,18 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../../common/components/index.dart';
-import '../../../../common/styles/component_style.dart';
-import '../../../../constants/index.dart';
+import '../../../constants/index.dart';
+import '../../styles/component_style.dart';
+import '../index.dart';
 
-class OnboardingUpload extends StatefulWidget {
-  const OnboardingUpload({super.key});
+class UploadSheet extends StatefulWidget {
+  final String header;
+  final String subHeader;
+
+  const UploadSheet({
+    super.key,
+    required this.header,
+    required this.subHeader,
+  });
 
   @override
-  State<OnboardingUpload> createState() => _OnboardingUploadState();
+  State<UploadSheet> createState() => _UploadSheetState();
 }
 
-class _OnboardingUploadState extends State<OnboardingUpload>
+class _UploadSheetState extends State<UploadSheet>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
@@ -37,8 +44,6 @@ class _OnboardingUploadState extends State<OnboardingUpload>
   }
 
   onLoaded(LottieComposition composition) {
-    // Configure the AnimationController with the duration of the
-    // Lottie file and start the animation.
     _controller
       ..duration = composition.duration
       ..forward();
@@ -52,12 +57,11 @@ class _OnboardingUploadState extends State<OnboardingUpload>
       child: SingleChildScrollView(
         child: Stack(
           children: [
-            const SignupHeaderText(
+            SignupHeaderText(
               center: true,
               top: 6,
-              title: "All set and ready 🔥",
-              subtitle:
-                  "We are setting up your profile  and getting your match ready :)",
+              title: widget.header,
+              subtitle: widget.subHeader,
             ),
             Padding(
               padding: EdgeInsets.only(top: 14.h),
@@ -80,4 +84,40 @@ Future<LottieComposition?> customDecoder(List<int> bytes) {
     return files.firstWhereOrNull(
         (f) => f.name.startsWith('animations/') && f.name.endsWith('.json'));
   });
+}
+
+const minSize = 0.4;
+const maxSize = 0.5;
+
+// Todo: Make responsive for bigger screens
+void showLoadingSheet(
+  BuildContext ctx,
+  AnimationController ctr, {
+  required String header,
+  required String subHeader,
+}) {
+  showModalBottomSheet<void>(
+    transitionAnimationController: ctr,
+    showDragHandle: false,
+    enableDrag: false,
+    isScrollControlled: true,
+    clipBehavior: Clip.hardEdge,
+    isDismissible: false,
+    context: ctx,
+    shape: roundedTop,
+    builder: (_) => PopScope(
+      canPop: false,
+      child: DraggableScrollableSheet(
+        shouldCloseOnMinExtent: false,
+        expand: false,
+        initialChildSize: minSize,
+        minChildSize: minSize,
+        maxChildSize: maxSize,
+        builder: (_, __) => UploadSheet(
+          header: header,
+          subHeader: subHeader,
+        ),
+      ),
+    ),
+  );
 }

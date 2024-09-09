@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -70,6 +71,17 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       });
     });
+
+    _checkAuthentication();
+  }
+
+  // Todo : Would really need a splash screen here
+  Future<void> _checkAuthentication() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      Nav.replace(context, const HomeWrapper());
+    }
   }
 
   void animateToMaxMin(
@@ -97,25 +109,27 @@ class _SplashScreenState extends State<SplashScreen> {
     return AppScaffold(
       body: Stack(
         children: [
-          Column(
-            children: [
-              SplashSlider(
-                scrollController: _scrollController1,
-                row: 1,
-              ),
-              SplashSlider(
-                scrollController: _scrollController2,
-                row: 2,
-              ),
-              SplashSlider(
-                scrollController: _scrollController3,
-                row: 3,
-              ),
-              SplashSlider(
-                scrollController: _scrollController4,
-                row: 4,
-              ),
-            ],
+          IgnorePointer(
+            child: Column(
+              children: [
+                SplashSlider(
+                  scrollController: _scrollController1,
+                  row: 1,
+                ),
+                SplashSlider(
+                  scrollController: _scrollController2,
+                  row: 2,
+                ),
+                SplashSlider(
+                  scrollController: _scrollController3,
+                  row: 3,
+                ),
+                SplashSlider(
+                  scrollController: _scrollController4,
+                  row: 4,
+                ),
+              ],
+            ),
           ),
           Positioned(
             bottom: 0,

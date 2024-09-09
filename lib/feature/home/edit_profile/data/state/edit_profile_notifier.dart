@@ -24,6 +24,7 @@ class EditProfileNotifier extends ChangeNotifier {
   final _editProfileRepo = EditProfileRepository();
 
   CoreProfile? get coreProfile => _dynCoreProfile;
+  CoreProfile? get staticProfile => _staticCoreProfile;
   CorePreferences? get corePrefs => _dynCorePrefs;
 
   bool _hasEditFetched = false;
@@ -112,8 +113,6 @@ class EditProfileNotifier extends ChangeNotifier {
     try {
       final corePrefsDiff = _dynCorePrefs?.diff(_staticCorePrefs!) ?? {};
       final coreProfileDiff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
-
-      log('Core prefs $coreProfileDiff, $corePrefsDiff');
 
       // Iterate through keysToTransfer and transfer matching key-value pairs
       for (final key in CoreProfile.transferKeys) {

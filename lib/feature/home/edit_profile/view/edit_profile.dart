@@ -20,9 +20,15 @@ class EditProfile extends StatefulWidget {
   State<EditProfile> createState() => _EditProfileState();
 }
 
-class _EditProfileState extends State<EditProfile> {
+class _EditProfileState extends State<EditProfile>
+    with SingleTickerProviderStateMixin {
   late EditProfileNotifier _profileNotifier;
-  bool _isPopped = false;
+  late AnimationController _controller;
+  bool _hasSave = false;
+
+  set hasSave(bool newValue) {
+    setState(() => _hasSave = newValue);
+  }
 
   @override
   void initState() {
@@ -30,6 +36,10 @@ class _EditProfileState extends State<EditProfile> {
 
     // Using context.read to avoid listening for changes
     _profileNotifier = context.read<EditProfileNotifier>();
+
+    _controller = BottomSheet.createAnimationController(this)
+      ..duration = const Duration(milliseconds: 400)
+      ..reverseDuration = const Duration(milliseconds: 400);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_profileNotifier.hasEditFetched) {
@@ -40,39 +50,90 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  showSnackbar(String message) {
-    showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+  onSaveChanges() async {
+    showLoadingSheet(
+      context,
+      _controller,
+      header: 'Changes are saving 🎉',
+      subHeader: 'Your changes will be saved in a minute',
+    );
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    await _profileNotifier.saveUserProfile(
+        showSnackbar: (_) => showSnackbar(_, pop: true));
+
+    if (!mounted) return;
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop(); // Close the loading sheet
+    }
   }
 
-  onPopInvoked(bool didPop) {
-    if (didPop && !_isPopped) {
-      _isPopped = true;
-      _profileNotifier.resetToStatic();
+  showSnackbar(String message, {bool pop = false}) {
+    if (mounted) {
+      if (pop) Navigator.of(context).pop();
+      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
     }
+  }
+
+  Future<void> onPopInvoked(bool didPop) async {
+    if (!didPop && _hasSave) {
+      bool? result = await showConfirmationDialog(
+        yes: 'Discard',
+        no: 'Save',
+        context,
+        title: 'Discard changes?',
+        content: "Unsaved changes detected. Would you like to discard them?",
+      );
+
+      if (result == null || !context.mounted) return;
+
+      if (!result) {
+        await onSaveChanges();
+
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      }
+
+      if (result) {
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: !_hasSave,
       onPopInvoked: onPopInvoked,
       child: AppScaffold(
         useScrollView: true,
         appBar: CustomAppBar(
           title: 'Edit Profile',
+          onPop: (_hasSave) ? () async => await onPopInvoked(false) : null,
           action: Selector<EditProfileNotifier, bool>(
             selector: (_, pref) => pref.hasChanges,
             builder: (_, save, __) {
+              if (_hasSave != save) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  hasSave = save;
+                });
+              }
               return save
                   ? Padding(
                       padding: EdgeInsets.only(right: 10.w),
                       child: TextButton(
-                        onPressed: () {
-                          // Fetch notifier directly in onPressed
-                          context.read<EditProfileNotifier>().saveUserProfile(
-                                showSnackbar: showSnackbar,
-                              );
-                        },
+                        onPressed: onSaveChanges,
                         child: Text(
                           'Save',
                           style: TextStyles.boldPrefText.copyWith(
@@ -127,22 +188,4 @@ class _EditProfileState extends State<EditProfile> {
       ),
     );
   }
-}
-
-Future<bool?> showCustomConfirmationDialog(BuildContext context) {
-  return showDialog<bool?>(
-    context: context,
-    builder: (BuildContext context) {
-      return DiscardDialog(
-        title: 'Confirm Exit',
-        content: 'Are you sure you want to exit?',
-        onConfirm: () {
-          Navigator.pop(context, true);
-        },
-        onCancel: () {
-          Navigator.pop(context, false);
-        },
-      );
-    },
-  );
 }

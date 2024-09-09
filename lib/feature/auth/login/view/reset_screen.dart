@@ -60,7 +60,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   void initState() {
-    _loginNotifier = Provider.of<LoginNotifier>(context, listen: false);
+    _loginNotifier = context.read<LoginNotifier>();
+    
     super.initState();
   }
 

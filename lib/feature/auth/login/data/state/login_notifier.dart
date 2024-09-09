@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
@@ -116,10 +117,17 @@ class LoginNotifier extends ChangeNotifier {
       handleFirebaseAuthError(e, showSnackbar);
     } on UnregisteredEmailException catch (e) {
       showSnackbar(e.message);
+    } on PlatformException catch (e) {
+      if (e.code == 'network_error') {
+        showSnackbar(AppStrings.deviceOffline);
+      } else {
+        log('Google sign-in failed. Error: ${e.message}');
+        showSnackbar(AppStrings.errorUnknown);
+      }
     } catch (e) {
       log('Attempting to sign in from google. Error $e');
-      showSnackbar(AppStrings.accUnselected);
-    } finally {}
+      showSnackbar(AppStrings.errorUnknown);
+    }
   }
 
   Future<void> loginWithFacebook({

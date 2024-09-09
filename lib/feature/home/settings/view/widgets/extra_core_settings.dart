@@ -10,12 +10,14 @@ class ExtraCoreSettings extends StatelessWidget {
   final String? title;
   final PageRouteInfo<dynamic>? route;
   final List<Widget>? customChildren;
+  final Future<bool?>? Function()? onTap;
 
   const ExtraCoreSettings({
     super.key,
     this.title,
     this.route,
     this.customChildren,
+    this.onTap,
   });
 
   @override
@@ -34,7 +36,7 @@ class ExtraCoreSettings extends StatelessWidget {
             children: [
               PreferenceTile(
                 text: title,
-                onTap: () => Nav.push(context, route),
+                onTap: onTap ?? () => Nav.push(context, route),
                 trailing: '',
                 showDivider: false,
                 customChildren: customChildren,

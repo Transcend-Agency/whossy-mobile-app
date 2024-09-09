@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../common/components/index.dart';
-import '../../../../../common/styles/component_style.dart';
-import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
-import '../../../../../constants/index.dart';
-import '../../model/generic_enum.dart';
+import '../../../constants/index.dart';
+import '../../../feature/home/preferences/model/generic_enum.dart';
+import '../../styles/component_style.dart';
+import '../../styles/text_style.dart';
+import '../../utils/index.dart';
+import '../index.dart';
 
-class ExtrasSheet<T extends GenericEnum> extends StatefulWidget {
-  const ExtrasSheet({super.key, required this.item, this.selectedItem});
+class AppSheet<T extends GenericEnum> extends StatefulWidget {
+  const AppSheet({super.key, required this.item, this.selectedItem});
 
   final CorePreferencesData<T> item;
   final T? selectedItem;
 
   @override
-  State<ExtrasSheet<T>> createState() => _ExtrasSheetState<T>();
+  State<AppSheet<T>> createState() => _AppSheetState<T>();
 }
 
-class _ExtrasSheetState<T extends GenericEnum> extends State<ExtrasSheet<T>> {
+class _AppSheetState<T extends GenericEnum> extends State<AppSheet<T>> {
   late T? data;
   late T? store;
   bool hasChanged = false;
@@ -98,4 +98,17 @@ class _ExtrasSheetState<T extends GenericEnum> extends State<ExtrasSheet<T>> {
       ),
     );
   }
+}
+
+Future<T?> showCustomModalBottomSheet<T extends GenericEnum>({
+  required BuildContext context,
+  required CorePreferencesData<T> item,
+  T? selectedItem,
+}) {
+  return showModalBottomSheet<T?>(
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => AppSheet<T>(item: item, selectedItem: selectedItem),
+  );
 }

@@ -21,6 +21,7 @@ class AppAssets {
   static const bin = 'assets/icons/bin.svg';
 
   static const loading = 'assets/animations/loading.lottie';
+  static const googleLoading = 'assets/animations/google.json';
 
   // Tab bar icons
   static const fire = 'assets/icons/fire.svg';

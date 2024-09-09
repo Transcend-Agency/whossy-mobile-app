@@ -53,22 +53,19 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      child: AppScaffold(
-        body: SizedBox(
-          child: _pages.elementAt(selectedIndex),
-        ),
-        bottomNavBar: CustomBottomAppBar(
-          onTabSelected: _selectedTab,
-          items: const [
-            AppAssets.fire,
-            AppAssets.globalSearch,
-            AppAssets.heart,
-            AppAssets.chat,
-            AppAssets.user,
-          ],
-        ),
+    return AppScaffold(
+      body: SizedBox(
+        child: _pages.elementAt(selectedIndex),
+      ),
+      bottomNavBar: CustomBottomAppBar(
+        onTabSelected: _selectedTab,
+        items: const [
+          AppAssets.fire,
+          AppAssets.globalSearch,
+          AppAssets.heart,
+          AppAssets.chat,
+          AppAssets.user,
+        ],
       ),
     );
   }

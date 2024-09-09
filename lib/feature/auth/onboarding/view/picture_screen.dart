@@ -121,7 +121,7 @@ class _PictureScreenState extends State<PictureScreen>
 
   @override
   void initState() {
-    onboarding = Provider.of<OnboardingNotifier>(context, listen: false);
+    onboarding = context.read<OnboardingNotifier>();
     super.initState();
   }
 

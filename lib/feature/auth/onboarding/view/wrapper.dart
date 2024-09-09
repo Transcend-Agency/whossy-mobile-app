@@ -6,13 +6,11 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 
-import '../../../../common/styles/component_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
 import '../../../../provider/providers.dart';
 import '../model/selected_data.dart';
 import 'index.dart';
-import 'onboarding_upload.dart';
 
 @RoutePage()
 class Wrapper extends StatefulWidget {
@@ -22,7 +20,7 @@ class Wrapper extends StatefulWidget {
   State<Wrapper> createState() => _WrapperState();
 }
 
-class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
+class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
   late OnboardingNotifier _onboardingNotifier;
   late AnimationController _controller;
   late PageController _pageController;
@@ -92,7 +90,13 @@ class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
       _onPageUpdate(_activePage + 1);
     } else {
       if (isConnected) {
-        showLoadingSheet(context, _controller);
+        showLoadingSheet(
+          context,
+          _controller,
+          header: "All set and ready 🔥",
+          subHeader:
+              "We are setting up your profile  and getting your match ready :)",
+        );
         _onboardingNotifier.uploadPreferences(
           showSnackbar: (_) => showSnackbar(context, _),
           onAuthenticate: goToNext,
@@ -103,7 +107,7 @@ class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
     }
   }
 
-  goToNext() => Nav.replace(context, const HomeWrapper());
+  goToNext() => Nav.replaceAll(context, [const HomeWrapper()]);
 
   showSnackbar(BuildContext context, String message, {bool pop = true}) {
     if (mounted) {
@@ -210,32 +214,4 @@ class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
       ),
     );
   }
-}
-
-const minSize = 0.4;
-const maxSize = 0.5;
-
-// Todo: Make responsive for bigger screens
-void showLoadingSheet(BuildContext ctx, AnimationController ctr) {
-  showModalBottomSheet<void>(
-    transitionAnimationController: ctr,
-    showDragHandle: false,
-    enableDrag: false,
-    isScrollControlled: true,
-    clipBehavior: Clip.hardEdge,
-    isDismissible: false,
-    context: ctx,
-    shape: roundedTop,
-    builder: (_) => PopScope(
-      canPop: false,
-      child: DraggableScrollableSheet(
-        shouldCloseOnMinExtent: false,
-        expand: false,
-        initialChildSize: minSize,
-        minChildSize: minSize,
-        maxChildSize: maxSize,
-        builder: (_, __) => const OnboardingUpload(),
-      ),
-    ),
-  );
 }

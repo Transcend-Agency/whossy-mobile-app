@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 
-import '../../../../../globals.dart';
 import '../../../../auth/onboarding/data/repository/preference_repository.dart';
 import '../../../../auth/onboarding/model/preferences.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
@@ -11,9 +11,7 @@ class EditProfileRepository {
   final _prefRepository = PreferenceRepository();
 
   Future<ProfileData?> fetchProfileData() async {
-    // final uid = FirebaseAuth.instance.currentUser!.uid;
-
-    const uid = testId;
+    final uid = FirebaseAuth.instance.currentUser!.uid;
 
     final results = await Future.wait([
       _userRepository.getUserData(uid),
@@ -34,9 +32,7 @@ class EditProfileRepository {
     required Map<String, dynamic> coreProfileData,
     required Map<String, dynamic> corePrefData,
   }) async {
-    // final uid = FirebaseAuth.instance.currentUser!.uid;
-
-    const uid = testId;
+    final uid = FirebaseAuth.instance.currentUser!.uid;
 
     if (coreProfileData.isNotEmpty) {
       await _userRepository.setUserData(id: uid, data: coreProfileData);

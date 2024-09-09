@@ -10,11 +10,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.showAction = true,
     this.action,
+    this.onPop,
   });
 
   final String title;
   final bool showAction;
   final Widget? action;
+  final Future<void> Function()? onPop;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -32,7 +34,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         surfaceTintColor: AppColors.inputBackGround,
         titleSpacing: 0,
         leading: GestureDetector(
-          onTap: () => Navigator.pop(context),
+          onTap: () async {
+            if (onPop != null) {
+              await onPop!();
+            } else {
+              Navigator.pop(context);
+            }
+          },
           child: Container(
             margin: EdgeInsets.only(
               left: 10.w,
