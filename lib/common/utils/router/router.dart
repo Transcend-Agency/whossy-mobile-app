@@ -36,6 +36,7 @@ class AppRouter extends $AppRouter {
         AutoRoute(page: NameEditProfile.page),
         AutoRoute(page: PreviewProfile.page),
         AutoRoute(page: PreviewProfileMore.page),
+        AutoRoute(page: SafetyGuide.page),
       ];
 }
 

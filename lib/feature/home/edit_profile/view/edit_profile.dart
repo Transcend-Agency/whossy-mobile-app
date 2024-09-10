@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
-import 'package:whossy_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 
 import '../../../../common/styles/text_style.dart';
 import '../../../../constants/index.dart';
+import '../../../../provider/providers.dart';
 import '../../settings/view/widgets/_.dart';
 import 'widgets/_.dart';
 
@@ -58,7 +58,7 @@ class _EditProfileState extends State<EditProfile>
       subHeader: 'Your changes will be saved in a minute',
     );
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
 
     await _profileNotifier.saveUserProfile(
         showSnackbar: (_) => showSnackbar(_, pop: true));
@@ -89,6 +89,8 @@ class _EditProfileState extends State<EditProfile>
       if (result == null || !context.mounted) return;
 
       if (!result) {
+        await Future.delayed(const Duration(seconds: 1));
+
         await onSaveChanges();
 
         if (mounted) {
@@ -98,6 +100,7 @@ class _EditProfileState extends State<EditProfile>
 
       if (result) {
         if (mounted) {
+          _profileNotifier.resetToStatic();
           Navigator.of(context).pop();
         }
       }
@@ -120,7 +123,7 @@ class _EditProfileState extends State<EditProfile>
         useScrollView: true,
         appBar: CustomAppBar(
           title: 'Edit Profile',
-          onPop: (_hasSave) ? () async => await onPopInvoked(false) : null,
+          onPop: _hasSave ? () async => await onPopInvoked(false) : null,
           action: Selector<EditProfileNotifier, bool>(
             selector: (_, pref) => pref.hasChanges,
             builder: (_, save, __) {

@@ -11,11 +11,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showAction = true,
     this.action,
     this.onPop,
+    this.color,
   });
 
   final String title;
   final bool showAction;
   final Widget? action;
+  final Color? color;
   final Future<void> Function()? onPop;
 
   @override
@@ -30,8 +32,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       child: AppBar(
-        backgroundColor: AppColors.inputBackGround,
-        surfaceTintColor: AppColors.inputBackGround,
+        backgroundColor: color ?? AppColors.inputBackGround,
+        surfaceTintColor: color ?? AppColors.inputBackGround,
         titleSpacing: 0,
         leading: GestureDetector(
           onTap: () async {

@@ -9,7 +9,6 @@ import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
-import '../../../../preferences/view/widgets/extras.dart';
 import '../../../data/source/edit_profile_data.dart';
 import '../../../data/state/edit_profile_notifier.dart';
 

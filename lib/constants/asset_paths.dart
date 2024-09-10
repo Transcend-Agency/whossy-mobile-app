@@ -48,5 +48,11 @@ class AppAssets {
   static const credit = 'assets/icons/credit.png';
   static const boost = 'assets/icons/boost.png';
 
-  static const profilePic = 'assets/images/me.jpg';
+  static const bulb = 'assets/icons/bulb.png';
+  static const lock = 'assets/icons/lock.png';
+  static const flag = 'assets/icons/flag.png';
+  static const comms = 'assets/icons/comms.png';
+  static const meet = 'assets/icons/meet.png';
+  static const block = 'assets/icons/block.png';
+  static const faq = 'assets/icons/faq.png';
 }

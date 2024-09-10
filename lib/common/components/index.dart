@@ -2,6 +2,7 @@ export '/common/components/AppBar/custom_app_bar.dart';
 export '/common/components/AppBar/header_bar.dart';
 export '/common/components/BottomAppBar/bottom_app_bar.dart';
 export '/common/components/BottomSheet/app_sheet.dart';
+export '/common/components/BottomSheet/sheet_transition.dart';
 export '/common/components/BottomSheet/upload_sheet.dart';
 export '/common/components/Box/icon_box.dart';
 export '/common/components/Button/app_button.dart';

@@ -7,11 +7,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/provider/providers.dart';
 
+import '../../../../../../common/components/Shimmer/shimmer_widget.dart';
+import '../../../../../../common/utils/router/router.dart';
+import '../../../../../../common/utils/router/router.gr.dart';
+import '../../../../../../common/utils/widget_functions.dart';
 import '../../../../../../constants/index.dart';
-import '../../../../../common/components/Shimmer/shimmer_widget.dart';
-import '../../../../../common/utils/router/router.dart';
-import '../../../../../common/utils/router/router.gr.dart';
-import '../../../../../common/utils/widget_functions.dart';
 
 class Header extends StatelessWidget {
   const Header({super.key});
