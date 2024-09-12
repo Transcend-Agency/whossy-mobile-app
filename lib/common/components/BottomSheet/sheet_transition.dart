@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../styles/component_style.dart';
-
 class _CupertinoBottomSheetContainer extends StatelessWidget {
   final Widget? child;
   final Color? backgroundColor;
@@ -22,7 +20,6 @@ class _CupertinoBottomSheetContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final topSafeAreaPadding = MediaQuery.of(context).padding.top;
     final topPadding = 16 + topSafeAreaPadding;
-    final radius = Radius.circular(14.r);
     const shadow = BoxShadow(
       blurRadius: 10,
       color: Colors.black12,
@@ -31,17 +28,13 @@ class _CupertinoBottomSheetContainer extends StatelessWidget {
     final backgroundColor = this.backgroundColor ??
         CupertinoTheme.of(context).scaffoldBackgroundColor;
 
-    final decoration = BoxDecoration(
-      color: backgroundColor,
-      boxShadow: const [shadow],
-    );
-
     return Padding(
       padding: EdgeInsets.only(top: topPadding),
       child: ClipRRect(
-        borderRadius: BorderRadius.only(topLeft: radius, topRight: radius),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
         child: Container(
-          decoration: decoration,
+          decoration:
+              BoxDecoration(color: backgroundColor, boxShadow: const [shadow]),
           width: double.infinity,
           child: MediaQuery.removePadding(
             context: context,
@@ -173,7 +166,7 @@ class _CupertinoDialogBodyState extends State<CupertinoDialogBody> {
                 color: Colors.white,
                 child: Stack(
                   children: [
-                    Padding(padding: pagePadding, child: widget.child),
+                    widget.child,
                     Positioned(
                       top: 20.h,
                       left: 8.w,

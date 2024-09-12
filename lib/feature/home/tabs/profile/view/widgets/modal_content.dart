@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whossy_app/common/styles/component_style.dart';
 
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
@@ -8,10 +9,12 @@ import '../../model/guide_detail.dart';
 
 class ModalContent extends StatelessWidget {
   final GuideDetail data;
+  final int index;
 
   const ModalContent({
     super.key,
     required this.data,
+    required this.index,
   });
 
   @override
@@ -20,52 +23,71 @@ class ModalContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        addHeight(100),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Text(
-            data.header,
-            style: TextStyles.title.copyWith(fontSize: 25.sp),
+        Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
+          ),
+          child: Image.asset(
+            'assets/images/safety${index + 1}.png',
+            height: 175.h,
+            fit: BoxFit.cover,
           ),
         ),
-        const Divider(
-          color: AppColors.outlinedColor,
-          height: 0,
+        addHeight(12),
+        Padding(
+          padding: pagePadding,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              data.header,
+              style: TextStyles.title.copyWith(fontSize: 24.sp),
+            ),
+          ),
         ),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: data.items.asMap().entries.map((entry) {
-            int index = entry.key; // Get the index
-            var item = entry.value; // Get the item
+        Padding(
+          padding: pagePadding,
+          child: const Divider(
+            color: AppColors.outlinedColor,
+            height: 0,
+          ),
+        ),
+        Padding(
+          padding: pagePadding,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: data.items.asMap().entries.map((entry) {
+              int index = entry.key; // Get the index
+              var item = entry.value; // Get the item
 
-            return Padding(
-              padding: EdgeInsets.only(top: 18.h),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Text(
-                      '${index + 1}. ${item.title}',
-                      style: TextStyles.boldPrefText.copyWith(
-                        fontSize: AppUtils.scale(13.sp) ?? 15.sp,
+              return Padding(
+                padding: EdgeInsets.only(top: 18.h),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(
+                        '${index + 1}. ${item.title}',
+                        style: TextStyles.boldPrefText.copyWith(),
                       ),
                     ),
-                  ),
-                  addHeight(6),
-                  Text(
-                    item.subTitle,
-                    style: TextStyles.boldPrefText.copyWith(
-                      color: AppColors.hintTextColor,
-                      fontWeight: FontWeight.w400,
+                    addHeight(6),
+                    Text(
+                      item.subTitle,
+                      style: TextStyles.boldPrefText.copyWith(
+                        color: AppColors.hintTextColor,
+                        fontWeight: FontWeight.w400,
+                        fontSize: AppUtils.scale(11.sp) ?? 13.sp,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
         )
       ],
     );
