@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "332139466657-2v9vkrff4o5d40egl6dh8nkcf0pacamo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whossy.whossy_app",
+            "certificate_hash": "2d4c1e040004d6e57a11a41dcfc7dd4b290a7323"
+          }
+        },
+        {
           "client_id": "332139466657-jf3p239ic82afjmajov9b9as4tpbveje.apps.googleusercontent.com",
           "client_type": 3
         }
