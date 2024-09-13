@@ -7,7 +7,6 @@ import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/providers.dart';
-import '../../../../preferences/view/widgets/extras.dart';
 import '../../../data/source/edit_profile_data.dart';
 
 class BioEditProfile extends StatefulWidget {
