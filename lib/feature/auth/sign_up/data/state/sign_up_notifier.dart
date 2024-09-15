@@ -34,7 +34,7 @@ class SignUpNotifier extends ChangeNotifier {
 
     updateAppUser(uid: uid, email: email, authProvider: provider);
 
-    await _userRepository.setUserData(id: _user.uid, data: _user.toJson());
+    await _userRepository.setUserData(data: _user.toJson());
   }
 
   Future<void> completeCreation({

@@ -41,7 +41,7 @@ class LoginNotifier extends ChangeNotifier {
     }
 
     if (user.emailVerified || disableEmailCheck) {
-      final appUser = await _userRepository.getUserData(user.uid);
+      final appUser = await _userRepository.getUserData();
 
       if (appUser != null) {
         if (!appUser.hasCompletedAccountCreation) {

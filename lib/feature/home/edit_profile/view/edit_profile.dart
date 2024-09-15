@@ -79,11 +79,13 @@ class _EditProfileState extends State<EditProfile>
   Future<void> onPopInvoked(bool didPop) async {
     if (!didPop && _hasSave) {
       bool? result = await showConfirmationDialog(
-        yes: 'Discard',
+        yes: 'Continue',
         no: 'Save',
+        headerImage: AppAssets.caution,
         context,
-        title: 'Discard changes?',
-        content: "Unsaved changes detected. Would you like to discard them?",
+        title: 'Caution',
+        content:
+            "You have unsaved changes. Are you sure you want to exit without saving?",
       );
 
       if (result == null || !context.mounted) return;
@@ -93,9 +95,7 @@ class _EditProfileState extends State<EditProfile>
 
         await onSaveChanges();
 
-        if (mounted) {
-          Navigator.pop(context);
-        }
+        if (mounted) Navigator.pop(context);
       }
 
       if (result) {

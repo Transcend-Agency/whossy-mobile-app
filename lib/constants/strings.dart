@@ -128,4 +128,8 @@ class AppStrings {
   static const String accUnselected = 'No account selected';
 
   static const String signOutFailure = 'Failed to sign out. Please try again.';
+
+  static String filePath(String? uid, String fileName) {
+    return 'users/$uid/profile_pictures/$fileName';
+  }
 }

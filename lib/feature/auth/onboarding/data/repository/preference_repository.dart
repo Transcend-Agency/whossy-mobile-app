@@ -1,19 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../model/preferences.dart';
 
 class PreferenceRepository {
   final _prefFirestore = FirebaseFirestore.instance.collection('preferences');
 
-  Future<void> uploadPreferences({
-    String? uid,
-    required Map<String, dynamic> data,
-  }) async {
+  Future<void> uploadPreferences({required Map<String, dynamic> data}) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
     await _prefFirestore.doc(uid).set(data, SetOptions(merge: true));
   }
 
-  Future<Preferences?> getPreferences(String id) async {
-    final docSnapshot = await _prefFirestore.doc(id).get();
+  Future<Preferences?> getPreferences() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
+    final docSnapshot = await _prefFirestore.doc(uid).get();
 
     if (docSnapshot.exists) {
       final data = docSnapshot.data();

@@ -24,8 +24,8 @@ void main() async {
   // E/FirebaseAuth(26281): [SmsRetrieverHelper] SMS verification code request failed:
   // unknown status code: 18002 Invalid PlayIntegrity token; app not Recognized by Play Store.
   await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.debug,
-    appleProvider: AppleProvider.debug,
+    androidProvider: AndroidProvider.playIntegrity,
+    appleProvider: AppleProvider.appAttest,
   );
 
   // Start up necessary services

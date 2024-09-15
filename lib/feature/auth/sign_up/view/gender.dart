@@ -53,49 +53,50 @@ class _SignUpGenderScreenState extends State<SignUpGenderScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-        back: true,
-        padding: pagePadding,
-        body: Selector<SignUpNotifier, bool>(
-          selector: (_, auth) => auth.spinnerState,
-          builder: (_, spinner, __) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SignupHeaderText(
-                  title: "Your account is almost ready",
-                  subtitle: "Select your gender",
-                ),
-                Row(
-                  children: [
-                    GenderButton(
-                      label: 'Male',
-                      value: Gender.male,
-                      groupValue: _gender,
-                      onChanged: (_) => setState(() => _gender = _),
-                    ),
-                    addWidth(6.w),
-                    GenderButton(
-                      label: 'Female',
-                      value: Gender.female,
-                      groupValue: _gender,
-                      onChanged: (_) {
-                        setState(() => _gender = _);
-                      },
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: AppButton(
-                    onPress: _gender != null ? onPress : null,
-                    text: 'Continue',
-                    loading: spinner,
+      back: true,
+      padding: pagePadding,
+      body: Selector<SignUpNotifier, bool>(
+        selector: (_, auth) => auth.spinnerState,
+        builder: (_, spinner, __) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SignupHeaderText(
+                title: "Your account is almost ready",
+                subtitle: "Select your gender",
+              ),
+              Row(
+                children: [
+                  GenderButton(
+                    label: 'Male',
+                    value: Gender.male,
+                    groupValue: _gender,
+                    onChanged: (_) => setState(() => _gender = _),
                   ),
+                  addWidth(6.w),
+                  GenderButton(
+                    label: 'Female',
+                    value: Gender.female,
+                    groupValue: _gender,
+                    onChanged: (_) {
+                      setState(() => _gender = _);
+                    },
+                  ),
+                ],
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: AppButton(
+                  onPress: _gender != null ? onPress : null,
+                  text: 'Continue',
+                  loading: spinner,
                 ),
-              ],
-            );
-          },
-        ));
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
@@ -12,6 +13,7 @@ import 'package:whossy_app/common/utils/services/file_service.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
+import '../../../../../../constants/index.dart';
 import '../../../../../../provider/providers.dart';
 import '../../../../../auth/onboarding/view/edit_sheet.dart';
 import 'image_view.dart';
@@ -50,6 +52,30 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
 
       widget.edit.updateProfile(profilePics: widget.profilePics);
     });
+  }
+
+  Future<bool?> showDialog() => showConfirmationDialog(
+        yes: 'Open Settings',
+        no: 'Cancel',
+        headerImage: AppAssets.caution,
+        context,
+        title: 'Permission required',
+        content: "Please grant photo access in the app settings.",
+      );
+
+  Future<bool> _handlePermissions({int? index}) async {
+    bool value = false;
+
+    var status = await Permission.photos.status;
+
+    if (status.isGranted) {
+      value = await _addPhoto(index: index);
+    } else if (status.isDenied || status.isPermanentlyDenied) {
+      var result = await showDialog();
+      if (result == true) openAppSettings();
+    }
+
+    return value;
   }
 
   Future<bool> _addPhoto({int? index}) async {
@@ -139,7 +165,7 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
         builder: (_, connected, __) {
           if (index >= widget.profilePics.length) {
             // Return a fallback widget or an empty container
-            return EmptyView(onActionTap: _addPhoto);
+            return EmptyView(onActionTap: _handlePermissions);
           }
 
           // if (!connected) {
@@ -177,7 +203,7 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
                       onEditTap: () => showCustomModalBottomSheet(
                         context,
                         onDelete: () => _deleteImage(index),
-                        onReUpload: () => _addPhoto(index: index),
+                        onReUpload: () => _handlePermissions(index: index),
                       ),
                     ),
                     if (isDraggingOver)

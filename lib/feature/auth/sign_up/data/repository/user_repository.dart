@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
 
+import '../../../../../constants/index.dart';
 import '../../model/app_user.dart';
 
 /// Interacting with the database [Firebase](www.firebase.com) directly
@@ -13,13 +14,10 @@ class UserRepository {
   final _usersFirestore = FirebaseFirestore.instance.collection('users');
   final _storage = FirebaseStorage.instance;
 
-  Future<void> setUserData({
-    String? id,
-    required Map<String, dynamic> data,
-  }) async {
-    // final uid = FirebaseAuth.instance.currentUser?.uid ?? id;
+  Future<void> setUserData({required Map<String, dynamic> data}) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
 
-    await _usersFirestore.doc(id).set(data, SetOptions(merge: true));
+    await _usersFirestore.doc(uid).set(data, SetOptions(merge: true));
   }
 
   Future<bool> isPhoneUnique(String phone) async {
@@ -41,7 +39,7 @@ class UserRepository {
         'isEmpty': exists ? !isEmpty : isEmpty,
       };
     } on FirebaseException catch (e) {
-      const message = 'Unable to check, device offline';
+      const message = AppStrings.deviceOffline;
 
       log('Error checking if phone number is unique, '
           'A Firebase Exception occurred ${e.toString()}');
@@ -57,7 +55,9 @@ class UserRepository {
     };
   }
 
-  Future<AppUser?> getUserData(String uid) async {
+  Future<AppUser?> getUserData() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
     final docSnapshot = await _usersFirestore.doc(uid).get();
 
     if (docSnapshot.exists) {
@@ -79,24 +79,22 @@ class UserRepository {
 
   Future<List<String>> uploadProfilePictures(List<File> files) async {
     try {
-      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final uid = FirebaseAuth.instance.currentUser?.uid;
 
       // Create a list of Future tasks for uploading each file
       final uploadFutures = files.map((file) async {
         final fileName = DateTime.now().millisecondsSinceEpoch.toString();
         final storageRef =
-            _storage.ref().child('users/$uid/profile_pictures/$fileName');
+            _storage.ref().child(AppStrings.filePath(uid, fileName));
         final uploadTask = await storageRef.putFile(file);
         return uploadTask.ref.getDownloadURL();
       }).toList();
 
       // Wait for all upload tasks to complete and get their download URLs
-      final downloadUrls = await Future.wait(uploadFutures);
-
-      return downloadUrls;
+      return await Future.wait(uploadFutures);
     } catch (e) {
       log(e.toString());
-      throw FailedUploadException('Poor network, please try again later');
+      throw FailedUploadException(AppStrings.deviceOffline);
     }
   }
 }

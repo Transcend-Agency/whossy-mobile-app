@@ -64,8 +64,11 @@ class _SettingsState extends State<Settings> {
               onTap: () async {
                 bool? result = await showConfirmationDialog(
                   context,
-                  title: 'Logout',
-                  content: 'Are you sure you want to logout?',
+                  title: 'Confirm Log out',
+                  content:
+                      'All your current sessions will be closed after logging out. Are you sure you want to log out?',
+                  yes: 'Log out',
+                  no: 'Cancel',
                 );
 
                 if (result == null || !context.mounted) return;

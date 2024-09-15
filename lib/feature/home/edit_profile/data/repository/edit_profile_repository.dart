@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 
 import '../../../../auth/onboarding/data/repository/preference_repository.dart';
@@ -11,17 +10,13 @@ class EditProfileRepository {
   final _prefRepository = PreferenceRepository();
 
   Future<ProfileData?> fetchProfileData() async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-
     final results = await Future.wait([
-      _userRepository.getUserData(uid),
-      _prefRepository.getPreferences(uid)
+      _userRepository.getUserData(),
+      _prefRepository.getPreferences(),
     ]);
 
     final userData = results[0] as AppUser?;
     final prefs = results[1] as Preferences?;
-
-    // log("The prefs is ${prefs.toString()}");
 
     if (userData == null && prefs == null) return null;
 
@@ -32,14 +27,12 @@ class EditProfileRepository {
     required Map<String, dynamic> coreProfileData,
     required Map<String, dynamic> corePrefData,
   }) async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-
     if (coreProfileData.isNotEmpty) {
-      await _userRepository.setUserData(id: uid, data: coreProfileData);
+      await _userRepository.setUserData(data: coreProfileData);
     }
 
     if (corePrefData.isNotEmpty) {
-      await _prefRepository.uploadPreferences(uid: uid, data: corePrefData);
+      await _prefRepository.uploadPreferences(data: corePrefData);
     }
   }
 }

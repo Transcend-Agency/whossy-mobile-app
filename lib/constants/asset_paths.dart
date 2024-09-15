@@ -55,4 +55,6 @@ class AppAssets {
   static const meet = 'assets/icons/meet.png';
   static const block = 'assets/icons/block.png';
   static const faq = 'assets/icons/faq.png';
+
+  static const caution = 'assets/icons/caution.png';
 }
