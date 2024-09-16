@@ -57,36 +57,36 @@ class ModalContent extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: data.items.asMap().entries.map((entry) {
-              int index = entry.key; // Get the index
-              var item = entry.value; // Get the item
+            children: [
+              ...data.items.asMap().entries.map((entry) {
+                int index = entry.key; // Get the index
+                var item = entry.value; // Get the item
 
-              return Padding(
-                padding: EdgeInsets.only(top: 18.h),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Text(
-                        '${index + 1}. ${item.title}',
+                return Padding(
+                  padding: EdgeInsets.only(top: 18.h),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        '${data.header != 'FAQs' ? '${index + 1}.' : ''} ${item.title}',
                         style: TextStyles.boldPrefText.copyWith(),
                       ),
-                    ),
-                    addHeight(6),
-                    Text(
-                      item.subTitle,
-                      style: TextStyles.boldPrefText.copyWith(
-                        color: AppColors.hintTextColor,
-                        fontWeight: FontWeight.w400,
-                        fontSize: AppUtils.scale(11.sp) ?? 13.sp,
+                      addHeight(6),
+                      Text(
+                        item.subTitle,
+                        style: TextStyles.boldPrefText.copyWith(
+                          color: AppColors.hintTextColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: AppUtils.scale(11.sp) ?? 13.sp,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
+                    ],
+                  ),
+                );
+              }),
+              // Adding the spacer as the last item in the column
+            ],
           ),
         )
       ],

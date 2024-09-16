@@ -31,11 +31,12 @@ class _HomeWrapperState extends State<HomeWrapper> {
       const Profile(),
     ];
 
-    _editProfileNotifier =
-        Provider.of<EditProfileNotifier>(context, listen: false);
+    _editProfileNotifier = context.read<EditProfileNotifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _editProfileNotifier.getUserData(showSnackbar: showSnackbar);
+
+      _editProfileNotifier.checkOpenedState();
     });
 
     super.initState();

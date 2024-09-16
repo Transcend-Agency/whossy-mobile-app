@@ -129,6 +129,9 @@ class AppStrings {
 
   static const String signOutFailure = 'Failed to sign out. Please try again.';
 
+  static const String mission =
+      'Our mission is to help you connect with new people in a safe and enjoyable environment. Your safety is our top priority, and we have put together this guide to help you navigate the online dating world securely and confidently.';
+
   static String filePath(String? uid, String fileName) {
     return 'users/$uid/profile_pictures/$fileName';
   }

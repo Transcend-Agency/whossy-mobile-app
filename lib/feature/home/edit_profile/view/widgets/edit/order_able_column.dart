@@ -13,7 +13,6 @@ import 'package:whossy_app/common/utils/services/file_service.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
-import '../../../../../../constants/index.dart';
 import '../../../../../../provider/providers.dart';
 import '../../../../../auth/onboarding/view/edit_sheet.dart';
 import 'image_view.dart';
@@ -57,7 +56,6 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
   Future<bool?> showDialog() => showConfirmationDialog(
         yes: 'Open Settings',
         no: 'Cancel',
-        headerImage: AppAssets.caution,
         context,
         title: 'Permission required',
         content: "Please grant photo access in the app settings.",
@@ -66,13 +64,18 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
   Future<bool> _handlePermissions({int? index}) async {
     bool value = false;
 
-    var status = await Permission.photos.status;
+    try {
+      var status = await Permission.photos.status;
 
-    if (status.isGranted) {
-      value = await _addPhoto(index: index);
-    } else if (status.isDenied || status.isPermanentlyDenied) {
-      var result = await showDialog();
-      if (result == true) openAppSettings();
+      if (status.isGranted) {
+        value = await _addPhoto(index: index);
+      } else if (status.isDenied || status.isPermanentlyDenied) {
+        var result = await showDialog();
+        if (result == true) openAppSettings();
+      }
+    } catch (e) {
+      showSnackbar(
+          'Unable to access photos. Please update your permissions in settings.');
     }
 
     return value;
@@ -110,7 +113,15 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
 
   showSnackbar(String message) {
     if (mounted) {
-      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+      showTopSnackBar(
+        Overlay.of(context),
+        displayDuration: const Duration(seconds: 5),
+        AppSnackbar(
+          text: message,
+          label: 'Settings',
+          onLabelTapped: openAppSettings,
+        ),
+      );
     }
   }
 

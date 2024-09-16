@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_app/common/styles/component_style.dart';
 
 import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
 import '../../utils/index.dart';
+import '../index.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String title;
   final String content;
   final String? yes;
   final String? no;
-  final String? headerImage;
+  final Widget? headerImage;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
@@ -34,22 +34,23 @@ class ConfirmationDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.r, vertical: 10.r),
+        padding: EdgeInsets.symmetric(horizontal: 12.r, vertical: 14.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            if (headerImage != null)
-              Image.asset(
-                headerImage!,
-                height: 110,
+            if (headerImage != null) ...[
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 6.h),
+                child: headerImage,
               ),
+            ],
             Text(
               title,
               style: TextStyles.title.copyWith(fontSize: 24),
               textAlign: TextAlign.center,
             ),
-            addHeight(10),
+            addHeight(12),
             Text(
               content,
               style: TextStyles.bioText.copyWith(
@@ -62,41 +63,27 @@ class ConfirmationDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Expanded(
-                  child: MaterialButton(
-                    color: AppColors.buttonColor,
-                    textColor: Colors.white,
-                    elevation: 0,
-                    shape: circularBorder,
-                    onPressed: onConfirm,
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
-                    child: Text(
-                      yes ?? 'Yes',
-                      style: TextStyles.buttonText.copyWith(
-                        fontSize: AppUtils.scale(18),
-                      ),
+                if (yes != null)
+                  Expanded(
+                    child: DialogButton(
+                      text: yes ?? 'Yes',
+                      color: AppColors.buttonColor,
+                      textColor: Colors.white,
+                      onPressed: onConfirm,
                     ),
                   ),
-                ),
-                addWidth(8),
-                Expanded(
-                  child: MaterialButton(
-                    color: AppColors.listTileColor,
-                    textColor: AppColors.hintTextColor,
-                    elevation: 0,
-                    shape: circularBorder,
-                    onPressed: onCancel,
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
-                    child: Text(
-                      no ?? 'No',
-                      style: TextStyles.buttonText.copyWith(
-                        fontSize: AppUtils.scale(18),
-                      ),
+                if (yes != null && no != null) addWidth(8),
+                if (no != null)
+                  Expanded(
+                    child: DialogButton(
+                      text: no ?? 'No',
+                      color: AppColors.listTileColor,
+                      textColor: AppColors.hintTextColor,
+                      onPressed: onCancel,
                     ),
                   ),
-                ),
               ],
-            ),
+            )
           ],
         ),
       ),
@@ -108,7 +95,7 @@ Future<bool?> showConfirmationDialog(
   BuildContext context, {
   required String title,
   required String content,
-  String? headerImage,
+  Widget? headerImage,
   String? yes,
   String? no,
 }) {

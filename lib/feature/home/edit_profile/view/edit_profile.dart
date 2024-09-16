@@ -7,6 +7,7 @@ import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 
 import '../../../../common/styles/text_style.dart';
+import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
 import '../../../../provider/providers.dart';
 import '../../settings/view/widgets/_.dart';
@@ -29,6 +30,9 @@ class _EditProfileState extends State<EditProfile>
   set hasSave(bool newValue) {
     setState(() => _hasSave = newValue);
   }
+
+  Future<void> wait() async =>
+      await Future.delayed(const Duration(milliseconds: 200));
 
   @override
   void initState() {
@@ -58,15 +62,13 @@ class _EditProfileState extends State<EditProfile>
       subHeader: 'Your changes will be saved in a minute',
     );
 
-    await Future.delayed(const Duration(seconds: 1));
+    await wait();
 
     await _profileNotifier.saveUserProfile(
         showSnackbar: (_) => showSnackbar(_, pop: true));
 
     if (!mounted) return;
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop(); // Close the loading sheet
-    }
+    Nav.popUntil(context, HomeWrapper.name);
   }
 
   showSnackbar(String message, {bool pop = false}) {
@@ -81,7 +83,10 @@ class _EditProfileState extends State<EditProfile>
       bool? result = await showConfirmationDialog(
         yes: 'Continue',
         no: 'Save',
-        headerImage: AppAssets.caution,
+        headerImage: Image.asset(
+          AppAssets.caution,
+          height: 100,
+        ),
         context,
         title: 'Caution',
         content:
@@ -91,11 +96,9 @@ class _EditProfileState extends State<EditProfile>
       if (result == null || !context.mounted) return;
 
       if (!result) {
-        await Future.delayed(const Duration(seconds: 1));
+        await wait();
 
         await onSaveChanges();
-
-        if (mounted) Navigator.pop(context);
       }
 
       if (result) {

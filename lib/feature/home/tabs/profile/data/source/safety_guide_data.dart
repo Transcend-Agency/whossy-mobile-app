@@ -82,7 +82,7 @@ final List<GuideDetail> guideDetails = [
       'Our support team is here to help. If you need assistance or have concerns, don’t hesitate to reach out.',
     ),
   ]),
-  GuideDetail(AppAssets.faq, 'FAQ', [
+  GuideDetail(AppAssets.faq, 'FAQs', [
     GuideDetailItem(
       'Q: How Do I Report a User?',
       'A: To report a user, go to profile, click the “Report” button, and follow the instructions.',

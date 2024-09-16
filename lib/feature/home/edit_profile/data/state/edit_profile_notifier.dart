@@ -2,7 +2,8 @@ import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:whossy_app/common/utils/services/file_service.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/common/utils/services/services.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/repository/edit_profile_repository.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
@@ -15,6 +16,8 @@ import '../../../preferences/model/generic_enum.dart';
 import '../../model/core_profile.dart';
 
 class EditProfileNotifier extends ChangeNotifier {
+  final _sharedPrefs = SharedPrefsService();
+
   CoreProfile? _dynCoreProfile;
   CoreProfile? _staticCoreProfile;
 
@@ -22,6 +25,24 @@ class EditProfileNotifier extends ChangeNotifier {
   CorePreferences? _staticCorePrefs;
 
   final _editProfileRepo = EditProfileRepository();
+
+  bool _hasSafetyGuideOpened = true;
+
+  // Getter for hasSafetyGuideOpened
+  bool get hasSafetyGuideOpened => _hasSafetyGuideOpened;
+
+  // Setter for hasSafetyGuideOpened
+  set hasSafetyGuideOpened(bool value) {
+    if (_hasSafetyGuideOpened != value) {
+      _hasSafetyGuideOpened = value;
+      notifyListeners();
+    }
+  }
+
+  checkOpenedState() async {
+    hasSafetyGuideOpened =
+        !await _sharedPrefs.isFirstTimeOpened(SafetyGuide.name);
+  }
 
   CoreProfile? get coreProfile => _dynCoreProfile;
   CoreProfile? get staticProfile => _staticCoreProfile;

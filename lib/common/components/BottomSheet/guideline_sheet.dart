@@ -2,40 +2,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whossy_app/common/styles/component_style.dart';
 
 class _CupertinoBottomSheetContainer extends StatelessWidget {
   final Widget? child;
-  final Color? backgroundColor;
 
   /// Add padding to the top of [child], this is also the height of visible
   /// content behind [child]
   ///
   /// Defaults to 10
-  const _CupertinoBottomSheetContainer({
-    this.child,
-    this.backgroundColor,
-  });
+  const _CupertinoBottomSheetContainer({this.child});
 
   @override
   Widget build(BuildContext context) {
-    final topSafeAreaPadding = MediaQuery.of(context).padding.top;
-    final topPadding = 16 + topSafeAreaPadding;
-    const shadow = BoxShadow(
-      blurRadius: 10,
-      color: Colors.black12,
-      spreadRadius: 5,
-    );
-    final backgroundColor = this.backgroundColor ??
-        CupertinoTheme.of(context).scaffoldBackgroundColor;
+    final topPadding = 18 + MediaQuery.of(context).padding.top;
 
     return Padding(
       padding: EdgeInsets.only(top: topPadding),
-      child: ClipRRect(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-        child: Container(
-          decoration:
-              BoxDecoration(color: backgroundColor, boxShadow: const [shadow]),
-          width: double.infinity,
+      child: Container(
+        decoration: guidelineSheetDecoration,
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           child: MediaQuery.removePadding(
             context: context,
             removeTop: true, // Remove top Safe Area
@@ -147,46 +134,49 @@ class _CupertinoDialogBodyState extends State<CupertinoDialogBody> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       initialChildSize: 1,
-      minChildSize: 0.6,
+      minChildSize: 0.8,
       builder: (context, controller) {
         return _CupertinoBottomSheetContainer(
-          backgroundColor: Colors.white,
           child: NotificationListener<DraggableScrollableNotification>(
-            onNotification: (DraggableScrollableNotification notification) {
-              if (!isDialogPopped &&
-                  notification.extent == notification.minExtent) {
-                isDialogPopped = true;
-                Navigator.of(context).pop();
-              }
-              return false;
-            },
-            child: CupertinoApp(
-              debugShowCheckedModeBanner: false,
-              home: Container(
-                color: Colors.white,
-                child: Stack(
-                  children: [
-                    widget.child,
-                    Positioned(
-                      top: 20.h,
-                      left: 8.w,
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Container(
-                          padding: EdgeInsets.all(10.r),
-                          child: const Icon(
-                            Icons.arrow_back_ios,
-                            size: 18,
-                            color: Colors.black,
-                          ),
+              onNotification: (notification) {
+                if (!isDialogPopped &&
+                    notification.extent == notification.minExtent) {
+                  isDialogPopped = true;
+                  Navigator.of(context).pop();
+                }
+
+                return false;
+              },
+              child: Stack(
+                children: [
+                  CupertinoApp(
+                    debugShowCheckedModeBanner: false,
+                    home: CupertinoPageScaffold(
+                      child: CustomScrollView(
+                        controller: controller,
+                        slivers: [
+                          SliverToBoxAdapter(child: widget.child),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 20.h,
+                    left: 8.w,
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        padding: EdgeInsets.all(10.r),
+                        child: const Icon(
+                          Icons.arrow_back_ios,
+                          size: 18,
+                          color: Colors.black,
                         ),
                       ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
+                    ),
+                  )
+                ],
+              )),
         );
       },
     );

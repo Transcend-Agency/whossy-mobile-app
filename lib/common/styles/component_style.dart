@@ -16,6 +16,16 @@ final circularTop = BorderRadius.vertical(top: Radius.circular(14.r));
 // Use it in RoundedRectangleBorder
 final roundedTop = RoundedRectangleBorder(borderRadius: circularTop);
 
+final guidelineSheetDecoration = BoxDecoration(
+  boxShadow: [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.1), // Shadow color
+      blurRadius: 10,
+      offset: const Offset(0, -4),
+    ),
+  ],
+);
+
 final circularBorder = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(8.r),
 );

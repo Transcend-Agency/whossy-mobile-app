@@ -48,8 +48,6 @@ class Nav {
     await context.router.push(route!);
   }
 
-  static bool isRoot(BuildContext context) => context.router.isRoot;
-
   static Future<void> replaceAll(
     BuildContext context,
     List<PageRouteInfo<dynamic>> routes,
@@ -73,5 +71,10 @@ class Nav {
     PageRouteInfo<dynamic> route,
   ) async {
     await context.router.replace(route);
+  }
+
+  // New popUntil method
+  static void popUntil(BuildContext context, String routeName) {
+    context.router.popUntil((route) => route.settings.name == routeName);
   }
 }
