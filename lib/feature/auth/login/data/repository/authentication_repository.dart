@@ -138,7 +138,8 @@ class AuthenticationRepository {
           ? await user.linkWithCredential(credential)
           : await FirebaseAuth.instance.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'provider-already-linked') {
+      if (e.code == 'provider-already-linked' ||
+          e.code == 'credential-already-in-use') {
         // Sign in with Google credential if provider is already linked
         return await FirebaseAuth.instance.signInWithCredential(credential);
       } else {

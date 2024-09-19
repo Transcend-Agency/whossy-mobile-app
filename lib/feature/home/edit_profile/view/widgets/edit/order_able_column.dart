@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -63,22 +64,35 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
     bool value = false;
 
     try {
-      // Check if the platform is iOS
+      // Call _addPhoto first
+      value = await _addPhoto(index: index);
+    } catch (e) {
+      // If an error occurs, check the permission status
       if (Platform.isIOS) {
         var status = await Permission.photos.status;
 
-        if (status.isGranted) {
-          value = await _addPhoto(index: index);
-        } else if (status.isDenied || status.isPermanentlyDenied) {
-          var result = await showDialog();
-          if (result == true) openAppSettings();
+        // Log the permission status
+        log('Permission status after error: $status');
+
+        // If permission is not granted, request it
+        if (status.isDenied || status.isRestricted) {
+          var newStatus = await Permission.photos.request();
+          log('New permission status: $newStatus');
+
+          if (newStatus.isGranted) {
+            // Retry adding the photo if permission is granted
+            value = await _addPhoto(index: index);
+          } else if (newStatus.isPermanentlyDenied) {
+            // Show dialog to direct the user to settings
+            var result = await showDialog();
+            if (result == true) {
+              openAppSettings();
+            }
+          }
         }
       } else {
-        // For Android, no permission needed
-        value = await _addPhoto(index: index);
+        showSnackbar(AppStrings.deniedAccess);
       }
-    } catch (e) {
-      showSnackbar(AppStrings.deniedAccess);
     }
 
     return value;
@@ -87,28 +101,36 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
   Future<bool> _addPhoto({int? index}) async {
     bool result = false;
 
-    final pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    try {
+      // Request to pick an image from the gallery
+      final pickedImage = await _picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedImage != null) {
-      final croppedImage = await FileService.cropImage(File(pickedImage.path));
+      if (pickedImage != null) {
+        final croppedImage =
+            await FileService.cropImage(File(pickedImage.path));
 
-      if (croppedImage != null) {
-        setState(() {
-          if (index != null &&
-              index >= 0 &&
-              index < widget.profilePics.length) {
-            // Replace the existing element at the specified index
-            widget.profilePics[index] = croppedImage.path;
-          } else {
-            // Add the new image to the end of the list
-            widget.profilePics.add(croppedImage.path);
-          }
+        if (croppedImage != null) {
+          setState(() {
+            if (index != null &&
+                index >= 0 &&
+                index < widget.profilePics.length) {
+              // Replace the existing element at the specified index
+              widget.profilePics[index] = croppedImage.path;
+            } else {
+              // Add the new image to the end of the list
+              widget.profilePics.add(croppedImage.path);
+            }
 
-          result = true;
+            result = true;
 
-          widget.edit.updateProfile(profilePics: widget.profilePics);
-        });
+            widget.edit.updateProfile(profilePics: widget.profilePics);
+          });
+        }
       }
+    } catch (e) {
+      // Throw an error if permission is denied
+      log('Error picking image: $e');
+      rethrow;
     }
 
     return result;
@@ -192,7 +214,7 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
                 ),
               ),
               childWhenDragging: Container(decoration: editMediaDecoration),
-              onDragStarted: () => Vibrate.feedback(FeedbackType.selection),
+              onDragStarted: () => Vibrate.feedback(FeedbackType.success),
               child: DragTarget<int>(
                 builder: (ctx, candidateData, rejectedData) {
                   bool isDraggingOver = candidateData.isNotEmpty;

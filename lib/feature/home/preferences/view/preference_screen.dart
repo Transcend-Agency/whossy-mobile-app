@@ -23,8 +23,7 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
 
   @override
   void initState() {
-    _preferencesNotifier =
-        Provider.of<PreferencesNotifier>(context, listen: false);
+    _preferencesNotifier = context.read<PreferencesNotifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _preferencesNotifier.getFilters(showSnackbar: showSnackbar);

@@ -47,23 +47,36 @@ class _PictureScreenState extends State<PictureScreen>
   Future<bool> _handlePermissions({int? index}) async {
     bool value = false;
 
-    try {
-      // Check if the platform is iOS
+     try {
+      // Call _addPhoto first
+      value = await _addPhoto(index: index);
+    } catch (e) {
+      // If an error occurs, check the permission status
       if (Platform.isIOS) {
         var status = await Permission.photos.status;
 
-        if (status.isGranted) {
-          value = await _addPhoto(index: index);
-        } else if (status.isDenied || status.isPermanentlyDenied) {
-          var result = await showDialog();
-          if (result == true) openAppSettings();
+        // Log the permission status
+        log('Permission status after error: $status');
+
+        // If permission is not granted, request it
+        if (status.isDenied || status.isRestricted) {
+          var newStatus = await Permission.photos.request();
+          log('New permission status: $newStatus');
+
+          if (newStatus.isGranted) {
+            // Retry adding the photo if permission is granted
+            value = await _addPhoto(index: index);
+          } else if (newStatus.isPermanentlyDenied) {
+            // Show dialog to direct the user to settings
+            var result = await showDialog();
+            if (result == true) {
+              openAppSettings();
+            }
+          }
         }
       } else {
-        // For Android, no permission needed
-        value = await _addPhoto(index: index);
+        showSnackbar(AppStrings.deniedAccess);
       }
-    } catch (e) {
-      showSnackbar(AppStrings.deniedAccess);
     }
 
     return value;
@@ -73,48 +86,57 @@ class _PictureScreenState extends State<PictureScreen>
     bool result = false;
     List<XFile> pickedImages = [];
 
-    if (index != null) {
-      // For re-uploading a single photo
-      final pickedImage = await _picker.pickImage(source: ImageSource.gallery);
-      if (pickedImage != null) pickedImages = [pickedImage];
-    } else if (_images.length < 6) {
-      // For picking multiple images
-      pickedImages = await _picker.pickMultiImage(limit: 6 - _images.length);
-    } else {
-      log('Delete pictures to add more');
-      return result;
-    }
+    try {
 
-    for (var file in pickedImages) {
-      final croppedImage = await FileService.cropImage(File(file.path));
-
-      if (croppedImage != null) {
-        setState(() {
-          if (index != null && index >= 0 && index < _images.length) {
-            // Replace the image at the specific index
-            _images[index] = croppedImage;
-            result = true; // Mark the re-upload as successful
-          } else {
-            // Add the new image to the list
-            _images.add(croppedImage);
-          }
-
-          // Ensure the list does not exceed 6 images
-          if (_images.length > 6) {
-            _images = _images.sublist(0, 6);
-          }
-
-          // Update the onboarding state
-          final valid = _images.length >= 3;
-          if (onboarding.isSelected(widget.pageIndex) != valid) {
-            onboarding.select(widget.pageIndex, value: valid);
-          }
-        });
+       if (index != null) {
+        // For re-uploading a single photo
+        final pickedImage =
+            await _picker.pickImage(source: ImageSource.gallery);
+        if (pickedImage != null) pickedImages = [pickedImage];
+      } else if (_images.length < 6) {
+        // For picking multiple images
+        pickedImages = await _picker.pickMultiImage(limit: 6 - _images.length);
+      } else {
+        log('Delete pictures to add more');
+        return result;
       }
-    }
 
-    // Call updateUserProfile after all images are processed
-    onboarding.updateUserProfile(picFiles: _images);
+      for (var file in pickedImages) {
+        final croppedImage = await FileService.cropImage(File(file.path));
+
+        if (croppedImage != null) {
+          setState(() {
+            if (index != null && index >= 0 && index < _images.length) {
+              // Replace the image at the specific index
+              _images[index] = croppedImage;
+              result = true; // Mark the re-upload as successful
+            } else {
+              // Add the new image to the list
+              _images.add(croppedImage);
+            }
+
+            // Ensure the list does not exceed 6 images
+            if (_images.length > 6) {
+              _images = _images.sublist(0, 6);
+            }
+
+            // Update the onboarding state
+            final valid = _images.length >= 3;
+            if (onboarding.isSelected(widget.pageIndex) != valid) {
+              onboarding.select(widget.pageIndex, value: valid);
+            }
+          });
+        }
+      }
+
+      // Call updateUserProfile after all images are processed
+      onboarding.updateUserProfile(picFiles: _images);
+
+    } catch (e) {
+      // Throw an error if permission is denied
+      log('Error picking image: $e');
+      rethrow;
+    }
 
     return result; // Return true if re-uploading succeeded, otherwise false
   }

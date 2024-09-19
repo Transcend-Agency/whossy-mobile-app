@@ -96,36 +96,31 @@ class _SliderSheetState extends State<SliderSheet> {
               padding: EdgeInsets.symmetric(vertical: 12.h),
               margin: EdgeInsets.symmetric(horizontal: 14.w),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14.r),
-                    child: AppChip(
-                      data: currentValue.getFormattedRange(
-                          type: widget.rangeType),
-                      isSelected: false,
-                      outlined: false,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.h,
-                        horizontal: 8.w,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14.r),
+                      child: AppChip(
+                        data: currentValue.getFormattedRange(
+                            type: widget.rangeType),
+                        isSelected: false,
+                        outlined: false,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.h,
+                          horizontal: 8.w,
+                        ),
                       ),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12.w)
                         .copyWith(top: 8.h),
-                    child: SliderTheme(
-                      data: SliderTheme.of(context).copyWith(
-                        activeTrackColor: AppColors.activeTrackColor,
-                        inactiveTrackColor: Colors.white,
-                        thumbColor: Colors.white,
-                      ),
-                      child: Slider.adaptive(
-                        onChanged: updateValue,
-                        min: widget.range.min,
-                        max: widget.range.max,
-                        value: currentValue,
-                      ),
+                    child: AppSlider(
+                      onChanged: updateValue,
+                      range: RangeValues(widget.range.min, widget.range.max),
+                      value: currentValue,
                     ),
                   ),
                 ],

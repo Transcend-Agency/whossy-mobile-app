@@ -73,6 +73,7 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
           decoration: const BoxDecoration(color: AppColors.inputBackGround),
           padding: EdgeInsets.symmetric(vertical: 14.r),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 14.r),
@@ -93,19 +94,9 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.r, vertical: 8.h),
-                child: SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    trackHeight: 1,
-                    activeTrackColor: AppColors.activeTrackColor,
-                    inactiveTrackColor: Colors.white,
-                    thumbColor: Colors.white,
-                  ),
-                  child: Slider.adaptive(
-                    value: distance,
-                    onChanged: onChanged,
-                    min: 0,
-                    max: 100,
-                  ),
+                child: AppSlider(
+                  value: distance,
+                  onChanged: onChanged,
                 ),
               ),
               Padding(
