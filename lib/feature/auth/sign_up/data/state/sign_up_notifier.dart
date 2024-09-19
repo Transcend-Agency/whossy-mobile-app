@@ -58,7 +58,9 @@ class SignUpNotifier extends ChangeNotifier {
         // Update the display name
         await user.updateDisplayName(_user.firstName);
 
-        if (user.emailVerified) {
+        bool phoneSignUp = await _userRepository.didUserCreateWithPhoneNumber();
+
+        if (user.emailVerified || phoneSignUp) {
           toWelcome();
           return;
         }
@@ -162,6 +164,15 @@ class SignUpNotifier extends ChangeNotifier {
     } finally {
       spinnerState = false;
     }
+  }
+
+  void reset() {
+    _user = AppUser();
+    userCredential = null;
+    _createSpinner = false;
+
+    // Notify listeners that the state has been reset
+    notifyListeners();
   }
 
   void updateAppUser({

@@ -59,7 +59,7 @@ class _SignUpNameScreenState extends State<SignUpNameScreen> {
   @override
   void initState() {
     super.initState();
-    signUpProvider = Provider.of<SignUpNotifier>(context, listen: false);
+    signUpProvider = context.read<SignUpNotifier>();
   }
 
   @override

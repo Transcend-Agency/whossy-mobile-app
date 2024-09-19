@@ -13,7 +13,7 @@ class SkipButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return [4, 5, 6, 7, 8, 9].contains(page)
+    return [4, 5, 6, 7, 8].contains(page)
         ? Row(
             mainAxisSize: MainAxisSize.min,
             children: [

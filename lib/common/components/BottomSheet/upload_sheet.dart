@@ -90,13 +90,13 @@ const minSize = 0.4;
 const maxSize = 0.5;
 
 // Todo: Make responsive for bigger screens
-void showLoadingSheet(
+Future<void> showLoadingSheet(
   BuildContext ctx,
   AnimationController ctr, {
   required String header,
   required String subHeader,
-}) {
-  showModalBottomSheet<void>(
+}) async {
+  await showModalBottomSheet<void>(
     transitionAnimationController: ctr,
     showDragHandle: false,
     enableDrag: false,

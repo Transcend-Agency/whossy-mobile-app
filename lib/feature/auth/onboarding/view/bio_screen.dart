@@ -48,8 +48,7 @@ class _BioScreenState extends State<BioScreen>
       _debouncer.run(_update);
     });
 
-    onboardingProvider =
-        Provider.of<OnboardingNotifier>(context, listen: false);
+    onboardingProvider = context.read<OnboardingNotifier>();
   }
 
   @override
@@ -84,10 +83,12 @@ class _BioScreenState extends State<BioScreen>
           textController: textController,
           maxLength: _maxCharacterCount,
           keyType: TextInputType.multiline,
+          validation: (bio) => bio?.trim().validateBio(),
+          validationMode: AutovalidateMode.onUserInteraction,
         ),
-        addHeight(2),
+        addHeight(4),
         Align(
-          alignment: Alignment.centerLeft,
+          alignment: Alignment.centerRight,
           child: Text(
             '$_characterCount/$_maxCharacterCount characters',
             style: TextStyles.hintText.copyWith(

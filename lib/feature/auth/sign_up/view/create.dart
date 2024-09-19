@@ -151,7 +151,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
     confirmPasswordFocusNode.addListener(_updateConfirmPasswordColor);
     confirmPasswordController.addListener(_updateConfirmPasswordEmpty);
 
-    signUpProvider = Provider.of<SignUpNotifier>(context, listen: false);
+    signUpProvider = context.read<SignUpNotifier>();
   }
 
   @override

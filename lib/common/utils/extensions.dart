@@ -134,12 +134,25 @@ extension StringExtention on String? {
   }
 
   bool isValidBio() {
+    // Check if bio is null, empty, or out of the valid length range
     final value = this?.trim();
-    return value != null &&
-        value.isNotEmpty &&
-        value.length >= 10 &&
-        value.length <= 500 &&
-        RegExp(r"^[a-zA-Z0-9\s,.!?\'\-]+$").hasMatch(value);
+    if (value == null ||
+        value.isEmpty ||
+        value.length < 10 ||
+        value.length > 500) {
+      return false;
+    }
+
+    // Disallow potentially harmful characters
+    final RegExp disallowedChars = RegExp(r'[<>{}[\]]');
+
+    // If the bio contains any harmful characters, it's invalid
+    if (disallowedChars.hasMatch(value)) {
+      return false;
+    }
+
+    // Allow everything else (including emojis)
+    return true;
   }
 
   /// Validate the bio input (checks if it's a valid bio format)
@@ -148,12 +161,20 @@ extension StringExtention on String? {
     if (value == null || value.isEmpty) {
       return null;
     }
+
+    // Check if bio is within the valid length range
     if (value.length < 10 || value.length > 500) {
       return 'At least 10 characters';
     }
-    if (!RegExp(r"^[a-zA-Z0-9\s,.!?\'\-]+$").hasMatch(value)) {
-      return 'Special characters are not allowed';
+
+    // Disallow potentially harmful characters like <, >, {, }
+    final RegExp disallowedChars = RegExp(r'[<>{}[\]]');
+
+    if (disallowedChars.hasMatch(value)) {
+      return 'Invalid characters used: <, >, {, }, [, ] are not allowed';
     }
+
+    // Allow everything else (including emojis and common special characters)
     return null; // Return null if the bio is valid
   }
 

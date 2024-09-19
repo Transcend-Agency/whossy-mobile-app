@@ -37,29 +37,32 @@ class _RelPrefScreenState extends State<RelPrefScreen>
               'Everyone has a choice, feel free to choose. You can can always change later.',
         ),
         addHeight(24),
-        Consumer<OnboardingNotifier>(
-          builder: (_, onboarding, __) {
-            return ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: preferenceData.map((data) {
-                return RadioTile(
-                  leadingAsset: data.leadingAsset,
-                  value: data.value,
-                  groupValue: _pref,
-                  onChanged: (_) {
-                    setState(() => _pref = _);
-                    onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(relationshipPref: _?.index);
-                  },
-                  title: data.title,
-                  subtitle: data.subtitle,
-                );
-              }).toList(),
-            );
-          },
+        Expanded(
+          child: Consumer<OnboardingNotifier>(
+            builder: (_, onboarding, __) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: preferenceData.map((data) {
+                    return RadioTile(
+                      leadingAsset: data.leadingAsset,
+                      value: data.value,
+                      groupValue: _pref,
+                      onChanged: (_) {
+                        setState(() => _pref = _);
+                        onboarding.select(widget.pageIndex);
+                        onboarding.updateUserProfile(
+                            relationshipPref: _?.index);
+                      },
+                      title: data.title,
+                      subtitle: data.subtitle,
+                    );
+                  }).toList(),
+                ),
+              );
+            },
+          ),
         ),
-        const Spacer(),
+        addHeight(80),
       ],
     );
   }

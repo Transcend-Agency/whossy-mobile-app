@@ -24,7 +24,7 @@ class _SignUpGenderScreenState extends State<SignUpGenderScreen> {
 
   @override
   void initState() {
-    signUpProvider = Provider.of<SignUpNotifier>(context, listen: false);
+    signUpProvider = context.read<SignUpNotifier>();
 
     super.initState();
   }

@@ -32,8 +32,7 @@ class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    _onboardingNotifier =
-        Provider.of<OnboardingNotifier>(context, listen: false);
+    _onboardingNotifier = context.read<OnboardingNotifier>();
 
     _controller = BottomSheet.createAnimationController(this)
       ..duration = const Duration(milliseconds: 400)
@@ -85,11 +84,16 @@ class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
     setState(() => _activePage = page);
   }
 
+  Future<void> wait() async =>
+      await Future.delayed(const Duration(milliseconds: 200));
+
   void _handleContinueButton({bool isConnected = true}) {
     if (_activePage < _pages.length - 1) {
       _onPageUpdate(_activePage + 1);
     } else {
       if (isConnected) {
+        wait();
+
         showLoadingSheet(
           context,
           _controller,
@@ -107,7 +111,11 @@ class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
     }
   }
 
-  goToNext() => Nav.replaceAll(context, [const HomeWrapper()]);
+  goToNext() {
+    Nav.replaceAll(context, [const HomeWrapper()]);
+
+    _onboardingNotifier.reset();
+  }
 
   showSnackbar(BuildContext context, String message, {bool pop = true}) {
     if (mounted) {
@@ -179,11 +187,11 @@ class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
                   Expanded(
                     child: Selector2<OnboardingNotifier, ConnectivityNotifier,
                         SelectedData>(
-                      selector: (_, onboarding, connectivity) => SelectedData(
-                        spinnerState: onboarding.spinnerState,
-                        ticks: onboarding.ticks,
-                        isSelected: onboarding.isSelected(_activePage),
-                        isConnected: connectivity.isConnected,
+                      selector: (_, onb, conn) => SelectedData(
+                        spinnerState: onb.spinnerState,
+                        ticks: onb.ticks,
+                        isSelected: onb.isSelected(_activePage),
+                        isConnected: conn.isConnected,
                       ),
                       builder: (_, data, __) {
                         return AppButton(

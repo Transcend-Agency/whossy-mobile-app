@@ -19,7 +19,7 @@ class OnboardingNotifier extends ChangeNotifier {
   final Map<int, bool> _selections = {};
 
   // User profile data
-  final _userPreferences = Preferences();
+  Preferences _userPreferences = Preferences();
 
   // Method to check if a page is selected
   bool isSelected(int pageIndex) {
@@ -52,29 +52,33 @@ class OnboardingNotifier extends ChangeNotifier {
     try {
       spinnerState = true;
 
-      // Upload to storage and get urls
+      // Upload profile pictures and update user profile
       final urls = await _userRepository
           .uploadProfilePictures(_userPreferences.picFiles ?? []);
-
       updateUserProfile(profilePics: urls);
 
-      // Send the preferences to Firebase
+      // Upload preferences and complete onboarding
       await _prefRepository.uploadPreferences(data: _userPreferences.toJson());
-
-      // the user has now completed the account onboarding
-      _userRepository.setUserData(data: {"has_completed_onboarding": true});
+      await _userRepository
+          .setUserData(data: {"has_completed_onboarding": true});
 
       onAuthenticate();
-    } on Exception catch (e) {
-      if (e is FailedUploadException) {
-        showSnackbar((e as dynamic).message);
-      } else {
-        showSnackbar(AppStrings.errorUnknown);
-        log(e.toString());
-      }
+    } on FailedUploadException catch (e) {
+      showSnackbar(e.message);
+    } catch (e) {
+      showSnackbar(AppStrings.errorUnknown);
+      log(e.toString());
     } finally {
       spinnerState = false;
     }
+  }
+
+  // Reset function to clear user preferences and selections
+  void reset() {
+    ticks = 0;
+    _selections.clear();
+    _userPreferences = Preferences();
+    notifyListeners();
   }
 
   // Update user profile fields and notify listeners
@@ -85,8 +89,8 @@ class OnboardingNotifier extends ChangeNotifier {
     int? search,
     List<String>? ticks,
     int? drink,
+    int? pet,
     int? smoker,
-    List<String>? pets,
     int? workOut,
     String? bio,
     List<String>? profilePics,
@@ -100,7 +104,7 @@ class OnboardingNotifier extends ChangeNotifier {
       ticks: ticks,
       drink: drink,
       smoker: smoker,
-      pets: pets,
+      petOwner: pet,
       workOut: workOut,
       bio: bio,
       profilePics: profilePics,

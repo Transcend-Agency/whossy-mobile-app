@@ -55,7 +55,7 @@ class _EditProfileState extends State<EditProfile>
   }
 
   onSaveChanges() async {
-    showLoadingSheet(
+    await showLoadingSheet(
       context,
       _controller,
       header: 'Changes are saving 🎉',

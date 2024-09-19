@@ -66,6 +66,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
 
     if (text.validatePhoneNumberInput()) {
       setState(() {
+        //
         isLoading = true;
         existingPhoneNumber = 'Checking ...';
       });
@@ -79,9 +80,10 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
         );
 
         final unique = result['isEmpty'] ?? false;
-        final message = result['message'] ?? widget.signIn
-            ? 'Phone number not registered'
-            : 'Already registered with another account';
+        final message = result['message'] as String? ??
+            (widget.signIn
+                ? 'Phone number not registered'
+                : 'Already registered with another account');
 
         if (mounted) {
           setState(() {
@@ -153,7 +155,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
 
   @override
   void initState() {
-    loginNotifier = Provider.of<LoginNotifier>(context, listen: false);
+    loginNotifier = context.read<LoginNotifier>();
 
     _userRepository = UserRepository();
 

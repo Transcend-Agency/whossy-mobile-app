@@ -16,13 +16,18 @@ class SignupOptions extends StatelessWidget {
   const SignupOptions({super.key});
 
   signUpWithGoogle(BuildContext context, SignUpNotifier data) async {
-    data.signUpWithGoogle(
-        showSnackbar: (message) =>
-            showTopSnackBar(Overlay.of(context), AppSnackbar(text: message)),
-        onAuthenticate: () {
-          Nav.pushAndPopUntil(
-              context, const SignUpNameRoute(), SignUpCreateRoute.name);
-        });
+    showGoogleDialog(context);
+
+    await data
+        .signUpWithGoogle(
+          showSnackbar: (message) =>
+              showTopSnackBar(Overlay.of(context), AppSnackbar(text: message)),
+          onAuthenticate: () {
+            Nav.pushAndPopUntil(
+                context, const SignUpNameRoute(), SignUpCreateRoute.name);
+          },
+        )
+        .whenComplete(() => context.mounted ? Navigator.pop(context) : {});
   }
 
   @override

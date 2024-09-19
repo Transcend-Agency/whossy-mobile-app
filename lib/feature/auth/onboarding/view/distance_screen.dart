@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -24,8 +24,7 @@ class _DistanceScreenState extends State<DistanceScreen>
   @override
   void initState() {
     super.initState();
-    onboardingProvider =
-        Provider.of<OnboardingNotifier>(context, listen: false);
+    onboardingProvider = context.read<OnboardingNotifier>();
   }
 
   double distance = 50;
@@ -94,11 +93,9 @@ class _DistanceScreenState extends State<DistanceScreen>
         const Spacer(),
         Padding(
           padding: EdgeInsets.fromLTRB(12.w, 0, 12.w, 90.h),
-          child: Slider.adaptive(
+          child: AppSlider(
             value: distance,
             onChanged: onChanged,
-            min: 0,
-            max: 100,
           ),
         ),
       ],

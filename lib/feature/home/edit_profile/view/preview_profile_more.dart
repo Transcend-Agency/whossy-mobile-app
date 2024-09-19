@@ -133,23 +133,24 @@ class _PreviewProfileMoreState extends State<PreviewProfileMore> {
                               ),
                             ),
                           ),
-                          ProfileDetailsCard(
-                            title: 'Bio',
-                            titleImage: AppAssets.bio,
-                            content: ReadMoreText(
-                              profile.bio!,
-                              trimLines: 2,
-                              trimMode: TrimMode.Line,
-                              textAlign: TextAlign.left,
-                              style: TextStyles.prefText,
-                              moreStyle: TextStyles.prefText.copyWith(
-                                color: Colors.grey,
-                              ),
-                              lessStyle: TextStyles.prefText.copyWith(
-                                color: Colors.grey,
+                          if (profile.bio != null)
+                            ProfileDetailsCard(
+                              title: 'Bio',
+                              titleImage: AppAssets.bio,
+                              content: ReadMoreText(
+                                profile.bio!,
+                                trimLines: 2,
+                                trimMode: TrimMode.Line,
+                                textAlign: TextAlign.left,
+                                style: TextStyles.prefText,
+                                moreStyle: TextStyles.prefText.copyWith(
+                                  color: Colors.grey,
+                                ),
+                                lessStyle: TextStyles.prefText.copyWith(
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
-                          ),
                           ProfileDetailsCard(
                             title: 'About',
                             titleImage: AppAssets.about,
@@ -169,29 +170,34 @@ class _PreviewProfileMoreState extends State<PreviewProfileMore> {
                               ],
                             ),
                           ),
-                          ProfileDetailsCard(
-                            title: 'Need to know',
-                            titleImage: AppAssets.call,
-                            content: PreviewInfoColumn(
-                              items: [
-                                if (preferences.futureFamilyPlans != null)
-                                  InfoItem(
-                                    label: "Future family goals",
-                                    value: preferences.futureFamilyPlans!.name,
-                                  ),
-                                if (preferences.communicationStyle != null)
-                                  InfoItem(
-                                    label: "How you communicate",
-                                    value: preferences.communicationStyle!.name,
-                                  ),
-                                if (preferences.loveLanguage != null)
-                                  InfoItem(
-                                    label: "Love language",
-                                    value: preferences.loveLanguage!.name,
-                                  ),
-                              ],
+                          if (preferences.futureFamilyPlans != null ||
+                              preferences.communicationStyle != null ||
+                              preferences.loveLanguage != null)
+                            ProfileDetailsCard(
+                              title: 'Need to know',
+                              titleImage: AppAssets.call,
+                              content: PreviewInfoColumn(
+                                items: [
+                                  if (preferences.futureFamilyPlans != null)
+                                    InfoItem(
+                                      label: "Future family goals",
+                                      value:
+                                          preferences.futureFamilyPlans!.name,
+                                    ),
+                                  if (preferences.communicationStyle != null)
+                                    InfoItem(
+                                      label: "How you communicate",
+                                      value:
+                                          preferences.communicationStyle!.name,
+                                    ),
+                                  if (preferences.loveLanguage != null)
+                                    InfoItem(
+                                      label: "Love language",
+                                      value: preferences.loveLanguage!.name,
+                                    ),
+                                ],
+                              ),
                             ),
-                          ),
                           if (profile.interests != null &&
                               profile.interests!.isNotEmpty)
                             ProfileDetailsCard(

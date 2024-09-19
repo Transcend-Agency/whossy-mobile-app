@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '_helper.dart';
 
-class SplashSlider extends StatelessWidget {
-  const SplashSlider({
+class Marquee extends StatelessWidget {
+  const Marquee({
     super.key,
     required this.scrollController,
     required this.row,

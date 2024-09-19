@@ -101,8 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
           toCreateAccount: toCreateAccount,
           toOnboarding: toOnboarding,
         )
-        .whenComplete(
-            () => (context.mounted) ? Navigator.of(context).pop() : {});
+        .whenComplete(() => context.mounted ? Navigator.of(context).pop() : {});
   }
 
   Future<void> loginWithFacebook() async {

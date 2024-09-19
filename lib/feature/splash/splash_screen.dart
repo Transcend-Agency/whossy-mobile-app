@@ -8,6 +8,7 @@ import '../../common/styles/text_style.dart';
 import '../../common/utils/index.dart';
 import '../../common/utils/router/router.gr.dart';
 import '../../constants/index.dart';
+import '../auth/sign_up/data/repository/user_repository.dart';
 
 @RoutePage()
 class SplashScreen extends StatefulWidget {
@@ -18,6 +19,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final _userRepo = UserRepository();
+
   late ScrollController _scrollController1;
   late ScrollController _scrollController2;
   late ScrollController _scrollController3;
@@ -80,9 +83,20 @@ class _SplashScreenState extends State<SplashScreen> {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      Nav.replace(context, const HomeWrapper());
+      await _userRepo.accountCheck(
+        enablePhoneCheck: true,
+        user: user,
+        showSnackbar: (_) {},
+        onAuthenticate: onAuthenticate,
+        toCreateAccount: doNothing,
+        toOnboarding: doNothing,
+      );
     }
   }
+
+  onAuthenticate() => Nav.replace(context, const HomeWrapper());
+
+  doNothing() {}
 
   void animateToMaxMin(
     ScrollController controller,
@@ -112,19 +126,19 @@ class _SplashScreenState extends State<SplashScreen> {
           IgnorePointer(
             child: Column(
               children: [
-                SplashSlider(
+                Marquee(
                   scrollController: _scrollController1,
                   row: 1,
                 ),
-                SplashSlider(
+                Marquee(
                   scrollController: _scrollController2,
                   row: 2,
                 ),
-                SplashSlider(
+                Marquee(
                   scrollController: _scrollController3,
                   row: 3,
                 ),
-                SplashSlider(
+                Marquee(
                   scrollController: _scrollController4,
                   row: 4,
                 ),

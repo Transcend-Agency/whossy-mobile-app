@@ -129,12 +129,10 @@ class _BioEditProfileState extends State<BioEditProfile> {
                         keyType: TextInputType.multiline,
                         validation: (bio) => bio?.trim().validateBio(),
                         validationMode: AutovalidateMode.onUserInteraction,
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 2.w, vertical: 6.h),
                       ),
-                      addHeight(3),
+                      addHeight(4),
                       Align(
-                        alignment: Alignment.centerLeft,
+                        alignment: Alignment.centerRight,
                         child: Text(
                           '$_characterCount/$_maxCharacterCount characters',
                           style: TextStyles.prefText.copyWith(

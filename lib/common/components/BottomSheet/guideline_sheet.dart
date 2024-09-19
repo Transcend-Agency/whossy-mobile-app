@@ -152,6 +152,7 @@ class _CupertinoDialogBodyState extends State<CupertinoDialogBody> {
                   CupertinoApp(
                     debugShowCheckedModeBanner: false,
                     home: CupertinoPageScaffold(
+                      backgroundColor: Colors.white,
                       child: CustomScrollView(
                         controller: controller,
                         slivers: [

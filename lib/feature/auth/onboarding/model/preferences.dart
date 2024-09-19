@@ -47,9 +47,6 @@ class Preferences {
   @JsonKey(name: "family_plans")
   int? futureFamilyPlans;
 
-  @JsonKey(name: 'pets')
-  List<String>? pets;
-
   @JsonKey(name: 'workout')
   int? workOut;
 
@@ -86,7 +83,6 @@ class Preferences {
     this.religion,
     this.dietary,
     this.futureFamilyPlans,
-    this.pets,
     this.workOut,
     this.petOwner,
     this.bio,
@@ -110,7 +106,6 @@ class Preferences {
     int? religion,
     int? dietary,
     int? futureFamilyPlans,
-    List<String>? pets,
     int? workOut,
     int? petOwner,
     String? bio,
@@ -134,7 +129,6 @@ class Preferences {
     if (religion != null) this.religion = religion;
     if (dietary != null) this.dietary = dietary;
     if (futureFamilyPlans != null) this.futureFamilyPlans = futureFamilyPlans;
-    if (pets != null) this.pets = pets;
     if (workOut != null) this.workOut = workOut;
     if (petOwner != null) this.petOwner = petOwner;
     if (bio != null) this.bio = bio;
@@ -179,7 +173,6 @@ class Preferences {
         'religion: $religion\n'
         'dietary: $dietary\n'
         'futureFamilyPlans: $futureFamilyPlans\n'
-        'pets: ${pets?.join(" ")}\n'
         'workOut: $workOut\n'
         'petOwner: $petOwner\n'
         'bio: $bio\n'

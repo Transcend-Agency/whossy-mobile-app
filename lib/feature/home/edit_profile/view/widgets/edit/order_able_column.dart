@@ -6,13 +6,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/common/utils/services/file_service.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
+import '../../../../../../constants/index.dart';
 import '../../../../../../provider/providers.dart';
 import '../../../../../auth/onboarding/view/edit_sheet.dart';
 import 'image_view.dart';
@@ -32,8 +32,6 @@ class OrderAbleColumn extends StatefulWidget {
 }
 
 class _OrderAbleColumnState extends State<OrderAbleColumn> {
-  late StreamSubscription subscription;
-
   final _picker = ImagePicker();
 
   void _onReorder(int oldIndex, int newIndex) {
@@ -65,17 +63,22 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
     bool value = false;
 
     try {
-      var status = await Permission.photos.status;
+      // Check if the platform is iOS
+      if (Platform.isIOS) {
+        var status = await Permission.photos.status;
 
-      if (status.isGranted) {
+        if (status.isGranted) {
+          value = await _addPhoto(index: index);
+        } else if (status.isDenied || status.isPermanentlyDenied) {
+          var result = await showDialog();
+          if (result == true) openAppSettings();
+        }
+      } else {
+        // For Android, no permission needed
         value = await _addPhoto(index: index);
-      } else if (status.isDenied || status.isPermanentlyDenied) {
-        var result = await showDialog();
-        if (result == true) openAppSettings();
       }
     } catch (e) {
-      showSnackbar(
-          'Unable to access photos. Please update your permissions in settings.');
+      showSnackbar(AppStrings.deniedAccess);
     }
 
     return value;
@@ -170,72 +173,59 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
 
   Widget buildDraggableImageView({required int index, int? flex}) {
     return Expanded(
-      flex: flex ?? 1,
-      child: Selector<ConnectivityNotifier, bool>(
-        selector: (_, connect) => connect.isConnected,
-        builder: (_, connected, __) {
-          if (index >= widget.profilePics.length) {
-            // Return a fallback widget or an empty container
-            return EmptyView(onActionTap: _handlePermissions);
-          }
+        flex: flex ?? 1,
+        child: Builder(
+          builder: (_) {
+            if (index >= widget.profilePics.length) {
+              // Return a fallback widget or an empty container
+              return EmptyView(onActionTap: _handlePermissions);
+            }
 
-          // if (!connected) {
-          //   return EmptyView(
-          //     noConnection: true,
-          //     imagePath: widget.profilePics[index],
-          //     onActionTap: () => showCustomModalBottomSheet(
-          //       context,
-          //       () => _deleteImage(index),
-          //     ),
-          //   );
-          // }
-
-          return LongPressDraggable<int>(
-            data: index,
-            feedback: Opacity(
-              opacity: 0.8,
-              child: ImageView(
-                index: index,
-                isDragged: true,
-                profilePics: widget.profilePics,
+            return LongPressDraggable<int>(
+              data: index,
+              feedback: Opacity(
+                opacity: 0.8,
+                child: ImageView(
+                  index: index,
+                  isDragged: true,
+                  profilePics: widget.profilePics,
+                ),
               ),
-            ),
-            childWhenDragging: Container(decoration: editMediaDecoration),
-            onDragStarted: () => Vibrate.feedback(FeedbackType.selection),
-            child: DragTarget<int>(
-              builder: (ctx, candidateData, rejectedData) {
-                bool isDraggingOver = candidateData.isNotEmpty;
+              childWhenDragging: Container(decoration: editMediaDecoration),
+              onDragStarted: () => Vibrate.feedback(FeedbackType.selection),
+              child: DragTarget<int>(
+                builder: (ctx, candidateData, rejectedData) {
+                  bool isDraggingOver = candidateData.isNotEmpty;
 
-                return Stack(
-                  children: [
-                    ImageView(
-                      index: index,
-                      profilePics: widget.profilePics,
-                      onEditTap: () => showCustomModalBottomSheet(
-                        context,
-                        onDelete: () => _deleteImage(index),
-                        onReUpload: () => _handlePermissions(index: index),
-                      ),
-                    ),
-                    if (isDraggingOver)
-                      Positioned.fill(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(10.r),
-                          ),
+                  return Stack(
+                    children: [
+                      ImageView(
+                        index: index,
+                        profilePics: widget.profilePics,
+                        onEditTap: () => showCustomModalBottomSheet(
+                          context,
+                          onDelete: () => _deleteImage(index),
+                          onReUpload: () => _handlePermissions(index: index),
                         ),
                       ),
-                  ],
-                );
-              },
-              onWillAcceptWithDetails: (data) => data.data != index,
-              onAcceptWithDetails: (_) => _onReorder(_.data, index),
-            ),
-          );
-        },
-      ),
-    );
+                      if (isDraggingOver)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+                onWillAcceptWithDetails: (data) => data.data != index,
+                onAcceptWithDetails: (_) => _onReorder(_.data, index),
+              ),
+            );
+          },
+        ));
   }
 }
 

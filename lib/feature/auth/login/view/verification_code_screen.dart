@@ -48,8 +48,8 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
   void initState() {
     otpController.addListener(_handleOTPChange);
 
-    loginNotifier = Provider.of<LoginNotifier>(context, listen: false);
-    signUpNotifier = Provider.of<SignUpNotifier>(context, listen: false);
+    loginNotifier = context.read<LoginNotifier>();
+    signUpNotifier = context.read<SignUpNotifier>();
 
     resendingToken = widget.resendToken;
     verId = widget.verId;

@@ -126,7 +126,7 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
 
   @override
   void initState() {
-    signUpProvider = Provider.of<SignUpNotifier>(context, listen: false);
+    signUpProvider = context.read<SignUpNotifier>();
 
     _userRepository = UserRepository();
 
@@ -198,7 +198,7 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
                 focusNode: phoneFocusNode,
                 textController: phoneController,
                 hintText:
-                    '${country?.phoneCode != null ? '' : '(+1) '}00 000 0000',
+                    '${country?.phoneCode != null ? '' : '(+1) '}000 000 0000',
                 isPhone: true,
                 validation: (_) =>
                     _?.trim().validatePhoneNumber(existingPhoneNumber),

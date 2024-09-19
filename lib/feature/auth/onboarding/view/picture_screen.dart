@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/utils/services/file_service.dart';
 
 import '../../../../common/components/index.dart';
@@ -34,68 +36,89 @@ class _PictureScreenState extends State<PictureScreen>
   final _picker = ImagePicker();
   List<File> _images = [];
 
-  /// Select image from gallery
-  Future<void> _pickImages() async {
-    if (_images.length < 6) {
-      final pickedImages = await _picker.pickMultiImage(limit: 6);
+  Future<bool?> showDialog() => showConfirmationDialog(
+        yes: 'Open Settings',
+        no: 'Cancel',
+        context,
+        title: 'Permission required',
+        content: "Please grant photo access in the app settings.",
+      );
 
-      for (var file in pickedImages) {
-        final croppedImage = await FileService.cropImage(File(file.path));
-        if (croppedImage != null) {
-          setState(() {
-            _images.add(croppedImage);
+  Future<bool> _handlePermissions({int? index}) async {
+    bool value = false;
 
-            // Ensure the list does not exceed 6 images
-            if (_images.length > 6) {
-              _images = _images.sublist(0, 6);
-            }
-          });
+    try {
+      // Check if the platform is iOS
+      if (Platform.isIOS) {
+        var status = await Permission.photos.status;
 
-          final valid = _images.length >= 3;
-
-          if (onboarding.isSelected(widget.pageIndex) != valid) {
-            onboarding.select(widget.pageIndex, value: valid);
-          }
+        if (status.isGranted) {
+          value = await _addPhoto(index: index);
+        } else if (status.isDenied || status.isPermanentlyDenied) {
+          var result = await showDialog();
+          if (result == true) openAppSettings();
         }
+      } else {
+        // For Android, no permission needed
+        value = await _addPhoto(index: index);
       }
-      // Call updateUserProfile after all images are processed
-      onboarding.updateUserProfile(picFiles: _images);
-    } else {
-      log('Delete pictures to add more');
+    } catch (e) {
+      showSnackbar(AppStrings.deniedAccess);
     }
+
+    return value;
   }
 
-  // Todo : I need to test this
-  Future<bool> _reUploadPhoto({int? index}) async {
+  Future<bool> _addPhoto({int? index}) async {
     bool result = false;
+    List<XFile> pickedImages = [];
 
-    final pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    if (index != null) {
+      // For re-uploading a single photo
+      final pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) pickedImages = [pickedImage];
+    } else if (_images.length < 6) {
+      // For picking multiple images
+      pickedImages = await _picker.pickMultiImage(limit: 6 - _images.length);
+    } else {
+      log('Delete pictures to add more');
+      return result;
+    }
 
-    if (pickedImage != null) {
-      final croppedImage = await FileService.cropImage(File(pickedImage.path));
+    for (var file in pickedImages) {
+      final croppedImage = await FileService.cropImage(File(file.path));
 
       if (croppedImage != null) {
         setState(() {
           if (index != null && index >= 0 && index < _images.length) {
-            // Replace the existing element at the specified index
+            // Replace the image at the specific index
             _images[index] = croppedImage;
+            result = true; // Mark the re-upload as successful
           } else {
-            // Add the new image to the end of the list
+            // Add the new image to the list
             _images.add(croppedImage);
           }
 
-          result = true;
+          // Ensure the list does not exceed 6 images
+          if (_images.length > 6) {
+            _images = _images.sublist(0, 6);
+          }
 
-          // Call updateUserProfile after all images are processed
-          onboarding.updateUserProfile(picFiles: _images);
+          // Update the onboarding state
+          final valid = _images.length >= 3;
+          if (onboarding.isSelected(widget.pageIndex) != valid) {
+            onboarding.select(widget.pageIndex, value: valid);
+          }
         });
       }
     }
 
-    return result;
+    // Call updateUserProfile after all images are processed
+    onboarding.updateUserProfile(picFiles: _images);
+
+    return result; // Return true if re-uploading succeeded, otherwise false
   }
 
-  /// Move image to the top of the list
   void _moveImageToTop(int index) {
     setState(() {
       AppUtils.moveItemToTop(_images, index);
@@ -103,6 +126,20 @@ class _PictureScreenState extends State<PictureScreen>
 
     // Call updateUserProfile after reordering the images
     onboarding.updateUserProfile(picFiles: _images);
+  }
+
+  showSnackbar(String message) {
+    if (mounted) {
+      showTopSnackBar(
+        Overlay.of(context),
+        displayDuration: const Duration(seconds: 5),
+        AppSnackbar(
+          text: message,
+          label: 'Settings',
+          onLabelTapped: openAppSettings,
+        ),
+      );
+    }
   }
 
   void _deleteImage(int index) {
@@ -216,7 +253,7 @@ class _PictureScreenState extends State<PictureScreen>
                                         context,
                                         onDelete: () => _deleteImage(0),
                                         onReUpload: () =>
-                                            _reUploadPhoto(index: 0),
+                                            _handlePermissions(index: 0),
                                       ),
                                     ),
                                   ),
@@ -238,7 +275,7 @@ class _PictureScreenState extends State<PictureScreen>
                                     height: 60,
                                     width: 60,
                                     child: GestureDetector(
-                                      onTap: _pickImages,
+                                      onTap: _handlePermissions,
                                     ),
                                   ),
                                 )
@@ -264,7 +301,7 @@ class _PictureScreenState extends State<PictureScreen>
                 child: GestureDetector(
                   onTap: _images.length - 1 > _
                       ? () => _moveImageToTop(_ + 1)
-                      : null,
+                      : _handlePermissions,
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
@@ -288,7 +325,7 @@ class _PictureScreenState extends State<PictureScreen>
                                   context,
                                   onDelete: () => _deleteImage(_ + 1),
                                   onReUpload: () =>
-                                      _reUploadPhoto(index: _ + 1),
+                                      _handlePermissions(index: _ + 1),
                                 ),
                                 child: Container(
                                   padding: const EdgeInsets.all(4),
@@ -307,7 +344,7 @@ class _PictureScreenState extends State<PictureScreen>
                               top: -4,
                               left: -2,
                               child: GestureDetector(
-                                onTap: _pickImages,
+                                onTap: _handlePermissions,
                                 child: SvgPicture.asset(
                                   AppAssets.cam2,
                                   width: 27.r,
@@ -327,12 +364,12 @@ class _PictureScreenState extends State<PictureScreen>
   }
 }
 
-void showCustomModalBottomSheet(
+Future<void> showCustomModalBottomSheet(
   BuildContext context, {
   required VoidCallback onDelete,
   required Future<bool> Function() onReUpload,
-}) {
-  showModalBottomSheet<void>(
+}) async {
+  await showModalBottomSheet<void>(
     clipBehavior: Clip.hardEdge,
     context: context,
     shape: roundedTop,

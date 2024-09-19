@@ -11,7 +11,7 @@ import '../../model/auth_params.dart';
 import '../repository/authentication_repository.dart';
 
 class LoginNotifier extends ChangeNotifier {
-  final _userRepository = UserRepository();
+  final _userRepo = UserRepository();
   final _authRepository = AuthenticationRepository();
   UserCredential? userCredential;
 
@@ -22,44 +22,6 @@ class LoginNotifier extends ChangeNotifier {
   set spinnerState(bool value) {
     _createSpinner = value;
     notifyListeners();
-  }
-
-  Future<void> accountCheck({
-    User? user,
-    bool showIfNull = false,
-    bool disableEmailCheck = false,
-    required void Function(String) showSnackbar,
-    required VoidCallback onAuthenticate,
-    required VoidCallback toCreateAccount,
-    required VoidCallback toOnboarding,
-    void Function(UserCredential)? showEmailSnackbar,
-  }) async {
-    if (user == null) {
-      if (showIfNull) showSnackbar(AppStrings.errorUnknown);
-
-      return;
-    }
-
-    if (user.emailVerified || disableEmailCheck) {
-      final appUser = await _userRepository.getUserData();
-
-      if (appUser != null) {
-        if (!appUser.hasCompletedAccountCreation) {
-          toCreateAccount();
-          return;
-        }
-
-        if (!appUser.hasCompletedOnboarding) {
-          toOnboarding();
-          return;
-        }
-      }
-
-      onAuthenticate();
-    } else {
-      // Email is not verified, show the Snackbar
-      showEmailSnackbar!(userCredential!);
-    }
   }
 
   Future<void> loginWithEmailAndPassword({
@@ -76,9 +38,10 @@ class LoginNotifier extends ChangeNotifier {
 
       userCredential = await _authRepository.handleEmailLogin(email, password);
 
-      await accountCheck(
+      await _userRepo.accountCheck(
         showIfNull: true,
         user: userCredential?.user,
+        userCred: userCredential,
         showSnackbar: showSnackbar,
         onAuthenticate: onAuthenticate,
         toCreateAccount: toCreateAccount,
@@ -105,12 +68,13 @@ class LoginNotifier extends ChangeNotifier {
     try {
       userCredential = await _authRepository.handleGoogleAuthentication();
 
-      await accountCheck(
+      await _userRepo.accountCheck(
         user: userCredential?.user,
+        userCred: userCredential,
         showSnackbar: showSnackbar,
+        toOnboarding: toOnboarding,
         onAuthenticate: onAuthenticate,
         toCreateAccount: toCreateAccount,
-        toOnboarding: toOnboarding,
         showEmailSnackbar: showEmailSnackbar,
       );
     } on FirebaseAuthException catch (e) {
@@ -159,7 +123,8 @@ class LoginNotifier extends ChangeNotifier {
 
       userCredential = await _authRepository.handlePhoneAuthentication(cred);
 
-      await accountCheck(
+      await _userRepo.accountCheck(
+        userCred: userCredential,
         user: userCredential?.user,
         showSnackbar: showSnackbar,
         onAuthenticate: onAuthenticate,
@@ -201,7 +166,8 @@ class LoginNotifier extends ChangeNotifier {
 
         userCredential = await _authRepository.handlePhoneAuthentication(cred);
 
-        await accountCheck(
+        await _userRepo.accountCheck(
+          userCred: userCredential,
           user: userCredential?.user,
           showSnackbar: showSnackbar,
           onAuthenticate: onAuthenticate,

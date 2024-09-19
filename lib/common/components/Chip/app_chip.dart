@@ -5,6 +5,8 @@ import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
 import '../../utils/index.dart';
 
+part 'single_select_app_chip.dart';
+
 class AppChip extends StatelessWidget {
   final String data;
   final bool isSelected;
