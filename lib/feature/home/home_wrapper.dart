@@ -27,7 +27,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
       const Matching(),
       const Two(),
       const Three(),
-      const Four(),
+      const Chat(),
       const Profile(),
     ];
 
@@ -55,6 +55,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      applyTop: false,
       body: SizedBox(
         child: _pages.elementAt(selectedIndex),
       ),

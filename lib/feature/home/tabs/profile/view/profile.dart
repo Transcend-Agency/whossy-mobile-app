@@ -144,11 +144,12 @@ class Profile extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 14.w, top: 12.h, bottom: 12.h),
+              padding: EdgeInsets.symmetric(vertical: 12.h),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
+                    addWidth(14),
                     PriceCard(
                       containerColor: AppColors.freeContainer,
                       containerShade: AppColors.freeContainerShade,

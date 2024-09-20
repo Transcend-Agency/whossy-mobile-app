@@ -24,7 +24,7 @@ class _InterestBioComponentState extends State<InterestBioComponent> {
 
   @override
   void initState() {
-    _prefsNotifier = Provider.of<PreferencesNotifier>(context, listen: false);
+    _prefsNotifier = context.read<PreferencesNotifier>();
 
     _interests = _prefsNotifier.otherPreferences?.interests;
 

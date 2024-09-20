@@ -21,7 +21,6 @@ import 'edit_sheet.dart';
 
 class PictureScreen extends StatefulWidget {
   final int pageIndex;
-
   const PictureScreen({super.key, required this.pageIndex});
 
   @override
@@ -47,7 +46,7 @@ class _PictureScreenState extends State<PictureScreen>
   Future<bool> _handlePermissions({int? index}) async {
     bool value = false;
 
-     try {
+    try {
       // Call _addPhoto first
       value = await _addPhoto(index: index);
     } catch (e) {
@@ -87,8 +86,7 @@ class _PictureScreenState extends State<PictureScreen>
     List<XFile> pickedImages = [];
 
     try {
-
-       if (index != null) {
+      if (index != null) {
         // For re-uploading a single photo
         final pickedImage =
             await _picker.pickImage(source: ImageSource.gallery);
@@ -131,7 +129,6 @@ class _PictureScreenState extends State<PictureScreen>
 
       // Call updateUserProfile after all images are processed
       onboarding.updateUserProfile(picFiles: _images);
-
     } catch (e) {
       // Throw an error if permission is denied
       log('Error picking image: $e');

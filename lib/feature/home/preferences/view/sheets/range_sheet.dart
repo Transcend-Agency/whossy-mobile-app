@@ -92,6 +92,7 @@ class _RangeSheetState<T> extends State<RangeSheet<T>> {
               padding: EdgeInsets.symmetric(vertical: 12.h),
               margin: EdgeInsets.symmetric(horizontal: 14.w),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 14.r),
@@ -117,18 +118,13 @@ class _RangeSheetState<T> extends State<RangeSheet<T>> {
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12.w)
-                        .copyWith(top: 8.h),
-                    child: SliderTheme(
-                      data: SliderTheme.of(context).copyWith(
-                        activeTrackColor: AppColors.activeTrackColor,
-                        inactiveTrackColor: Colors.white,
-                        thumbColor: Colors.white,
-                      ),
-                      child: RangeSlider(
-                        onChanged: updateRange,
-                        min: widget.type.feasibleRange[0],
-                        max: widget.type.feasibleRange[1],
-                        values: currentRange,
+                        .copyWith(top: 10.h),
+                    child: AppRangeSlider(
+                      onChanged: updateRange,
+                      values: currentRange,
+                      range: RangeValues(
+                        widget.type.feasibleRange[0],
+                        widget.type.feasibleRange[1],
                       ),
                     ),
                   ),

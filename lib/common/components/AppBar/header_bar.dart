@@ -14,26 +14,32 @@ class HeaderBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox.shrink(),
+        addHeight(MediaQuery.of(context).padding.top),
         Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if (icon != null)
-              AppIconButton(
-                icon: icon!,
-                onTap: onIconTap,
-              ),
-            AppIconButton(
-              path: AppAssets.tune,
-              size: 24,
-              onTap:
-                  onTuneTap ?? () => Nav.push(context, const PreferenceRoute()),
-            ),
+            const SizedBox.shrink(),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (icon != null)
+                  AppIconButton(
+                    icon: icon!,
+                    onTap: onIconTap,
+                  ),
+                AppIconButton(
+                  path: AppAssets.tune,
+                  size: 24,
+                  onTap: onTuneTap ??
+                      () => Nav.push(context, const PreferenceRoute()),
+                ),
+              ],
+            )
           ],
-        )
+        ),
       ],
     );
   }

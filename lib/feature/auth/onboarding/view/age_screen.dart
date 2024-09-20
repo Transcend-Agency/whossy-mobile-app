@@ -50,8 +50,7 @@ class _AgeScreenState extends State<AgeScreen>
     dayController.addListener(_update);
     yearController.addListener(_update);
 
-    onboardingProvider =
-        Provider.of<OnboardingNotifier>(context, listen: false);
+    onboardingProvider = context.read<OnboardingNotifier>();
 
     super.initState();
   }

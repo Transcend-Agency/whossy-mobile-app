@@ -33,7 +33,7 @@ class _InterestsTileState extends State<InterestsTile> {
 
   @override
   void initState() {
-    _editNotifier = Provider.of<EditProfileNotifier>(context, listen: false);
+    _editNotifier = context.read<EditProfileNotifier>();
 
     _interests = _editNotifier.coreProfile?.interests;
     super.initState();

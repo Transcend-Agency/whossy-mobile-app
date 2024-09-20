@@ -19,7 +19,6 @@ class AppColors {
   static const Color optionsSheetDivider = Color(0xFFECECEC);
   static const Color ringColor = Color(0xFFCDCDCD);
   static const Color errorBorderColor = primaryColor;
-  // Color(0xFFFF0A0A);
 
   static const Color sbErrorBorderColor = Color(0xFFf2243e);
   static const Color selectedTabIconColor = sbErrorBorderColor;

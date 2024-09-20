@@ -118,6 +118,7 @@ class _SliderSheetState extends State<SliderSheet> {
                     padding: EdgeInsets.symmetric(horizontal: 12.w)
                         .copyWith(top: 8.h),
                     child: AppSlider(
+                      useSliderTheme: true,
                       onChanged: updateValue,
                       range: RangeValues(widget.range.min, widget.range.max),
                       value: currentValue,
@@ -126,7 +127,7 @@ class _SliderSheetState extends State<SliderSheet> {
                 ],
               ),
             ),
-            addHeight(14)
+            addHeight(14),
           ],
         ),
       ),

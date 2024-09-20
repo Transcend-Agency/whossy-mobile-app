@@ -35,8 +35,7 @@ class _TickScreenState extends State<TickScreen>
     _selectedTicks = NotifierSet<String>();
     _selectedTicks.addListener(_update);
 
-    onboardingProvider =
-        Provider.of<OnboardingNotifier>(context, listen: false);
+    onboardingProvider = context.read<OnboardingNotifier>();
 
     // Initialize filtered list
     _filteredAlphabet = List.from(alphabet);

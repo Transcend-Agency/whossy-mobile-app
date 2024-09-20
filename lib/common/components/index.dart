@@ -29,6 +29,7 @@ export '/common/components/Scaffold/app_scaffold.dart';
 export '/common/components/Shade/profile_shade.dart';
 export '/common/components/Shake/shake.dart';
 export '/common/components/Shimmer/shimmer_widget.dart';
+export '/common/components/Slider/app_range_slider.dart';
 export '/common/components/Slider/app_slider.dart';
 export '/common/components/Snackbar/app_snackbar.dart';
 export '/common/components/Text/countdown_text.dart';

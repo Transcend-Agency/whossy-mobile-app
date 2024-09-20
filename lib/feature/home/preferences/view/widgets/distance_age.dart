@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +27,7 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
 
   @override
   void initState() {
-    _prefsNotifier = Provider.of<PreferencesNotifier>(context, listen: false);
+    _prefsNotifier = context.read<PreferencesNotifier>();
 
     ageRange = _prefsNotifier.otherPreferences?.toAgeRange() ??
         const RangeValues(25, 35);
@@ -60,6 +62,8 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
     );
   }
 
+  final isAndroid = Platform.isAndroid;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -93,8 +97,12 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.r, vertical: 8.h),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10.r,
+                  vertical: isAndroid ? 8.h : 4.h,
+                ),
                 child: AppSlider(
+                  useSliderTheme: true,
                   value: distance,
                   onChanged: onChanged,
                 ),
@@ -150,20 +158,12 @@ class _DistanceAgeComponentState extends State<DistanceAgeComponent> {
                 ),
               ),
               Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 10.r).copyWith(top: 8.h),
-                child: SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: AppColors.activeTrackColor,
-                    inactiveTrackColor: Colors.white,
-                    thumbColor: Colors.white,
-                  ),
-                  child: RangeSlider(
-                    onChanged: updateRange,
-                    min: 18,
-                    max: 70,
-                    values: ageRange,
-                  ),
+                padding: EdgeInsets.symmetric(horizontal: 10.r)
+                    .copyWith(top: isAndroid ? 10.h : 8.h),
+                child: AppRangeSlider(
+                  onChanged: updateRange,
+                  values: ageRange,
+                  range: const RangeValues(18, 70),
                 ),
               ),
             ],

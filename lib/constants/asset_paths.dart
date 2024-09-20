@@ -58,4 +58,7 @@ class AppAssets {
 
   static const caution = 'assets/icons/caution.png';
   static const welcome = 'assets/icons/welcome.png';
+
+  static const noMatches = 'assets/images/no_matches.png';
+  static const noMessages = 'assets/images/no_messages.png';
 }

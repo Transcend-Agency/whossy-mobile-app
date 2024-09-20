@@ -9,29 +9,48 @@ class AppSlider extends StatelessWidget {
   final double value;
   final ValueChanged<double> onChanged;
   final RangeValues range;
+  final bool useSliderTheme;
 
-  const AppSlider({
+  AppSlider({
     super.key,
     required this.value,
     required this.onChanged,
     this.range = const RangeValues(0, 100),
-  });
+    this.useSliderTheme = false,
+  }); // Default to an empty Spacing object
+
+  final bool isAndroid = Platform.isAndroid;
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isAndroid
-        ? Slider(
-            value: value,
-            onChanged: onChanged,
-            min: range.start,
-            max: range.end,
-          )
+    return isAndroid
+        ? (useSliderTheme
+            ? SliderTheme(
+                data: SliderTheme.of(context).copyWith(
+                  trackHeight: 1,
+                  activeTrackColor: AppColors.activeTrackColor,
+                  inactiveTrackColor: Colors.white,
+                  thumbColor: Colors.white,
+                ),
+                child: Slider(
+                  value: value,
+                  onChanged: onChanged,
+                  min: range.start,
+                  max: range.end,
+                ),
+              )
+            : Slider(
+                value: value,
+                onChanged: onChanged,
+                min: range.start,
+                max: range.end,
+              ))
         : CupertinoSlider(
             value: value,
             onChanged: onChanged,
             min: range.start,
             max: range.end,
-            activeColor: AppColors.ringColor,
+            activeColor: AppColors.black,
           );
   }
 }

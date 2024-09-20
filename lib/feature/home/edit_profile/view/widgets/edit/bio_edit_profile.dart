@@ -52,8 +52,7 @@ class _BioEditProfileState extends State<BioEditProfile> {
   void initState() {
     super.initState();
 
-    editProfileProvider =
-        Provider.of<EditProfileNotifier>(context, listen: false);
+    editProfileProvider = context.read<EditProfileNotifier>();
 
     // Set the text programmatically first
     textController.text = editProfileProvider.coreProfile?.bio ?? '';
