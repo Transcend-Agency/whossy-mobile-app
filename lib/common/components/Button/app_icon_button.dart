@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class AppIconButton extends StatelessWidget {
   const AppIconButton({
     super.key,
-    this.size = 30,
+    this.size = 28,
     this.icon,
     this.onTap,
     this.margin = 6,

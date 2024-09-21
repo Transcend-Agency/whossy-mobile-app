@@ -18,6 +18,7 @@ export '/common/components/Card/profile_card.dart';
 export '/common/components/Card/profile_details_card.dart';
 export '/common/components/Chip/app_chip.dart';
 export '/common/components/Chip/gender_chip.dart';
+export '/common/components/Chip/gradient_chip.dart';
 export '/common/components/Chip/preference_chip.dart';
 export '/common/components/Dialog/confirmation_dialog.dart';
 export '/common/components/Dialog/google_loading_dialog.dart';

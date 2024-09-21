@@ -26,7 +26,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
     _pages = [
       const Matching(),
       const Two(),
-      const Three(),
+      const LikesAndMatch(),
       const Chat(),
       const Profile(),
     ];

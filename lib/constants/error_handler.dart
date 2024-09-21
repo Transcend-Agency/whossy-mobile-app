@@ -43,6 +43,7 @@ void handleFirebaseAuthError(
     case 'account-exists-with-different-credential':
       showSnackbar(AppStrings.differentCredentials);
       break;
+
     default:
       showSnackbar(AppStrings.errorUnknown);
   }

@@ -53,6 +53,15 @@ class AppColors {
     end: Alignment.bottomCenter,
   );
 
+  static const upgradeButtonGradient = LinearGradient(
+    colors: [
+      Color(0xffFDDE00),
+      Color(0xffFF5C00),
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   static const splashVariation = LinearGradient(
     colors: [warmYellow, primaryColor],
     stops: [0.3, 0.6],

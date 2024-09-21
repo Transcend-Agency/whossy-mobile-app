@@ -3,9 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/feature/home/tabs/chat/view/widgets/_.dart';
 
-import '../../../../../common/styles/text_style.dart';
-import '../../../../../constants/index.dart';
-
 class Chat extends StatelessWidget {
   const Chat({super.key});
 
@@ -23,25 +20,9 @@ class Chat extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(bottom: 12.h, top: 8.h),
-            child: const LikesAndMatches(),
+            child: const LikesComponent(),
           ),
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    AppAssets.noMessages,
-                    height: 110.r,
-                  ),
-                  Text(
-                    'No messages yet',
-                    style: TextStyles.boldPrefText,
-                  ),
-                ],
-              ),
-            ),
-          )
+          const Messages(),
         ],
       ),
     );

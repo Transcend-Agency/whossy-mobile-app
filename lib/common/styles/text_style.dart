@@ -134,4 +134,16 @@ class TextStyles {
   static TextStyle iconText = TextStyle(
     fontSize: 27.sp,
   );
+
+  static customStyle(bool isSelected) {
+    return TextStyle(
+      fontFamily: 'NeueMontreal',
+      height: 1.4,
+      letterSpacing: 0.4,
+      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+      color: isSelected ? AppColors.midWay : AppColors.hintTextColor,
+      fontSize: AppUtils.scale(isSelected ? 14.sp : 11.sp) ??
+          (isSelected ? 16.sp : 13.sp),
+    );
+  }
 }

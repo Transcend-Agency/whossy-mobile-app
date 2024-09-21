@@ -79,6 +79,8 @@ class LoginNotifier extends ChangeNotifier {
       );
     } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e, showSnackbar);
+    } on FirebaseException catch (e) {
+      handleFirebaseError(e, showSnackbar);
     } on UnregisteredEmailException catch (e) {
       showSnackbar(e.message);
     } on PlatformException catch (e) {

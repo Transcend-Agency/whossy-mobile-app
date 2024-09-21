@@ -3,13 +3,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:whossy_app/common/components/Chip/gradient_chip.dart';
 import 'package:whossy_app/common/utils/index.dart';
 
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../constants/index.dart';
 
-class LikesAndMatches extends StatelessWidget {
-  const LikesAndMatches({super.key});
+class LikesComponent extends StatelessWidget {
+  const LikesComponent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +43,7 @@ class LikesAndMatches extends StatelessWidget {
                     ),
                     BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                      child: Container(
-                        color: Colors.black.withOpacity(0),
-                      ),
+                      child: Container(color: Colors.black.withOpacity(0)),
                     ),
                     Align(
                       alignment: Alignment.center,
@@ -81,27 +80,10 @@ class LikesAndMatches extends StatelessWidget {
                       alignment: Alignment.bottomCenter,
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 6.h),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Transform(
-                              transform: Matrix4.skewX(-.3),
-                              alignment: Alignment.center,
-                              child: Container(
-                                width: 54.w,
-                                height: 22.h,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  gradient: AppColors.splashGradient,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              'Likes',
-                              style: TextStyles.boldPrefText
-                                  .copyWith(color: Colors.white),
-                            ),
-                          ],
+                        child: GradientChip(
+                          text: 'Likes',
+                          width: 54.w,
+                          height: 22.h,
                         ),
                       ),
                     ),
