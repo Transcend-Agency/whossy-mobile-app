@@ -25,7 +25,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
   void initState() {
     _pages = [
       const Matching(),
-      const Two(),
+      const Explore(),
       const LikesAndMatch(),
       const Chat(),
       const Profile(),

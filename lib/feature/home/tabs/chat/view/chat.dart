@@ -19,10 +19,10 @@ class Chat extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: EdgeInsets.only(bottom: 12.h, top: 8.h),
+            padding: EdgeInsets.symmetric(vertical: 8.h),
             child: const LikesComponent(),
           ),
-          const Messages(),
+          Messages(),
         ],
       ),
     );

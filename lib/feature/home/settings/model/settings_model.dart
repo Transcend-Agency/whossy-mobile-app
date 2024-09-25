@@ -4,9 +4,7 @@ import '../../../../common/utils/enum/enums.dart';
 
 part 'settings_model.g.dart';
 
-@JsonSerializable(
-  includeIfNull: false,
-)
+@JsonSerializable()
 class SettingsModel {
   bool? incognito;
 

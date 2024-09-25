@@ -8,11 +8,17 @@ import '../Button/app_icon_button.dart';
 
 class HeaderBar extends StatelessWidget {
   const HeaderBar(
-      {super.key, this.icon, this.onIconTap, this.onTuneTap, this.child});
+      {super.key,
+      this.icon,
+      this.onIconTap,
+      this.onIcon2Tap,
+      this.child,
+      this.icon2});
 
   final IconData? icon;
+  final String? icon2;
   final VoidCallback? onIconTap;
-  final VoidCallback? onTuneTap;
+  final VoidCallback? onIcon2Tap;
 
   final Widget? child;
 
@@ -38,9 +44,9 @@ class HeaderBar extends StatelessWidget {
                     ),
                   ),
                 AppIconButton(
-                  path: AppAssets.tune,
+                  path: icon2 ?? AppAssets.tune,
                   size: 24,
-                  onTap: onTuneTap ??
+                  onTap: onIcon2Tap ??
                       () => Nav.push(context, const PreferenceRoute()),
                 ),
               ],

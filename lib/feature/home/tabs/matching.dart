@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 
@@ -17,8 +17,8 @@ class Matching extends StatelessWidget {
         width: 375.w,
         child: Column(
           children: [
-            addHeight(8),
-            const HeaderBar(icon: Icons.notifications_rounded),
+            addHeight(12),
+            const HeaderBar(icon: CupertinoIcons.bell_fill),
             addHeight(36),
             Text(
               'One',

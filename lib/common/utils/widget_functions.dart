@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:iconly/iconly.dart';
 
 import '../../constants/colors.dart';
@@ -9,11 +10,46 @@ SizedBox addHeight(double height) => SizedBox(height: height.h);
 
 SizedBox addWidth(double width) => SizedBox(width: width.w);
 
+Widget svgIcon(String path, {double? size, Color? color}) {
+  return SvgPicture.asset(
+    path,
+    width: size ?? 22.r,
+    colorFilter: ColorFilter.mode(
+      color ?? Colors.transparent,
+      BlendMode.srcIn,
+    ),
+  );
+}
+
 Icon alert() {
   return const Icon(
     Icons.warning_rounded,
     color: AppColors.sbErrorBorderColor,
     size: 24,
+  );
+}
+
+Widget sendIcon() {
+  return Icon(
+    IconlyBold.send,
+    size: 23.r,
+    color: Colors.black,
+  );
+}
+
+Widget moreIcon() {
+  return Icon(
+    Icons.more_horiz_rounded,
+    size: 23.r,
+    color: Colors.black,
+  );
+}
+
+Widget voiceIcon() {
+  return Icon(
+    IconlyBold.voice,
+    size: 24.r,
+    color: Colors.black,
   );
 }
 

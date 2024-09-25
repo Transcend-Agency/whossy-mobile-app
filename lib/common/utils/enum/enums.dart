@@ -257,3 +257,5 @@ enum PetOwner implements GenericEnum {
   @override
   final String name;
 }
+
+enum MessageStatus { sent, seen, undelivered }

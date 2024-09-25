@@ -62,7 +62,7 @@ class _LikesAndMatchState extends State<LikesAndMatch>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          addHeight(8),
+          addHeight(12),
           Padding(
             padding: pagePadding,
             child: HeaderBar(
@@ -82,7 +82,7 @@ class _LikesAndMatchState extends State<LikesAndMatch>
               onPageChanged: _onPageChange,
               itemBuilder: (_, index) {
                 return Padding(
-                  padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 14.h),
+                  padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 16.h),
                   child: _pages[index],
                 );
               },

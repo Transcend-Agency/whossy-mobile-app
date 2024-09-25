@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:whossy_app/common/components/Chip/gradient_chip.dart';
 import 'package:whossy_app/common/utils/index.dart';
 
+import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../constants/index.dart';
 
@@ -18,11 +18,11 @@ class LikesComponent extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          addWidth(12),
+          addWidth(14),
           GradientOutlineBox(
             child: Container(
-              height: 142.r,
-              width: 130.r,
+              width: 132.r,
+              height: 144.r,
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -92,7 +92,7 @@ class LikesComponent extends StatelessWidget {
               ),
             ),
           ),
-          addWidth(12),
+          addWidth(8),
           Container(
             width: 136.r,
             height: 148.r,
@@ -124,30 +124,6 @@ class LikesComponent extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class GradientOutlineBox extends StatelessWidget {
-  final Widget child;
-
-  const GradientOutlineBox({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            gradient: AppColors.splashGradient,
-            borderRadius: BorderRadius.circular(18.r),
-          ),
-          width: 136.r,
-          height: 148.r,
-        ),
-        child,
-      ],
     );
   }
 }

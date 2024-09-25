@@ -44,6 +44,9 @@ class AppAssets {
   static const about = 'assets/icons/about.svg';
   static const call = 'assets/icons/call.svg';
   static const love = 'assets/icons/love.svg';
+  static const explore = 'assets/icons/explore.svg';
+  static const wwSearch = 'assets/icons/wwSearch.svg';
+  static const gift = 'assets/icons/gift.svg';
 
   static const credit = 'assets/icons/credit.png';
   static const boost = 'assets/icons/boost.png';
@@ -58,7 +61,10 @@ class AppAssets {
 
   static const caution = 'assets/icons/caution.png';
   static const welcome = 'assets/icons/welcome.png';
+  static const shield = 'assets/icons/shield.png';
 
   static const noMatches = 'assets/images/no_matches.png';
   static const noMessages = 'assets/images/no_messages.png';
+  static const noLikes = 'assets/images/no_likes.png';
+  static const flame = 'assets/icons/flame.png';
 }

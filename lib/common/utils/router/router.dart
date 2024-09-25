@@ -31,12 +31,19 @@ class AppRouter extends $AppRouter {
         AutoRoute(page: PreferenceRoute.page),
         AutoRoute(page: InterestRoute.page),
 
+        // Profile / Tab 5
         AutoRoute(page: Settings.page),
         AutoRoute(page: EditProfile.page),
         AutoRoute(page: NameEditProfile.page),
         AutoRoute(page: PreviewProfile.page),
         AutoRoute(page: PreviewProfileMore.page),
         AutoRoute(page: SafetyGuide.page),
+
+        // Likes and Match / Tab 3
+        AutoRoute(page: MoreInfoRoute.page),
+
+        // Chat / Tab 4
+        AutoRoute(page: ChatRoom.page),
       ];
 }
 

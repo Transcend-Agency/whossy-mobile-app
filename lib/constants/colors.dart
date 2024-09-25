@@ -62,6 +62,15 @@ class AppColors {
     end: Alignment.bottomCenter,
   );
 
+  static const matchContainerGradient = LinearGradient(
+    colors: [
+      Color(0xff485FE6),
+      Color(0xff309BBD),
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   static const splashVariation = LinearGradient(
     colors: [warmYellow, primaryColor],
     stops: [0.3, 0.6],
@@ -88,5 +97,14 @@ class AppColors {
       Colors.black,
     ],
     stops: const [0.0, 0.5, 1.0],
+  );
+
+  static LinearGradient likesAndMatchShade = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Colors.transparent,
+      Colors.black.withOpacity(0.7),
+    ],
   );
 }

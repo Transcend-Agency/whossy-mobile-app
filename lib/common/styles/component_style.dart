@@ -5,6 +5,8 @@ import '../../constants/colors.dart';
 
 final pagePadding = EdgeInsets.symmetric(horizontal: 14.w);
 
+const chatFieldPadding = EdgeInsets.fromLTRB(10, 5, 10, 10);
+
 final modalPadding = EdgeInsets.symmetric(vertical: 13.h, horizontal: 16.w);
 
 final forgotTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);
@@ -28,6 +30,11 @@ final guidelineSheetDecoration = BoxDecoration(
 
 final circularBorder = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(8.r),
+);
+
+final chipShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(24.r),
+  side: const BorderSide(color: Colors.transparent),
 );
 
 const curvySide = BorderRadius.all(Radius.circular(12));
@@ -99,3 +106,19 @@ final switchTrackColor = WidgetStateProperty.resolveWith<Color?>(
     return Colors.black;
   },
 );
+
+/// The border for the input fields
+InputBorder customBorder({
+  required bool isReplying,
+  double curve = 20,
+}) {
+  return OutlineInputBorder(
+    borderSide: const BorderSide(
+      color: Colors.transparent,
+    ),
+    borderRadius: BorderRadius.vertical(
+      top: isReplying ? Radius.zero : Radius.circular(curve.r),
+      bottom: Radius.circular(curve.r),
+    ),
+  );
+}

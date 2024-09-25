@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
@@ -34,7 +35,7 @@ class Profile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      addHeight(8),
+                      addHeight(12),
                       HeaderBar(
                         icon: Icons.settings,
                         onIconTap: () => Nav.push(context, const Settings()),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whossy_app/common/components/Divider/app_divider.dart';
 import 'package:whossy_app/common/utils/index.dart';
 
 import '../../../../common/styles/text_style.dart';
@@ -75,11 +76,7 @@ class PreferenceTile extends StatelessWidget {
                     )
                   ],
                 ),
-                if (showDivider)
-                  const Divider(
-                    color: AppColors.outlinedColor,
-                    height: 0,
-                  ),
+                if (showDivider) const AppDivider(),
               ],
             ),
     );
