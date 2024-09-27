@@ -10,6 +10,9 @@ import '../../../../common/styles/text_style.dart';
 import '../../../../constants/index.dart';
 import 'widgets/_.dart';
 
+// Define the typedef
+typedef _Notifier = PreferencesNotifier;
+
 @RoutePage()
 class PreferenceScreen extends StatefulWidget {
   const PreferenceScreen({super.key});
@@ -19,21 +22,21 @@ class PreferenceScreen extends StatefulWidget {
 }
 
 class _PreferenceScreenState extends State<PreferenceScreen> {
-  late PreferencesNotifier _preferencesNotifier;
+  late _Notifier _notifier;
 
   @override
   void initState() {
-    _preferencesNotifier = context.read<PreferencesNotifier>();
+    _notifier = context.read<_Notifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _preferencesNotifier.getFilters(showSnackbar: showSnackbar);
+      _notifier.getFilters(showSnackbar: showSnackbar);
     });
 
     super.initState();
   }
 
   void onSaveTap() {
-    _preferencesNotifier.saveFilters(showSnackbar: showSnackbar);
+    _notifier.saveFilters(showSnackbar: showSnackbar);
   }
 
   showSnackbar(String message) {
@@ -48,7 +51,7 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
       useScrollView: true,
       appBar: CustomAppBar(
         title: 'Preferences',
-        action: Selector<PreferencesNotifier, bool>(
+        action: Selector<_Notifier, bool>(
           selector: (_, pref) => pref.hasChanges,
           builder: (_, save, __) {
             return save
@@ -73,19 +76,19 @@ class _PreferenceScreenState extends State<PreferenceScreen> {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 8.h),
-            child: const DistanceAgeComponent(),
+            child: const DistanceAgeComponent<_Notifier>(),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 8.h),
-            child: const MeetComponent(),
+            child: const MeetComponent<_Notifier>(),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 8.h),
-            child: const InterestBioComponent(),
+            child: const InterestBioComponent<_Notifier>(),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 8.h),
-            child: const ExtrasComponent(),
+            child: const ExtrasComponent<_Notifier>(),
           ),
         ],
       ),

@@ -32,25 +32,27 @@ class AppSlider extends StatelessWidget {
                   inactiveTrackColor: Colors.white,
                   thumbColor: Colors.white,
                 ),
-                child: Slider(
-                  value: value,
-                  onChanged: onChanged,
-                  min: range.start,
-                  max: range.end,
-                ),
+                child: _slider(),
               )
-            : Slider(
-                value: value,
-                onChanged: onChanged,
-                min: range.start,
-                max: range.end,
-              ))
-        : CupertinoSlider(
-            value: value,
-            onChanged: onChanged,
-            min: range.start,
-            max: range.end,
-            activeColor: AppColors.black,
+            : _slider())
+        : FractionallySizedBox(
+            widthFactor: 1,
+            child: CupertinoSlider(
+              value: value,
+              onChanged: onChanged,
+              min: range.start,
+              max: range.end,
+              activeColor: AppColors.black,
+            ),
           );
+  }
+
+  Widget _slider() {
+    return Slider(
+      value: value,
+      onChanged: onChanged,
+      min: range.start,
+      max: range.end,
+    );
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/components/index.dart';
 
-import '../../../../../common/components/TextField/message_text_field.dart';
 import '../../../../../common/styles/component_style.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
@@ -150,7 +149,7 @@ class _ChatRoomState extends State<ChatRoom> {
                             child: SingleChildScrollView(
                               scrollDirection: Axis.vertical,
                               reverse: true,
-                              child: ChatTextFormField(
+                              child: MessageTextField(
                                 node: messagesFocusNode,
                                 controller: messagesController,
                                 onPrefixIconTap: () {},

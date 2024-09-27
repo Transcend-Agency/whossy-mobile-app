@@ -30,7 +30,7 @@ class GenderChip<T> extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6.r),
+          borderRadius: BorderRadius.circular(8.r),
           color: isSelected ? AppColors.black : Colors.white,
         ),
         padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 8.w),

@@ -7,10 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/tabs/chat/view/widgets/shimmer_tile.dart';
 import 'package:whossy_app/provider/providers.dart';
 
-import '../../../../../../common/components/index.dart'; // for EmptyDataBox and other components
+import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../constants/index.dart'; // for AppAssets and pagePadding
+import '../../../../../../constants/index.dart';
 import '../../model/chat.dart';
 import 'chat_tile.dart'; // for ChatTile
 
@@ -32,10 +32,7 @@ class Messages extends StatelessWidget {
                 children: [
                   _buildHeader(),
                   Expanded(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 750),
-                      switchInCurve: Curves.easeIn,
-                      switchOutCurve: Curves.easeOut,
+                    child: AppAnimatedSwitcher(
                       child: _buildStreamContent(snapshot),
                     ),
                   ),

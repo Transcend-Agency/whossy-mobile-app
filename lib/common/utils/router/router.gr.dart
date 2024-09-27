@@ -8,203 +8,211 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i25;
-import 'package:flutter/material.dart' as _i26;
-import 'package:whossy_app/feature/auth/login/view/login_screen.dart' as _i5;
+import 'package:auto_route/auto_route.dart' as _i26;
+import 'package:flutter/material.dart' as _i27;
+import 'package:whossy_app/feature/auth/login/view/login_screen.dart' as _i6;
 import 'package:whossy_app/feature/auth/login/view/phone_number_screen.dart'
-    as _i8;
-import 'package:whossy_app/feature/auth/login/view/reset_screen.dart' as _i12;
-import 'package:whossy_app/feature/auth/login/view/reset_success_screen.dart'
-    as _i13;
-import 'package:whossy_app/feature/auth/login/view/verification_code_screen.dart'
-    as _i22;
-import 'package:whossy_app/feature/auth/onboarding/view/wrapper.dart' as _i24;
-import 'package:whossy_app/feature/auth/sign_up/view/create.dart' as _i16;
-import 'package:whossy_app/feature/auth/sign_up/view/gender.dart' as _i17;
-import 'package:whossy_app/feature/auth/sign_up/view/name.dart' as _i18;
-import 'package:whossy_app/feature/auth/sign_up/view/phone.dart' as _i19;
-import 'package:whossy_app/feature/auth/sign_up/view/verification.dart' as _i20;
-import 'package:whossy_app/feature/auth/sign_up/view/welcome.dart' as _i23;
-import 'package:whossy_app/feature/home/edit_profile/view/edit_profile.dart'
-    as _i2;
-import 'package:whossy_app/feature/home/edit_profile/view/preview_profile.dart'
-    as _i10;
-import 'package:whossy_app/feature/home/edit_profile/view/preview_profile_more.dart'
-    as _i11;
-import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/name_edit_profile.dart'
-    as _i7;
-import 'package:whossy_app/feature/home/home_wrapper.dart' as _i3;
-import 'package:whossy_app/feature/home/preferences/view/interest_screen.dart'
-    as _i4;
-import 'package:whossy_app/feature/home/preferences/view/preference_screen.dart'
     as _i9;
-import 'package:whossy_app/feature/home/settings/view/settings.dart' as _i15;
-import 'package:whossy_app/feature/home/tabs/chat/view/chat_room.dart' as _i1;
-import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/more_info.dart'
-    as _i6;
-import 'package:whossy_app/feature/home/tabs/profile/view/safety_guide.dart'
+import 'package:whossy_app/feature/auth/login/view/reset_screen.dart' as _i13;
+import 'package:whossy_app/feature/auth/login/view/reset_success_screen.dart'
     as _i14;
-import 'package:whossy_app/feature/splash/splash_screen.dart' as _i21;
+import 'package:whossy_app/feature/auth/login/view/verification_code_screen.dart'
+    as _i23;
+import 'package:whossy_app/feature/auth/onboarding/view/wrapper.dart' as _i25;
+import 'package:whossy_app/feature/auth/sign_up/view/create.dart' as _i17;
+import 'package:whossy_app/feature/auth/sign_up/view/gender.dart' as _i18;
+import 'package:whossy_app/feature/auth/sign_up/view/name.dart' as _i19;
+import 'package:whossy_app/feature/auth/sign_up/view/phone.dart' as _i20;
+import 'package:whossy_app/feature/auth/sign_up/view/verification.dart' as _i21;
+import 'package:whossy_app/feature/auth/sign_up/view/welcome.dart' as _i24;
+import 'package:whossy_app/feature/home/edit_profile/view/edit_profile.dart'
+    as _i3;
+import 'package:whossy_app/feature/home/edit_profile/view/preview_profile.dart'
+    as _i11;
+import 'package:whossy_app/feature/home/edit_profile/view/preview_profile_more.dart'
+    as _i12;
+import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/name_edit_profile.dart'
+    as _i8;
+import 'package:whossy_app/feature/home/home_wrapper.dart' as _i4;
+import 'package:whossy_app/feature/home/preferences/view/interest_screen.dart'
+    as _i5;
+import 'package:whossy_app/feature/home/preferences/view/preference_screen.dart'
+    as _i10;
+import 'package:whossy_app/feature/home/settings/view/settings.dart' as _i16;
+import 'package:whossy_app/feature/home/tabs/chat/view/chat_room.dart' as _i2;
+import 'package:whossy_app/feature/home/tabs/explore/view/advanced_search_screen.dart'
+    as _i1;
+import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/more_info.dart'
+    as _i7;
+import 'package:whossy_app/feature/home/tabs/profile/view/safety_guide.dart'
+    as _i15;
+import 'package:whossy_app/feature/splash/splash_screen.dart' as _i22;
 
-abstract class $AppRouter extends _i25.RootStackRouter {
+abstract class $AppRouter extends _i26.RootStackRouter {
   $AppRouter({super.navigatorKey});
 
   @override
-  final Map<String, _i25.PageFactory> pagesMap = {
-    ChatRoom.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+  final Map<String, _i26.PageFactory> pagesMap = {
+    AdvancedSearchRoute.name: (routeData) {
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i1.ChatRoom(),
+        child: const _i1.AdvancedSearchScreen(),
+      );
+    },
+    ChatRoom.name: (routeData) {
+      return _i26.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const _i2.ChatRoom(),
       );
     },
     EditProfile.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i2.EditProfile(),
+        child: const _i3.EditProfile(),
       );
     },
     HomeWrapper.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i3.HomeWrapper(),
+        child: const _i4.HomeWrapper(),
       );
     },
     InterestRoute.name: (routeData) {
       final args = routeData.argsAs<InterestRouteArgs>(
           orElse: () => const InterestRouteArgs());
-      return _i25.AutoRoutePage<List<String>>(
+      return _i26.AutoRoutePage<List<String>>(
         routeData: routeData,
-        child: _i4.InterestScreen(
+        child: _i5.InterestScreen(
           key: args.key,
           initialValues: args.initialValues,
         ),
       );
     },
     LoginRoute.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i5.LoginScreen(),
+        child: const _i6.LoginScreen(),
       );
     },
     MoreInfoRoute.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i6.MoreInfoScreen(),
+        child: const _i7.MoreInfoScreen(),
       );
     },
     NameEditProfile.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i7.NameEditProfile(),
+        child: const _i8.NameEditProfile(),
       );
     },
     PhoneNumberRoute.name: (routeData) {
       final args = routeData.argsAs<PhoneNumberRouteArgs>(
           orElse: () => const PhoneNumberRouteArgs());
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i8.PhoneNumberScreen(
+        child: _i9.PhoneNumberScreen(
           key: args.key,
           signIn: args.signIn,
         ),
       );
     },
     PreferenceRoute.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i9.PreferenceScreen(),
+        child: const _i10.PreferenceScreen(),
       );
     },
     PreviewProfile.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i10.PreviewProfile(),
+        child: const _i11.PreviewProfile(),
       );
     },
     PreviewProfileMore.name: (routeData) {
       final args = routeData.argsAs<PreviewProfileMoreArgs>();
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i11.PreviewProfileMore(
+        child: _i12.PreviewProfileMore(
           key: args.key,
           index: args.index,
         ),
       );
     },
     ResetPasswordRoute.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i12.ResetPasswordScreen(),
+        child: const _i13.ResetPasswordScreen(),
       );
     },
     ResetSuccessRoute.name: (routeData) {
       final args = routeData.argsAs<ResetSuccessRouteArgs>();
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i13.ResetSuccessScreen(
+        child: _i14.ResetSuccessScreen(
           key: args.key,
           email: args.email,
         ),
       );
     },
     SafetyGuide.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i14.SafetyGuide(),
+        child: const _i15.SafetyGuide(),
       );
     },
     Settings.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i15.Settings(),
+        child: const _i16.Settings(),
       );
     },
     SignUpCreateRoute.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i16.SignUpCreateScreen(),
+        child: const _i17.SignUpCreateScreen(),
       );
     },
     SignUpGenderRoute.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i17.SignUpGenderScreen(),
+        child: const _i18.SignUpGenderScreen(),
       );
     },
     SignUpNameRoute.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i18.SignUpNameScreen(),
+        child: const _i19.SignUpNameScreen(),
       );
     },
     SignUpPhoneRoute.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i19.SignUpPhoneScreen(),
+        child: const _i20.SignUpPhoneScreen(),
       );
     },
     SignUpVerificationRoute.name: (routeData) {
       final args = routeData.argsAs<SignUpVerificationRouteArgs>(
           orElse: () => const SignUpVerificationRouteArgs());
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i20.SignUpVerificationScreen(
+        child: _i21.SignUpVerificationScreen(
           key: args.key,
           pop: args.pop,
         ),
       );
     },
     SplashRoute.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i21.SplashScreen(),
+        child: const _i22.SplashScreen(),
       );
     },
     VerificationCodeRoute.name: (routeData) {
       final args = routeData.argsAs<VerificationCodeRouteArgs>();
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i22.VerificationCodeScreen(
+        child: _i23.VerificationCodeScreen(
           key: args.key,
           phone: args.phone,
           verId: args.verId,
@@ -214,24 +222,38 @@ abstract class $AppRouter extends _i25.RootStackRouter {
       );
     },
     WelcomeRoute.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i23.WelcomeScreen(),
+        child: const _i24.WelcomeScreen(),
       );
     },
     Wrapper.name: (routeData) {
-      return _i25.AutoRoutePage<dynamic>(
+      return _i26.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i24.Wrapper(),
+        child: const _i25.Wrapper(),
       );
     },
   };
 }
 
 /// generated route for
-/// [_i1.ChatRoom]
-class ChatRoom extends _i25.PageRouteInfo<void> {
-  const ChatRoom({List<_i25.PageRouteInfo>? children})
+/// [_i1.AdvancedSearchScreen]
+class AdvancedSearchRoute extends _i26.PageRouteInfo<void> {
+  const AdvancedSearchRoute({List<_i26.PageRouteInfo>? children})
+      : super(
+          AdvancedSearchRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AdvancedSearchRoute';
+
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
+}
+
+/// generated route for
+/// [_i2.ChatRoom]
+class ChatRoom extends _i26.PageRouteInfo<void> {
+  const ChatRoom({List<_i26.PageRouteInfo>? children})
       : super(
           ChatRoom.name,
           initialChildren: children,
@@ -239,13 +261,13 @@ class ChatRoom extends _i25.PageRouteInfo<void> {
 
   static const String name = 'ChatRoom';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i2.EditProfile]
-class EditProfile extends _i25.PageRouteInfo<void> {
-  const EditProfile({List<_i25.PageRouteInfo>? children})
+/// [_i3.EditProfile]
+class EditProfile extends _i26.PageRouteInfo<void> {
+  const EditProfile({List<_i26.PageRouteInfo>? children})
       : super(
           EditProfile.name,
           initialChildren: children,
@@ -253,13 +275,13 @@ class EditProfile extends _i25.PageRouteInfo<void> {
 
   static const String name = 'EditProfile';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i3.HomeWrapper]
-class HomeWrapper extends _i25.PageRouteInfo<void> {
-  const HomeWrapper({List<_i25.PageRouteInfo>? children})
+/// [_i4.HomeWrapper]
+class HomeWrapper extends _i26.PageRouteInfo<void> {
+  const HomeWrapper({List<_i26.PageRouteInfo>? children})
       : super(
           HomeWrapper.name,
           initialChildren: children,
@@ -267,16 +289,16 @@ class HomeWrapper extends _i25.PageRouteInfo<void> {
 
   static const String name = 'HomeWrapper';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i4.InterestScreen]
-class InterestRoute extends _i25.PageRouteInfo<InterestRouteArgs> {
+/// [_i5.InterestScreen]
+class InterestRoute extends _i26.PageRouteInfo<InterestRouteArgs> {
   InterestRoute({
-    _i26.Key? key,
+    _i27.Key? key,
     List<String>? initialValues,
-    List<_i25.PageRouteInfo>? children,
+    List<_i26.PageRouteInfo>? children,
   }) : super(
           InterestRoute.name,
           args: InterestRouteArgs(
@@ -288,8 +310,8 @@ class InterestRoute extends _i25.PageRouteInfo<InterestRouteArgs> {
 
   static const String name = 'InterestRoute';
 
-  static const _i25.PageInfo<InterestRouteArgs> page =
-      _i25.PageInfo<InterestRouteArgs>(name);
+  static const _i26.PageInfo<InterestRouteArgs> page =
+      _i26.PageInfo<InterestRouteArgs>(name);
 }
 
 class InterestRouteArgs {
@@ -298,7 +320,7 @@ class InterestRouteArgs {
     this.initialValues,
   });
 
-  final _i26.Key? key;
+  final _i27.Key? key;
 
   final List<String>? initialValues;
 
@@ -309,9 +331,9 @@ class InterestRouteArgs {
 }
 
 /// generated route for
-/// [_i5.LoginScreen]
-class LoginRoute extends _i25.PageRouteInfo<void> {
-  const LoginRoute({List<_i25.PageRouteInfo>? children})
+/// [_i6.LoginScreen]
+class LoginRoute extends _i26.PageRouteInfo<void> {
+  const LoginRoute({List<_i26.PageRouteInfo>? children})
       : super(
           LoginRoute.name,
           initialChildren: children,
@@ -319,13 +341,13 @@ class LoginRoute extends _i25.PageRouteInfo<void> {
 
   static const String name = 'LoginRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i6.MoreInfoScreen]
-class MoreInfoRoute extends _i25.PageRouteInfo<void> {
-  const MoreInfoRoute({List<_i25.PageRouteInfo>? children})
+/// [_i7.MoreInfoScreen]
+class MoreInfoRoute extends _i26.PageRouteInfo<void> {
+  const MoreInfoRoute({List<_i26.PageRouteInfo>? children})
       : super(
           MoreInfoRoute.name,
           initialChildren: children,
@@ -333,13 +355,13 @@ class MoreInfoRoute extends _i25.PageRouteInfo<void> {
 
   static const String name = 'MoreInfoRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i7.NameEditProfile]
-class NameEditProfile extends _i25.PageRouteInfo<void> {
-  const NameEditProfile({List<_i25.PageRouteInfo>? children})
+/// [_i8.NameEditProfile]
+class NameEditProfile extends _i26.PageRouteInfo<void> {
+  const NameEditProfile({List<_i26.PageRouteInfo>? children})
       : super(
           NameEditProfile.name,
           initialChildren: children,
@@ -347,16 +369,16 @@ class NameEditProfile extends _i25.PageRouteInfo<void> {
 
   static const String name = 'NameEditProfile';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i8.PhoneNumberScreen]
-class PhoneNumberRoute extends _i25.PageRouteInfo<PhoneNumberRouteArgs> {
+/// [_i9.PhoneNumberScreen]
+class PhoneNumberRoute extends _i26.PageRouteInfo<PhoneNumberRouteArgs> {
   PhoneNumberRoute({
-    _i26.Key? key,
+    _i27.Key? key,
     bool signIn = true,
-    List<_i25.PageRouteInfo>? children,
+    List<_i26.PageRouteInfo>? children,
   }) : super(
           PhoneNumberRoute.name,
           args: PhoneNumberRouteArgs(
@@ -368,8 +390,8 @@ class PhoneNumberRoute extends _i25.PageRouteInfo<PhoneNumberRouteArgs> {
 
   static const String name = 'PhoneNumberRoute';
 
-  static const _i25.PageInfo<PhoneNumberRouteArgs> page =
-      _i25.PageInfo<PhoneNumberRouteArgs>(name);
+  static const _i26.PageInfo<PhoneNumberRouteArgs> page =
+      _i26.PageInfo<PhoneNumberRouteArgs>(name);
 }
 
 class PhoneNumberRouteArgs {
@@ -378,7 +400,7 @@ class PhoneNumberRouteArgs {
     this.signIn = true,
   });
 
-  final _i26.Key? key;
+  final _i27.Key? key;
 
   final bool signIn;
 
@@ -389,9 +411,9 @@ class PhoneNumberRouteArgs {
 }
 
 /// generated route for
-/// [_i9.PreferenceScreen]
-class PreferenceRoute extends _i25.PageRouteInfo<void> {
-  const PreferenceRoute({List<_i25.PageRouteInfo>? children})
+/// [_i10.PreferenceScreen]
+class PreferenceRoute extends _i26.PageRouteInfo<void> {
+  const PreferenceRoute({List<_i26.PageRouteInfo>? children})
       : super(
           PreferenceRoute.name,
           initialChildren: children,
@@ -399,13 +421,13 @@ class PreferenceRoute extends _i25.PageRouteInfo<void> {
 
   static const String name = 'PreferenceRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i10.PreviewProfile]
-class PreviewProfile extends _i25.PageRouteInfo<void> {
-  const PreviewProfile({List<_i25.PageRouteInfo>? children})
+/// [_i11.PreviewProfile]
+class PreviewProfile extends _i26.PageRouteInfo<void> {
+  const PreviewProfile({List<_i26.PageRouteInfo>? children})
       : super(
           PreviewProfile.name,
           initialChildren: children,
@@ -413,16 +435,16 @@ class PreviewProfile extends _i25.PageRouteInfo<void> {
 
   static const String name = 'PreviewProfile';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i11.PreviewProfileMore]
-class PreviewProfileMore extends _i25.PageRouteInfo<PreviewProfileMoreArgs> {
+/// [_i12.PreviewProfileMore]
+class PreviewProfileMore extends _i26.PageRouteInfo<PreviewProfileMoreArgs> {
   PreviewProfileMore({
-    _i26.Key? key,
+    _i27.Key? key,
     required int index,
-    List<_i25.PageRouteInfo>? children,
+    List<_i26.PageRouteInfo>? children,
   }) : super(
           PreviewProfileMore.name,
           args: PreviewProfileMoreArgs(
@@ -434,8 +456,8 @@ class PreviewProfileMore extends _i25.PageRouteInfo<PreviewProfileMoreArgs> {
 
   static const String name = 'PreviewProfileMore';
 
-  static const _i25.PageInfo<PreviewProfileMoreArgs> page =
-      _i25.PageInfo<PreviewProfileMoreArgs>(name);
+  static const _i26.PageInfo<PreviewProfileMoreArgs> page =
+      _i26.PageInfo<PreviewProfileMoreArgs>(name);
 }
 
 class PreviewProfileMoreArgs {
@@ -444,7 +466,7 @@ class PreviewProfileMoreArgs {
     required this.index,
   });
 
-  final _i26.Key? key;
+  final _i27.Key? key;
 
   final int index;
 
@@ -455,9 +477,9 @@ class PreviewProfileMoreArgs {
 }
 
 /// generated route for
-/// [_i12.ResetPasswordScreen]
-class ResetPasswordRoute extends _i25.PageRouteInfo<void> {
-  const ResetPasswordRoute({List<_i25.PageRouteInfo>? children})
+/// [_i13.ResetPasswordScreen]
+class ResetPasswordRoute extends _i26.PageRouteInfo<void> {
+  const ResetPasswordRoute({List<_i26.PageRouteInfo>? children})
       : super(
           ResetPasswordRoute.name,
           initialChildren: children,
@@ -465,16 +487,16 @@ class ResetPasswordRoute extends _i25.PageRouteInfo<void> {
 
   static const String name = 'ResetPasswordRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i13.ResetSuccessScreen]
-class ResetSuccessRoute extends _i25.PageRouteInfo<ResetSuccessRouteArgs> {
+/// [_i14.ResetSuccessScreen]
+class ResetSuccessRoute extends _i26.PageRouteInfo<ResetSuccessRouteArgs> {
   ResetSuccessRoute({
-    _i26.Key? key,
+    _i27.Key? key,
     required String email,
-    List<_i25.PageRouteInfo>? children,
+    List<_i26.PageRouteInfo>? children,
   }) : super(
           ResetSuccessRoute.name,
           args: ResetSuccessRouteArgs(
@@ -486,8 +508,8 @@ class ResetSuccessRoute extends _i25.PageRouteInfo<ResetSuccessRouteArgs> {
 
   static const String name = 'ResetSuccessRoute';
 
-  static const _i25.PageInfo<ResetSuccessRouteArgs> page =
-      _i25.PageInfo<ResetSuccessRouteArgs>(name);
+  static const _i26.PageInfo<ResetSuccessRouteArgs> page =
+      _i26.PageInfo<ResetSuccessRouteArgs>(name);
 }
 
 class ResetSuccessRouteArgs {
@@ -496,7 +518,7 @@ class ResetSuccessRouteArgs {
     required this.email,
   });
 
-  final _i26.Key? key;
+  final _i27.Key? key;
 
   final String email;
 
@@ -507,9 +529,9 @@ class ResetSuccessRouteArgs {
 }
 
 /// generated route for
-/// [_i14.SafetyGuide]
-class SafetyGuide extends _i25.PageRouteInfo<void> {
-  const SafetyGuide({List<_i25.PageRouteInfo>? children})
+/// [_i15.SafetyGuide]
+class SafetyGuide extends _i26.PageRouteInfo<void> {
+  const SafetyGuide({List<_i26.PageRouteInfo>? children})
       : super(
           SafetyGuide.name,
           initialChildren: children,
@@ -517,13 +539,13 @@ class SafetyGuide extends _i25.PageRouteInfo<void> {
 
   static const String name = 'SafetyGuide';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i15.Settings]
-class Settings extends _i25.PageRouteInfo<void> {
-  const Settings({List<_i25.PageRouteInfo>? children})
+/// [_i16.Settings]
+class Settings extends _i26.PageRouteInfo<void> {
+  const Settings({List<_i26.PageRouteInfo>? children})
       : super(
           Settings.name,
           initialChildren: children,
@@ -531,13 +553,13 @@ class Settings extends _i25.PageRouteInfo<void> {
 
   static const String name = 'Settings';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i16.SignUpCreateScreen]
-class SignUpCreateRoute extends _i25.PageRouteInfo<void> {
-  const SignUpCreateRoute({List<_i25.PageRouteInfo>? children})
+/// [_i17.SignUpCreateScreen]
+class SignUpCreateRoute extends _i26.PageRouteInfo<void> {
+  const SignUpCreateRoute({List<_i26.PageRouteInfo>? children})
       : super(
           SignUpCreateRoute.name,
           initialChildren: children,
@@ -545,13 +567,13 @@ class SignUpCreateRoute extends _i25.PageRouteInfo<void> {
 
   static const String name = 'SignUpCreateRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i17.SignUpGenderScreen]
-class SignUpGenderRoute extends _i25.PageRouteInfo<void> {
-  const SignUpGenderRoute({List<_i25.PageRouteInfo>? children})
+/// [_i18.SignUpGenderScreen]
+class SignUpGenderRoute extends _i26.PageRouteInfo<void> {
+  const SignUpGenderRoute({List<_i26.PageRouteInfo>? children})
       : super(
           SignUpGenderRoute.name,
           initialChildren: children,
@@ -559,13 +581,13 @@ class SignUpGenderRoute extends _i25.PageRouteInfo<void> {
 
   static const String name = 'SignUpGenderRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i18.SignUpNameScreen]
-class SignUpNameRoute extends _i25.PageRouteInfo<void> {
-  const SignUpNameRoute({List<_i25.PageRouteInfo>? children})
+/// [_i19.SignUpNameScreen]
+class SignUpNameRoute extends _i26.PageRouteInfo<void> {
+  const SignUpNameRoute({List<_i26.PageRouteInfo>? children})
       : super(
           SignUpNameRoute.name,
           initialChildren: children,
@@ -573,13 +595,13 @@ class SignUpNameRoute extends _i25.PageRouteInfo<void> {
 
   static const String name = 'SignUpNameRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i19.SignUpPhoneScreen]
-class SignUpPhoneRoute extends _i25.PageRouteInfo<void> {
-  const SignUpPhoneRoute({List<_i25.PageRouteInfo>? children})
+/// [_i20.SignUpPhoneScreen]
+class SignUpPhoneRoute extends _i26.PageRouteInfo<void> {
+  const SignUpPhoneRoute({List<_i26.PageRouteInfo>? children})
       : super(
           SignUpPhoneRoute.name,
           initialChildren: children,
@@ -587,17 +609,17 @@ class SignUpPhoneRoute extends _i25.PageRouteInfo<void> {
 
   static const String name = 'SignUpPhoneRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i20.SignUpVerificationScreen]
+/// [_i21.SignUpVerificationScreen]
 class SignUpVerificationRoute
-    extends _i25.PageRouteInfo<SignUpVerificationRouteArgs> {
+    extends _i26.PageRouteInfo<SignUpVerificationRouteArgs> {
   SignUpVerificationRoute({
-    _i26.Key? key,
+    _i27.Key? key,
     bool pop = false,
-    List<_i25.PageRouteInfo>? children,
+    List<_i26.PageRouteInfo>? children,
   }) : super(
           SignUpVerificationRoute.name,
           args: SignUpVerificationRouteArgs(
@@ -609,8 +631,8 @@ class SignUpVerificationRoute
 
   static const String name = 'SignUpVerificationRoute';
 
-  static const _i25.PageInfo<SignUpVerificationRouteArgs> page =
-      _i25.PageInfo<SignUpVerificationRouteArgs>(name);
+  static const _i26.PageInfo<SignUpVerificationRouteArgs> page =
+      _i26.PageInfo<SignUpVerificationRouteArgs>(name);
 }
 
 class SignUpVerificationRouteArgs {
@@ -619,7 +641,7 @@ class SignUpVerificationRouteArgs {
     this.pop = false,
   });
 
-  final _i26.Key? key;
+  final _i27.Key? key;
 
   final bool pop;
 
@@ -630,9 +652,9 @@ class SignUpVerificationRouteArgs {
 }
 
 /// generated route for
-/// [_i21.SplashScreen]
-class SplashRoute extends _i25.PageRouteInfo<void> {
-  const SplashRoute({List<_i25.PageRouteInfo>? children})
+/// [_i22.SplashScreen]
+class SplashRoute extends _i26.PageRouteInfo<void> {
+  const SplashRoute({List<_i26.PageRouteInfo>? children})
       : super(
           SplashRoute.name,
           initialChildren: children,
@@ -640,20 +662,20 @@ class SplashRoute extends _i25.PageRouteInfo<void> {
 
   static const String name = 'SplashRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i22.VerificationCodeScreen]
+/// [_i23.VerificationCodeScreen]
 class VerificationCodeRoute
-    extends _i25.PageRouteInfo<VerificationCodeRouteArgs> {
+    extends _i26.PageRouteInfo<VerificationCodeRouteArgs> {
   VerificationCodeRoute({
-    _i26.Key? key,
+    _i27.Key? key,
     required String phone,
     required String verId,
     bool signIn = true,
     required int? resendToken,
-    List<_i25.PageRouteInfo>? children,
+    List<_i26.PageRouteInfo>? children,
   }) : super(
           VerificationCodeRoute.name,
           args: VerificationCodeRouteArgs(
@@ -668,8 +690,8 @@ class VerificationCodeRoute
 
   static const String name = 'VerificationCodeRoute';
 
-  static const _i25.PageInfo<VerificationCodeRouteArgs> page =
-      _i25.PageInfo<VerificationCodeRouteArgs>(name);
+  static const _i26.PageInfo<VerificationCodeRouteArgs> page =
+      _i26.PageInfo<VerificationCodeRouteArgs>(name);
 }
 
 class VerificationCodeRouteArgs {
@@ -681,7 +703,7 @@ class VerificationCodeRouteArgs {
     required this.resendToken,
   });
 
-  final _i26.Key? key;
+  final _i27.Key? key;
 
   final String phone;
 
@@ -698,9 +720,9 @@ class VerificationCodeRouteArgs {
 }
 
 /// generated route for
-/// [_i23.WelcomeScreen]
-class WelcomeRoute extends _i25.PageRouteInfo<void> {
-  const WelcomeRoute({List<_i25.PageRouteInfo>? children})
+/// [_i24.WelcomeScreen]
+class WelcomeRoute extends _i26.PageRouteInfo<void> {
+  const WelcomeRoute({List<_i26.PageRouteInfo>? children})
       : super(
           WelcomeRoute.name,
           initialChildren: children,
@@ -708,13 +730,13 @@ class WelcomeRoute extends _i25.PageRouteInfo<void> {
 
   static const String name = 'WelcomeRoute';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i24.Wrapper]
-class Wrapper extends _i25.PageRouteInfo<void> {
-  const Wrapper({List<_i25.PageRouteInfo>? children})
+/// [_i25.Wrapper]
+class Wrapper extends _i26.PageRouteInfo<void> {
+  const Wrapper({List<_i26.PageRouteInfo>? children})
       : super(
           Wrapper.name,
           initialChildren: children,
@@ -722,5 +744,5 @@ class Wrapper extends _i25.PageRouteInfo<void> {
 
   static const String name = 'Wrapper';
 
-  static const _i25.PageInfo<void> page = _i25.PageInfo<void>(name);
+  static const _i26.PageInfo<void> page = _i26.PageInfo<void>(name);
 }

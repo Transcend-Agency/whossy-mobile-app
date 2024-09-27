@@ -5,7 +5,7 @@ import 'package:whossy_app/feature/home/preferences/model/other_preferences.dart
 import '../../model/core_preferences.dart';
 import '../../model/filters.dart';
 
-class PreferencesRepository {
+class FiltersRepository {
   final _filtersFirestore = FirebaseFirestore.instance.collection('filters');
 
   Future<Filters?> fetchFilters() async {

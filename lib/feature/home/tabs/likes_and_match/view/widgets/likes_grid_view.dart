@@ -29,10 +29,8 @@ class LikesGridView extends StatelessWidget {
         child: FutureBuilder<String>(
           future: _mockFuture(),
           builder: (context, snapshot) {
-            return AnimatedSwitcher(
-              duration: const Duration(milliseconds: 750),
-              switchInCurve: Curves.easeIn,
-              switchOutCurve: Curves.easeOut,
+            return AppAnimatedSwitcher(
+  
               child: _buildContentBasedOnSnapshot(context, snapshot),
             );
           },

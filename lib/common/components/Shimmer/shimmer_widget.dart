@@ -27,6 +27,13 @@ class ShimmerWidget extends StatelessWidget {
     this.border = const CircleBorder(),
   });
 
+  const ShimmerWidget.oval({
+    super.key,
+    this.width,
+    this.height,
+    this.border = const CircleBorder(),
+  });
+
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(

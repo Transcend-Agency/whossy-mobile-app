@@ -113,3 +113,16 @@ class _CitySheetState extends State<CitySheet> {
     );
   }
 }
+
+Future<String?> showCitySheet({
+  required BuildContext context,
+  String? city,
+}) {
+  return showModalBottomSheet<String?>(
+    isScrollControlled: true,
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => CitySheet(city: city),
+  );
+}

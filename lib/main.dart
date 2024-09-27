@@ -42,6 +42,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => EditProfileNotifier()),
         ChangeNotifierProvider(create: (_) => ConnectivityNotifier()),
         ChangeNotifierProvider(create: (_) => ChatsNotifier()),
+        ChangeNotifierProvider(create: (_) => AdvancedSearchNotifier()),
       ],
       child: Whossy(),
     ),

@@ -5,8 +5,8 @@ import '../../../constants/index.dart';
 import '../../styles/component_style.dart';
 import '../../styles/text_style.dart';
 
-class ChatTextFormField extends StatelessWidget {
-  const ChatTextFormField({
+class MessageTextField extends StatelessWidget {
+  const MessageTextField({
     super.key,
     required this.node,
     required this.controller,

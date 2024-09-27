@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_app/common/components/Divider/app_divider.dart';
 import 'package:whossy_app/common/utils/index.dart';
 
 import '../../../../common/styles/text_style.dart';
 import '../../../../constants/index.dart';
+import '../index.dart';
 
 class PreferenceTile extends StatelessWidget {
   final String? text;
-  final String trailing;
+  final String? trailing;
   final VoidCallback? onTap;
   final TextStyle? textStyle;
   final Color? iconColor;
@@ -24,12 +24,15 @@ class PreferenceTile extends StatelessWidget {
     this.iconColor,
     this.showDivider = true,
     this.showTrailingIcon = true,
-    required this.trailing,
+    this.trailing,
     this.customChildren,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Check if trailing is null once
+    final hasTrailing = trailing != null;
+
     return InkWell(
       onTap: onTap,
       child: customChildren != null
@@ -52,16 +55,33 @@ class PreferenceTile extends StatelessWidget {
                       style: textStyle ?? TextStyles.prefText,
                     ),
                     Container(
-                      margin:
-                          EdgeInsets.only(top: 13.r, bottom: 13.r, left: 12.h),
+                      margin: EdgeInsets.only(
+                        top: hasTrailing ? 13.r : 16.r,
+                        bottom: hasTrailing ? 13.r : 16.r,
+                        left: 12.h,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            trailing,
-                            style: (textStyle ?? TextStyles.prefText).copyWith(
-                              color: AppColors.hintTextColor,
-                            ),
+                          AppAnimatedSwitcher(
+                            child: hasTrailing
+                                ? Text(
+                                    trailing!,
+                                    style: (textStyle ?? TextStyles.prefText)
+                                        .copyWith(
+                                      color: AppColors.hintTextColor,
+                                    ),
+                                    textAlign: TextAlign.right,
+                                    key: const ValueKey('data'),
+                                  )
+                                : ShimmerWidget.rectangular(
+                                    height: 15.h,
+                                    width: ScreenUtil().screenWidth * 0.35,
+                                    border: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4.r),
+                                    ),
+                                    key: const ValueKey<bool>(false),
+                                  ),
                           ),
                           if (onTap != null && showTrailingIcon) ...[
                             addWidth(6),
@@ -70,7 +90,7 @@ class PreferenceTile extends StatelessWidget {
                               color: iconColor ?? AppColors.hintTextColor,
                               size: 16,
                             ),
-                          ]
+                          ],
                         ],
                       ),
                     )

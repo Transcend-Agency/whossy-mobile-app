@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
-import 'package:whossy_app/common/styles/component_style.dart';
 
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
@@ -13,7 +12,8 @@ import '../../data/source/core_prefs_data.dart';
 import '../../data/source/extensions.dart';
 import '../sheets/_.dart';
 
-class ExtrasComponent extends StatelessWidget {
+class ExtrasComponent<T extends SearchPreferencesNotifier>
+    extends StatelessWidget {
   const ExtrasComponent({super.key});
 
   @override
@@ -28,8 +28,8 @@ class ExtrasComponent extends StatelessWidget {
         Container(
           decoration: const BoxDecoration(color: AppColors.inputBackGround),
           padding: EdgeInsets.symmetric(horizontal: 14.r),
-          child: Consumer<PreferencesNotifier>(
-            builder: (_, prefs, __) {
+          child: Consumer<T>(
+            builder: (_, notifier, __) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -45,18 +45,18 @@ class ExtrasComponent extends StatelessWidget {
                         text: item.header,
                         onTap: () async {
                           final value = await showCustomModalBottomSheet(
-                            selectedItem: prefs.getSelected(item.type),
+                            selectedItem: notifier.getSelected(item.type),
                             context: context,
                             item: item,
                           );
 
                           if (value != null) {
-                            prefs.setValue(value);
+                            notifier.setValue(value);
                           }
                         },
-                        trailing: prefs.selectedItems == null
-                            ? "Loading ..."
-                            : prefs.getValue(item.type),
+                        trailing: notifier.selectedItems == null
+                            ? null
+                            : notifier.getValue(item.type),
                       );
                     },
                   ),
@@ -64,64 +64,67 @@ class ExtrasComponent extends StatelessWidget {
                     text: 'Country of Residence',
                     onTap: () => showPicker(
                       showCode: false,
-                      onSelect: (_) => prefs.updatePreferences(country: _.name),
+                      onSelect: (_) =>
+                          notifier.updatePreferences(country: _.name),
                       context: context,
                     ),
-                    trailing: prefs.otherPreferences?.country ?? 'Choose',
+                    trailing: notifier.otherPreferences?.country ??
+                        (notifier.otherPreferences == null ? null : 'Choose'),
                   ),
                   PreferenceTile(
                     text: 'City of Residence',
                     onTap: () async {
                       final city = await showCitySheet(
                         context: context,
-                        city: prefs.otherPreferences?.city,
+                        city: notifier.otherPreferences?.city,
                       );
 
                       if (city != null) {
-                        prefs.updatePreferences(city: city);
+                        notifier.updatePreferences(city: city);
                       }
                     },
-                    trailing: prefs.otherPreferences?.city ?? 'Choose',
+                    trailing: notifier.otherPreferences?.city ??
+                        (notifier.otherPreferences == null ? null : 'Choose'),
                   ),
                   PreferenceTile(
                     text: 'Height',
                     onTap: () async {
                       final height = await showRangeSheet(
                         context: context,
-                        range: prefs.otherPreferences?.toHeightRange(),
+                        range: notifier.otherPreferences?.toHeightRange(),
                         type: RangeType.height,
                       );
 
                       if (height != null) {
-                        prefs.updatePreferences(
+                        notifier.updatePreferences(
                           minHeight: height.start.round(),
                           maxHeight: height.end.round(),
                         );
                       }
                     },
-                    trailing:
-                        prefs.otherPreferences?.heightRange.displayRange() ??
-                            '...Loading',
+                    trailing: notifier.otherPreferences?.heightRange
+                            .displayRange() ??
+                        (notifier.otherPreferences == null ? null : 'Choose'),
                   ),
                   PreferenceTile(
                     text: 'Weight',
                     onTap: () async {
                       final weight = await showRangeSheet(
                         context: context,
-                        range: prefs.otherPreferences?.toWeightRange(),
+                        range: notifier.otherPreferences?.toWeightRange(),
                         type: RangeType.weight,
                       );
 
                       if (weight != null) {
-                        prefs.updatePreferences(
+                        notifier.updatePreferences(
                           minWeight: weight.start.round(),
                           maxWeight: weight.end.round(),
                         );
                       }
-                    },
-                    trailing: prefs.otherPreferences?.weightRange
+                    }, //
+                    trailing: notifier.otherPreferences?.weightRange
                             .displayRange(type: RangeType.weight) ??
-                        '...Loading',
+                        (notifier.otherPreferences == null ? null : 'Choose'),
                   ),
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
@@ -135,18 +138,18 @@ class ExtrasComponent extends StatelessWidget {
                         text: item.header,
                         onTap: () async {
                           final value = await showCustomModalBottomSheet(
-                            selectedItem: prefs.getSelected(item.type),
+                            selectedItem: notifier.getSelected(item.type),
                             context: context,
                             item: item,
                           );
 
                           if (value != null) {
-                            prefs.setValue(value);
+                            notifier.setValue(value);
                           }
                         },
-                        trailing: prefs.selectedItems == null
-                            ? "Loading ..."
-                            : prefs.getValue(item.type),
+                        trailing: notifier.selectedItems == null
+                            ? null
+                            : notifier.getValue(item.type),
                         showDivider: index < 2,
                       );
                     },
@@ -212,33 +215,4 @@ class ExtrasComponent extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<String?> showCitySheet({
-  required BuildContext context,
-  String? city,
-}) {
-  return showModalBottomSheet<String?>(
-    isScrollControlled: true,
-    clipBehavior: Clip.hardEdge,
-    context: context,
-    shape: roundedTop,
-    builder: (_) => CitySheet(city: city),
-  );
-}
-
-Future<RangeValues?> showRangeSheet({
-  required RangeValues? range,
-  required BuildContext context,
-  required RangeType type,
-}) {
-  return showModalBottomSheet<RangeValues?>(
-    clipBehavior: Clip.hardEdge,
-    context: context,
-    shape: roundedTop,
-    builder: (_) => RangeSheet(
-      range: range,
-      type: type,
-    ),
-  );
 }

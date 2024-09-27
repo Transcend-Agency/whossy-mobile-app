@@ -138,3 +138,19 @@ class _RangeSheetState<T> extends State<RangeSheet<T>> {
     );
   }
 }
+
+Future<RangeValues?> showRangeSheet({
+  required RangeValues? range,
+  required BuildContext context,
+  required RangeType type,
+}) {
+  return showModalBottomSheet<RangeValues?>(
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => RangeSheet(
+      range: range,
+      type: type,
+    ),
+  );
+}

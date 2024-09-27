@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
+import 'package:whossy_app/feature/home/preferences/data/state/search_preferences_notifier.dart';
 
 import '../../../../../constants/index.dart';
 import '../../model/core_preferences.dart';
@@ -10,25 +11,34 @@ import '../../model/generic_enum.dart';
 import '../../model/other_preferences.dart';
 import '../repository/filters_repository.dart';
 
-class PreferencesNotifier extends ChangeNotifier {
+class PreferencesNotifier extends ChangeNotifier
+    implements SearchPreferencesNotifier {
+  final _prefsRepo = FiltersRepository();
+
   CorePreferences? _dynCorePrefs;
   CorePreferences? _statCorePrefs;
 
   OtherPreferences? _dynOtherPrefs;
   OtherPreferences? _statOtherPrefs;
-  final _prefsRepo = PreferencesRepository();
 
+  @override
   CorePreferences? get selectedItems => _dynCorePrefs;
+
+  @override
   OtherPreferences? get otherPreferences => _dynOtherPrefs;
 
+  @override
   void setValue(GenericEnum value) {
     _dynCorePrefs?.setValue(value);
     notifyListeners();
   }
 
-  String getValue(Type _) => _dynCorePrefs?.getValue(_)?.name ?? 'Choose';
-  GenericEnum? getSelected(Type _) => _dynCorePrefs?.getValue(_);
+  @override
+  String getValue(Type type) => _dynCorePrefs?.getValue(type)?.name ?? 'Choose';
+  @override
+  GenericEnum? getSelected(Type type) => _dynCorePrefs?.getValue(type);
 
+  @override
   bool get hasChanges {
     if (_dynCorePrefs == null ||
         _statCorePrefs == null ||
@@ -42,6 +52,7 @@ class PreferencesNotifier extends ChangeNotifier {
     return corePrefs || otherPrefs;
   }
 
+  @override
   Future<void> getFilters({
     required void Function(String) showSnackbar,
   }) async {
@@ -64,6 +75,7 @@ class PreferencesNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  @override
   Future<void> saveFilters({
     required void Function(String) showSnackbar,
   }) async {
@@ -90,6 +102,7 @@ class PreferencesNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  @override
   void updatePreferences({
     int? meet,
     bool? similarInterest,

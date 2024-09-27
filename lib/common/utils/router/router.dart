@@ -44,6 +44,9 @@ class AppRouter extends $AppRouter {
 
         // Chat / Tab 4
         AutoRoute(page: ChatRoom.page),
+
+        // Explore / Tab 2
+        AutoRoute(page: AdvancedSearchRoute.page),
       ];
 }
 
