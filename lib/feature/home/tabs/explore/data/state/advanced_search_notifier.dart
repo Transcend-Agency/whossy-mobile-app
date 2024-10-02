@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../preferences/model/core_preferences.dart';
@@ -54,8 +55,12 @@ class AdvancedSearchNotifier extends ChangeNotifier
     await Future.delayed(const Duration(seconds: 3));
 
     // Placeholder logic, simulate fetchFilters functionality for now
-    _dynCorePrefs = CorePreferences(); // Use default or mock data for now
-    _dynOtherPrefs = OtherPreferences(); // Use default or mock data for now
+    _dynCorePrefs = CorePreferences();
+    _dynOtherPrefs = OtherPreferences();
+
+    _statCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
+
+    _statOtherPrefs = OtherPreferences.fromJson(_dynOtherPrefs!.toJson());
 
     notifyListeners();
   }
@@ -71,6 +76,17 @@ class AdvancedSearchNotifier extends ChangeNotifier
   }) async {
     // Placeholder logic, simulate saveFilters functionality for now
     // Add actual logic for saving filters later
+
+    final coreDiff = _dynCorePrefs?.diff(_statCorePrefs!) ?? {};
+    final otherDiff = _dynOtherPrefs?.diff(_statOtherPrefs!) ?? {};
+
+    if (coreDiff.isEmpty && otherDiff.isEmpty) {
+      return;
+    }
+
+    _statCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
+    _statOtherPrefs = OtherPreferences.fromJson(_dynOtherPrefs!.toJson());
+
     notifyListeners();
   }
 

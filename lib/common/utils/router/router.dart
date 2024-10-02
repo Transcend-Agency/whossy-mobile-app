@@ -47,6 +47,7 @@ class AppRouter extends $AppRouter {
 
         // Explore / Tab 2
         AutoRoute(page: AdvancedSearchRoute.page),
+        AutoRoute(page: MatchingRoute.page),
       ];
 }
 

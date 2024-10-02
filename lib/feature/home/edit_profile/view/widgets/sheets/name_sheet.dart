@@ -5,7 +5,6 @@ import 'package:whossy_app/common/styles/component_style.dart';
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
-import '../../../../../../constants/index.dart';
 
 class NameSheet extends StatefulWidget {
   final String? name;
@@ -95,10 +94,7 @@ class _NameSheetState extends State<NameSheet> {
               ],
             ),
           ),
-          const Divider(
-            color: AppColors.outlinedColor,
-            height: 0,
-          ),
+          const AppDivider(),
           addHeight(16),
           Padding(
             padding: pagePadding,
@@ -121,4 +117,18 @@ class _NameSheetState extends State<NameSheet> {
       ),
     );
   }
+}
+
+Future<String?> showNameSheet({
+  required BuildContext context,
+  String? name,
+  required String title,
+}) {
+  return showModalBottomSheet<String?>(
+    isScrollControlled: true,
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => NameSheet(name: name, title: title),
+  );
 }

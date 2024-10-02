@@ -48,10 +48,7 @@ class EditSheet extends StatelessWidget {
                 ],
               ),
             ),
-            const Divider(
-              color: AppColors.outlinedColor,
-              height: 0,
-            ),
+            const AppDivider(),
             addHeight(16),
             Padding(
               padding: pagePadding,

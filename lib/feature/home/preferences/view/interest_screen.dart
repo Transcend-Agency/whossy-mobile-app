@@ -6,7 +6,6 @@ import 'package:whossy_app/common/styles/component_style.dart';
 
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
-import '../../../../../constants/index.dart';
 import '../../../auth/onboarding/data/state/notifier_set.dart';
 import '../../../auth/onboarding/model/alphabet.dart';
 
@@ -138,10 +137,7 @@ class _InterestScreenState extends State<InterestScreen> {
                         if (index != _filteredAlphabet.length - 1)
                           Column(
                             children: [
-                              const Divider(
-                                color: AppColors.outlinedColor,
-                                height: 0,
-                              ),
+                              const AppDivider(),
                               addHeight(12),
                             ],
                           ),

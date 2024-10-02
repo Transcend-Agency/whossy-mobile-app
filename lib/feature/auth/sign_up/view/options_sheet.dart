@@ -63,10 +63,7 @@ class SignupOptions extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Divider(
-                  color: AppColors.outlinedColor,
-                  height: 0,
-                ),
+                const AppDivider(),
                 addHeight(14),
                 Padding(
                   padding: pagePadding,

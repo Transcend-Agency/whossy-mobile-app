@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';
 
 import '../../model/chat.dart';
 import '../../model/current_chat.dart';
@@ -9,6 +10,9 @@ class ChatsNotifier extends ChangeNotifier {
 
   // Getter for the chat stream
   Stream<List<Chat>> get chatStream => _chatRepository.getChatsStream();
+
+  Stream<List<Message>> messagesStream(int limit) => _chatRepository
+      .getChatMessagesStream(limit: limit, chatId: currentChat!.chatId!);
 
   CurrentChat? currentChat;
 

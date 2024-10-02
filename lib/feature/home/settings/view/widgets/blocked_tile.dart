@@ -12,10 +12,7 @@ class BlockedTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Divider(
-          color: AppColors.outlinedColor,
-          height: 0,
-        ),
+       const AppDivider(),
         Container(
           decoration: const BoxDecoration(color: AppColors.inputBackGround),
           padding: pagePadding,
@@ -30,10 +27,7 @@ class BlockedTile extends StatelessWidget {
             ],
           ),
         ),
-        const Divider(
-          color: AppColors.outlinedColor,
-          height: 0,
-        ),
+       const AppDivider(),
       ],
     );
   }

@@ -16,6 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.color,
     this.automaticallyImplyLeading = true,
     this.borderColor,
+    this.addBarHeight = 0,
   }) : assert(title != null || titleWidget != null,
             'Either title or titleWidget must be provided.');
 
@@ -24,12 +25,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showAction;
   final Widget? action;
   final Color? color;
+  final num addBarHeight;
   final Color? borderColor;
   final Future<void> Function()? onPop;
   final bool automaticallyImplyLeading;
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + addBarHeight);
 
   @override
   Widget build(BuildContext context) {

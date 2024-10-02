@@ -4,20 +4,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/feature/home/tabs/chat/view/widgets/shimmer_tile.dart';
 import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/styles/text_style.dart';
+import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
 import '../../model/chat.dart';
 import 'chat_tile.dart'; // for ChatTile
 
-class Messages extends StatelessWidget {
-  Messages({super.key});
+class Messages extends StatefulWidget {
+  const Messages({super.key});
 
+  @override
+  State<Messages> createState() => _MessagesState();
+}
+
+class _MessagesState extends State<Messages> {
   final currentUser = FirebaseAuth.instance.currentUser!.uid;
+  bool isNavigating = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +40,7 @@ class Messages extends StatelessWidget {
                   _buildHeader(),
                   Expanded(
                     child: AppAnimatedSwitcher(
-                      child: _buildStreamContent(snapshot),
+                      child: _buildStreamContent(snapshot, context),
                     ),
                   ),
                 ],
@@ -46,7 +53,8 @@ class Messages extends StatelessWidget {
   }
 
   // Build content for the StreamBuilder
-  Widget _buildStreamContent(AsyncSnapshot<List<Chat>> snapshot) {
+  Widget _buildStreamContent(
+      AsyncSnapshot<List<Chat>> snapshot, BuildContext context) {
     if (snapshot.hasData) {
       final tileData = snapshot.data!;
       if (tileData.isEmpty) {
@@ -63,12 +71,15 @@ class Messages extends StatelessWidget {
         itemCount: tileData.length,
         itemBuilder: (_, index) {
           final tile = tileData[index];
-          final int oppIndex =
-              tile.participants.indexOf(currentUser) == 0 ? 1 : 0;
+          final oppIndex = tile.participants.indexOf(currentUser) == 0 ? 1 : 0;
 
           return Column(
             children: [
-              ChatTile(tileData: tile, oppIndex: oppIndex),
+              ChatTile(
+                tileData: tile,
+                oppIndex: oppIndex,
+                onTileTap: () => onTileTap(context, tile, oppIndex),
+              ),
               Padding(
                 padding: EdgeInsets.only(left: 68.w),
                 child: const AppDivider(),
@@ -99,6 +110,30 @@ class Messages extends StatelessWidget {
             ],
           );
         },
+      );
+    }
+  }
+
+  void onTileTap(BuildContext context, Chat data, int oppIndex) {
+    var notifier = context.read<ChatsNotifier>();
+
+    notifier.setCurrentChat(
+      username: data.userNames[oppIndex],
+      uidUser1: currentUser,
+      uidUser2: data.participants[oppIndex],
+      profilePicUrl: data.profilePicUrls[oppIndex],
+      oppIndex: oppIndex,
+    );
+
+    toChat(context);
+  }
+
+  void toChat(BuildContext context) {
+    if (!isNavigating) {
+      isNavigating = true;
+
+      Nav.push(context, const ChatRoom()).then(
+        (_) => isNavigating = false,
       );
     }
   }

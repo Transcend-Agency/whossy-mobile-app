@@ -77,10 +77,7 @@ class _PetsScreenState extends State<PetsScreen>
                   );
                 }).toList()),
             addHeight(16),
-            const Divider(
-              color: AppColors.outlinedColor,
-              height: 0,
-            ),
+           const AppDivider(),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 13.h),
               child: Text(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 
+import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
@@ -47,10 +48,7 @@ class ModalContent extends StatelessWidget {
         ),
         Padding(
           padding: pagePadding,
-          child: const Divider(
-            color: AppColors.outlinedColor,
-            height: 0,
-          ),
+          child: const AppDivider(),
         ),
         Padding(
           padding: pagePadding,

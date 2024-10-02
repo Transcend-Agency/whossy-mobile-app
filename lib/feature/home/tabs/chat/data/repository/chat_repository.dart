@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../model/chat.dart';
+import '../../model/message.dart';
 
 class ChatRepository {
   final _chatFirestore = FirebaseFirestore.instance.collection('userchats');
@@ -21,6 +22,20 @@ class ChatRepository {
             // .where((chat) => filterChatSearchQuery(chat.data(), userId))
             .map((doc) => Chat.fromJson({...doc.data(), 'id': doc.id}))
             .toList());
+  }
+
+  Stream<List<Message>> getChatMessagesStream({
+    required int limit,
+    required String chatId,
+  }) {
+    final messageRef = _chatFirestore.doc(chatId).collection('messages');
+
+    // Use the limit method to fetch a specific number of messages
+    final query =
+        messageRef.orderBy('timestamp', descending: true).limit(limit);
+
+    return query.snapshots().map((snapshot) =>
+        snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList());
   }
 
   bool filterDeleted(Map<String, dynamic> chatData, String uid) {

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/common/utils/index.dart';
 
-import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../constants/index.dart';
 import '../../../data/state/edit_profile_notifier.dart';
 import '../sheets/name_sheet.dart';
@@ -25,10 +24,7 @@ class NameEditProfile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           addHeight(8),
-          const Divider(
-            color: AppColors.outlinedColor,
-            height: 0,
-          ),
+          const AppDivider(),
           Container(
               decoration: const BoxDecoration(color: AppColors.inputBackGround),
               padding: EdgeInsets.symmetric(horizontal: 14.r),
@@ -79,26 +75,9 @@ class NameEditProfile extends StatelessWidget {
                   );
                 },
               )),
-          const Divider(
-            color: AppColors.outlinedColor,
-            height: 0,
-          ),
+          const AppDivider(),
         ],
       ),
     );
   }
-}
-
-Future<String?> showNameSheet({
-  required BuildContext context,
-  String? name,
-  required String title,
-}) {
-  return showModalBottomSheet<String?>(
-    isScrollControlled: true,
-    clipBehavior: Clip.hardEdge,
-    context: context,
-    shape: roundedTop,
-    builder: (_) => NameSheet(name: name, title: title),
-  );
 }

@@ -5,6 +5,7 @@ import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
+import '../../../../../common/components/index.dart';
 
 class CoreSettingsTile extends StatelessWidget {
   final String title;
@@ -91,10 +92,7 @@ class CoreSettingsTile extends StatelessWidget {
           ),
         ),
         if (showDivider)
-          const Divider(
-            color: AppColors.outlinedColor,
-            height: 0,
-          ),
+          const AppDivider(),
       ],
     );
   }

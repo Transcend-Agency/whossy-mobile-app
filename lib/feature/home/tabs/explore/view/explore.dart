@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/home/tabs/explore/view/widgets/explore_grid.dart';
 import 'package:whossy_app/feature/home/tabs/explore/view/widgets/filters.dart';
 
 import '../../../../../../common/utils/index.dart';
@@ -27,8 +28,9 @@ class Explore extends StatelessWidget {
               icon2: AppAssets.explore,
               onIcon2Tap: () => Nav.push(context, const AdvancedSearchRoute()),
             ),
-            addHeight(16),
+            addHeight(8),
             const ExploreFilters(),
+            ExploreGrid(),
           ],
         ),
       ),

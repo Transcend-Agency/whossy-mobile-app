@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/feature/home/tabs/explore/view/widgets/save_search_sheet.dart';
 
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../constants/index.dart';
@@ -35,7 +36,8 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
   }
 
   void onSaveTap() {
-    _notifier.saveFilters(showSnackbar: showSnackbar);
+    showSaveSearchSheet(context: context);
+    //_notifier.saveFilters(showSnackbar: showSnackbar);
   }
 
   showSnackbar(String message) {

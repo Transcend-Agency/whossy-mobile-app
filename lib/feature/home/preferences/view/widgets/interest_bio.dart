@@ -47,6 +47,7 @@ class _InterestBioComponentState<T extends SearchPreferencesNotifier>
   void updatePersonalized() async {
     if (!mounted) return;
 
+    // Todo: Late init error here, test it on a poor internet connection
     _interests = await context.router
             .push<List<String>>(InterestRoute(initialValues: _interests)) ??
         _interests;

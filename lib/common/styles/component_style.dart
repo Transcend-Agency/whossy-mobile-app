@@ -28,6 +28,12 @@ final guidelineSheetDecoration = BoxDecoration(
   ],
 );
 
+final matchButtonShadow = BoxShadow(
+  color: Colors.black.withOpacity(0.1),
+  blurRadius: 10,
+  offset: const Offset(0, 4),
+);
+
 final circularBorder = RoundedRectangleBorder(
   borderRadius: BorderRadius.circular(8.r),
 );
@@ -119,6 +125,18 @@ InputBorder customBorder({
     borderRadius: BorderRadius.vertical(
       top: isReplying ? Radius.zero : Radius.circular(curve.r),
       bottom: Radius.circular(curve.r),
+    ),
+  );
+}
+
+BoxDecoration bubbleDecoration(bool isSender) {
+  return BoxDecoration(
+    color: isSender ? const Color(0XFFE5F2FF) : AppColors.listTileColor,
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(14.r),
+      topRight: Radius.circular(14.r),
+      bottomLeft: isSender ? Radius.circular(14.r) : Radius.circular(0.r),
+      bottomRight: isSender ? Radius.circular(0.r) : Radius.circular(14.r),
     ),
   );
 }

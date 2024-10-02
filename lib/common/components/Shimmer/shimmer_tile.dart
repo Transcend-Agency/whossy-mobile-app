@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../common/components/index.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../utils/index.dart';
+import '../index.dart';
 
 class ShimmerTile extends StatelessWidget {
   const ShimmerTile({super.key});

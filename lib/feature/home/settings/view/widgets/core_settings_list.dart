@@ -4,6 +4,7 @@ import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/feature/home/settings/data/state/settings_notifier.dart';
 
 import '../../../../../../constants/index.dart';
+import '../../../../../common/components/index.dart';
 import '../../data/source/core_settings_text_data.dart';
 import 'core_settings_tile.dart';
 
@@ -15,10 +16,7 @@ class CoreSettingsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Divider(
-          color: AppColors.outlinedColor,
-          height: 0,
-        ),
+         const AppDivider(),
         Container(
             decoration: const BoxDecoration(color: AppColors.inputBackGround),
             padding: pagePadding,
@@ -40,10 +38,7 @@ class CoreSettingsList extends StatelessWidget {
                 );
               },
             )),
-        const Divider(
-          color: AppColors.outlinedColor,
-          height: 0,
-        ),
+        const AppDivider(),
       ],
     );
   }

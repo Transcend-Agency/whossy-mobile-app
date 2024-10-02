@@ -66,7 +66,7 @@ class TextStyles {
   );
 
   static TextStyle prefText = text.copyWith(
-    fontSize: AppUtils.scale(11.5.sp),
+    fontSize: AppUtils.scale(10.5.sp),
   );
 
   static TextStyle boldPrefText = text.copyWith(

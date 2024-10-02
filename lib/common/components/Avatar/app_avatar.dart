@@ -2,24 +2,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../common/components/index.dart';
-import '../../../../../../common/utils/index.dart';
-import '../../../../../../constants/index.dart';
+import '../../../constants/index.dart';
+import '../../utils/index.dart';
+import '../index.dart';
 
-class ProfileAvatar extends StatelessWidget {
+class AppAvatar extends StatelessWidget {
   final String? imageUrl;
   final double radius;
 
-  const ProfileAvatar({
+  const AppAvatar({
     super.key,
     this.imageUrl,
-    this.radius = 23,
+    this.radius = 22,
   });
 
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-        radius: 30.r,
+        radius: radius.r,
         backgroundColor: AppColors.listTileColor,
         child: imageUrl != null
             ? CachedNetworkImage(

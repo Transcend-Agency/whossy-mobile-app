@@ -83,10 +83,7 @@ class _SliderSheetState extends State<SliderSheet> {
                 ],
               ),
             ),
-            const Divider(
-              color: AppColors.outlinedColor,
-              height: 0,
-            ),
+            const AppDivider(),
             addHeight(16),
             Container(
               decoration: BoxDecoration(

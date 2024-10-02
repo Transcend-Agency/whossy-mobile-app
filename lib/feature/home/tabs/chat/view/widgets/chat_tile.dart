@@ -1,7 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_app/common/utils/router/router.gr.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
@@ -25,10 +23,9 @@ class ChatTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.only(top: 6.h),
-      leading: CircleAvatar(
-        backgroundColor: AppColors.listTileColor,
-        radius: 30.r,
-        child: _buildProfilePicture(),
+      leading: AppAvatar(
+        radius: 27.r,
+        imageUrl: tileData.profilePicUrls[oppIndex],
       ),
       horizontalTitleGap: 14.r,
       title: Text(
@@ -71,30 +68,7 @@ class ChatTile extends StatelessWidget {
           ),
         ],
       ),
-      onTap: () => Nav.push(context, const ChatRoom()),
+      onTap: onTileTap,
     );
-  }
-
-  Widget _buildProfilePicture() {
-    final imageUrl = tileData.profilePicUrls[oppIndex];
-
-    return imageUrl != null
-        ? CachedNetworkImage(
-            imageUrl: imageUrl,
-            imageBuilder: (_, imageProvider) {
-              return Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            },
-            placeholder: (_, __) => const ShimmerWidget.circular(),
-            errorWidget: (_, __, ___) => offline(size: 28),
-          )
-        : user(size: 30.r);
   }
 }

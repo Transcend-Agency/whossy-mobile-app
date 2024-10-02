@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../constants/index.dart';
 import '../../../feature/home/preferences/model/generic_enum.dart';
 import '../../styles/component_style.dart';
 import '../../styles/text_style.dart';
@@ -72,10 +71,7 @@ class _AppSheetState<T extends GenericEnum> extends State<AppSheet<T>> {
                 ],
               ),
             ),
-            const Divider(
-              color: AppColors.outlinedColor,
-              height: 0,
-            ),
+            const AppDivider(),
             addHeight(16),
             Padding(
               padding: pagePadding,

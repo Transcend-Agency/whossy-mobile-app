@@ -47,7 +47,7 @@ class LikesGridView extends StatelessWidget {
         key: const ValueKey('loading'),
         padding: EdgeInsets.zero,
         gridDelegate: _buildGridDelegate(context),
-        itemCount: 10,
+        itemCount: 14,
         itemBuilder: (context, index) {
           return ShimmerWidget.rectangular(
             border: RoundedRectangleBorder(
@@ -69,7 +69,7 @@ class LikesGridView extends StatelessWidget {
         key: const ValueKey('data'),
         padding: EdgeInsets.zero,
         gridDelegate: _buildGridDelegate(context),
-        itemCount: likeItems.length ~/ 4,
+        itemCount: likeItems.length,
         itemBuilder: (_, __) => _buildGridItem(_, likeItems[__]),
       );
     } else {

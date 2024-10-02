@@ -20,10 +20,7 @@ class ExtraEditProfileList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Divider(
-          color: AppColors.outlinedColor,
-          height: 0,
-        ),
+        const AppDivider(),
         Container(
           decoration: const BoxDecoration(color: AppColors.inputBackGround),
           padding: EdgeInsets.symmetric(horizontal: 14.r),
@@ -123,10 +120,7 @@ class ExtraEditProfileList extends StatelessWidget {
             },
           ),
         ),
-        const Divider(
-          color: AppColors.outlinedColor,
-          height: 0,
-        ),
+        const AppDivider(),
       ],
     );
   }

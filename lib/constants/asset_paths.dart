@@ -47,6 +47,7 @@ class AppAssets {
   static const explore = 'assets/icons/explore.svg';
   static const wwSearch = 'assets/icons/wwSearch.svg';
   static const gift = 'assets/icons/gift.svg';
+  static const leaf = 'assets/icons/leaf.svg';
 
   static const credit = 'assets/icons/credit.png';
   static const boost = 'assets/icons/boost.png';
@@ -58,6 +59,8 @@ class AppAssets {
   static const meet = 'assets/icons/meet.png';
   static const block = 'assets/icons/block.png';
   static const faq = 'assets/icons/faq.png';
+  static const cancel = 'assets/icons/cancel.png';
+  static const like = 'assets/icons/like.png';
 
   static const caution = 'assets/icons/caution.png';
   static const welcome = 'assets/icons/welcome.png';

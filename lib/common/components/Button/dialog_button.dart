@@ -10,6 +10,7 @@ class DialogButton extends StatelessWidget {
   final Color color;
   final Color textColor;
   final VoidCallback? onPressed;
+  final double? padding;
 
   const DialogButton({
     super.key,
@@ -17,6 +18,7 @@ class DialogButton extends StatelessWidget {
     required this.color,
     required this.textColor,
     required this.onPressed,
+    this.padding,
   });
 
   @override
@@ -28,7 +30,8 @@ class DialogButton extends StatelessWidget {
       elevation: 0,
       shape: circularBorder, // Assuming this is a globally defined shape
       onPressed: onPressed,
-      padding: EdgeInsets.symmetric(vertical: 10.h),
+      disabledColor: color.withOpacity(0.8),
+      padding: EdgeInsets.symmetric(vertical: padding ?? 10.h),
       child: Text(
         text,
         style: TextStyles.buttonText.copyWith(

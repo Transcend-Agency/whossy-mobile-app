@@ -194,10 +194,7 @@ class _DistanceAgeComponentState<T extends SearchPreferencesNotifier>
                     Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: 14.r, vertical: 12.h),
-                      child: const Divider(
-                        color: AppColors.outlinedColor,
-                        height: 0,
-                      ),
+                      child:  const AppDivider(),
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 14.r),
