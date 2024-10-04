@@ -4,13 +4,17 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/common/styles/text_style.dart';
 
 import '../../../../common/components/index.dart';
-import '../../../../common/utiler_set.dart';
+import '../../../../common/utils/index.dart';
+import '../data/state/notifier_set.dart';
 import '../data/state/onboarding_notifier.dart';
 import '../model/alphabet.dart';
 
 class TickScreen extends StatefulWidget {
   final int pageIndex;
-  const TickScreen({super.key, required this.pageIndex});
+  const TickScreen({
+    super.key,
+    required this.pageIndex,
+  });
 
   @override
   State<TickScreen> createState() => _TickScreenState();

@@ -16,10 +16,9 @@ class SelectedData {
     if (runtimeType != other.runtimeType) return false;
 
     return other is SelectedData &&
-        messagesStream == other.messagesStream &&
-        currentChat == other.currentChat;
+        currentChat == other.currentChat; // Only compare currentChat
   }
 
   @override
-  int get hashCode => messagesStream.hashCode ^ currentChat.hashCode;
+  int get hashCode => currentChat.hashCode;
 }

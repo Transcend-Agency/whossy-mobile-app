@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../feature/home/preferences/model/generic_enum.dart';
 import '../../styles/component_style.dart';
-import '../../styles/text_style.dart';
 import '../../utils/index.dart';
 import '../index.dart';
 
@@ -41,55 +39,24 @@ class _AppSheetState<T extends GenericEnum> extends State<AppSheet<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: modalPadding.copyWith(
-                top: AppUtils.scale(12.h),
-                bottom: AppUtils.scale(12.h),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    widget.item.header,
-                    style: TextStyles.boldPrefText,
-                  ),
-                  GestureDetector(
-                    onTap: () =>
-                        Navigator.pop(context, hasChanged ? data : null),
-                    child: SizedBox.square(
-                      dimension: 30.r,
-                      child: hasChanged ? checkIcon() : cancelIcon(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const AppDivider(),
-            addHeight(16),
-            Padding(
-              padding: pagePadding,
-              child: Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                children: widget.item.items.map((item) {
-                  return PreferenceChip<T?>(
-                    value: item.value,
-                    groupValue: data,
-                    onChanged: onChanged,
-                    title: item.text,
-                  );
-                }).toList(),
-              ),
-            ),
-            addHeight(14)
-          ],
+    return AppSheetScaffold(
+      topPadding: 16,
+      title: widget.item.header,
+      onExit: () => Navigator.pop(context, hasChanged ? data : null),
+      exitIcon: hasChanged ? checkIcon() : cancelIcon(),
+      child: Padding(
+        padding: pagePadding,
+        child: Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: widget.item.items.map((item) {
+            return PreferenceChip<T?>(
+              value: item.value,
+              groupValue: data,
+              onChanged: onChanged,
+              title: item.text,
+            );
+          }).toList(),
         ),
       ),
     );

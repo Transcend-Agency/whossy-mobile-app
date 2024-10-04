@@ -17,9 +17,6 @@ class AppTheme {
       ),
       outlinedButtonTheme: const OutlinedButtonThemeData(style: ButtonStyle()),
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: Colors.white,
-      ),
       // Configure the input decoration theme for form fields.
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

@@ -24,15 +24,13 @@ class ChatTile extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.only(top: 6.h),
       leading: AppAvatar(
-        radius: 27.r,
+        radius: 27,
         imageUrl: tileData.profilePicUrls[oppIndex],
       ),
-      horizontalTitleGap: 14.r,
+      horizontalTitleGap: 14,
       title: Text(
         tileData.userNames[oppIndex],
-        style: TextStyles.profileHead.copyWith(
-          fontSize: AppUtils.scale(16.sp),
-        ),
+        style: TextStyles.profileHead,
       ),
       subtitle: Column(
         mainAxisSize: MainAxisSize.min,
@@ -41,7 +39,7 @@ class ChatTile extends StatelessWidget {
           addHeight(3),
           Text(
             tileData.lastMessage,
-            style: TextStyles.prefText.copyWith(
+            style: TextStyles.hintThemeText.copyWith(
               color: AppColors.hintTextColor,
             ),
             maxLines: 1,
@@ -61,8 +59,9 @@ class ChatTile extends StatelessWidget {
             ),
             child: Text(
               'Unread',
-              style: TextStyles.prefText.copyWith(
-                fontSize: AppUtils.scale(9.5.sp) ?? 11.sp,
+              style: TextStyles.hintThemeText.copyWith(
+                color: AppColors.black,
+                fontSize: 14.5,
               ),
             ),
           ),

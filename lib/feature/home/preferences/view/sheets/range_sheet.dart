@@ -47,88 +47,54 @@ class _RangeSheetState<T> extends State<RangeSheet<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return AppSheetScaffold(
+      title: widget.type.name,
+      topPadding: 16,
+      onExit: () => Navigator.pop(context, hasChanged ? currentRange : null),
+      exitIcon: hasChanged ? checkIcon() : cancelIcon(),
       child: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.r),
+          color: AppColors.inputBackGround,
+        ),
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        margin: EdgeInsets.symmetric(horizontal: 14.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: modalPadding.copyWith(
-                top: AppUtils.scale(12.h),
-                bottom: AppUtils.scale(12.h),
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 14.r),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.type.name,
-                    style: TextStyles.buttonText.copyWith(
-                      fontSize: AppUtils.scale(17),
-                    ),
+                    '${widget.type.name} Range',
+                    style: TextStyles.prefText,
                   ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(
-                        context, hasChanged ? currentRange : null),
-                    child: SizedBox.square(
-                      dimension: 30.r,
-                      child: hasChanged ? checkIcon() : cancelIcon(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const AppDivider(),
-            addHeight(16),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: AppColors.inputBackGround,
-              ),
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              margin: EdgeInsets.symmetric(horizontal: 14.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14.r),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${widget.type.name} Range',
-                          style: TextStyles.prefText,
-                        ),
-                        AppChip(
-                          data:
-                              currentRange.getFormattedRange(type: widget.type),
-                          isSelected: false,
-                          outlined: false,
-                          padding: EdgeInsets.symmetric(
-                            vertical: 4.h,
-                            horizontal: 8.w,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w)
-                        .copyWith(top: 10.h),
-                    child: AppRangeSlider(
-                      onChanged: updateRange,
-                      values: currentRange,
-                      range: RangeValues(
-                        widget.type.feasibleRange[0],
-                        widget.type.feasibleRange[1],
-                      ),
+                  AppChip(
+                    data: currentRange.getFormattedRange(type: widget.type),
+                    isSelected: false,
+                    outlined: false,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 4.h,
+                      horizontal: 8.w,
                     ),
                   ),
                 ],
               ),
             ),
-            addHeight(14)
+            Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: 12.w).copyWith(top: 10.h),
+              child: AppRangeSlider(
+                onChanged: updateRange,
+                values: currentRange,
+                range: RangeValues(
+                  widget.type.feasibleRange[0],
+                  widget.type.feasibleRange[1],
+                ),
+              ),
+            ),
           ],
         ),
       ),

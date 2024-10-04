@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../constants/colors.dart';
+import '../utils/index.dart';
 
 final pagePadding = EdgeInsets.symmetric(horizontal: 14.w);
 
 const chatFieldPadding = EdgeInsets.fromLTRB(10, 5, 10, 10);
 
-final modalPadding = EdgeInsets.symmetric(vertical: 13.h, horizontal: 16.w);
+final modalPadding = EdgeInsets.symmetric(
+  vertical: 13.h,
+  horizontal: 16.w,
+).copyWith(
+  top: AppUtils.scale(12.h),
+  bottom: AppUtils.scale(12.h),
+);
 
 final forgotTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);
 
@@ -129,14 +136,29 @@ InputBorder customBorder({
   );
 }
 
-BoxDecoration bubbleDecoration(bool isSender) {
+// Updated bubbleDecoration function
+BoxDecoration bubbleDecoration(
+  bool isSender,
+  bool isPreviousSameSender,
+  bool isNextSameSender,
+) {
+  final isSingleMessage = !isPreviousSameSender && !isNextSameSender;
+
   return BoxDecoration(
     color: isSender ? const Color(0XFFE5F2FF) : AppColors.listTileColor,
     borderRadius: BorderRadius.only(
-      topLeft: Radius.circular(14.r),
-      topRight: Radius.circular(14.r),
-      bottomLeft: isSender ? Radius.circular(14.r) : Radius.circular(0.r),
-      bottomRight: isSender ? Radius.circular(0.r) : Radius.circular(14.r),
+      topLeft: Radius.circular(
+          isSender ? 14.r : (isPreviousSameSender ? 4.r : 14.r)),
+      topRight: Radius.circular(
+          isSender ? (isPreviousSameSender ? 4.r : 14.r) : 14.r),
+      bottomLeft: Radius.circular(isSender
+          ? 14.r
+          : isSingleMessage
+              ? 0.r
+              : (isNextSameSender ? 4.r : 14.r)),
+      bottomRight: Radius.circular(isSender
+          ? (isSingleMessage ? 0.r : (isNextSameSender ? 4.r : 14.r))
+          : 14.r),
     ),
   );
 }

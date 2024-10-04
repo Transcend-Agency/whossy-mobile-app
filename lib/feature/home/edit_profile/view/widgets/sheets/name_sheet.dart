@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 
 import '../../../../../../common/components/index.dart';
-import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 
 class NameSheet extends StatefulWidget {
@@ -60,60 +58,28 @@ class _NameSheetState extends State<NameSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: modalPadding.copyWith(
-              top: AppUtils.scale(12.h),
-              bottom: AppUtils.scale(12.h),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.title,
-                  style: TextStyles.buttonText.copyWith(
-                    fontSize: AppUtils.scale(17),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.pop(
-                      context, hasChanged ? nameController.text.trim() : null),
-                  child: SizedBox.square(
-                    dimension: 30.r,
-                    child: hasChanged ? checkIcon() : cancelIcon(),
-                  ),
-                ),
-              ],
-            ),
+    return AppSheetScaffold(
+      useBottomInsets: true,
+      title: widget.title,
+      topPadding: 16,
+      exitIcon: hasChanged ? checkIcon() : cancelIcon(),
+      onExit: () => Navigator.pop(
+          context, hasChanged ? nameController.text.trim() : null),
+      child: Padding(
+        padding: pagePadding,
+        child: Form(
+          key: formKey,
+          child: AppTextField(
+            focusNode: nameFocusNode,
+            textController: nameController,
+            hintText: 'Enter your name',
+            prefixIcon: search(),
+            lengthLimit: 50, // You can adjust this limit
+            padding: 13,
+            curvierEdges: true,
+            validation: (name) => name?.trim().validateName(),
           ),
-          const AppDivider(),
-          addHeight(16),
-          Padding(
-            padding: pagePadding,
-            child: Form(
-              key: formKey,
-              child: AppTextField(
-                focusNode: nameFocusNode,
-                textController: nameController,
-                hintText: 'Enter your name',
-                prefixIcon: search(),
-                lengthLimit: 50, // You can adjust this limit
-                padding: 13,
-                curvierEdges: true,
-                validation: (name) => name?.trim().validateName(),
-              ),
-            ),
-          ),
-          addHeight(16),
-        ],
+        ),
       ),
     );
   }

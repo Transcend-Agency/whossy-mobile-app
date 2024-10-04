@@ -6,6 +6,7 @@ class CurrentChat {
   final String? chatId;
   final int? oppIndex;
   final bool isBlocked;
+  bool chatExists;
 
   CurrentChat({
     required this.username,
@@ -15,6 +16,7 @@ class CurrentChat {
     this.chatId,
     this.oppIndex,
     this.isBlocked = false,
+    this.chatExists = false,
   });
 
   CurrentChat copyWith({
@@ -27,6 +29,7 @@ class CurrentChat {
     int? oppIndex,
     bool? isDeleted,
     bool? isBlocked,
+    bool? chatExists,
   }) {
     return CurrentChat(
       username: username ?? this.username,
@@ -36,6 +39,7 @@ class CurrentChat {
       chatId: chatId ?? this.chatId,
       oppIndex: oppIndex ?? this.oppIndex,
       isBlocked: isBlocked ?? this.isBlocked,
+      chatExists: chatExists ?? this.chatExists,
     );
   }
 }

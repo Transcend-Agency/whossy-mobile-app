@@ -13,7 +13,7 @@ class MessageTextField extends StatelessWidget {
     this.onPrefixIconTap,
     this.isReplying = false,
     this.enabled = true,
-    this.hintText = 'say something nice',
+    this.hintText = 'Say something nice',
     this.onFieldSubmitted,
   });
 
@@ -48,7 +48,7 @@ class MessageTextField extends StatelessWidget {
         fillColor: AppColors.listTileColor,
         hintText: hintText,
         prefixIcon: Padding(
-          padding: EdgeInsets.all(4.r).copyWith(right: 10.w),
+          padding: EdgeInsets.all(4.r).copyWith(right: 10),
           child: Container(
             decoration: const BoxDecoration(
               shape: BoxShape.circle,

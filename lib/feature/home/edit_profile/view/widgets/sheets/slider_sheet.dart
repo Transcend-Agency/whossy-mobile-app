@@ -3,8 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 
 import '../../../../../../common/components/index.dart';
-import '../../../../../../common/styles/component_style.dart';
-import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
 import '../../../model/data_range.dart';
@@ -51,80 +49,46 @@ class _SliderSheetState extends State<SliderSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return AppSheetScaffold(
+      title: widget.rangeType.name,
+      topPadding: 16,
+      onExit: () => Navigator.pop(context, hasChanged ? currentValue : null),
+      exitIcon: hasChanged ? checkIcon() : cancelIcon(),
       child: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.r),
+          color: AppColors.inputBackGround,
+        ),
+        padding: EdgeInsets.symmetric(vertical: 12.h),
+        margin: EdgeInsets.symmetric(horizontal: 14.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
           children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14.r),
+                child: AppChip(
+                  data: currentValue.getFormattedRange(type: widget.rangeType),
+                  isSelected: false,
+                  outlined: false,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 4.h,
+                    horizontal: 8.w,
+                  ),
+                ),
+              ),
+            ),
             Padding(
-              padding: modalPadding.copyWith(
-                top: AppUtils.scale(12.h),
-                bottom: AppUtils.scale(12.h),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    widget.rangeType.name,
-                    style: TextStyles.buttonText.copyWith(
-                      fontSize: AppUtils.scale(17),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(
-                        context, hasChanged ? currentValue : null),
-                    child: SizedBox.square(
-                      dimension: 30.r,
-                      child: hasChanged ? checkIcon() : cancelIcon(),
-                    ),
-                  ),
-                ],
+              padding:
+                  EdgeInsets.symmetric(horizontal: 12.w).copyWith(top: 8.h),
+              child: AppSlider(
+                useSliderTheme: true,
+                onChanged: updateValue,
+                range: RangeValues(widget.range.min, widget.range.max),
+                value: currentValue,
               ),
             ),
-            const AppDivider(),
-            addHeight(16),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: AppColors.inputBackGround,
-              ),
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              margin: EdgeInsets.symmetric(horizontal: 14.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 14.r),
-                      child: AppChip(
-                        data: currentValue.getFormattedRange(
-                            type: widget.rangeType),
-                        isSelected: false,
-                        outlined: false,
-                        padding: EdgeInsets.symmetric(
-                          vertical: 4.h,
-                          horizontal: 8.w,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w)
-                        .copyWith(top: 8.h),
-                    child: AppSlider(
-                      useSliderTheme: true,
-                      onChanged: updateValue,
-                      range: RangeValues(widget.range.min, widget.range.max),
-                      value: currentValue,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            addHeight(14),
           ],
         ),
       ),

@@ -8,7 +8,7 @@ part of 'message.dart';
 
 Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       id: json['id'] as String?,
-      senderId: json['senderId'] as String,
+      senderId: json['senderId'] as String?,
       message: json['message'] as String,
       timestamp: Message._timestampFromJson(json['timestamp']),
     );

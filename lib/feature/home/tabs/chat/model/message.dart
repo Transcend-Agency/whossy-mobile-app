@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,16 +20,16 @@ class Message {
     fromJson: _timestampFromJson,
     toJson: _timestampToJson,
   )
-  final Timestamp timestamp;
+  final Timestamp? timestamp;
 
   // Constructor with auto-generated id and current timestamp
   Message({
     String? id,
-    required this.senderId,
+    String? senderId,
     required this.message,
-    Timestamp? timestamp,
+    this.timestamp,
   })  : id = id ?? const Uuid().v4(),
-        timestamp = timestamp ?? Timestamp.now();
+        senderId = senderId ?? FirebaseAuth.instance.currentUser!.uid;
 
   // Factory constructor for creating a new Message instance from a map
   factory Message.fromJson(Map<String, dynamic> json) =>
@@ -38,6 +39,6 @@ class Message {
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 
   // Helper methods for converting Timestamp from and to JSON
-  static Timestamp _timestampFromJson(dynamic json) => json as Timestamp;
-  static dynamic _timestampToJson(Timestamp timestamp) => timestamp;
+  static Timestamp? _timestampFromJson(dynamic json) => json as Timestamp?;
+  static dynamic _timestampToJson(Timestamp? timestamp) => timestamp;
 }

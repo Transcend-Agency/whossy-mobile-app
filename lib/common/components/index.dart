@@ -4,6 +4,7 @@ export '/common/components/AppBar/header_bar.dart';
 export '/common/components/Avatar/app_avatar.dart';
 export '/common/components/BottomAppBar/bottom_app_bar.dart';
 export '/common/components/BottomSheet/app_sheet.dart';
+export '/common/components/BottomSheet/app_sheet_scaffold.dart';
 export '/common/components/BottomSheet/guideline_sheet.dart';
 export '/common/components/BottomSheet/upload_sheet.dart';
 export '/common/components/Box/empty_data_box.dart';

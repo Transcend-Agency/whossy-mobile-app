@@ -10,7 +10,7 @@ class OnlineStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       'Online',
-      style: TextStyles.prefText.copyWith(
+      style: TextStyles.hintThemeText.copyWith(
         color: AppColors.hintTextColor,
       ),
       maxLines: 1,

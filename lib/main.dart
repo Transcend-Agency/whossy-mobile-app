@@ -41,7 +41,12 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SettingsNotifier()),
         ChangeNotifierProvider(create: (_) => EditProfileNotifier()),
         ChangeNotifierProvider(create: (_) => ConnectivityNotifier()),
-        ChangeNotifierProvider(create: (_) => ChatsNotifier()),
+        ChangeNotifierProxyProvider<EditProfileNotifier, ChatsNotifier>(
+          create: (_) => ChatsNotifier(),
+          update: (_, profileData, chatNotifier) {
+            return chatNotifier!..saveProfile(profileData.staticProfile);
+          },
+        ),
         ChangeNotifierProvider(create: (_) => AdvancedSearchNotifier()),
       ],
       child: Whossy(),

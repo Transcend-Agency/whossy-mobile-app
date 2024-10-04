@@ -5,13 +5,13 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/index.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/state/chats_notifier.dart';
+import 'package:whossy_app/feature/home/tabs/chat/model/current_chat.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';
 import 'package:whossy_app/feature/home/tabs/chat/view/widgets/message_bubble.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../constants/index.dart';
-import '../../model/selected_data.dart';
 
 class MessageStream extends StatefulWidget {
   const MessageStream({super.key, required this.scrollController});
@@ -23,6 +23,8 @@ class MessageStream extends StatefulWidget {
 }
 
 class _MessageStreamState extends State<MessageStream> {
+  late Stream<List<Message>> messagesStream;
+  late ChatsNotifier _chatsNotifier;
   final currentUser = FirebaseAuth.instance.currentUser!.uid;
   int messageLimit = 30;
 
@@ -30,6 +32,11 @@ class _MessageStreamState extends State<MessageStream> {
   void initState() {
     super.initState();
     widget.scrollController.addListener(_onScroll);
+
+    _chatsNotifier = context.read<ChatsNotifier>();
+
+    // Initialize the stream in initState
+    messagesStream = _chatsNotifier.messagesStream(messageLimit);
   }
 
   void _onScroll() {
@@ -39,26 +46,24 @@ class _MessageStreamState extends State<MessageStream> {
         scroll.position.pixels != 0 &&
         scroll.position.userScrollDirection == ScrollDirection.reverse) {
       // Load the next batch of messages
-      setState(() => messageLimit += 20);
+      setState(() {
+        messageLimit += 20;
+
+        messagesStream = _chatsNotifier.messagesStream(messageLimit);
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Selector<ChatsNotifier, SelectedData>(
-      selector: (context, chatsNotifier) => SelectedData(
-        messagesStream: chatsNotifier.messagesStream(messageLimit),
-        currentChat: chatsNotifier.currentChat,
-      ),
-      builder: (context, selectedData, child) {
-        final messagesStream = selectedData.messagesStream;
-        final currentChat = selectedData.currentChat;
-
+    return Selector<ChatsNotifier, CurrentChat?>(
+      selector: (context, chatsNotifier) => chatsNotifier.currentChat,
+      builder: (context, currentChat, child) {
         return StreamBuilder<List<Message>>(
           stream: messagesStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const AppLoader();
+              return const AppLoader(color: Colors.black);
             }
 
             if (snapshot.hasError) {
@@ -78,7 +83,7 @@ class _MessageStreamState extends State<MessageStream> {
 
               final earliestMessage = messages.last;
               final formattedDate = DateFormat('d/M/yyyy')
-                  .format(earliestMessage.timestamp.toDate());
+                  .format(earliestMessage.timestamp!.toDate());
 
               return ListView.builder(
                 reverse: true,
@@ -89,6 +94,14 @@ class _MessageStreamState extends State<MessageStream> {
                   final message = messages[idx];
                   final isFirstMessage = idx == messages.length - 1;
 
+                  // Check if the next message (index + 1) exists and has the same sender
+                  final isPreviousSameSender = (idx < messages.length - 1) &&
+                      messages[idx + 1].senderId == message.senderId;
+
+                  // Check if the previous message (index - 1) exists and has the same sender
+                  final isNextSameSender = (idx > 0) &&
+                      messages[idx - 1].senderId == message.senderId;
+
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -96,7 +109,7 @@ class _MessageStreamState extends State<MessageStream> {
                         addHeight(12),
                         Text(
                           "Conversation started on $formattedDate",
-                          style: TextStyles.prefText,
+                          style: TextStyles.chatText,
                         ),
                         addHeight(14),
                       ],
@@ -104,6 +117,8 @@ class _MessageStreamState extends State<MessageStream> {
                         isSender: currentUser == message.senderId,
                         data: message,
                         url: currentChat?.profilePicUrl,
+                        isPreviousSameSender: isPreviousSameSender,
+                        isNextSameSender: isNextSameSender,
                       ),
                     ],
                   );

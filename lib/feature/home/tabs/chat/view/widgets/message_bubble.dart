@@ -13,11 +13,15 @@ class MessageBubble extends StatelessWidget {
     required this.data,
     required this.isSender,
     this.url,
+    required this.isPreviousSameSender,
+    required this.isNextSameSender,
   });
 
   final Message data;
   final bool isSender;
   final String? url;
+  final bool isPreviousSameSender;
+  final bool isNextSameSender;
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +31,20 @@ class MessageBubble extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (!isSender) ...[
-            addWidth(14),
+            addWidth(10),
             AppAvatar(imageUrl: url, radius: 17)
           ],
           Container(
-            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
-            margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 10.w),
-            decoration: bubbleDecoration(isSender),
+            padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 8.w),
+            margin: EdgeInsets.symmetric(vertical: 2, horizontal: 10.w),
+            decoration: bubbleDecoration(
+              isSender,
+              isPreviousSameSender,
+              isNextSameSender,
+            ),
             child: Text(
               data.message,
-              style: TextStyles.prefText.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyles.chatText,
             ),
           ),
         ],

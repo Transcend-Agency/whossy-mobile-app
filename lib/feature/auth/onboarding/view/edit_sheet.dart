@@ -20,92 +20,68 @@ class EditSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
+    return AppSheetScaffold(
+      title: 'Edit photo',
+      topPadding: 16,
+      bottomPadding: 6,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: pagePadding,
+            child: OutlinedAppButton(
+              onPress: () async {
+                onReUpload().then((success) {
+                  if (success) Navigator.pop(context);
+                });
+              },
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Transform.scale(
+                    scale: 1.1,
+                    child: SvgPicture.asset(AppAssets.upload),
+                  ),
+                  addWidth(12),
                   Text(
-                    'Edit photo',
+                    "Re-upload",
                     style: TextStyles.buttonText.copyWith(
+                      color: AppColors.hintTextColor,
                       fontSize: AppUtils.scale(17),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: SizedBox.square(
-                      dimension: 30.r,
-                      child: cancelIcon(),
-                    ),
-                  )
                 ],
               ),
             ),
-            const AppDivider(),
-            addHeight(16),
-            Padding(
-              padding: pagePadding,
-              child: OutlinedAppButton(
-                onPress: () async {
-                  onReUpload().then((success) {
-                    if (success) Navigator.pop(context);
-                  });
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Transform.scale(
-                      scale: 1.1,
-                      child: SvgPicture.asset(AppAssets.upload),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.w),
+            child: OutlinedAppButton(
+              onPress: () {
+                onDelete();
+                Navigator.pop(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Transform.scale(
+                    scale: 1.1,
+                    child: SvgPicture.asset(AppAssets.bin),
+                  ),
+                  addWidth(10),
+                  Text(
+                    "Delete Photo",
+                    style: TextStyles.buttonText.copyWith(
+                      color: AppColors.hintTextColor,
+                      fontSize: AppUtils.scale(17),
                     ),
-                    addWidth(12),
-                    Text(
-                      "Re-upload",
-                      style: TextStyles.buttonText.copyWith(
-                        color: AppColors.hintTextColor,
-                        fontSize: AppUtils.scale(17),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.w),
-              child: OutlinedAppButton(
-                onPress: () {
-                  onDelete();
-                  Navigator.pop(context);
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Transform.scale(
-                      scale: 1.1,
-                      child: SvgPicture.asset(AppAssets.bin),
-                    ),
-                    addWidth(10),
-                    Text(
-                      "Delete Photo",
-                      style: TextStyles.buttonText.copyWith(
-                        color: AppColors.hintTextColor,
-                        fontSize: AppUtils.scale(17),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            addHeight(6),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

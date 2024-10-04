@@ -22,7 +22,7 @@ class Chat extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 8.h),
             child: const LikesComponent(),
           ),
-          Messages(),
+          const Messages(),
         ],
       ),
     );

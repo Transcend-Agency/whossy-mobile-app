@@ -55,9 +55,9 @@ class TextStyles {
 
   static TextStyle profileHead = const TextStyle(
     fontFamily: 'NeueMontreal',
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: FontWeight.w700,
-    letterSpacing: -0.1,
+    letterSpacing: 0.1,
   );
 
   static TextStyle text = hintThemeText.copyWith(
@@ -67,6 +67,15 @@ class TextStyles {
 
   static TextStyle prefText = text.copyWith(
     fontSize: AppUtils.scale(10.5.sp),
+  );
+
+  static TextStyle chatText = text.copyWith(
+    color: AppColors.black,
+    fontSize: AppUtils.scale(9.5.sp) ?? 12.sp,
+    fontFamily: 'NeueMontreal',
+    height: 1.4,
+    letterSpacing: 0.4,
+    fontWeight: FontWeight.w400,
   );
 
   static TextStyle boldPrefText = text.copyWith(

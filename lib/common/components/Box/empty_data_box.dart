@@ -11,21 +11,19 @@ class EmptyDataBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              image,
-              height: 110.r,
-            ),
-            Text(
-              text,
-              style: TextStyles.boldPrefText,
-            ),
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            image,
+            height: 110.r,
+          ),
+          Text(
+            text,
+            style: TextStyles.boldPrefText,
+          ),
+        ],
       ),
     );
   }

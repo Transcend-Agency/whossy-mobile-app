@@ -19,25 +19,26 @@ class AppAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-        radius: radius.r,
-        backgroundColor: AppColors.listTileColor,
-        child: imageUrl != null
-            ? CachedNetworkImage(
-                imageUrl: imageUrl!,
-                imageBuilder: (_, imageProvider) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
+      radius: radius.r,
+      backgroundColor: AppColors.listTileColor,
+      child: imageUrl != null
+          ? CachedNetworkImage(
+              imageUrl: imageUrl!,
+              imageBuilder: (_, imageProvider) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
                     ),
-                  );
-                },
-                placeholder: (context, url) => const ShimmerWidget.circular(),
-                errorWidget: (_, __, ___) => offline(size: 28),
-              )
-            : user(size: 30.r));
+                  ),
+                );
+              },
+              placeholder: (context, url) => const ShimmerWidget.circular(),
+              errorWidget: (_, __, ___) => offline(size: radius * 0.65),
+            )
+          : user(size: radius),
+    );
   }
 }

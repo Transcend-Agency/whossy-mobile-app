@@ -6,9 +6,11 @@ import 'package:iconly/iconly.dart';
 import '../../constants/colors.dart';
 import '../styles/text_style.dart';
 
-SizedBox addHeight(double height) => SizedBox(height: height.h);
+SizedBox addHeight(double height, {bool isRsv = true}) =>
+    SizedBox(height: isRsv ? height.h : height);
 
-SizedBox addWidth(double width) => SizedBox(width: width.w);
+SizedBox addWidth(double width, {bool isRsv = true}) =>
+    SizedBox(width: isRsv ? width.w : width);
 
 Widget svgIcon(String path, {double? size, Color? color}) {
   return SvgPicture.asset(
@@ -63,7 +65,7 @@ Icon offline({double size = 32}) {
 
 Icon user({double size = 32}) {
   return Icon(
-    Icons.person_2,
+    IconlyLight.profile,
     size: size.r,
     color: AppColors.outlinedColor,
   );

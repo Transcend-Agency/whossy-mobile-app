@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/feature/home/tabs/chat/view/widgets/online_status.dart';
+import 'package:whossy_app/feature/home/tabs/chat/view/widgets/sheets/actions_sheet.dart';
 import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../common/styles/component_style.dart';
@@ -23,6 +24,7 @@ class ChatRoom extends StatefulWidget {
 }
 
 class _ChatRoomState extends State<ChatRoom> {
+  late ChatsNotifier _chatsNotifier;
   final messagesController = TextEditingController();
   final scrollController = ScrollController();
   final messagesFocusNode = FocusNode();
@@ -55,9 +57,19 @@ class _ChatRoomState extends State<ChatRoom> {
     }
   }
 
+  void sendMessage() {
+    _scrollToBottom();
+
+    _chatsNotifier.sendMessage(messagesController.text.trim());
+
+    messagesController.clear();
+  }
+
   @override
   void initState() {
     super.initState();
+
+    _chatsNotifier = context.read<ChatsNotifier>();
 
     messagesController.addListener(_updateIcon);
   }
@@ -79,20 +91,18 @@ class _ChatRoomState extends State<ChatRoom> {
         return AppScaffold(
           resizeToAvoidBottomInset: true,
           appBar: CustomAppBar(
-            addBarHeight: 4,
+            addBarHeight: 8,
             titleWidget: Row(
               children: [
-                AppAvatar(imageUrl: currentChat.profilePicUrl),
-                addWidth(12),
+                AppAvatar(imageUrl: currentChat.profilePicUrl, radius: 20),
+                addWidth(10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         currentChat.username,
-                        style: TextStyles.profileHead.copyWith(
-                          fontSize: AppUtils.scale(16.sp),
-                        ),
+                        style: TextStyles.profileHead,
                       ),
                       addHeight(1),
                       const OnlineStatus(),
@@ -104,7 +114,8 @@ class _ChatRoomState extends State<ChatRoom> {
             color: Colors.white,
             action: Padding(
               padding: EdgeInsets.only(right: 10.w),
-              child: const AppIconButton(
+              child: AppIconButton(
+                onTap: () => showActionsSheet(context, currentChat.username),
                 icon: Icons.more_horiz_rounded,
               ),
             ),
@@ -172,7 +183,7 @@ class _ChatRoomState extends State<ChatRoom> {
                             //   ),
                             // ),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: typing ? sendMessage : null,
                               child: CircleAvatar(
                                 radius: 21,
                                 backgroundColor: Colors.white,

@@ -20,99 +20,64 @@ class _SaveSearchSheetState extends State<SaveSearchSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: modalPadding.copyWith(
-              top: AppUtils.scale(12.h),
-              bottom: AppUtils.scale(12.h),
+    return AppSheetScaffold(
+      title: 'Save search',
+      useBottomInsets: true,
+      child: Padding(
+        padding: pagePadding,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "You can save this search by adding a name below and clicking save",
+              style:
+                  TextStyles.prefText.copyWith(color: AppColors.hintTextColor),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Save search',
-                  style: TextStyles.buttonText.copyWith(
-                    fontSize: AppUtils.scale(17),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: AppTextField(
+                      action: TextInputAction.done,
+                      focusNode: searchFocusNode,
+                      textController: searchController,
+                      hintText: 'saved search name',
+                      onFieldSubmitted: (email) {},
+                      padding: 13,
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: SizedBox.square(
-                    dimension: 30.r,
-                    child: cancelIcon(),
+                  addWidth(12),
+                  Expanded(
+                    child: DialogButton(
+                      padding: 12.h,
+                      text: 'Save',
+                      color: AppColors.buttonColor,
+                      textColor: Colors.white,
+                      onPressed: null,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const AppDivider(),
-          addHeight(12),
-          Padding(
-            padding: pagePadding,
-            child: Column(
+            Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  "You can save this search by adding a name below and clicking save",
-                  style: TextStyles.prefText
-                      .copyWith(color: AppColors.hintTextColor),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: AppTextField(
-                          action: TextInputAction.done,
-                          focusNode: searchFocusNode,
-                          textController: searchController,
-                          hintText: 'saved search name',
-                          onFieldSubmitted: (email) {},
-                          padding: 13,
-                        ),
-                      ),
-                      addWidth(12),
-                      Expanded(
-                        child: DialogButton(
-                          padding: 12.h,
-                          text: 'Save',
-                          color: AppColors.buttonColor,
-                          textColor: Colors.white,
-                          onPressed: null,
-                        ),
-                      ),
-                    ],
+                Expanded(
+                  child: DialogButton(
+                    padding: 12.h,
+                    text: 'Continue without saving',
+                    color: AppColors.listTileColor,
+                    textColor: AppColors.hintTextColor,
+                    onPressed: () {},
                   ),
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: DialogButton(
-                        padding: 12.h,
-                        text: 'Continue without saving',
-                        color: AppColors.listTileColor,
-                        textColor: AppColors.hintTextColor,
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
-          ),
-          addHeight(14)
-        ],
+          ],
+        ),
       ),
     );
   }

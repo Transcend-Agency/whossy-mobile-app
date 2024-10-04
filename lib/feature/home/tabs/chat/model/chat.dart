@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../../common/utils/index.dart';
+import 'message.dart';
 
 part 'chat.g.dart';
 
@@ -29,7 +31,7 @@ class Chat {
     fromJson: _fromTimestamp,
     toJson: _toTimestamp,
   )
-  final Timestamp lastMessageTimestamp;
+  final Timestamp? lastMessageTimestamp;
 
   @JsonKey(name: 'unread_count')
   final num? unreadCount;
@@ -55,8 +57,7 @@ class Chat {
     required this.userNames,
     required this.profilePicUrls,
     required this.lastMessage,
-    required this.lastSenderUserId,
-    required this.lastMessageTimestamp,
+    this.lastMessageTimestamp,
     this.unreadCount,
     this.lastMessageStatus = MessageStatus.undelivered,
     this.lastMessageId,
@@ -65,18 +66,25 @@ class Chat {
     List<bool>? deletedAccount,
   })  : userMuted = userMuted ?? List.filled(2, false),
         userBlocked = userBlocked ?? List.filled(2, false),
+        lastSenderUserId = FirebaseAuth.instance.currentUser!.uid,
         deletedAccount = deletedAccount ?? List.filled(2, false);
 
-  // Factory method to create a Chat instance from JSON
   factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
 
-  // Method to convert a Chat instance to JSON
   Map<String, dynamic> toJson() => _$ChatToJson(this);
 
-// Convert dynamic JSON value to Firestore Timestamp
   static Timestamp _fromTimestamp(dynamic json) =>
       json != null && json is Timestamp ? json : Timestamp.now();
 
-// Convert Firestore Timestamp to JSON (milliseconds since epoch)
   static dynamic _toTimestamp(Timestamp? timestamp) => timestamp;
+
+  // Static method to generate the update map
+  static Map<String, dynamic> updateChatData(Message message) {
+    return {
+      'last_message': message.message,
+      'last_message_id': message.id,
+      'last_sender_user_id': message.senderId,
+      'last_message_timestamp': FieldValue.serverTimestamp(),
+    };
+  }
 }

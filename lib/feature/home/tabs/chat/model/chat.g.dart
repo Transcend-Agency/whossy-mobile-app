@@ -17,7 +17,6 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
           .map((e) => e as String?)
           .toList(),
       lastMessage: json['last_message'] as String,
-      lastSenderUserId: json['last_sender_user_id'] as String,
       lastMessageTimestamp: Chat._fromTimestamp(json['last_message_timestamp']),
       unreadCount: json['unread_count'] as num?,
       lastMessageStatus: $enumDecodeNullable(
@@ -49,7 +48,6 @@ Map<String, dynamic> _$ChatToJson(Chat instance) {
   val['names'] = instance.userNames;
   val['profile_pic_urls'] = instance.profilePicUrls;
   val['last_message'] = instance.lastMessage;
-  val['last_sender_user_id'] = instance.lastSenderUserId;
   writeNotNull('last_message_timestamp',
       Chat._toTimestamp(instance.lastMessageTimestamp));
   writeNotNull('unread_count', instance.unreadCount);
