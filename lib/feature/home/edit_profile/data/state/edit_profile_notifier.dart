@@ -35,6 +35,7 @@ class EditProfileNotifier extends ChangeNotifier {
   set hasSafetyGuideOpened(bool value) {
     if (_hasSafetyGuideOpened != value) {
       _hasSafetyGuideOpened = value;
+
       notifyListeners();
     }
   }

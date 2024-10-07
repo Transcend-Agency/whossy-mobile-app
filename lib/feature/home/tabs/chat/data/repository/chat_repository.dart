@@ -1,14 +1,16 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:whossy_app/feature/home/tabs/chat/model/current_chat.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import '../../model/chat.dart';
+import '../../model/current_chat.dart';
 import '../../model/message.dart';
 
 class ChatRepository {
   final _chatFirestore = FirebaseFirestore.instance.collection('userchats');
+
+  static DatabaseReference statusRef(String id) =>
+      FirebaseDatabase.instance.ref().child('users/$id/presence');
 
   CollectionReference<Map<String, dynamic>> _msgFirestore(String id) =>
       _chatFirestore.doc(id).collection('messages');
@@ -84,8 +86,10 @@ class ChatRepository {
     return query.snapshots().map((snapshot) =>
         snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList());
   }
+}
 
-  bool filterDeleted(Map<String, dynamic> chatData, String uid) {
+/*
+ bool filterDeleted(Map<String, dynamic> chatData, String uid) {
     final participants = chatData['participants'] as List<dynamic>?;
 
     final deletedAccount = chatData['deletedAccount'] as List<dynamic>?;
@@ -122,4 +126,4 @@ class ChatRepository {
 
     return false;
   }
-}
+ */

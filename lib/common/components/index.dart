@@ -20,7 +20,7 @@ export '/common/components/Button/match_icon_button.dart';
 export '/common/components/Button/outlined_app_button.dart';
 export '/common/components/Button/skip_button.dart';
 export '/common/components/Card/image_card.dart';
-export '/common/components/Card/price_card.dart';
+export '/common/components/Card/plan_card.dart';
 export '/common/components/Card/profile_card.dart';
 export '/common/components/Card/profile_details_card.dart';
 export '/common/components/Chip/app_chip.dart';

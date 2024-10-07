@@ -1,5 +1,4 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,7 +7,6 @@ import '../../common/styles/text_style.dart';
 import '../../common/utils/index.dart';
 import '../../common/utils/router/router.gr.dart';
 import '../../constants/index.dart';
-import '../auth/sign_up/data/repository/user_repository.dart';
 
 @RoutePage()
 class SplashScreen extends StatefulWidget {
@@ -19,8 +17,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final _userRepo = UserRepository();
-
   late ScrollController _scrollController1;
   late ScrollController _scrollController2;
   late ScrollController _scrollController3;
@@ -74,29 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       });
     });
-
-    _checkAuthentication();
   }
-
-  // Todo : Would really need a splash screen here
-  Future<void> _checkAuthentication() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      await _userRepo.accountCheck(
-        enablePhoneCheck: true,
-        user: user,
-        showSnackbar: (_) {},
-        onAuthenticate: onAuthenticate,
-        toCreateAccount: doNothing,
-        toOnboarding: doNothing,
-      );
-    }
-  }
-
-  onAuthenticate() => Nav.replace(context, const HomeWrapper());
-
-  doNothing() {}
 
   void animateToMaxMin(
     ScrollController controller,

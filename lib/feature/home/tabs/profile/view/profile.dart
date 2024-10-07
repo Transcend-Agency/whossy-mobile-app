@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
-import 'package:whossy_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 
 import '../../../../../../common/components/index.dart';
@@ -13,6 +12,7 @@ import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/router/router.gr.dart';
+import '../../../../../provider/providers.dart';
 import 'widgets/_.dart';
 
 class Profile extends StatelessWidget {
@@ -35,7 +35,6 @@ class Profile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      addHeight(12),
                       HeaderBar(
                         icon: Icons.settings,
                         onIconTap: () => Nav.push(context, const Settings()),
@@ -151,22 +150,28 @@ class Profile extends StatelessWidget {
                 child: Row(
                   children: [
                     addWidth(14),
-                    PriceCard(
+                    PlanCard(
                       containerColor: AppColors.freeContainer,
                       containerShade: AppColors.freeContainerShade,
                       title: 'Whossy Free Plan',
                       amount: '0',
-                      benefits: const ['Benefit 1', 'Benefit 2', 'Benefit 3'],
-                      onSeeAllFeatures: () {},
+                      benefits: AppStrings.freePricing,
+                      onSeeAllFeatures: () => Nav.push(
+                        context,
+                        SubscriptionPlans(initialPage: 0),
+                      ),
                     ),
                     addWidth(12),
-                    PriceCard(
+                    PlanCard(
                       containerColor: AppColors.premiumContainer,
                       containerShade: AppColors.premiumContainerShade,
                       title: 'Premium Plan',
                       amount: '12.99',
-                      benefits: const ['Benefit 1', 'Benefit 2', 'Benefit 3'],
-                      onSeeAllFeatures: () {},
+                      benefits: AppStrings.premiumPricing,
+                      onSeeAllFeatures: () => Nav.push(
+                        context,
+                        SubscriptionPlans(initialPage: 1),
+                      ),
                     ),
                     addWidth(12),
                   ],

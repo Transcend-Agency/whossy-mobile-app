@@ -12,7 +12,8 @@ class AppButton extends StatelessWidget {
   final Color? color;
   final double height;
   final bool loading;
-  final String text;
+  final String? text; // Change to nullable
+  final Widget? child;
 
   const AppButton({
     super.key,
@@ -20,8 +21,10 @@ class AppButton extends StatelessWidget {
     this.color,
     this.height = 46,
     this.loading = false,
-    required this.text,
-  });
+    this.text, // Change to nullable
+    this.child,
+  }) : assert(text == null || child == null,
+            'You cannot provide both text and child. Please provide either one.');
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +41,13 @@ class AppButton extends StatelessWidget {
         disabledColor: AppColors.buttonColor.withOpacity(0.8),
         child: loading
             ? const AppLoader()
-            : Text(
-                text,
-                style: TextStyles.buttonText.copyWith(
-                  fontSize: AppUtils.scale(18),
+            : child ??
+                Text(
+                  text ?? '',
+                  style: TextStyles.buttonText.copyWith(
+                    fontSize: AppUtils.scale(18),
+                  ),
                 ),
-              ),
       ),
     );
   }

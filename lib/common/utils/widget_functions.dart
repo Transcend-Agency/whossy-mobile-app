@@ -5,6 +5,7 @@ import 'package:iconly/iconly.dart';
 
 import '../../constants/colors.dart';
 import '../styles/text_style.dart';
+import 'index.dart';
 
 SizedBox addHeight(double height, {bool isRsv = true}) =>
     SizedBox(height: isRsv ? height.h : height);
@@ -110,10 +111,10 @@ Icon backIcon() {
 }
 
 Icon cancelIcon() {
-  return Icon(
+  return const Icon(
     Icons.cancel,
     color: AppColors.black,
-    size: 23.r,
+    size: 23,
   );
 }
 
@@ -146,6 +147,27 @@ Icon checkIcon() {
     Icons.check,
     color: Colors.black,
     size: 21.r,
+  );
+}
+
+Widget greenDot() {
+  return Container(
+    width: 8,
+    height: 8,
+    decoration: const BoxDecoration(
+      color: Colors.green,
+      shape: BoxShape.circle,
+    ),
+  );
+}
+
+Widget contentText(String data) {
+  return Text(
+    data,
+    style: TextStyles.bioText.copyWith(
+      fontSize: AppUtils.scale(11.5.sp),
+    ),
+    textAlign: TextAlign.center,
   );
 }
 

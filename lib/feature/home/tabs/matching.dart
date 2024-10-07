@@ -17,7 +17,6 @@ class Matching extends StatelessWidget {
         width: 375.w,
         child: Column(
           children: [
-            addHeight(12),
             const HeaderBar(icon: CupertinoIcons.bell_fill),
             addHeight(36),
             Text(

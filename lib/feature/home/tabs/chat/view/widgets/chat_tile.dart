@@ -22,6 +22,8 @@ class ChatTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
       contentPadding: EdgeInsets.only(top: 6.h),
       leading: AppAvatar(
         radius: 27,

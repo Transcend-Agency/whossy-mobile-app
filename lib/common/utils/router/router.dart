@@ -6,7 +6,8 @@ import 'package:whossy_app/common/utils/router/router.gr.dart';
 class AppRouter extends $AppRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: SplashRoute.page, initial: true),
+        AutoRoute(page: Splash.page, initial: true),
+        AutoRoute(page: SplashRoute.page),
 
         // LOGIN
         AutoRoute(page: LoginRoute.page),
@@ -38,6 +39,7 @@ class AppRouter extends $AppRouter {
         AutoRoute(page: PreviewProfile.page),
         AutoRoute(page: PreviewProfileMore.page),
         AutoRoute(page: SafetyGuide.page),
+        AutoRoute(page: SubscriptionPlans.page),
 
         // Likes and Match / Tab 3
         AutoRoute(page: MoreInfoRoute.page),

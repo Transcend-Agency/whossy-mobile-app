@@ -81,7 +81,7 @@ class _MessagesState extends State<Messages> {
                 onTileTap: () => onTileTap(context, tile, oppIndex),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 68.w),
+                padding: EdgeInsets.only(left: 48.w, top: 1),
                 child: const AppDivider(),
               ),
             ],
@@ -104,7 +104,7 @@ class _MessagesState extends State<Messages> {
             children: [
               const ShimmerTile(),
               Padding(
-                padding: EdgeInsets.only(left: 68.w),
+                padding: EdgeInsets.only(left: 48.w, top: 1),
                 child: const AppDivider(),
               ),
             ],
@@ -151,7 +151,7 @@ class _MessagesState extends State<Messages> {
           ),
           child: Text(
             'Messages',
-            style: TextStyles.boldPrefText,
+            style: TextStyles.pageHeader,
           ),
         ),
       ),

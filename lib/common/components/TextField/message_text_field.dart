@@ -47,19 +47,22 @@ class MessageTextField extends StatelessWidget {
         focusedBorder: customBorder(isReplying: isReplying),
         fillColor: AppColors.listTileColor,
         hintText: hintText,
-        prefixIcon: Padding(
-          padding: EdgeInsets.all(4.r).copyWith(right: 10),
-          child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.black,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 20.r,
+        prefixIcon: GestureDetector(
+          onTap: onPrefixIconTap,
+          child: Padding(
+            padding: EdgeInsets.all(4.r).copyWith(right: 10),
+            child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 20.r,
+                ),
               ),
             ),
           ),

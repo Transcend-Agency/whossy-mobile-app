@@ -8,7 +8,7 @@ import '../index.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String title;
-  final String content;
+  final Widget content; // Changed to accept a Widget
   final String? yes;
   final String? no;
   final Widget? headerImage;
@@ -18,7 +18,7 @@ class ConfirmationDialog extends StatelessWidget {
   const ConfirmationDialog({
     super.key,
     required this.title,
-    required this.content,
+    required this.content, // Adjust to the new Widget type
     required this.onConfirm,
     required this.onCancel,
     this.yes,
@@ -47,17 +47,12 @@ class ConfirmationDialog extends StatelessWidget {
             ],
             Text(
               title,
-              style: TextStyles.title.copyWith(fontSize: 24),
+              style:
+                  TextStyles.title.copyWith(fontSize: AppUtils.scale(27) ?? 24),
               textAlign: TextAlign.center,
             ),
             addHeight(12),
-            Text(
-              content,
-              style: TextStyles.bioText.copyWith(
-                fontSize: AppUtils.scale(11.5.sp),
-              ),
-              textAlign: TextAlign.center,
-            ),
+            content, // Use the passed widget content
             addHeight(16),
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -94,7 +89,7 @@ class ConfirmationDialog extends StatelessWidget {
 Future<bool?> showConfirmationDialog(
   BuildContext context, {
   required String title,
-  required String content,
+  required Widget content,
   Widget? headerImage,
   String? yes,
   String? no,
@@ -104,7 +99,7 @@ Future<bool?> showConfirmationDialog(
     builder: (BuildContext context) {
       return ConfirmationDialog(
         title: title,
-        content: content,
+        content: content, // Pass the content as a Widget
         onConfirm: () => Navigator.pop(context, true),
         onCancel: () => Navigator.pop(context, false),
         yes: yes,

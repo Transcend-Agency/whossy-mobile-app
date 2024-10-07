@@ -22,7 +22,6 @@ class Explore extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            addHeight(12),
             HeaderBar(
               icon: CupertinoIcons.bell_fill,
               icon2: AppAssets.explore,

@@ -49,7 +49,7 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (_) => AdvancedSearchNotifier()),
       ],
-      child: Whossy(),
+      child: const Whossy(),
     ),
   );
 }

@@ -37,6 +37,9 @@ class _HomeWrapperState extends State<HomeWrapper> {
       _editProfileNotifier.getUserData(showSnackbar: showSnackbar);
 
       _editProfileNotifier.checkOpenedState();
+
+      // Check if the chat messages screen has been opened
+      context.read<ChatsNotifier>().checkOpenedState();
     });
 
     super.initState();

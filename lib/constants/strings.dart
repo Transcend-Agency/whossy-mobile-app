@@ -101,6 +101,20 @@ class AppStrings {
     "Don’t hesitate to hit the report button whenever you feel threatened or see a bad behavior.",
   ];
 
+  static const List<String> freePricing = [
+    'Profile Browsing',
+    'Swipe and Match',
+    'See Who Liked You',
+    'Profile Boost',
+  ];
+
+  static const List<String> premiumPricing = [
+    'Chat Initiation',
+    'Rewind',
+    'Top Picks',
+    'Read Receipts',
+  ];
+
   // Error Messages
   static const String errorEmailInUse = 'Account already exists';
   static const String errorInvalidEmail = 'The email address is not valid.';
@@ -138,7 +152,18 @@ class AppStrings {
   static const String accUnselected = 'No account selected';
   static const String signOutFailure = 'Failed to sign out. Please try again.';
   static const String mission =
-      'Our mission is to help you connect with new people in a safe and enjoyable environment. Your safety is our top priority, and we have put together this guide to help you navigate the online dating world securely and confidently.';
+      'Our mission is to help you connect with new people in a safe and enjoyable '
+      'environment. Your safety is our top priority, and we have put together this '
+      'guide to help you navigate the online dating world securely and confidently.';
+
+  static const String chatSafety =
+      'Please respect people privacy and chat safely with everyone. '
+      'We at Whossy have technology that can detect harmful, malicious or illegal activity in your '
+      'messages. \n \n'
+      'Any suspicious activity will have your account suspended. By clicking “Continue” '
+      'you agree to our ';
+
+  //Safety guide and Privacy policies
 
   static String filePath(String? uid, String fileName) {
     return 'users/$uid/profile_pictures/$fileName';

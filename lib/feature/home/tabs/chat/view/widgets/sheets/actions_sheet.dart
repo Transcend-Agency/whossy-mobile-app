@@ -23,13 +23,14 @@ class ActionsSheet extends StatelessWidget {
         children: [
           Padding(
             padding: pagePadding,
-            child: OutlinedAppButton(
+            child: AppButton(
+              color: AppColors.listTileColor,
               onPress: () {},
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  svgIcon(AppAssets.unMatch),
-                  addWidth(6),
+                  Image.asset(AppAssets.unMatch, height: 22),
+                  addWidth(10),
                   Text(
                     "Unmatch $name",
                     style: TextStyles.buttonText.copyWith(
@@ -42,14 +43,15 @@ class ActionsSheet extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.w),
-            child: OutlinedAppButton(
+            padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.r),
+            child: AppButton(
+              color: AppColors.listTileColor,
               onPress: () {},
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  svgIcon(AppAssets.unMatch),
-                  addWidth(8),
+                  Image.asset(AppAssets.blockUser, height: 26),
+                  addWidth(10),
                   Text(
                     "Block $name",
                     style: TextStyles.buttonText.copyWith(
@@ -63,13 +65,14 @@ class ActionsSheet extends StatelessWidget {
           ),
           Padding(
             padding: pagePadding,
-            child: OutlinedAppButton(
+            child: AppButton(
+              color: AppColors.listTileColor,
               onPress: () {},
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  svgIcon(AppAssets.unMatch),
-                  addWidth(4),
+                  Image.asset(AppAssets.report, height: 26),
+                  addWidth(10),
                   Text(
                     "Report $name",
                     style: TextStyles.buttonText.copyWith(

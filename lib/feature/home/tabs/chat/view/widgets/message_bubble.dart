@@ -30,9 +30,11 @@ class MessageBubble extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!isSender) ...[
+          if (!isSender && !isPreviousSameSender) ...[
             addWidth(10),
             AppAvatar(imageUrl: url, radius: 17)
+          ] else if (!isSender) ...[
+            addWidth(35)
           ],
           Container(
             padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 8.w),

@@ -65,8 +65,8 @@ class _SettingsState extends State<Settings> {
                 bool? result = await showConfirmationDialog(
                   context,
                   title: 'Confirm Log out',
-                  content:
-                      'All your current sessions will be closed after logging out. Are you sure you want to log out?',
+                  content: contentText(
+                      'All your current sessions will be closed after logging out. Are you sure you want to log out?'),
                   yes: 'Log out',
                   no: 'Cancel',
                 );

@@ -21,8 +21,8 @@ class LikesComponent extends StatelessWidget {
           addWidth(14),
           GradientOutlineBox(
             child: Container(
-              width: 132.r,
-              height: 144.r,
+              width: 132,
+              height: 144,
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -53,20 +53,22 @@ class LikesComponent extends StatelessWidget {
                           gradient: AppColors.splashGradient,
                         ),
                         padding: EdgeInsets.symmetric(
-                            horizontal: 8.w, vertical: 2.h),
+                            horizontal: 8.r, vertical: 2.r),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               '24',
-                              style: TextStyles.boldPrefText
-                                  .copyWith(color: Colors.white),
+                              style: TextStyles.hintThemeText.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                             addWidth(4),
                             SvgPicture.asset(
                               AppAssets.love,
-                              width: 18.r,
+                              width: 18,
                               colorFilter: const ColorFilter.mode(
                                 Colors.white,
                                 BlendMode.srcIn,
@@ -80,10 +82,10 @@ class LikesComponent extends StatelessWidget {
                       alignment: Alignment.bottomCenter,
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 6.h),
-                        child: GradientChip(
+                        child: const GradientChip(
                           text: 'Likes',
-                          width: 54.w,
-                          height: 22.h,
+                          width: 54,
+                          height: 22,
                         ),
                       ),
                     ),
@@ -94,8 +96,8 @@ class LikesComponent extends StatelessWidget {
           ),
           addWidth(8),
           Container(
-            width: 136.r,
-            height: 148.r,
+            width: 136,
+            height: 148,
             decoration: BoxDecoration(
               color: AppColors.listTileColor,
               borderRadius: BorderRadius.circular(16.r),
@@ -111,13 +113,13 @@ class LikesComponent extends StatelessWidget {
                 addHeight(4),
                 Text(
                   'No match yet',
-                  style: TextStyles.boldPrefText
-                      .copyWith(color: AppColors.hintTextColor),
+                  style: TextStyles.hintThemeText
+                      .copyWith(fontWeight: FontWeight.w500),
                 ),
                 Text(
                   '^_^',
-                  style: TextStyles.boldPrefText
-                      .copyWith(color: AppColors.hintTextColor),
+                  style: TextStyles.hintThemeText
+                      .copyWith(fontWeight: FontWeight.w500),
                 ),
               ],
             ),

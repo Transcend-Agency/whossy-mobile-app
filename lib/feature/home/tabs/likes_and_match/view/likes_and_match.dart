@@ -6,7 +6,6 @@ import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/matche
 
 import '../../../../../common/components/index.dart';
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
 
 class LikesAndMatch extends StatefulWidget {
   const LikesAndMatch({super.key});
@@ -62,7 +61,6 @@ class _LikesAndMatchState extends State<LikesAndMatch>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          addHeight(12),
           Padding(
             padding: pagePadding,
             child: HeaderBar(
@@ -82,7 +80,7 @@ class _LikesAndMatchState extends State<LikesAndMatch>
               onPageChanged: _onPageChange,
               itemBuilder: (_, index) {
                 return Padding(
-                  padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 16.h),
+                  padding: EdgeInsets.only(left: 14.r, right: 14.r, top: 16.r),
                   child: _pages[index],
                 );
               },

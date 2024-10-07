@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AppIconButton extends StatelessWidget {
@@ -25,8 +24,8 @@ class AppIconButton extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.all(margin),
         child: path != null
-            ? SvgPicture.asset(path!, width: size.r)
-            : Icon(icon, size: size.r),
+            ? SvgPicture.asset(path!, width: size)
+            : Icon(icon, size: size),
       ),
     );
   }

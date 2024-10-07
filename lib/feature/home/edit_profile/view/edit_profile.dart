@@ -89,8 +89,8 @@ class _EditProfileState extends State<EditProfile>
         ),
         context,
         title: 'Caution',
-        content:
-            "You have unsaved changes. Are you sure you want to exit without saving?",
+        content: contentText(
+            "You have unsaved changes. Are you sure you want to exit without saving?"),
       );
 
       if (result == null || !context.mounted) return;

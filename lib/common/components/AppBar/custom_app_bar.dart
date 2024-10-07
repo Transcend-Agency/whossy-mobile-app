@@ -49,31 +49,46 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         surfaceTintColor: color ?? AppColors.inputBackGround,
         titleSpacing: 0,
         leading: automaticallyImplyLeading
-            ? GestureDetector(
-                onTap: () async {
-                  if (onPop != null) {
-                    await onPop!();
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-                child: Container(
-                  margin: EdgeInsets.only(left: 10.w),
-                  child: const Icon(
-                    Icons.arrow_back_ios,
-                    size: 20,
+            ? Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: GestureDetector(
+                  onTap: () async {
+                    if (onPop != null) {
+                      await onPop!();
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(left: 10.w),
+                    child: const Icon(
+                      Icons.arrow_back_ios,
+                      size: 20,
+                    ),
                   ),
                 ),
               )
             : null,
-        actions: [if (action != null) action!],
-        title: Padding(
-          padding: automaticallyImplyLeading ? EdgeInsets.zero : pagePadding,
-          child: titleWidget ??
-              Text(
-                title!,
-                style: TextStyles.boldPrefText,
-              ),
+        actions: [
+          if (action != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: action!,
+            )
+        ],
+        title: Column(
+          children: [
+            const SizedBox(height: 8),
+            Padding(
+              padding:
+                  automaticallyImplyLeading ? EdgeInsets.zero : pagePadding,
+              child: titleWidget ??
+                  Text(
+                    title!,
+                    style: TextStyles.pageHeader,
+                  ),
+            ),
+          ],
         ),
       ),
     );

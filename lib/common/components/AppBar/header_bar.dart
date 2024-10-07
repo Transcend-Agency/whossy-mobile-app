@@ -7,16 +7,19 @@ import '../../utils/router/router.gr.dart';
 import '../Button/app_icon_button.dart';
 
 class HeaderBar extends StatelessWidget {
-  const HeaderBar(
-      {super.key,
-      this.icon,
-      this.onIconTap,
-      this.onIcon2Tap,
-      this.child,
-      this.icon2});
+  const HeaderBar({
+    super.key,
+    this.icon,
+    this.onIconTap,
+    this.onIcon2Tap,
+    this.child,
+    this.icon2,
+    this.topPadding = 8,
+  });
 
   final IconData? icon;
   final String? icon2;
+  final double topPadding;
   final VoidCallback? onIconTap;
   final VoidCallback? onIcon2Tap;
 
@@ -27,7 +30,7 @@ class HeaderBar extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        addHeight(MediaQuery.of(context).padding.top),
+        addHeight(MediaQuery.of(context).padding.top + topPadding),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

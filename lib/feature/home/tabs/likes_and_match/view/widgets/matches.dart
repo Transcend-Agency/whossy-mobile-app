@@ -57,20 +57,25 @@ class Matches extends StatelessWidget {
                                     gradient: AppColors.matchContainerGradient,
                                   ),
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w, vertical: 2.h),
+                                    horizontal: 8.r,
+                                    vertical: 2.r,
+                                  ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         '2',
-                                        style: TextStyles.boldPrefText
-                                            .copyWith(color: Colors.white),
+                                        style:
+                                            TextStyles.hintThemeText.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                      addWidth(6),
+                                      addWidth(4),
                                       SvgPicture.asset(
                                         AppAssets.fire,
-                                        width: 16.r,
+                                        width: 16,
                                         colorFilter: const ColorFilter.mode(
                                           Colors.white,
                                           BlendMode.srcIn,
@@ -110,14 +115,14 @@ class Matches extends StatelessWidget {
                             addHeight(10),
                             Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 10.w, vertical: 6.h),
+                                  horizontal: 10.r, vertical: 6.r),
                               decoration: BoxDecoration(
                                 gradient: AppColors.splashGradient,
                                 borderRadius: BorderRadius.circular(12.r),
                               ),
                               child: Text(
                                 'UPGRADE',
-                                style: TextStyles.boldPrefText
+                                style: TextStyles.pageHeader
                                     .copyWith(color: Colors.white),
                               ),
                             ),

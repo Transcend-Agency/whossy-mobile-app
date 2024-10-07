@@ -12,11 +12,11 @@ class ShimmerTile extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     return ListTile(
       contentPadding: EdgeInsets.only(top: 6.h),
-      leading: CircleAvatar(
-        radius: 30.r,
-        child: const ShimmerWidget.circular(),
+      leading: const CircleAvatar(
+        radius: 27,
+        child: ShimmerWidget.circular(),
       ),
-      horizontalTitleGap: 14.r,
+      horizontalTitleGap: 14,
       trailing: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -26,7 +26,7 @@ class ShimmerTile extends StatelessWidget {
             border: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(6.r)),
             ),
-            height: 18.h,
+            height: 18,
           ),
         ],
       ),
@@ -37,7 +37,7 @@ class ShimmerTile extends StatelessWidget {
             padding: EdgeInsets.only(top: 4.h, bottom: 12.h),
             child: ShimmerWidget.rectangular(
               width: width * 0.3,
-              height: 21.h,
+              height: 18,
               border: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6.r),
               ),
@@ -51,12 +51,12 @@ class ShimmerTile extends StatelessWidget {
         children: [
           //  addHeight(6),
           ShimmerWidget.rectangular(
-            height: 14.h,
+            height: 14,
             border: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4.r),
             ),
           ),
-          addHeight(6),
+          addHeight(4),
         ],
       ),
     );

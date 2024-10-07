@@ -4,16 +4,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/colors.dart';
 import '../utils/index.dart';
 
-final pagePadding = EdgeInsets.symmetric(horizontal: 14.w);
+final pagePadding = EdgeInsets.symmetric(horizontal: 14.r);
 
 const chatFieldPadding = EdgeInsets.fromLTRB(10, 5, 10, 10);
 
 final modalPadding = EdgeInsets.symmetric(
-  vertical: 13.h,
-  horizontal: 16.w,
+  vertical: 10.r,
+  horizontal: 14.r,
 ).copyWith(
-  top: AppUtils.scale(12.h),
-  bottom: AppUtils.scale(12.h),
+  top: AppUtils.scale(12),
+  bottom: AppUtils.scale(12),
 );
 
 final forgotTouchable = EdgeInsets.symmetric(vertical: 6.h, horizontal: 2.w);

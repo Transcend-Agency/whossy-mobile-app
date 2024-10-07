@@ -40,7 +40,7 @@ class _PictureScreenState extends State<PictureScreen>
         no: 'Cancel',
         context,
         title: 'Permission required',
-        content: "Please grant photo access in the app settings.",
+        content: contentText("Please grant photo access in the app settings."),
       );
 
   Future<bool> _handlePermissions({int? index}) async {

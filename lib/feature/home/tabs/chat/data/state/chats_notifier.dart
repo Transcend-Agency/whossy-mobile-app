@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';
 
+import '../../../../../../common/utils/services/services.dart';
 import '../../../../edit_profile/model/core_profile.dart';
 import '../../model/chat.dart';
 import '../../model/current_chat.dart';
 import '../repository/chat_repository.dart';
 
 class ChatsNotifier extends ChangeNotifier {
+  final _sharedPrefs = SharedPrefsService();
   final _chatRepository = ChatRepository();
+  bool _hasChatRoomOpened = true;
 
   CurrentChat? currentChat;
   CoreProfile? _profileData;
@@ -43,6 +47,20 @@ class ChatsNotifier extends ChangeNotifier {
         picUrl: _profileData!.profilePics![0],
       );
     }
+  }
+
+  bool get hasChatOpened => _hasChatRoomOpened;
+
+  set hasChatOpened(bool value) {
+    if (_hasChatRoomOpened != value) {
+      _hasChatRoomOpened = value;
+
+      notifyListeners();
+    }
+  }
+
+  checkOpenedState() async {
+    _hasChatRoomOpened = !await _sharedPrefs.isFirstTimeOpened(ChatRoom.name);
   }
 
   void setCurrentChat({

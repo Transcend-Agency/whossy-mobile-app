@@ -90,6 +90,13 @@ class TextStyles {
     letterSpacing: -0.1,
   );
 
+  static TextStyle pageHeader = const TextStyle(
+    fontFamily: 'NeueMontreal',
+    fontSize: 19,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.1,
+  );
+
   static TextStyle underlineWhossyGuide = whossyGuideText.copyWith(
     decoration: TextDecoration.underline,
     fontWeight: FontWeight.w400,

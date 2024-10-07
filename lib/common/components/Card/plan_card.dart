@@ -5,23 +5,31 @@ import '../../styles/text_style.dart';
 import '../../utils/index.dart';
 import '../index.dart';
 
-class PriceCard extends StatelessWidget {
+class PlanCard extends StatelessWidget {
   final Color containerColor;
   final Color containerShade;
   final String title;
   final String amount;
-  final List<String> benefits;
-  final VoidCallback onSeeAllFeatures;
+  final List<String>? benefits;
+  final VoidCallback? onSeeAllFeatures;
+  final bool showDetails;
+  final List<double>? stops;
 
-  const PriceCard({
+  const PlanCard({
     super.key,
     required this.containerColor,
     required this.title,
     required this.amount,
-    required this.benefits,
-    required this.onSeeAllFeatures,
     required this.containerShade,
-  });
+    this.benefits,
+    this.onSeeAllFeatures,
+    this.showDetails = true,
+    this.stops,
+  }) : assert(
+          showDetails == false ||
+              (benefits != null && onSeeAllFeatures != null),
+          'Benefits and onSeeAllFeatures must be provided when showDetails is true',
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +40,7 @@ class PriceCard extends StatelessWidget {
           colors: [containerShade, Colors.white],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          stops: const [0.1, 0.7],
+          stops: stops ?? const [0.1, 0.7],
         ),
         border: Border.all(
           color: containerColor,
@@ -43,7 +51,7 @@ class PriceCard extends StatelessWidget {
       padding: EdgeInsets.only(
         left: 10.r,
         right: 10.r,
-        bottom: 6.r,
+        bottom: showDetails ? 6.r : 10.r,
         top: 10.r,
       ),
       child: Column(
@@ -52,7 +60,7 @@ class PriceCard extends StatelessWidget {
           Text(
             title,
             style: TextStyles.profileHead.copyWith(
-              fontSize: AppUtils.scale(15.sp) ?? 19,
+              fontSize: AppUtils.scale(14.sp) ?? 18,
               color: containerColor,
             ),
           ),
@@ -69,7 +77,7 @@ class PriceCard extends StatelessWidget {
                     style: TextStyles.whossyGuideText.copyWith(
                       color: containerColor,
                       fontWeight: FontWeight.w600,
-                      fontSize: AppUtils.scale(13.5.sp) ?? 15.sp,
+                      fontSize: AppUtils.scale(12.5.sp) ?? 14.sp,
                     ),
                   ),
                   Text(
@@ -77,7 +85,7 @@ class PriceCard extends StatelessWidget {
                     style: TextStyles.whossyGuideText.copyWith(
                       color: containerColor,
                       fontWeight: FontWeight.w600,
-                      fontSize: AppUtils.scale(28.sp) ?? 32.sp,
+                      fontSize: AppUtils.scale(26.sp) ?? 30.sp,
                       height: 1,
                     ),
                   ),
@@ -88,38 +96,42 @@ class PriceCard extends StatelessWidget {
                 style: TextStyles.whossyGuideText.copyWith(
                   color: containerColor,
                   fontWeight: FontWeight.w600,
-                  fontSize: AppUtils.scale(12.5.sp) ?? 14.sp,
+                  fontSize: AppUtils.scale(11.5.sp) ?? 13.sp,
                 ),
               ),
             ],
           ),
-          addHeight(16),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(benefits.length, (index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    benefits[index],
-                    style: TextStyles.prefText.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: containerColor,
+
+          // Only show details if showDetails is true
+          if (showDetails) ...[
+            addHeight(16),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(benefits!.length, (index) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      benefits![index],
+                      style: TextStyles.chatText.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: containerColor,
+                      ),
                     ),
-                  ),
-                  _line(containerColor),
-                  addHeight(14),
-                ],
-              );
-            }),
-          ),
-          AppButton(
-            height: 40,
-            onPress: onSeeAllFeatures,
-            text: 'See all features',
-            color: containerColor,
-          ),
+                    _line(containerColor),
+                    addHeight(14),
+                  ],
+                );
+              }),
+            ),
+            AppButton(
+              height: 40,
+              onPress: onSeeAllFeatures!,
+              text: 'See all features',
+              color: containerColor,
+            ),
+          ]
         ],
       ),
     );

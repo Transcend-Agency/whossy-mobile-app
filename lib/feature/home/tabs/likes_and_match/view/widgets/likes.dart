@@ -54,20 +54,24 @@ class Likes extends StatelessWidget {
                                   gradient: AppColors.splashGradient,
                                 ),
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 8.w, vertical: 2.h),
+                                  horizontal: 8.r,
+                                  vertical: 2.r,
+                                ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
                                       '24',
-                                      style: TextStyles.boldPrefText
-                                          .copyWith(color: Colors.white),
+                                      style: TextStyles.hintThemeText.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                     addWidth(4),
                                     SvgPicture.asset(
                                       AppAssets.love,
-                                      width: 18.r,
+                                      width: 18,
                                       colorFilter: const ColorFilter.mode(
                                         Colors.white,
                                         BlendMode.srcIn,
@@ -81,10 +85,10 @@ class Likes extends StatelessWidget {
                               alignment: Alignment.bottomCenter,
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: 6.h),
-                                child: GradientChip(
+                                child: const GradientChip(
                                   text: 'Likes',
-                                  width: 54.w,
-                                  height: 22.h,
+                                  width: 54,
+                                  height: 22,
                                 ),
                               ),
                             ),
@@ -104,7 +108,7 @@ class Likes extends StatelessWidget {
                   child: Row(
                     children: [
                       Container(
-                        width: 120.w,
+                        width: 110.w,
                         clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -131,20 +135,23 @@ class Likes extends StatelessWidget {
                                     gradient: AppColors.splashGradient,
                                   ),
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w, vertical: 2.h),
+                                      horizontal: 8.r, vertical: 2.r),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         '24',
-                                        style: TextStyles.boldPrefText
-                                            .copyWith(color: Colors.white),
+                                        style:
+                                            TextStyles.hintThemeText.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                       addWidth(4),
                                       SvgPicture.asset(
                                         AppAssets.love,
-                                        width: 18.r,
+                                        width: 18,
                                         colorFilter: const ColorFilter.mode(
                                           Colors.white,
                                           BlendMode.srcIn,
@@ -158,10 +165,10 @@ class Likes extends StatelessWidget {
                                 alignment: Alignment.bottomCenter,
                                 child: Padding(
                                   padding: EdgeInsets.only(bottom: 6.h),
-                                  child: GradientChip(
+                                  child: const GradientChip(
                                     text: 'Likes',
-                                    width: 54.w,
-                                    height: 22.h,
+                                    width: 54,
+                                    height: 22,
                                   ),
                                 ),
                               ),
@@ -184,14 +191,14 @@ class Likes extends StatelessWidget {
                             addHeight(10),
                             Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 10.w, vertical: 6.h),
+                                  horizontal: 10.r, vertical: 6.r),
                               decoration: BoxDecoration(
                                 gradient: AppColors.upgradeButtonGradient,
                                 borderRadius: BorderRadius.circular(12.r),
                               ),
                               child: Text(
                                 'UPGRADE',
-                                style: TextStyles.boldPrefText
+                                style: TextStyles.pageHeader
                                     .copyWith(color: Colors.white),
                               ),
                             ),

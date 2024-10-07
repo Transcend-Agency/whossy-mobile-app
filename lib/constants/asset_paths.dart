@@ -48,9 +48,13 @@ class AppAssets {
   static const wwSearch = 'assets/icons/wwSearch.svg';
   static const gift = 'assets/icons/gift.svg';
   static const leaf = 'assets/icons/leaf.svg';
-  static const unMatch = 'assets/icons/unmatch.svg';
-  static const blockSvg = 'assets/icons/block.svg';
-  static const report = 'assets/icons/report.svg';
+  static const unMatch = 'assets/icons/unmatch.png';
+  static const blockUser = 'assets/icons/user_block.png';
+  static const report = 'assets/icons/report.png';
+  static const logo = 'assets/icons/logo.svg';
+  static const whossy = 'assets/icons/whossy.svg';
+  static const photo = 'assets/icons/photo.svg';
+  static const gallery = 'assets/icons/gallery.svg';
 
   static const credit = 'assets/icons/credit.png';
   static const boost = 'assets/icons/boost.png';

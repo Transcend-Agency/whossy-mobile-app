@@ -34,7 +34,8 @@ class GradientChip extends StatelessWidget {
         ),
         Text(
           text,
-          style: TextStyles.boldPrefText.copyWith(color: Colors.white),
+          style: TextStyles.hintThemeText
+              .copyWith(color: Colors.white, fontWeight: FontWeight.w500),
         ),
       ],
     );

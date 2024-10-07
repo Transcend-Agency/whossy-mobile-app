@@ -6,11 +6,13 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/feature/home/tabs/chat/view/widgets/online_status.dart';
 import 'package:whossy_app/feature/home/tabs/chat/view/widgets/sheets/actions_sheet.dart';
+import 'package:whossy_app/feature/home/tabs/chat/view/widgets/sheets/photo_sheet.dart';
 import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../common/styles/component_style.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
+import '../../../../../constants/index.dart';
 import '../model/current_chat.dart';
 import 'widgets/message_stream.dart';
 import 'widgets/scroll_button.dart';
@@ -25,6 +27,8 @@ class ChatRoom extends StatefulWidget {
 
 class _ChatRoomState extends State<ChatRoom> {
   late ChatsNotifier _chatsNotifier;
+  late bool isPrevOpened;
+
   final messagesController = TextEditingController();
   final scrollController = ScrollController();
   final messagesFocusNode = FocusNode();
@@ -65,11 +69,70 @@ class _ChatRoomState extends State<ChatRoom> {
     messagesController.clear();
   }
 
+  openDialog() async {
+    await showConfirmationDialog(
+      yes: 'Continue',
+      headerImage: Padding(
+        padding: EdgeInsets.only(bottom: 6.h),
+        child: Image.asset(
+          AppAssets.shield,
+          height: 120,
+        ),
+      ),
+      context,
+      title: 'Chat safety is a priority',
+      content: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(children: [
+          TextSpan(
+            text: AppStrings.chatSafety,
+            style: TextStyles.bioText.copyWith(
+              fontSize: AppUtils.scale(11.sp),
+            ),
+          ),
+          TextSpan(
+            text: "Safety guide",
+            style: TextStyles.bioText.copyWith(
+              fontSize: AppUtils.scale(11.sp),
+              decoration: TextDecoration.underline,
+            ),
+          ),
+          TextSpan(
+            text: " and ",
+            style: TextStyles.bioText.copyWith(
+              fontSize: AppUtils.scale(11.sp),
+            ),
+          ),
+          TextSpan(
+            text: "Privacy policies",
+            style: TextStyles.bioText.copyWith(
+              fontSize: AppUtils.scale(11.sp),
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+
+// AppStrings.chatSafety,
   @override
   void initState() {
     super.initState();
 
     _chatsNotifier = context.read<ChatsNotifier>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 500), () async {
+        isPrevOpened = _chatsNotifier.hasChatOpened;
+
+        if (!isPrevOpened) {
+          await openDialog();
+
+          _chatsNotifier.hasChatOpened = true;
+        }
+      });
+    });
 
     messagesController.addListener(_updateIcon);
   }
@@ -91,7 +154,7 @@ class _ChatRoomState extends State<ChatRoom> {
         return AppScaffold(
           resizeToAvoidBottomInset: true,
           appBar: CustomAppBar(
-            addBarHeight: 8,
+            addBarHeight: 10,
             titleWidget: Row(
               children: [
                 AppAvatar(imageUrl: currentChat.profilePicUrl, radius: 20),
@@ -105,7 +168,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         style: TextStyles.profileHead,
                       ),
                       addHeight(1),
-                      const OnlineStatus(),
+                      OnlineStatus(userId: currentChat.uidUser2),
                     ],
                   ),
                 ),
@@ -158,7 +221,8 @@ class _ChatRoomState extends State<ChatRoom> {
                                   child: MessageTextField(
                                     node: messagesFocusNode,
                                     controller: messagesController,
-                                    onPrefixIconTap: () {},
+                                    onPrefixIconTap: () =>
+                                        showAddPhotoSheet(context),
                                     isReplying: false,
                                   ),
                                 ),

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/utils/index.dart';
 
 import '../../../../../common/styles/component_style.dart';
 import '../../../../../constants/index.dart';
@@ -35,23 +36,22 @@ class _SafetyGuideState extends State<SafetyGuide> {
         padding: EdgeInsets.only(bottom: 6.h),
         child: Image.asset(
           AppAssets.welcome,
-          height: 130,
-        ),
+          height: 120,
+        ), //
       ),
       context,
       title: 'Welcome to Whossy',
-      content: AppStrings.mission,
+      content: contentText(AppStrings.mission),
     );
   }
 
   @override
   void initState() {
-    super.initState(); // Call super before using the context
+    super.initState();
+    _editProfileNotifier = context.read<EditProfileNotifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(seconds: 1), () async {
-        _editProfileNotifier = context.read<EditProfileNotifier>();
-
+      Future.delayed(const Duration(milliseconds: 500), () async {
         isPrevOpened = _editProfileNotifier.hasSafetyGuideOpened;
 
         if (!isPrevOpened) {
@@ -69,6 +69,7 @@ class _SafetyGuideState extends State<SafetyGuide> {
       useScrollView: true,
       padding: pagePadding,
       appBar: CustomAppBar(
+        addBarHeight: 10,
         title: 'Whossy Safety Guide',
         color: Colors.white,
         action: GestureDetector(
