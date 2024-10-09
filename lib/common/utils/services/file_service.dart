@@ -1,13 +1,62 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 
 import '../../../feature/auth/sign_up/data/repository/user_repository.dart';
+import '../enum/enums.dart';
 import '../exceptions/failed_upload.dart';
+import 'services.dart';
+
+typedef AddPicFn = Future<bool> Function({Picture? pic});
+typedef AddIndexFn = Future<bool> Function({int? index});
 
 class FileService {
   final _userRepository = UserRepository();
+
+  static Future<bool> handlePermissions({
+    required BuildContext context,
+    required Function(BuildContext context) showDialog,
+    required Function(String message) showSnackbar,
+    required dynamic onAddPhoto,
+    Picture? pic,
+    int? index,
+  }) async {
+    try {
+      return await _executeAddPhoto(onAddPhoto, pic: pic, index: index);
+    } catch (e) {
+      if (Platform.isIOS) {
+        bool hasPermission = await PermissionService.requestPhotoPermission();
+        if (hasPermission) {
+          return await _executeAddPhoto(onAddPhoto, pic: pic, index: index);
+        } else {
+          if (context.mounted) {
+            await PermissionService.handlePermanentlyDeniedPermission(
+              context: context,
+              showDialog: showDialog,
+            );
+          }
+        }
+      } else {
+        showSnackbar('Access denied, update access in settings');
+      }
+      return false;
+    }
+  }
+
+  static Future<bool> _executeAddPhoto(
+    dynamic onAddPhoto, {
+    Picture? pic,
+    int? index,
+  }) async {
+    if (onAddPhoto is AddPicFn) {
+      return await onAddPhoto(pic: pic);
+    } else if (onAddPhoto is AddIndexFn) {
+      return await onAddPhoto(index: index);
+    }
+    return false; // Default case
+  }
 
   static Future<File?> cropImage(File image) async {
     // Todo: Images can be rotated on iOS, I wanted them to be fixed

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../styles/component_style.dart';
 import '../../styles/text_style.dart';
@@ -78,4 +80,16 @@ class AppSnackbar extends StatelessWidget {
       ],
     );
   }
+}
+
+showSnackbar(String message, BuildContext context) {
+  showTopSnackBar(
+    Overlay.of(context),
+    displayDuration: const Duration(seconds: 5),
+    AppSnackbar(
+      text: message,
+      label: 'Settings',
+      onLabelTapped: openAppSettings,
+    ),
+  );
 }

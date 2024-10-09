@@ -1,21 +1,26 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
-import 'package:whossy_app/feature/home/tabs/chat/view/widgets/online_status.dart';
-import 'package:whossy_app/feature/home/tabs/chat/view/widgets/sheets/actions_sheet.dart';
-import 'package:whossy_app/feature/home/tabs/chat/view/widgets/sheets/photo_sheet.dart';
 import 'package:whossy_app/provider/providers.dart';
 
-import '../../../../../common/styles/component_style.dart';
-import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
-import '../../../../../constants/index.dart';
-import '../model/current_chat.dart';
-import 'widgets/message_stream.dart';
-import 'widgets/scroll_button.dart';
+import '../../../../../../common/styles/component_style.dart';
+import '../../../../../../common/styles/text_style.dart';
+import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/services/services.dart';
+import '../../../../../../constants/index.dart';
+import '../../model/current_chat.dart';
+import '../widgets/_.dart';
+import '../widgets/sheets/actions_sheet.dart';
+import '../widgets/sheets/photo_sheet.dart';
+
+part 'chat_room_helpers.dart';
 
 @RoutePage()
 class ChatRoom extends StatefulWidget {
@@ -26,6 +31,8 @@ class ChatRoom extends StatefulWidget {
 }
 
 class _ChatRoomState extends State<ChatRoom> {
+  final _picker = ImagePicker();
+
   late ChatsNotifier _chatsNotifier;
   late bool isPrevOpened;
 
@@ -69,53 +76,57 @@ class _ChatRoomState extends State<ChatRoom> {
     messagesController.clear();
   }
 
-  openDialog() async {
-    await showConfirmationDialog(
-      yes: 'Continue',
-      headerImage: Padding(
-        padding: EdgeInsets.only(bottom: 6.h),
-        child: Image.asset(
-          AppAssets.shield,
-          height: 120,
-        ),
-      ),
-      context,
-      title: 'Chat safety is a priority',
-      content: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(children: [
-          TextSpan(
-            text: AppStrings.chatSafety,
-            style: TextStyles.bioText.copyWith(
-              fontSize: AppUtils.scale(11.sp),
-            ),
-          ),
-          TextSpan(
-            text: "Safety guide",
-            style: TextStyles.bioText.copyWith(
-              fontSize: AppUtils.scale(11.sp),
-              decoration: TextDecoration.underline,
-            ),
-          ),
-          TextSpan(
-            text: " and ",
-            style: TextStyles.bioText.copyWith(
-              fontSize: AppUtils.scale(11.sp),
-            ),
-          ),
-          TextSpan(
-            text: "Privacy policies",
-            style: TextStyles.bioText.copyWith(
-              fontSize: AppUtils.scale(11.sp),
-              decoration: TextDecoration.underline,
-            ),
-          ),
-        ]),
-      ),
+  Future<bool> _handlePermissions({Picture? pic}) async {
+    return await FileService.handlePermissions(
+      context: context,
+      showDialog: showSettingsDialog,
+      showSnackbar: (message) => showSnackbar(message, context),
+      pic: pic,
+      onAddPhoto: _addPhoto,
     );
   }
 
-// AppStrings.chatSafety,
+  Future<bool> _addPhoto({Picture? pic}) async {
+    bool result = false;
+    List<XFile> pickedImages = [];
+
+    try {
+      if (pic == Picture.gallery) {
+        // pickMultiImage returns List<XFile>
+        pickedImages = await _picker.pickMultiImage();
+      } else if (pic == Picture.photo) {
+        // pickImage returns a single XFile, so we convert it to a list
+        final XFile? image =
+            await _picker.pickImage(source: ImageSource.camera);
+        if (image != null) {
+          pickedImages = [image];
+        }
+      }
+
+      for (var file in pickedImages) {
+        final croppedImage = await FileService.cropImage(File(file.path));
+
+        if (croppedImage != null) {
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      // Throw an error if permission is denied
+      log('Error picking image: $e');
+      rethrow;
+    }
+
+    return result; // Return true if re-uploading succeeded, otherwise false
+  }
+
+  void onAddPhoto() async {
+    Picture? result = await showAddPhotoSheet(context);
+
+    if (result == null) return;
+
+    await _handlePermissions(pic: result);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -127,7 +138,7 @@ class _ChatRoomState extends State<ChatRoom> {
         isPrevOpened = _chatsNotifier.hasChatOpened;
 
         if (!isPrevOpened) {
-          await openDialog();
+          await openDialog(context);
 
           _chatsNotifier.hasChatOpened = true;
         }
@@ -154,7 +165,7 @@ class _ChatRoomState extends State<ChatRoom> {
         return AppScaffold(
           resizeToAvoidBottomInset: true,
           appBar: CustomAppBar(
-            addBarHeight: 10,
+            addBarHeight: 4,
             titleWidget: Row(
               children: [
                 AppAvatar(imageUrl: currentChat.profilePicUrl, radius: 20),
@@ -221,8 +232,7 @@ class _ChatRoomState extends State<ChatRoom> {
                                   child: MessageTextField(
                                     node: messagesFocusNode,
                                     controller: messagesController,
-                                    onPrefixIconTap: () =>
-                                        showAddPhotoSheet(context),
+                                    onPrefixIconTap: onAddPhoto,
                                     isReplying: false,
                                   ),
                                 ),
@@ -238,14 +248,6 @@ class _ChatRoomState extends State<ChatRoom> {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // GestureDetector(
-                            //   onTap: () {},
-                            //   child: CircleAvatar(
-                            //     radius: 21,
-                            //     backgroundColor: Colors.white,
-                            //     child: svgIcon(AppAssets.gift, color: Colors.black),
-                            //   ),
-                            // ),
                             GestureDetector(
                               onTap: typing ? sendMessage : null,
                               child: CircleAvatar(

@@ -237,6 +237,8 @@ enum Gender implements GenericEnum {
   }
 }
 
+enum Picture { photo, gallery }
+
 enum PetOwner implements GenericEnum {
   dog('🐕 Dog'),
   cat('🐈 Cat'),

@@ -50,7 +50,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         titleSpacing: 0,
         leading: automaticallyImplyLeading
             ? Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 0), // 8
                 child: GestureDetector(
                   onTap: () async {
                     if (onPop != null) {
@@ -72,13 +72,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         actions: [
           if (action != null)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: 0), //8
               child: action!,
             )
         ],
         title: Column(
           children: [
-            const SizedBox(height: 8),
+            // const SizedBox(height: 8),
             Padding(
               padding:
                   automaticallyImplyLeading ? EdgeInsets.zero : pagePadding,

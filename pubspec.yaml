@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+6004
+version: 1.0.0+8006
 
 
 environment:
@@ -38,12 +38,12 @@ dependencies:
   cupertino_icons: ^1.0.6
 
   # Firebase related
-  firebase_core: ^3.1.1
-  firebase_auth: ^5.1.1
-  cloud_firestore: ^5.0.2
-  firebase_storage: ^12.1.1
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.4
+  firebase_storage: ^12.3.3
   google_sign_in: ^6.2.1
-  firebase_crashlytics: ^4.0.4
+  firebase_crashlytics: ^4.1.3
 
   # App Core
   provider: ^6.1.2
@@ -52,19 +52,19 @@ dependencies:
   email_validator: ^3.0.0
   url_launcher: ^6.3.0
   iconly: ^1.0.1
-  auto_route: ^8.2.0
+  auto_route: ^9.2.2
 
   lottie: ^3.1.2
   collection: ^1.18.0
   image_picker: ^1.1.2
-  image_cropper: ^7.1.0
+  image_cropper: ^8.0.2
   json_annotation: ^4.9.0
   pin_code_fields: ^8.0.1
 
   top_snackbar_flutter: ^3.1.0
   connectivity_plus: ^6.0.4
   internet_connection_checker: ^1.0.0+1
-  firebase_analytics: ^11.2.1
+  firebase_analytics: ^11.3.3
 
   country_picker:
     git:
@@ -72,7 +72,7 @@ dependencies:
       ref: dev
   firebase_app_check: ^0.3.0+4
   intl: ^0.19.0
-  cached_network_image: 3.4.0
+  cached_network_image: ^3.4.1
   shimmer: ^3.0.0
   readmore: ^3.0.0
   flutter_vibrate: ^1.3.0
@@ -83,15 +83,15 @@ dependencies:
   cupertino_range_slider_improved: ^2.0.1
   flutter_staggered_grid_view: ^0.7.0
   uuid: ^4.5.1
-  firebase_database: ^11.1.1
+  firebase_database: ^11.1.4
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  auto_route_generator: ^8.0.0
-  flutter_lints: ^3.0.0
+  auto_route_generator: ^9.0.0
+  flutter_lints: ^4.0.0
   build_runner:
   json_serializable: ^6.8.0
 

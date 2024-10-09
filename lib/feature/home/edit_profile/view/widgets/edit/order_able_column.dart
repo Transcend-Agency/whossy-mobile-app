@@ -6,14 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/common/utils/services/file_service.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
-import '../../../../../../constants/index.dart';
 import '../../../../../../provider/providers.dart';
 import '../../../../../auth/onboarding/view/edit_sheet.dart';
 import 'image_view.dart';
@@ -52,50 +49,14 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
     });
   }
 
-  Future<bool?> showDialog() => showConfirmationDialog(
-        yes: 'Open Settings',
-        no: 'Cancel',
-        context,
-        title: 'Permission required',
-        content: contentText("Please grant photo access in the app settings."),
-      );
-
   Future<bool> _handlePermissions({int? index}) async {
-    bool value = false;
-
-    try {
-      // Call _addPhoto first
-      value = await _addPhoto(index: index);
-    } catch (e) {
-      // If an error occurs, check the permission status
-      if (Platform.isIOS) {
-        var status = await Permission.photos.status;
-
-        // Log the permission status
-        log('Permission status after error: $status');
-
-        // If permission is not granted, request it
-        if (status.isDenied || status.isRestricted) {
-          var newStatus = await Permission.photos.request();
-          log('New permission status: $newStatus');
-
-          if (newStatus.isGranted) {
-            // Retry adding the photo if permission is granted
-            value = await _addPhoto(index: index);
-          } else if (newStatus.isPermanentlyDenied) {
-            // Show dialog to direct the user to settings
-            var result = await showDialog();
-            if (result == true) {
-              openAppSettings();
-            }
-          }
-        }
-      } else {
-        showSnackbar(AppStrings.deniedAccess);
-      }
-    }
-
-    return value;
+    return await FileService.handlePermissions(
+      context: context,
+      showDialog: showSettingsDialog,
+      showSnackbar: (message) => showSnackbar(message, context),
+      index: index,
+      onAddPhoto: _addPhoto,
+    );
   }
 
   Future<bool> _addPhoto({int? index}) async {
@@ -134,20 +95,6 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
     }
 
     return result;
-  }
-
-  showSnackbar(String message) {
-    if (mounted) {
-      showTopSnackBar(
-        Overlay.of(context),
-        displayDuration: const Duration(seconds: 5),
-        AppSnackbar(
-          text: message,
-          label: 'Settings',
-          onLabelTapped: openAppSettings,
-        ),
-      );
-    }
   }
 
   @override
@@ -195,60 +142,69 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
 
   Widget buildDraggableImageView({required int index, int? flex}) {
     return Expanded(
-        flex: flex ?? 1,
-        child: Builder(
-          builder: (_) {
-            if (index >= widget.profilePics.length) {
-              // Return a fallback widget or an empty container
-              return EmptyView(onActionTap: _handlePermissions);
-            }
+      flex: flex ?? 1,
+      child: Builder(
+        builder: (_) {
+          if (index >= widget.profilePics.length) {
+            // Return a fallback widget or an empty container
+            return EmptyView(onActionTap: _handlePermissions);
+          }
 
-            return LongPressDraggable<int>(
-              data: index,
-              feedback: Opacity(
-                opacity: 0.8,
-                child: ImageView(
-                  index: index,
-                  isDragged: true,
-                  profilePics: widget.profilePics,
-                ),
+          return LongPressDraggable<int>(
+            data: index,
+            feedback: Opacity(
+              opacity: 0.8,
+              child: ImageView(
+                index: index,
+                isDragged: true,
+                profilePics: widget.profilePics,
               ),
-              childWhenDragging: Container(decoration: editMediaDecoration),
-              onDragStarted: () => Vibrate.feedback(FeedbackType.success),
-              child: DragTarget<int>(
-                builder: (ctx, candidateData, rejectedData) {
-                  bool isDraggingOver = candidateData.isNotEmpty;
+            ),
+            childWhenDragging: Container(decoration: editMediaDecoration),
+            onDragStarted: () => Vibrate.feedback(FeedbackType.success),
+            child: DragTarget<int>(
+              builder: (ctx, candidateData, rejectedData) {
+                bool isDraggingOver = candidateData.isNotEmpty;
 
-                  return Stack(
-                    children: [
-                      ImageView(
-                        index: index,
-                        profilePics: widget.profilePics,
-                        onEditTap: () => showCustomModalBottomSheet(
-                          context,
-                          onDelete: () => _deleteImage(index),
-                          onReUpload: () => _handlePermissions(index: index),
-                        ),
+                return Stack(
+                  children: [
+                    ImageView(
+                      index: index,
+                      profilePics: widget.profilePics,
+                      onEditTap: () => showCustomModalBottomSheet(
+                        context,
+                        onDelete: () => _deleteImage(index),
+                        onReUpload: () => _handlePermissions(index: index),
                       ),
-                      if (isDraggingOver)
-                        Positioned.fill(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
+                    ),
+                    if (isDraggingOver)
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
                         ),
-                    ],
-                  );
-                },
-                onWillAcceptWithDetails: (data) => data.data != index,
-                onAcceptWithDetails: (_) => _onReorder(_.data, index),
-              ),
-            );
-          },
-        ));
+                      ),
+                  ],
+                );
+              },
+              onWillAcceptWithDetails: (data) => data.data != index,
+              onAcceptWithDetails: (_) => _onReorder(_.data, index),
+            ),
+          );
+        },
+      ),
+    );
   }
+
+  Future<bool?> showDialog() => showConfirmationDialog(
+        yes: 'Open Settings',
+        no: 'Cancel',
+        context,
+        title: 'Permission required',
+        content: contentText("Please grant photo access in the app settings."),
+      );
 }
 
 void showCustomModalBottomSheet(

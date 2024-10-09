@@ -109,3 +109,12 @@ Future<bool?> showConfirmationDialog(
     },
   );
 }
+
+Future<bool?> showSettingsDialog(BuildContext context) =>
+    showConfirmationDialog(
+      yes: 'Open Settings',
+      no: 'Cancel',
+      context,
+      title: 'Permission required',
+      content: contentText("Please grant photo access in the app settings."),
+    );

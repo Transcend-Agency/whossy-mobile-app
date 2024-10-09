@@ -34,7 +34,19 @@ class MessageBubble extends StatelessWidget {
             addWidth(10),
             AppAvatar(imageUrl: url, radius: 17)
           ] else if (!isSender) ...[
-            addWidth(35)
+            addWidth(10),
+
+            Visibility(
+              visible: false, // Whether the avatar is visible or not
+              maintainSize: true, // Maintains the widget's size
+              maintainAnimation: true, // Keeps any animations active
+              maintainState: true, // Keeps the state active
+              maintainSemantics: true, // Maintains semantic information
+              maintainInteractivity: false, // No need for interactivity
+              child: AppAvatar(imageUrl: url, radius: 17),
+            ),
+
+            // addWidth(35)
           ],
           Container(
             padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 8.w),

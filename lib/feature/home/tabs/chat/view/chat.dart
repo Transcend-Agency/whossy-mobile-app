@@ -14,7 +14,7 @@ class Chat extends StatelessWidget {
         automaticallyImplyLeading: false,
         color: Colors.white,
         borderColor: Colors.white,
-        addBarHeight: 4,
+        // addBarHeight: 4,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

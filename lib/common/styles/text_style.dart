@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whossy_app/common/utils/app_utils.dart';
 
 import '../../constants/index.dart';
 import '../utils/index.dart';
@@ -90,9 +91,9 @@ class TextStyles {
     letterSpacing: -0.1,
   );
 
-  static TextStyle pageHeader = const TextStyle(
+  static TextStyle pageHeader = TextStyle(
     fontFamily: 'NeueMontreal',
-    fontSize: 19,
+    fontSize: AppUtils.scale(19) ?? 17,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.1,
   );

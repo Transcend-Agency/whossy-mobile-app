@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/utils/services/file_service.dart';
 
 import '../../../../common/components/index.dart';
@@ -35,50 +33,14 @@ class _PictureScreenState extends State<PictureScreen>
   final _picker = ImagePicker();
   List<File> _images = [];
 
-  Future<bool?> showDialog() => showConfirmationDialog(
-        yes: 'Open Settings',
-        no: 'Cancel',
-        context,
-        title: 'Permission required',
-        content: contentText("Please grant photo access in the app settings."),
-      );
-
   Future<bool> _handlePermissions({int? index}) async {
-    bool value = false;
-
-    try {
-      // Call _addPhoto first
-      value = await _addPhoto(index: index);
-    } catch (e) {
-      // If an error occurs, check the permission status
-      if (Platform.isIOS) {
-        var status = await Permission.photos.status;
-
-        // Log the permission status
-        log('Permission status after error: $status');
-
-        // If permission is not granted, request it
-        if (status.isDenied || status.isRestricted) {
-          var newStatus = await Permission.photos.request();
-          log('New permission status: $newStatus');
-
-          if (newStatus.isGranted) {
-            // Retry adding the photo if permission is granted
-            value = await _addPhoto(index: index);
-          } else if (newStatus.isPermanentlyDenied) {
-            // Show dialog to direct the user to settings
-            var result = await showDialog();
-            if (result == true) {
-              openAppSettings();
-            }
-          }
-        }
-      } else {
-        showSnackbar(AppStrings.deniedAccess);
-      }
-    }
-
-    return value;
+    return await FileService.handlePermissions(
+      context: context,
+      showDialog: showSettingsDialog,
+      showSnackbar: (message) => showSnackbar(message, context),
+      index: index,
+      onAddPhoto: _addPhoto,
+    );
   }
 
   Future<bool> _addPhoto({int? index}) async {
@@ -139,26 +101,10 @@ class _PictureScreenState extends State<PictureScreen>
   }
 
   void _moveImageToTop(int index) {
-    setState(() {
-      AppUtils.moveItemToTop(_images, index);
-    });
+    setState(() => AppUtils.moveItemToTop(_images, index));
 
     // Call updateUserProfile after reordering the images
     onboarding.updateUserProfile(picFiles: _images);
-  }
-
-  showSnackbar(String message) {
-    if (mounted) {
-      showTopSnackBar(
-        Overlay.of(context),
-        displayDuration: const Duration(seconds: 5),
-        AppSnackbar(
-          text: message,
-          label: 'Settings',
-          onLabelTapped: openAppSettings,
-        ),
-      );
-    }
   }
 
   void _deleteImage(int index) {

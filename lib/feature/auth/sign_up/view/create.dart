@@ -295,7 +295,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
               Padding(
                 padding: EdgeInsets.only(top: 14.h),
                 child: OutlinedAppButton(
-                  onPress: () => showCustomModalBottomSheet(context),
+                  onPress: () => showSignUpOptionsSheet(context),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -330,13 +330,4 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
       ),
     );
   }
-}
-
-void showCustomModalBottomSheet(BuildContext context) {
-  showModalBottomSheet<void>(
-    clipBehavior: Clip.hardEdge,
-    context: context,
-    shape: roundedTop,
-    builder: (_) => const SignupOptions(),
-  );
 }

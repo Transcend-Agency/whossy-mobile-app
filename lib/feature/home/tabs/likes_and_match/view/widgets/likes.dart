@@ -87,8 +87,6 @@ class Likes extends StatelessWidget {
                                 padding: EdgeInsets.only(bottom: 6.h),
                                 child: const GradientChip(
                                   text: 'Likes',
-                                  width: 54,
-                                  height: 22,
                                 ),
                               ),
                             ),
@@ -167,8 +165,6 @@ class Likes extends StatelessWidget {
                                   padding: EdgeInsets.only(bottom: 6.h),
                                   child: const GradientChip(
                                     text: 'Likes',
-                                    width: 54,
-                                    height: 22,
                                   ),
                                 ),
                               ),

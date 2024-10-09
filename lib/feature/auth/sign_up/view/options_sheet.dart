@@ -139,3 +139,12 @@ class SignupOptions extends StatelessWidget {
     );
   }
 }
+
+void showSignUpOptionsSheet(BuildContext context) {
+  showModalBottomSheet<void>(
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => const SignupOptions(),
+  );
+}

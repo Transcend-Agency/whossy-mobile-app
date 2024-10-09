@@ -31,14 +31,16 @@ class SignupHeaderText extends StatelessWidget {
         Text(
           title,
           textAlign: center ? TextAlign.center : null,
-          style: TextStyles.title.copyWith(fontSize: 24.sp),
+          style: TextStyles.title.copyWith(
+            fontSize: AppUtils.scale(24.sp) ?? 26,
+          ),
         ),
         addHeight(mid),
         Text(
           subtitle,
           textAlign: center ? TextAlign.center : null,
           style: TextStyles.bioText.copyWith(
-            fontSize: AppUtils.scale(11.5.sp),
+            fontSize: AppUtils.scale(16) ?? 15,
           ),
         ),
         addHeight(bottom),

@@ -70,12 +70,14 @@ class Matches extends StatelessWidget {
                                             TextStyles.hintThemeText.copyWith(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w500,
+                                          fontSize:
+                                              AppUtils.scale(10.sp) ?? 13.5.sp,
                                         ),
                                       ),
-                                      addWidth(4),
+                                      addWidth(5),
                                       SvgPicture.asset(
                                         AppAssets.fire,
-                                        width: 16,
+                                        width: 14,
                                         colorFilter: const ColorFilter.mode(
                                           Colors.white,
                                           BlendMode.srcIn,

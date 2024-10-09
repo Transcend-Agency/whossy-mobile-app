@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "332139466657",
+    "firebase_url": "https://whossy-app-default-rtdb.firebaseio.com",
     "project_id": "whossy-app",
     "storage_bucket": "whossy-app.appspot.com"
   },
@@ -39,10 +40,11 @@
               "client_type": 3
             },
             {
-              "client_id": "332139466657-qbhs9p8997hmgue97nhkaij3qk5pjng1.apps.googleusercontent.com",
+              "client_id": "332139466657-c21jgtvcnoocprd4n68pgus5rb89miet.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.transcend.whossymobileapp.whossyMobileApp"
+                "bundle_id": "com.whossy.whossyApp",
+                "app_store_id": "6670343949"
               }
             }
           ]

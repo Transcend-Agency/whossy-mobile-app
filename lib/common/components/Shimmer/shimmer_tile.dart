@@ -16,13 +16,13 @@ class ShimmerTile extends StatelessWidget {
         radius: 27,
         child: ShimmerWidget.circular(),
       ),
-      horizontalTitleGap: 14,
+      horizontalTitleGap: 14, //
       trailing: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           addHeight(4),
           ShimmerWidget.rectangular(
-            width: width * 0.135,
+            width: width * 0.125,
             border: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(6.r)),
             ),

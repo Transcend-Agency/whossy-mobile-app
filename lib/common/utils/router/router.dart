@@ -1,9 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:whossy_app/common/utils/router/router.gr.dart';
+
+import 'router.gr.dart';
 
 @AutoRouterConfig()
-class AppRouter extends $AppRouter {
+class AppRouter extends RootStackRouter {
+  @override
+  RouteType get defaultRouteType => const RouteType.adaptive();
+
   @override
   List<AutoRoute> get routes => [
         AutoRoute(page: Splash.page, initial: true),
@@ -46,6 +50,7 @@ class AppRouter extends $AppRouter {
 
         // Chat / Tab 4
         AutoRoute(page: ChatRoom.page),
+        AutoRoute(page: ImagePreview.page),
 
         // Explore / Tab 2
         AutoRoute(page: AdvancedSearchRoute.page),

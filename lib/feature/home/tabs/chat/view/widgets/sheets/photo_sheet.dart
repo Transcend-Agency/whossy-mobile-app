@@ -9,7 +9,11 @@ import '../../../../../../../common/styles/text_style.dart';
 import '../../../../../../../constants/index.dart';
 
 class AddPhotoSheet extends StatelessWidget {
-  const AddPhotoSheet({super.key});
+  const AddPhotoSheet(
+      {super.key, required this.onTakePhoto, required this.onFromGallery});
+
+  final VoidCallback onTakePhoto;
+  final VoidCallback onFromGallery;
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +27,12 @@ class AddPhotoSheet extends StatelessWidget {
           spacing: 16,
           children: [
             ActionButton(
-              onTap: () {},
+              onTap: onTakePhoto,
               text: 'Take Photo',
               iconPath: AppAssets.photo,
             ),
             ActionButton(
-              onTap: () {},
+              onTap: onFromGallery,
               text: 'Add from gallery',
               iconPath: AppAssets.gallery,
             ),
@@ -39,12 +43,15 @@ class AddPhotoSheet extends StatelessWidget {
   }
 }
 
-void showAddPhotoSheet(BuildContext context) {
-  showModalBottomSheet<void>(
+Future<Picture?> showAddPhotoSheet(BuildContext context) {
+  return showModalBottomSheet<Picture?>(
     clipBehavior: Clip.hardEdge,
     context: context,
     shape: roundedTop,
-    builder: (_) => const AddPhotoSheet(),
+    builder: (_) => AddPhotoSheet(
+      onTakePhoto: () => Navigator.pop(context, Picture.photo),
+      onFromGallery: () => Navigator.pop(context, Picture.gallery),
+    ),
   );
 }
 

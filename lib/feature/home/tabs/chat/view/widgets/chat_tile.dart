@@ -32,7 +32,9 @@ class ChatTile extends StatelessWidget {
       horizontalTitleGap: 14,
       title: Text(
         tileData.userNames[oppIndex],
-        style: TextStyles.profileHead,
+        style: TextStyles.profileHead.copyWith(
+          fontSize: AppUtils.scale(12.sp) ?? 17,
+        ),
       ),
       subtitle: Column(
         mainAxisSize: MainAxisSize.min,
@@ -42,7 +44,8 @@ class ChatTile extends StatelessWidget {
           Text(
             tileData.lastMessage,
             style: TextStyles.hintThemeText.copyWith(
-              color: AppColors.hintTextColor,
+              fontWeight: FontWeight.w500,
+              fontSize: AppUtils.scale(10.sp) ?? 13.5.sp,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -63,7 +66,7 @@ class ChatTile extends StatelessWidget {
               'Unread',
               style: TextStyles.hintThemeText.copyWith(
                 color: AppColors.black,
-                fontSize: 14.5,
+                fontSize: AppUtils.scale(9.sp) ?? 12.5.sp,
               ),
             ),
           ),

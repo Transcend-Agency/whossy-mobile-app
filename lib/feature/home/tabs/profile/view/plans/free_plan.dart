@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whossy_app/feature/home/tabs/profile/view/widgets/sub_container.dart';
 
 import '../../../../../../common/components/index.dart';
+import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
+import '../../data/source/subscription_plan_data.dart';
 
 class FreePlan extends StatelessWidget {
   const FreePlan({super.key});
@@ -21,7 +24,24 @@ class FreePlan extends StatelessWidget {
           showDetails: false,
           stops: [0, 1],
         ),
-        const Expanded(child: SizedBox.shrink()),
+        addHeight(12),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: freePlanData.map((sub) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: SubscriptionContainer(
+                    title: sub.title,
+                    feature: sub.feature,
+                    chipText: sub.type,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
         Padding(
           padding: EdgeInsets.only(bottom: 16.r),
           child: DialogButton(

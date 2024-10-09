@@ -14,7 +14,7 @@ class HeaderBar extends StatelessWidget {
     this.onIcon2Tap,
     this.child,
     this.icon2,
-    this.topPadding = 8,
+    this.topPadding = 0, //8
   });
 
   final IconData? icon;

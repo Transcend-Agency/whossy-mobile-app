@@ -9,7 +9,7 @@ import '../../../../../common/utils/index.dart';
 import '../../../auth/onboarding/data/state/notifier_set.dart';
 import '../../../auth/onboarding/model/alphabet.dart';
 
-@RoutePage<List<String>>()
+@RoutePage()
 class InterestScreen extends StatefulWidget {
   const InterestScreen({super.key, this.initialValues});
 

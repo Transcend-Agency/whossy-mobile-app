@@ -69,7 +69,7 @@ class _SafetyGuideState extends State<SafetyGuide> {
       useScrollView: true,
       padding: pagePadding,
       appBar: CustomAppBar(
-        addBarHeight: 10,
+        addBarHeight: 4,
         title: 'Whossy Safety Guide',
         color: Colors.white,
         action: GestureDetector(

@@ -54,6 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:332139466657:android:51356c8ce9a7890c2d05e0',
     messagingSenderId: '332139466657',
     projectId: 'whossy-app',
+    databaseURL: 'https://whossy-app-default-rtdb.firebaseio.com',
     storageBucket: 'whossy-app.appspot.com',
   );
 
@@ -62,9 +63,10 @@ class DefaultFirebaseOptions {
     appId: '1:332139466657:ios:c27fc2e2540b7cbc2d05e0',
     messagingSenderId: '332139466657',
     projectId: 'whossy-app',
+    databaseURL: 'https://whossy-app-default-rtdb.firebaseio.com',
     storageBucket: 'whossy-app.appspot.com',
     androidClientId: '332139466657-2v9vkrff4o5d40egl6dh8nkcf0pacamo.apps.googleusercontent.com',
-    iosClientId: '332139466657-us1ftnf9udotuhh0oltffvd48isqe0ju.apps.googleusercontent.com',
+    iosClientId: '332139466657-c21jgtvcnoocprd4n68pgus5rb89miet.apps.googleusercontent.com',
     iosBundleId: 'com.whossy.whossyApp',
   );
 
