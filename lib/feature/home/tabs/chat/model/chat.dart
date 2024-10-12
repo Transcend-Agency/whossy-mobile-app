@@ -79,12 +79,16 @@ class Chat {
   static dynamic _toTimestamp(Timestamp? timestamp) => timestamp;
 
   // Static method to generate the update map
-  static Map<String, dynamic> updateChatData(Message message) {
+  static Map<String, dynamic> updateChatData(
+    Message message,
+    bool isConnected,
+  ) {
     return {
       'last_message': message.message,
       'last_message_id': message.id,
       'last_sender_user_id': message.senderId,
       'last_message_timestamp': FieldValue.serverTimestamp(),
+      if (isConnected) 'last_message_status': MessageStatus.sent.name,
     };
   }
 }

@@ -10,6 +10,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i30;
 import 'package:flutter/material.dart' as _i31;
+import 'package:image_picker/image_picker.dart' as _i32;
 import 'package:whossy_app/feature/auth/login/view/login_screen.dart' as _i7;
 import 'package:whossy_app/feature/auth/login/view/phone_number_screen.dart'
     as _i11;
@@ -26,7 +27,7 @@ import 'package:whossy_app/feature/auth/sign_up/view/phone.dart' as _i22;
 import 'package:whossy_app/feature/auth/sign_up/view/verification.dart' as _i23;
 import 'package:whossy_app/feature/auth/sign_up/view/welcome.dart' as _i28;
 import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart'
-    as _i32;
+    as _i33;
 import 'package:whossy_app/feature/home/edit_profile/view/edit_profile.dart'
     as _i3;
 import 'package:whossy_app/feature/home/edit_profile/view/preview_profile.dart'
@@ -37,7 +38,7 @@ import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/name_edit
     as _i10;
 import 'package:whossy_app/feature/home/home_wrapper.dart' as _i4;
 import 'package:whossy_app/feature/home/preferences/model/core_preferences.dart'
-    as _i33;
+    as _i34;
 import 'package:whossy_app/feature/home/preferences/view/interest_screen.dart'
     as _i6;
 import 'package:whossy_app/feature/home/preferences/view/preference_screen.dart'
@@ -45,7 +46,7 @@ import 'package:whossy_app/feature/home/preferences/view/preference_screen.dart'
 import 'package:whossy_app/feature/home/settings/view/settings.dart' as _i18;
 import 'package:whossy_app/feature/home/tabs/chat/view/chat_room/chat_room.dart'
     as _i2;
-import 'package:whossy_app/feature/home/tabs/chat/view/image_preview.dart'
+import 'package:whossy_app/feature/home/tabs/chat/view/image_preview/image_preview.dart'
     as _i5;
 import 'package:whossy_app/feature/home/tabs/explore/view/advanced_search_screen.dart'
     as _i1;
@@ -138,10 +139,19 @@ class HomeWrapper extends _i30.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.ImagePreview]
-class ImagePreview extends _i30.PageRouteInfo<void> {
-  const ImagePreview({List<_i30.PageRouteInfo>? children})
-      : super(
+class ImagePreview extends _i30.PageRouteInfo<ImagePreviewArgs> {
+  ImagePreview({
+    _i31.Key? key,
+    required List<_i32.XFile> images,
+    required String? text,
+    List<_i30.PageRouteInfo>? children,
+  }) : super(
           ImagePreview.name,
+          args: ImagePreviewArgs(
+            key: key,
+            images: images,
+            text: text,
+          ),
           initialChildren: children,
         );
 
@@ -150,9 +160,33 @@ class ImagePreview extends _i30.PageRouteInfo<void> {
   static _i30.PageInfo page = _i30.PageInfo(
     name,
     builder: (data) {
-      return const _i5.ImagePreview();
+      final args = data.argsAs<ImagePreviewArgs>();
+      return _i5.ImagePreview(
+        key: args.key,
+        images: args.images,
+        text: args.text,
+      );
     },
   );
+}
+
+class ImagePreviewArgs {
+  const ImagePreviewArgs({
+    this.key,
+    required this.images,
+    required this.text,
+  });
+
+  final _i31.Key? key;
+
+  final List<_i32.XFile> images;
+
+  final String? text;
+
+  @override
+  String toString() {
+    return 'ImagePreviewArgs{key: $key, images: $images, text: $text}';
+  }
 }
 
 /// generated route for
@@ -226,8 +260,8 @@ class LoginRoute extends _i30.PageRouteInfo<void> {
 class MatchingRoute extends _i30.PageRouteInfo<MatchingRouteArgs> {
   MatchingRoute({
     _i31.Key? key,
-    required _i32.CoreProfile profile,
-    required _i33.CorePreferences preferences,
+    required _i33.CoreProfile profile,
+    required _i34.CorePreferences preferences,
     List<_i30.PageRouteInfo>? children,
   }) : super(
           MatchingRoute.name,
@@ -263,9 +297,9 @@ class MatchingRouteArgs {
 
   final _i31.Key? key;
 
-  final _i32.CoreProfile profile;
+  final _i33.CoreProfile profile;
 
-  final _i33.CorePreferences preferences;
+  final _i34.CorePreferences preferences;
 
   @override
   String toString() {

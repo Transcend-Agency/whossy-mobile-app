@@ -13,16 +13,16 @@ import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
 import '../../model/chat.dart';
-import 'chat_tile.dart'; // for ChatTile
+import 'chat_tile.dart';
 
-class Messages extends StatefulWidget {
-  const Messages({super.key});
+class Chats extends StatefulWidget {
+  const Chats({super.key});
 
   @override
-  State<Messages> createState() => _MessagesState();
+  State<Chats> createState() => _ChatsState();
 }
 
-class _MessagesState extends State<Messages> {
+class _ChatsState extends State<Chats> {
   final currentUser = FirebaseAuth.instance.currentUser!.uid;
   bool isNavigating = false;
 
@@ -76,7 +76,7 @@ class _MessagesState extends State<Messages> {
           return Column(
             children: [
               ChatTile(
-                tileData: tile,
+                data: tile,
                 oppIndex: oppIndex,
                 onTileTap: () => onTileTap(context, tile, oppIndex),
               ),

@@ -163,10 +163,12 @@ class AppStrings {
       'Any suspicious activity will have your account suspended. By clicking “Continue” '
       'you agree to our ';
 
-  //Safety guide and Privacy policies
-
-  static String filePath(String? uid, String fileName) {
+  static String profilePicsPath(String? uid, String fileName) {
     return 'users/$uid/profile_pictures/$fileName';
+  }
+
+  static String chatPicsPath(String fileName, String chatId) {
+    return 'chats/$chatId/$fileName';
   }
 
   static const String permissionDeniedPhoneCheck =

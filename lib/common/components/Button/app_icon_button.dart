@@ -25,7 +25,7 @@ class AppIconButton extends StatelessWidget {
         margin: EdgeInsets.all(margin),
         child: path != null
             ? SvgPicture.asset(path!, width: size)
-            : Icon(icon, size: size),
+            : Icon(icon, size: size, color: Colors.black),
       ),
     );
   }

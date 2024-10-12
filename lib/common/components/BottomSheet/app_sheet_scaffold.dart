@@ -41,7 +41,7 @@ class AppSheetScaffold extends StatelessWidget {
     return Container(
       padding: useBottomInsets
           ? EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
+              bottom: MediaQuery.viewInsetsOf(context).bottom,
             )
           : null,
       color: Colors.white,

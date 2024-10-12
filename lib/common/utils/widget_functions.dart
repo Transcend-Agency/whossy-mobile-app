@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,6 +14,15 @@ SizedBox addHeight(double height, {bool isRsv = true}) =>
 
 SizedBox addWidth(double width, {bool isRsv = true}) =>
     SizedBox(width: isRsv ? width.w : width);
+
+Widget showImage(String path, {double? height, double? width, BoxFit? fit}) {
+  return Image.file(
+    File(path),
+    fit: fit,
+    height: height,
+    width: width,
+  );
+}
 
 Widget svgIcon(String path, {double? size, Color? color}) {
   return SvgPicture.asset(
@@ -171,6 +182,40 @@ Widget contentText(String data) {
   );
 }
 
+Widget messageStatus(MessageStatus status) {
+  if (status == MessageStatus.sent) {
+    return singleTick();
+  } else if (status == MessageStatus.seen) {
+    return seenIcon();
+  } else {
+    return offlineIcon();
+  }
+}
+
+Icon seenIcon() {
+  return const Icon(
+    Icons.done_all,
+    size: 20,
+    color: AppColors.saveColor,
+  );
+}
+
+Widget singleTick({double size = 18}) {
+  return Icon(
+    Icons.check,
+    color: Colors.black,
+    size: size,
+  );
+}
+
+Icon offlineIcon() {
+  return const Icon(
+    Icons.error_outline_outlined,
+    size: 18,
+    color: AppColors.primaryColor,
+  );
+}
+
 Row passwordRequirementRow(String text, {required bool checked}) {
   TextStyle textStyle = ScreenUtil().screenWidth > 500
       ? TextStyles.hintThemeText
@@ -248,5 +293,17 @@ Widget smallCamera({Color color = AppColors.hintTextColor}) {
         child: add(color: color, size: 16.5),
       ),
     ],
+  );
+}
+
+Widget hide({bool visible = false, Widget? child}) {
+  return Visibility(
+    visible: visible,
+    maintainSize: true,
+    maintainAnimation: true,
+    maintainState: true,
+    maintainSemantics: true,
+    maintainInteractivity: false,
+    child: child ?? const SizedBox.shrink(),
   );
 }

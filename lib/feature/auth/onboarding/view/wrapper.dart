@@ -102,7 +102,7 @@ class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
               "We are setting up your profile  and getting your match ready :)",
         );
         _onboardingNotifier.uploadPreferences(
-          showSnackbar: (_) => showSnackbar(context, _),
+          showSnackbar: (msg) => showSnackbar(context, msg),
           onAuthenticate: goToNext,
         );
       } else {

@@ -30,7 +30,7 @@ class HeaderBar extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        addHeight(MediaQuery.of(context).padding.top + topPadding),
+        addHeight(MediaQuery.paddingOf(context).top + topPadding),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

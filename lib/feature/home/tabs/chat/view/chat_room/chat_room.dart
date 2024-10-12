@@ -1,13 +1,13 @@
 import 'dart:developer';
-import 'dart:io';
 
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../../common/styles/component_style.dart';
@@ -76,6 +76,16 @@ class _ChatRoomState extends State<ChatRoom> {
     messagesController.clear();
   }
 
+  void _scrollToBottomIcon() {
+    scrollController.addListener(() {
+      if (scrollController.offset > 30) {
+        setState(() => showIcon = true);
+      } else {
+        setState(() => showIcon = false);
+      }
+    });
+  }
+
   Future<bool> _handlePermissions({Picture? pic}) async {
     return await FileService.handlePermissions(
       context: context,
@@ -96,20 +106,31 @@ class _ChatRoomState extends State<ChatRoom> {
         pickedImages = await _picker.pickMultiImage();
       } else if (pic == Picture.photo) {
         // pickImage returns a single XFile, so we convert it to a list
-        final XFile? image =
-            await _picker.pickImage(source: ImageSource.camera);
+        final image = await _picker.pickImage(source: ImageSource.camera);
         if (image != null) {
           pickedImages = [image];
         }
       }
 
-      for (var file in pickedImages) {
-        final croppedImage = await FileService.cropImage(File(file.path));
-
-        if (croppedImage != null) {
-          setState(() {});
-        }
+      if (mounted && pickedImages.isNotEmpty) {
+        Nav.push(
+          context,
+          ImagePreview(
+            images: pickedImages,
+            text: messagesController.text.trim().isNotEmpty
+                ? messagesController.text.trim()
+                : null,
+          ),
+        );
       }
+
+      // for (var file in pickedImages) {
+      //   final croppedImage = await FileService.cropImage(File(file.path));
+      //
+      //   if (croppedImage != null) {
+      //     setState(() {});
+      //   }
+      // }
     } catch (e) {
       // Throw an error if permission is denied
       log('Error picking image: $e');
@@ -146,6 +167,8 @@ class _ChatRoomState extends State<ChatRoom> {
     });
 
     messagesController.addListener(_updateIcon);
+
+    _scrollToBottomIcon();
   }
 
   @override
@@ -206,7 +229,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         ),
                         Positioned(
                           bottom: 10,
-                          right: 20,
+                          right: 10,
                           child: ChatScrollButton(
                             showIcon: showIcon,
                             onPressed: _scrollToBottom,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whossy_app/feature/home/tabs/chat/data/source/extensions.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
@@ -10,12 +11,12 @@ import '../../model/chat.dart';
 class ChatTile extends StatelessWidget {
   const ChatTile({
     super.key,
-    required this.tileData,
+    required this.data,
     required this.oppIndex,
     this.onTileTap,
   });
 
-  final Chat tileData;
+  final Chat data;
   final int oppIndex;
   final VoidCallback? onTileTap;
 
@@ -27,11 +28,11 @@ class ChatTile extends StatelessWidget {
       contentPadding: EdgeInsets.only(top: 6.h),
       leading: AppAvatar(
         radius: 27,
-        imageUrl: tileData.profilePicUrls[oppIndex],
+        imageUrl: data.profilePicUrls[oppIndex],
       ),
       horizontalTitleGap: 14,
       title: Text(
-        tileData.userNames[oppIndex],
+        data.userNames[oppIndex],
         style: TextStyles.profileHead.copyWith(
           fontSize: AppUtils.scale(12.sp) ?? 17,
         ),
@@ -42,7 +43,7 @@ class ChatTile extends StatelessWidget {
         children: [
           addHeight(3),
           Text(
-            tileData.lastMessage,
+            data.lastMessage,
             style: TextStyles.hintThemeText.copyWith(
               fontWeight: FontWeight.w500,
               fontSize: AppUtils.scale(10.sp) ?? 13.5.sp,
@@ -63,7 +64,7 @@ class ChatTile extends StatelessWidget {
               color: AppColors.listTileColor,
             ),
             child: Text(
-              'Unread',
+              data.lastMessageTimestamp!.toTime(),
               style: TextStyles.hintThemeText.copyWith(
                 color: AppColors.black,
                 fontSize: AppUtils.scale(9.sp) ?? 12.5.sp,

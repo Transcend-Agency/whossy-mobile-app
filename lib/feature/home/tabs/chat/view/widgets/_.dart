@@ -1,8 +1,8 @@
+export '../chat_room/message/message_bubble.dart';
+export '../chat_room/message/message_stream.dart';
+export '../chat_room/online_status.dart';
+export '../chat_room/scroll_button.dart';
 export 'chat_tile.dart';
-export 'message_bubble.dart';
-export 'message_stream.dart';
-export 'messages.dart';
-export 'new_likes_and_matches.dart';
-export 'online_status.dart';
-export 'scroll_button.dart';
+export 'chats.dart';
+export 'likes_component.dart';
 export 'unread_count.dart';

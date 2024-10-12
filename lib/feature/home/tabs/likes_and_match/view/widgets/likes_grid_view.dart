@@ -30,7 +30,6 @@ class LikesGridView extends StatelessWidget {
           future: _mockFuture(),
           builder: (context, snapshot) {
             return AppAnimatedSwitcher(
-  
               child: _buildContentBasedOnSnapshot(context, snapshot),
             );
           },
@@ -70,7 +69,7 @@ class LikesGridView extends StatelessWidget {
         padding: EdgeInsets.zero,
         gridDelegate: _buildGridDelegate(context),
         itemCount: likeItems.length,
-        itemBuilder: (_, __) => _buildGridItem(_, likeItems[__]),
+        itemBuilder: (ctx, item) => _buildGridItem(ctx, likeItems[item]),
       );
     } else {
       return const Text('No data found');
@@ -80,7 +79,7 @@ class LikesGridView extends StatelessWidget {
   // Grid Delegate for both shimmer and data grids
   _buildGridDelegate(BuildContext context) {
     return SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: (MediaQuery.of(context).size.width ~/ 160.r).toInt(),
+      crossAxisCount: (MediaQuery.sizeOf(context).width ~/ 160.r).toInt(),
       crossAxisSpacing: 6.w, // Spacing between columns
       mainAxisSpacing: 6.h, // Spacing between rows
       childAspectRatio: 1.15,

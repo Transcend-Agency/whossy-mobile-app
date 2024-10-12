@@ -9,7 +9,7 @@ class ShimmerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    double width = MediaQuery.sizeOf(context).width;
     return ListTile(
       contentPadding: EdgeInsets.only(top: 6.h),
       leading: const CircleAvatar(

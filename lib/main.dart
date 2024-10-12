@@ -41,10 +41,17 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SettingsNotifier()),
         ChangeNotifierProvider(create: (_) => EditProfileNotifier()),
         ChangeNotifierProvider(create: (_) => ConnectivityNotifier()),
-        ChangeNotifierProxyProvider<EditProfileNotifier, ChatsNotifier>(
+        ChangeNotifierProxyProvider2<EditProfileNotifier, ConnectivityNotifier,
+            ChatsNotifier>(
           create: (_) => ChatsNotifier(),
-          update: (_, profileData, chatNotifier) {
-            return chatNotifier!..saveProfile(profileData.staticProfile);
+          update: (_, profileData, networkStatus, chatNotifier) {
+            // Update profile data in the chat notifier
+            chatNotifier!.saveProfile(profileData.staticProfile);
+
+            // Update connectivity state in the chat notifier
+            chatNotifier.updateConnectivity(networkStatus.isConnected);
+
+            return chatNotifier;
           },
         ),
         ChangeNotifierProvider(create: (_) => AdvancedSearchNotifier()),

@@ -80,8 +80,8 @@ class EditProfileNotifier extends ChangeNotifier {
 
   dynamic getCoreValue(String k) => _dynCoreProfile?.getValue(k) ?? 'Choose';
 
-  String getValue(Type _) => _dynCorePrefs?.getValue(_)?.name ?? 'Choose';
-  GenericEnum? getSelected(Type _) => _dynCorePrefs?.getValue(_);
+  String getValue(Type t) => _dynCorePrefs?.getValue(t)?.name ?? 'Choose';
+  GenericEnum? getSelected(Type t) => _dynCorePrefs?.getValue(t);
 
   bool get hasChanges {
     if (_dynCoreProfile == null ||

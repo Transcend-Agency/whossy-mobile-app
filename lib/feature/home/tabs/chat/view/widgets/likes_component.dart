@@ -85,9 +85,7 @@ class LikesComponent extends StatelessWidget {
                       alignment: Alignment.bottomCenter,
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 6.h),
-                        child: const GradientChip(
-                          text: 'Likes',
-                        ),
+                        child: const GradientChip(text: 'Likes'),
                       ),
                     ),
                   ],

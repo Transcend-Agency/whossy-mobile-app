@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart' as p;
 import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
 
 import '../../../../../constants/index.dart';
@@ -102,9 +103,9 @@ class UserRepository {
 
       // Create a list of Future tasks for uploading each file
       final uploadFutures = files.map((file) async {
-        final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+        final fileName = p.basenameWithoutExtension(file.path);
         final storageRef =
-            _storage.ref().child(AppStrings.filePath(uid, fileName));
+            _storage.ref().child(AppStrings.profilePicsPath(uid, fileName));
         final uploadTask = await storageRef.putFile(file);
         return uploadTask.ref.getDownloadURL();
       }).toList();

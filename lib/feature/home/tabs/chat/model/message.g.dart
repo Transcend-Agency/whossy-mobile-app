@@ -11,6 +11,13 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       senderId: json['senderId'] as String?,
       message: json['message'] as String,
       timestamp: Message._timestampFromJson(json['timestamp']),
+      photos:
+          (json['photos'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      localPhotos: (json['local_photos'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      status: $enumDecodeNullable(_$MessageStatusEnumMap, json['status']) ??
+          MessageStatus.undelivered,
     );
 
 Map<String, dynamic> _$MessageToJson(Message instance) {
@@ -27,5 +34,14 @@ Map<String, dynamic> _$MessageToJson(Message instance) {
   }
 
   writeNotNull('timestamp', Message._timestampToJson(instance.timestamp));
+  writeNotNull('local_photos', instance.localPhotos);
+  writeNotNull('photos', instance.photos);
+  writeNotNull('status', _$MessageStatusEnumMap[instance.status]);
   return val;
 }
+
+const _$MessageStatusEnumMap = {
+  MessageStatus.sent: 'sent',
+  MessageStatus.seen: 'seen',
+  MessageStatus.undelivered: 'undelivered',
+};

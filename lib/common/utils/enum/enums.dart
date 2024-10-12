@@ -260,4 +260,12 @@ enum PetOwner implements GenericEnum {
   final String name;
 }
 
-enum MessageStatus { sent, seen, undelivered }
+enum MessageStatus {
+  sent('Sent'),
+  seen('Seen'),
+  undelivered('Undelivered');
+
+  const MessageStatus(this.value);
+
+  final String value;
+}

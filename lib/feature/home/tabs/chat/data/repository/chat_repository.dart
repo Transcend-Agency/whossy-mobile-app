@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:whossy_app/common/utils/enum/enums.dart';
+import 'package:whossy_app/feature/home/tabs/chat/data/source/extensions.dart';
 
 import '../../model/chat.dart';
 import '../../model/current_chat.dart';
@@ -18,8 +23,45 @@ class ChatRepository {
   Future<bool> doesChatExist(String chatId) =>
       _chatFirestore.doc(chatId).get().then((data) => data.exists);
 
-  void updateChatData(Message message, String chatId, WriteBatch batch) {
-    batch.update(_chatFirestore.doc(chatId), Chat.updateChatData(message));
+  void updateChatData(
+      Message message, String chatId, WriteBatch batch, bool isConnected) {
+    batch.update(
+        _chatFirestore.doc(chatId), Chat.updateChatData(message, isConnected));
+  }
+
+  Future<void> updatePhotosData({
+    required String chatId,
+    required String docId,
+    required Map<String, String> uploadResults,
+  }) async {
+    try {
+      final msgRef = _msgFirestore(chatId).doc(docId);
+
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final snapshot = await transaction.get(msgRef);
+        if (!snapshot.exists) return;
+
+        final data = snapshot.data();
+        if (data == null) return;
+
+        final localPhotos = List<String>.from(data['local_photos'] ?? []);
+        final photos = List<String>.from(data['photos'] ?? []);
+
+        // For each uploaded file, remove local path and add download URL
+        uploadResults.forEach((localPath, downloadUrl) {
+          localPhotos.remove(localPath);
+          photos.add(downloadUrl);
+        });
+
+        // Update Firestore with the modified lists
+        transaction.update(msgRef, {
+          'local_photos': localPhotos,
+          'photos': photos,
+        });
+      });
+    } catch (e) {
+      log('Failed to update Firestore: ${e.toString()}');
+    }
   }
 
   Future<void> createNewChat(
@@ -27,34 +69,61 @@ class ChatRepository {
     required CurrentChat currentChat,
     required String userName,
     required String picUrl,
-  }) async {
+    List<XFile>? pictures,
+    required bool isConnected,
+  }) async
+  // lb
+  {
     final chat = Chat(
       participants: [currentChat.uidUser1, currentChat.uidUser2],
       lastMessage: content,
       userNames: [userName, currentChat.username],
       profilePicUrls: [picUrl, currentChat.profilePicUrl],
       lastMessageId: '',
+      lastMessageStatus:
+          isConnected ? MessageStatus.sent : MessageStatus.undelivered,
     );
 
-    await _chatFirestore.doc(currentChat.chatId).set({
-      ...chat.toJson(),
-      'last_message_timestamp': FieldValue.serverTimestamp(),
-    });
+    await _chatFirestore.doc(currentChat.chatId).set(
+      {
+        ...chat.toJson(),
+        'last_message_timestamp': FieldValue.serverTimestamp(),
+      },
+    );
 
-    await sendMessage(content, chatId: currentChat.chatId!);
+    await sendMessage(
+      content,
+      chatId: currentChat.chatId!,
+      pictures: pictures,
+      isConnected: isConnected,
+    );
   }
 
-  Future<void> sendMessage(String content, {required String chatId}) async {
+  Future<void> sendMessage(
+    String content, {
+    required String chatId,
+    List<XFile>? pictures,
+    required bool isConnected,
+  }) async
+  // lb
+  {
     final batch = FirebaseFirestore.instance.batch();
 
-    final message = Message(message: content);
+    final message = Message(
+      message: content,
+      localPhotos: pictures?.paths,
+      status: isConnected ? MessageStatus.sent : MessageStatus.undelivered,
+    );
 
-    batch.set(_msgFirestore(chatId).doc(message.id), {
-      ...message.toJson(),
-      "timestamp": FieldValue.serverTimestamp(),
-    });
+    batch.set(
+      _msgFirestore(chatId).doc(message.id),
+      {
+        ...message.toJson(),
+        "timestamp": FieldValue.serverTimestamp(),
+      },
+    );
 
-    updateChatData(message, chatId, batch);
+    updateChatData(message, chatId, batch, isConnected);
 
     await batch.commit();
   }
@@ -77,7 +146,9 @@ class ChatRepository {
   Stream<List<Message>> getChatMessagesStream({
     required int limit,
     required String chatId,
-  }) {
+  })
+  // lb
+  {
     // Use the limit method to fetch a specific number of messages
     final query = _msgFirestore(chatId)
         .orderBy('timestamp', descending: true)

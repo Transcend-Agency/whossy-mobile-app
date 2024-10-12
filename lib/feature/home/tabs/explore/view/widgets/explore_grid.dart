@@ -22,7 +22,7 @@ class ExploreGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Calculate the number of columns based on screen width
-    int columns = (MediaQuery.of(context).size.width ~/ 160.r).toInt();
+    int columns = (MediaQuery.sizeOf(context).width ~/ 160.r).toInt();
 
     return Expanded(
       child: MasonryGridView.count(

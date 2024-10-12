@@ -15,7 +15,7 @@ class _CupertinoBottomSheetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final topPadding = 18 + MediaQuery.of(context).padding.top;
+    final topPadding = 18 + MediaQuery.paddingOf(context).top;
 
     return Padding(
       padding: EdgeInsets.only(top: topPadding),
@@ -62,7 +62,7 @@ class CupertinoModalTransition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var startRoundCorner = 0.0;
-    final paddingTop = MediaQuery.of(context).padding.top;
+    final paddingTop = MediaQuery.paddingOf(context).top;
     if (Theme.of(context).platform == TargetPlatform.iOS && paddingTop > 20) {
       startRoundCorner = 38.5;
     }

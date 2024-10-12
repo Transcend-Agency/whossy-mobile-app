@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart'; // If you're using Firestore's Timestamp
-import 'package:intl/intl.dart'; // Make sure to import this for date formatting
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'status.g.dart'; // This is the generated file
