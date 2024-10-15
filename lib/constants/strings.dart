@@ -151,6 +151,12 @@ class AppStrings {
   // Misc
   static const String accUnselected = 'No account selected';
   static const String signOutFailure = 'Failed to sign out. Please try again.';
+  static const String noProfilePic =
+      'You need to add at least one photo to preview your profile.';
+
+  static const String minPicsRequired =
+      'You need at least 3 photos to save your profile.';
+
   static const String mission =
       'Our mission is to help you connect with new people in a safe and enjoyable '
       'environment. Your safety is our top priority, and we have put together this '

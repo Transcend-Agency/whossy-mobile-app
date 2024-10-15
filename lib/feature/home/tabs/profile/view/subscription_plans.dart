@@ -53,7 +53,7 @@ class _SubscriptionPlansState extends State<SubscriptionPlans> {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: const CustomAppBar(
-        //addBarHeight: 10,
+        addBarHeight: 4,
         title: 'Subscription Plans',
         color: Colors.white,
       ),

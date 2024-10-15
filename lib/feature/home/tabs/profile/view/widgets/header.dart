@@ -16,13 +16,15 @@ import '../../../../../../constants/index.dart';
 class Header extends StatelessWidget {
   const Header({super.key});
 
+  toEditProfile(BuildContext ctx) => Nav.push(ctx, const EditProfile());
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox.square(
         dimension: 140.r,
         child: GestureDetector(
-          onTap: () => Nav.push(context, const EditProfile()),
+          onTap: () => toEditProfile(context),
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -88,15 +90,15 @@ class Header extends StatelessWidget {
                 ),
               ),
               Positioned(
-                right: -6,
-                top: -8,
+                right: -4,
+                top: -6,
                 child: GestureDetector(
-                  onTap: () => Nav.push(context, const EditProfile()),
+                  onTap: () => toEditProfile(context),
                   child: Container(
                     margin: const EdgeInsets.all(4),
                     child: SvgPicture.asset(
                       AppAssets.edit,
-                      height: 40.r,
+                      height: 38.r,
                     ),
                   ),
                 ),

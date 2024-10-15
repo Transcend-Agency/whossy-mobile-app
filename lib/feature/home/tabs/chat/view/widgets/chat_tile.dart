@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/source/extensions.dart';
@@ -45,7 +46,6 @@ class ChatTile extends StatelessWidget {
           Text(
             data.lastMessage,
             style: TextStyles.hintThemeText.copyWith(
-              fontWeight: FontWeight.w500,
               fontSize: AppUtils.scale(10.sp) ?? 13.5.sp,
             ),
             maxLines: 1,
@@ -55,6 +55,7 @@ class ChatTile extends StatelessWidget {
         ],
       ),
       trailing: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           addHeight(4),
           Container(
@@ -70,6 +71,16 @@ class ChatTile extends StatelessWidget {
                 fontSize: AppUtils.scale(9.sp) ?? 12.5.sp,
               ),
             ),
+          ),
+          const Spacer(),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (data.lastSenderUserId ==
+                  FirebaseAuth.instance.currentUser!.uid)
+                messageStatus(data.lastMessageStatus!),
+              addWidth(4),
+            ],
           ),
         ],
       ),

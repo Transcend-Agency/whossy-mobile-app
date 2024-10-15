@@ -80,7 +80,7 @@ class _BioEditProfileState extends State<BioEditProfile> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-         const AppDivider(),
+        const AppDivider(),
         Container(
           decoration: const BoxDecoration(color: AppColors.inputBackGround),
           padding: EdgeInsets.symmetric(horizontal: 14.r),
@@ -112,9 +112,7 @@ class _BioEditProfileState extends State<BioEditProfile> {
                             outlined: false,
                             isBold: true,
                             padding: EdgeInsets.symmetric(
-                              vertical: 1.h,
-                              horizontal: 6.w,
-                            ),
+                                vertical: 1.h, horizontal: 6.r),
                           ),
                         ],
                       ),
@@ -167,7 +165,7 @@ class _BioEditProfileState extends State<BioEditProfile> {
             ],
           ),
         ),
-       const AppDivider(),
+        const AppDivider(),
       ],
     );
   }

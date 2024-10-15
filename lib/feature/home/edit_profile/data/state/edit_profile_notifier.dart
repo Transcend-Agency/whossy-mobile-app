@@ -96,6 +96,8 @@ class EditProfileNotifier extends ChangeNotifier {
     return corePrefs || otherPrefs;
   }
 
+  int get picCount => _dynCoreProfile?.profilePics?.length ?? 0;
+
   Future<void> getUserData({
     required void Function(String) showSnackbar,
   }) async {

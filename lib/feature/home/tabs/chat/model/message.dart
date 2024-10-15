@@ -32,7 +32,6 @@ class Message {
   @JsonKey(name: 'status')
   final MessageStatus? status;
 
-  // Constructor with auto-generated id and current timestamp
   Message({
     String? id,
     String? senderId,
@@ -44,14 +43,25 @@ class Message {
   })  : id = id ?? const Uuid().v4(),
         senderId = senderId ?? FirebaseAuth.instance.currentUser!.uid;
 
-  // Factory constructor for creating a new Message instance from a map
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);
 
-  // Method to convert Message instance to a map
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 
-  // Helper methods for converting Timestamp from and to JSON
   static Timestamp? _timestampFromJson(dynamic json) => json as Timestamp?;
   static dynamic _timestampToJson(Timestamp? timestamp) => timestamp;
+
+  @override
+  String toString() {
+    return '''
+Message {
+  id: $id,
+  senderId: $senderId,
+  message: $message,
+  timestamp: ${timestamp?.toDate().toString() ?? 'null'},
+  localPhotos: ${localPhotos?.join(', ') ?? 'null'},
+  photos: ${photos?.join(', ') ?? 'null'},
+  status: $status
+}''';
+  }
 }

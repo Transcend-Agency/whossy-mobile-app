@@ -26,6 +26,7 @@ class _EditProfileState extends State<EditProfile>
   late EditProfileNotifier _profileNotifier;
   late AnimationController _controller;
   bool _hasSave = false;
+  late bool _meetsPicCount;
 
   set hasSave(bool newValue) {
     setState(() => _hasSave = newValue);
@@ -54,7 +55,19 @@ class _EditProfileState extends State<EditProfile>
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Accessing context.watch here is safe
+    _meetsPicCount = context.watch<EditProfileNotifier>().picCount >= 3;
+  }
+
   onSaveChanges() async {
+    if (!_meetsPicCount) {
+      return await onValidateSave();
+    }
+
     await showLoadingSheet(
       context,
       _controller,
@@ -65,7 +78,7 @@ class _EditProfileState extends State<EditProfile>
     await wait();
 
     await _profileNotifier.saveUserProfile(
-        showSnackbar: (_) => showSnackbar(_, pop: true));
+        showSnackbar: (msg) => showSnackbar(msg, pop: true));
 
     if (!mounted) return;
     Nav.popUntil(context, HomeWrapper.name);
@@ -83,10 +96,7 @@ class _EditProfileState extends State<EditProfile>
       bool? result = await showConfirmationDialog(
         yes: 'Continue',
         no: 'Save',
-        headerImage: Image.asset(
-          AppAssets.caution,
-          height: 100,
-        ),
+        headerImage: Image.asset(AppAssets.caution, height: 100),
         context,
         title: 'Caution',
         content: contentText(
@@ -110,6 +120,22 @@ class _EditProfileState extends State<EditProfile>
     }
   }
 
+  onPreview() async {
+    await showConfirmationDialog(
+      context,
+      title: 'Preview Unavailable',
+      content: contentText(AppStrings.noProfilePic),
+    );
+  }
+
+  onValidateSave() async {
+    await showConfirmationDialog(
+      context,
+      title: "Incomplete Profile",
+      content: contentText(AppStrings.minPicsRequired),
+    );
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -125,6 +151,7 @@ class _EditProfileState extends State<EditProfile>
       child: AppScaffold(
         useScrollView: true,
         appBar: CustomAppBar(
+          addBarHeight: 4,
           title: 'Edit Profile',
           onPop: _hasSave ? () async => await onPopInvoked(false) : null,
           action: Selector<EditProfileNotifier, bool>(
@@ -156,19 +183,30 @@ class _EditProfileState extends State<EditProfile>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: ExtraCoreSettings(
-                route: const PreviewProfile(),
-                customChildren: [
-                  Text(
-                    'Preview Profile',
-                    style: TextStyles.prefText.copyWith(
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                padding: EdgeInsets.symmetric(vertical: 8.h),
+                child: Selector<EditProfileNotifier, bool?>(
+                  selector: (_, pref) => pref.picCount > 0,
+                  builder: (_, hasPhotos, __) {
+                    return ExtraCoreSettings(
+                      onTap: () {
+                        if (hasPhotos == true) {
+                          Nav.push(context, const PreviewProfile());
+                        } else {
+                          onPreview();
+                        }
+                        return null;
+                      },
+                      customChildren: [
+                        Text(
+                          'Preview Profile',
+                          style: TextStyles.prefText.copyWith(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                )),
             Padding(
               padding: EdgeInsets.only(bottom: 8.h),
               child: const MediaEditProfile(),

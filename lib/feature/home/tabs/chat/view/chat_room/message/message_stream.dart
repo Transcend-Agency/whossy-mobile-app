@@ -7,11 +7,11 @@ import 'package:whossy_app/common/utils/index.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/state/chats_notifier.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/current_chat.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';
-import 'package:whossy_app/feature/home/tabs/chat/view/chat_room/message/message_bubble.dart';
 
 import '../../../../../../../common/components/index.dart';
 import '../../../../../../../common/styles/text_style.dart';
 import '../../../../../../../constants/index.dart';
+import 'message_bubble.dart';
 
 class MessageStream extends StatefulWidget {
   const MessageStream({super.key, required this.scrollController});

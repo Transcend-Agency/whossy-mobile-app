@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/common/utils/services/file_service.dart';
 
@@ -19,11 +20,9 @@ class OrderAbleColumn extends StatefulWidget {
   const OrderAbleColumn({
     super.key,
     required this.profilePics,
-    required this.edit,
   });
 
   final List<String> profilePics;
-  final EditProfileNotifier edit;
 
   @override
   State<OrderAbleColumn> createState() => _OrderAbleColumnState();
@@ -31,13 +30,21 @@ class OrderAbleColumn extends StatefulWidget {
 
 class _OrderAbleColumnState extends State<OrderAbleColumn> {
   final _picker = ImagePicker();
+  late EditProfileNotifier edit;
+
+  @override
+  void initState() {
+    super.initState();
+
+    edit = context.read<EditProfileNotifier>();
+  }
 
   void _onReorder(int oldIndex, int newIndex) {
     setState(() {
       final String item = widget.profilePics.removeAt(oldIndex);
       widget.profilePics.insert(newIndex, item);
 
-      widget.edit.updateProfile(profilePics: widget.profilePics);
+      edit.updateProfile(profilePics: widget.profilePics);
     });
   }
 
@@ -45,7 +52,7 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
     setState(() {
       widget.profilePics.removeAt(index);
 
-      widget.edit.updateProfile(profilePics: widget.profilePics);
+      edit.updateProfile(profilePics: widget.profilePics);
     });
   }
 
@@ -84,7 +91,7 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
 
             result = true;
 
-            widget.edit.updateProfile(profilePics: widget.profilePics);
+            edit.updateProfile(profilePics: widget.profilePics);
           });
         }
       }
@@ -105,6 +112,7 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
         Expanded(
           flex: 66,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               buildDraggableImageView(index: 0, flex: 6),
               addWidth(7),
@@ -190,21 +198,14 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
                 );
               },
               onWillAcceptWithDetails: (data) => data.data != index,
-              onAcceptWithDetails: (_) => _onReorder(_.data, index),
+              onAcceptWithDetails: (targetDetails) =>
+                  _onReorder(targetDetails.data, index),
             ),
           );
         },
       ),
     );
   }
-
-  Future<bool?> showDialog() => showConfirmationDialog(
-        yes: 'Open Settings',
-        no: 'Cancel',
-        context,
-        title: 'Permission required',
-        content: contentText("Please grant photo access in the app settings."),
-      );
 }
 
 void showCustomModalBottomSheet(

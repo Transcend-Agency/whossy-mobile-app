@@ -19,17 +19,13 @@ class _PreviewImageState extends State<PreviewImage> {
   int _activePage = 0;
   late PageController _pageController;
 
-  final _key = const PageStorageKey('pageStorageKey');
-
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _activePage);
   }
 
-  void _onPageChange(int page) {
-    setState(() => _activePage = page);
-  }
+  void _onPageChange(int page) => setState(() => _activePage = page);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +50,7 @@ class _PreviewImageState extends State<PreviewImage> {
                 child: Stack(
                   children: [
                     PageView.builder(
-                      key: _key,
+                      key: const PageStorageKey("my_pageView"),
                       controller: _pageController,
                       onPageChanged: _onPageChange,
                       itemCount: profile.profilePics?.length,

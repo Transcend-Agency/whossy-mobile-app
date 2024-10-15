@@ -1,14 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/source/extensions.dart';
 
 import '../../../../../../../common/styles/text_style.dart';
 import '../../../../../../../common/utils/index.dart';
-import '../../../model/message.dart';
 
 class MessageDetails extends StatelessWidget {
-  const MessageDetails({super.key, required this.message});
+  const MessageDetails({
+    super.key,
+    required this.status,
+    required this.time,
+  });
 
-  final Message message;
+  final MessageStatus? status;
+  final Timestamp? time;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +22,10 @@ class MessageDetails extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          messageStatus(message.status!),
+          messageStatus(status!),
           addWidth(4),
           Text(
-            message.timestamp.toTime(),
+            time.toTime(),
             style: TextStyles.chatText,
           ),
         ],

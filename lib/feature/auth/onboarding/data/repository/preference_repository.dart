@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../model/preferences.dart';
 
 class PreferenceRepository {
-  final _prefFirestore = FirebaseFirestore.instance.collection('preferences');
+  final _prefFirestore = FirebaseFirestore.instance.collection('users');
 
   Future<void> uploadPreferences({required Map<String, dynamic> data}) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;

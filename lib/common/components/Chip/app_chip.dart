@@ -59,7 +59,7 @@ class AppChip extends StatelessWidget {
                   : TextStyles.prefText.copyWith(
                       fontWeight: isBold ? FontWeight.w500 : null,
                       fontSize: isBold
-                          ? AppUtils.scale(10.5.sp) ?? 12.sp
+                          ? AppUtils.scale(9.5.sp) ?? 12.sp
                           : AppUtils.scale(11.5.sp) ?? 13.sp,
                     ),
             ),

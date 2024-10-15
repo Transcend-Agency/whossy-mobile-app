@@ -60,7 +60,7 @@ class _InterestsTileState extends State<InterestsTile> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-         const AppDivider(),
+          const AppDivider(),
           Container(
             decoration: const BoxDecoration(color: AppColors.inputBackGround),
             padding: pagePadding.copyWith(top: 13.r, bottom: 13.r),
@@ -84,7 +84,7 @@ class _InterestsTileState extends State<InterestsTile> {
                       outlined: false,
                       isBold: true,
                       padding:
-                          EdgeInsets.symmetric(vertical: 1.h, horizontal: 6.w),
+                          EdgeInsets.symmetric(vertical: 1.h, horizontal: 6.r),
                     ),
                   ],
                 ),
@@ -113,7 +113,7 @@ class _InterestsTileState extends State<InterestsTile> {
               ],
             ),
           ),
-        const AppDivider(),
+          const AppDivider(),
         ],
       ),
     );

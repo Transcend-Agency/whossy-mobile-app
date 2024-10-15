@@ -77,6 +77,7 @@ class _InterestScreenState extends State<InterestScreen> {
     return AppScaffold(
       padding: pagePadding,
       appBar: const CustomAppBar(
+        addBarHeight: 4,
         title: 'Interest',
         showAction: false,
       ),
@@ -130,8 +131,9 @@ class _InterestScreenState extends State<InterestScreen> {
                         Wrap(
                           spacing: 8.0,
                           runSpacing: 8.0,
-                          children:
-                              options.map((_) => _buildAppChip(_)).toList(),
+                          children: options
+                              .map((item) => _buildAppChip(item))
+                              .toList(),
                         ),
                         addHeight(16),
                         if (index != _filteredAlphabet.length - 1)

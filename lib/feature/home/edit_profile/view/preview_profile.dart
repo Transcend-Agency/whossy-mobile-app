@@ -17,6 +17,7 @@ class PreviewProfile extends StatelessWidget {
       useScrollView: true,
       padding: EdgeInsets.symmetric(horizontal: 8.r),
       appBar: const CustomAppBar(
+        addBarHeight: 4,
         title: 'Preview Profile',
       ),
       body: Column(

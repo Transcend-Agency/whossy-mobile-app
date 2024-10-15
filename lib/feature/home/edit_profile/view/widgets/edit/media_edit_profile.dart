@@ -32,13 +32,12 @@ class MediaEditProfile extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
               addHeight(12),
-              Consumer<EditProfileNotifier>(
-                builder: (_, edit, __) {
-                  final profilePics = edit.coreProfile?.profilePics ?? [];
+              Selector<EditProfileNotifier, List<String>>(
+                selector: (_, edit) => edit.coreProfile?.profilePics ?? [],
+                builder: (_, profilePics, __) {
                   return SizedBox(
                     height: totalHeight,
-                    child:
-                        OrderAbleColumn(profilePics: profilePics, edit: edit),
+                    child: OrderAbleColumn(profilePics: profilePics),
                   );
                 },
               ),
@@ -60,7 +59,7 @@ class MediaEditProfile extends StatelessWidget {
                       outlined: false,
                       isBold: true,
                       padding:
-                          EdgeInsets.symmetric(vertical: 1.h, horizontal: 6.w),
+                          EdgeInsets.symmetric(vertical: 1.h, horizontal: 6.r),
                     ),
                   ],
                 ),

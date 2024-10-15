@@ -46,8 +46,8 @@ class _PreviewProfileMoreState extends State<PreviewProfileMore> {
       applyTop: false,
       useScrollView: false,
       body: NotificationListener<ScrollNotification>(
-        onNotification: (_) {
-          if (_ is ScrollUpdateNotification) {
+        onNotification: (scrollNotification) {
+          if (scrollNotification is ScrollUpdateNotification) {
             _isAtTop = _scrollController.position.pixels ==
                 _scrollController.position.minScrollExtent;
 

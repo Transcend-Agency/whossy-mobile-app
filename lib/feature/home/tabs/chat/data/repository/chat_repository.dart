@@ -33,7 +33,11 @@ class ChatRepository {
     required String chatId,
     required String docId,
     required Map<String, String> uploadResults,
-  }) async {
+  }) async
+  // lb
+  {
+    log('Upload Results: $uploadResults'); // Log the upload results
+
     try {
       final msgRef = _msgFirestore(chatId).doc(docId);
 
@@ -41,30 +45,43 @@ class ChatRepository {
         final snapshot = await transaction.get(msgRef);
         if (!snapshot.exists) return;
 
-        final data = snapshot.data();
-        if (data == null) return;
+        // Use your `Message.fromJson` method to deserialize the snapshot data
+        final message =
+            Message.fromJson(snapshot.data() as Map<String, dynamic>);
 
-        final localPhotos = List<String>.from(data['local_photos'] ?? []);
-        final photos = List<String>.from(data['photos'] ?? []);
+        log('Original Message Data: ${message.toString()}'); // Log the original message data
+
+        final localPhotos = List<String>.from(message.localPhotos ?? []);
+        final photos = List<String>.from(message.photos ?? []);
 
         // For each uploaded file, remove local path and add download URL
         uploadResults.forEach((localPath, downloadUrl) {
           localPhotos.remove(localPath);
-          photos.add(downloadUrl);
+
+          // Only add the downloadUrl if it doesn't already exist
+          if (!photos.contains(downloadUrl)) {
+            photos.add(downloadUrl);
+          }
         });
 
-        // Update Firestore with the modified lists
-        transaction.update(msgRef, {
+        // Prepare the updated data
+        final updatedData = {
           'local_photos': localPhotos,
           'photos': photos,
-        });
+        };
+
+        // Log the data you're about to write
+        log('Updated Data to Write: $updatedData');
+
+        // Update Firestore with the modified lists
+        transaction.update(msgRef, updatedData);
       });
     } catch (e) {
       log('Failed to update Firestore: ${e.toString()}');
     }
   }
 
-  Future<void> createNewChat(
+  Future<String> createNewChat(
     String content, {
     required CurrentChat currentChat,
     required String userName,
@@ -91,7 +108,7 @@ class ChatRepository {
       },
     );
 
-    await sendMessage(
+    return await sendMessage(
       content,
       chatId: currentChat.chatId!,
       pictures: pictures,
@@ -99,7 +116,7 @@ class ChatRepository {
     );
   }
 
-  Future<void> sendMessage(
+  Future<String> sendMessage(
     String content, {
     required String chatId,
     List<XFile>? pictures,
@@ -126,6 +143,8 @@ class ChatRepository {
     updateChatData(message, chatId, batch, isConnected);
 
     await batch.commit();
+
+    return message.id;
   }
 
   Stream<List<Chat>> getChatsStream() {

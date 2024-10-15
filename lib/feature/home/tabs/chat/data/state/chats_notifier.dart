@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
@@ -18,29 +19,54 @@ class ChatsNotifier extends ChangeNotifier {
   final _chatRepository = ChatRepository();
   final _fileService = FileService();
 
+  final Queue<List<String>> _uploadQueue = Queue();
+  bool _isProcessingQueue = false;
+
   // Variables to manage state
   CurrentChat? currentChat;
   CoreProfile? _profileData;
   bool _hasChatRoomOpened = true;
 
   bool _isUserConnected = false;
-
   Timer? _uploadTimeout;
-  // Upload related variables
-  double _progress = 0.0;
-  bool isUploading = false;
-  bool _hasUploadFailed = false;
 
-  double get progress => _progress;
-  bool get hasUploadFailed => _hasUploadFailed;
+  // Updated variables to manage upload states for multiple files
+  List<double> _progressList = [];
+  List<bool> _isUploadingList = [];
+  List<bool> _hasUploadFailedList = [];
 
-  set progress(double value) {
-    _progress = value;
-    notifyListeners();
+  // Getters for the updated lists
+  List<double> get progressList => _progressList;
+  List<bool> get hasUploadFailedList => _hasUploadFailedList;
+  List<bool> get isUploadingList => _isUploadingList;
+
+  // Update progress for a specific image
+  void updateProgress(int index, double value) {
+    if (index >= 0 && index < _progressList.length) {
+      _progressList[index] = value;
+      notifyListeners();
+    }
   }
 
-  set hasUploadFailed(bool value) {
-    _hasUploadFailed = value;
+  void setUploading(int index, bool value) {
+    if (index >= 0 && index < _isUploadingList.length) {
+      _isUploadingList[index] = value;
+      notifyListeners();
+    }
+  }
+
+  void setUploadFailed(int index, bool value) {
+    if (index >= 0 && index < _hasUploadFailedList.length) {
+      _hasUploadFailedList[index] = value;
+      notifyListeners();
+    }
+  }
+
+  // Method to initialize upload states for a list of images
+  void initializeUploadStates(int count) {
+    _progressList = List<double>.filled(count, 0.0);
+    _isUploadingList = List<bool>.filled(count, false);
+    _hasUploadFailedList = List<bool>.filled(count, false);
     notifyListeners();
   }
 
@@ -58,7 +84,11 @@ class ChatsNotifier extends ChangeNotifier {
   }
 
   void saveProfile(CoreProfile? data) => _profileData = data;
-  void updateConnectivity(bool isConnected) => _isUserConnected = isConnected;
+  void updateConnectivity(bool isConnected) {
+    _isUserConnected = isConnected;
+
+    log('Connectivity changed within the Chat Notifier to $isConnected');
+  }
 
   /// -------------------------
   /// Chat Management Methods
@@ -101,17 +131,18 @@ class ChatsNotifier extends ChangeNotifier {
   Future<void> sendMessage(String content, {List<XFile>? pictures}) async {
     if (currentChat == null) return;
 
+    String messageId = '';
     final exists = await _chatRepository.doesChatExist(currentChat!.chatId!);
 
     if (exists) {
-      await _chatRepository.sendMessage(
+      messageId = await _chatRepository.sendMessage(
         content,
         chatId: currentChat!.chatId!,
         pictures: pictures,
         isConnected: _isUserConnected,
       );
     } else {
-      await _chatRepository.createNewChat(
+      messageId = await _chatRepository.createNewChat(
         content,
         pictures: pictures,
         currentChat: currentChat!,
@@ -120,6 +151,16 @@ class ChatsNotifier extends ChangeNotifier {
         picUrl: _profileData!.profilePics![0],
       );
     }
+
+    // // If there are pictures to upload
+    // if (pictures != null && pictures.isNotEmpty) {
+    //   uploadFiles(
+    //     localPhotoPaths: pictures.map((pic) => pic.path).toList(),
+    //     id: messageId,
+    //     onUploadComplete: (success) => log(
+    //         success ? 'Uploaded successfully' : 'Did not upload successfully'),
+    //   );
+    // }
   }
 
   /// Checks if the chat room has been opened for the first time
@@ -131,48 +172,85 @@ class ChatsNotifier extends ChangeNotifier {
   /// File Uploading Methods
   /// -------------------------
 
-  Future<void> uploadFile({
-    required String localPhotoPath,
+  Future<void> uploadFiles({
+    required List<String> localPhotoPaths,
     required String id,
-  }) async
-  // lb
-  {
-    // Check if already uploading this file
-    if (!_fileService.isUploading(localPhotoPath)) {
-      isUploading = true;
-      hasUploadFailed = false;
+    required Function(bool success) onUploadComplete, // Accept the callback
+  }) async {
+    // Add to the queue
+    _uploadQueue.add(localPhotoPaths);
 
-      try {
-        // Set a 30-second timeout for the upload operation
-        _uploadTimeout = Timer(const Duration(seconds: 30), () {
-          isUploading = false;
-          hasUploadFailed = true;
-        });
-
-        // Start uploading the file
-        await _fileService.uploadImagesInBackground(
-          chatId: currentChat!.chatId!,
-          messageId: id,
-          localPaths: [localPhotoPath],
-          onProgress: (localPath, progress) {
-            this.progress = progress;
-          },
-        );
-
-        // If upload succeeds before timeout, cancel the timeout and reset states
-        _uploadTimeout?.cancel();
-        isUploading = false;
-        hasUploadFailed = false;
-      } catch (e) {
-        // Handle upload failure (e.g., network error)
-        isUploading = false;
-        hasUploadFailed = true;
-        log('Error uploading file: ${e.toString()}');
-      }
+    if (!_isProcessingQueue) {
+      _isProcessingQueue = true;
+      await _processUploadQueue(id, onUploadComplete); // Pass the callback here
+      _isProcessingQueue = false;
     }
   }
 
+  Future<void> _processUploadQueue(
+    String id,
+    Function(bool success) onUploadComplete,
+  ) async {
+    bool allUploadsSuccessful = true; // Track overall success of the batch
+
+    while (_uploadQueue.isNotEmpty) {
+      List<String> currentBatch = _uploadQueue.removeFirst();
+      initializeUploadStates(currentBatch.length);
+
+      for (int i = 0; i < currentBatch.length; i++) {
+        String localPhotoPath = currentBatch[i];
+
+        if (!_fileService.isUploading(localPhotoPath)) {
+          setUploading(i, true);
+          setUploadFailed(i, false);
+
+          try {
+            // Set a 60-second timeout for the upload operation
+            _uploadTimeout = Timer(
+              const Duration(seconds: 60),
+              () {
+                // Mark as unsuccessful if timed out
+                setUploading(i, false);
+                setUploadFailed(i, true);
+                allUploadsSuccessful = false;
+              },
+            );
+
+            // Start uploading the file
+            await _fileService.uploadImagesInBackground(
+              chatId: currentChat!.chatId!,
+              messageId: id,
+              localPaths: [localPhotoPath],
+              onProgress: (localPath, progress) {
+                updateProgress(i, progress);
+              },
+            );
+
+            _uploadTimeout?.cancel();
+            setUploading(i, false);
+            setUploadFailed(i, false);
+          } catch (e) {
+            setUploading(i, false);
+            setUploadFailed(i, true);
+            log('Error uploading file at index $i: ${e.toString()}');
+            allUploadsSuccessful =
+                false; // Mark as unsuccessful if an error occurs
+          }
+        }
+      }
+    }
+
+    // After processing all uploads, call the completion callback
+    onUploadComplete(
+        allUploadsSuccessful); // Pass true if all uploads succeeded
+  }
+
   Future<void> retryUpload(String id, String localPhotoPath) async {
-    await uploadFile(id: id, localPhotoPath: localPhotoPath);
+    await uploadFiles(
+      id: id,
+      localPhotoPaths: [localPhotoPath],
+      onUploadComplete: (success) => log(
+          success ? 'Uploaded successfully' : 'Did not upload successfully'),
+    );
   }
 }

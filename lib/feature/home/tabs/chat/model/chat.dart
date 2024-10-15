@@ -88,7 +88,9 @@ class Chat {
       'last_message_id': message.id,
       'last_sender_user_id': message.senderId,
       'last_message_timestamp': FieldValue.serverTimestamp(),
-      if (isConnected) 'last_message_status': MessageStatus.sent.name,
+      'last_message_status': isConnected
+          ? MessageStatus.sent.name
+          : MessageStatus.undelivered.name,
     };
   }
 }
