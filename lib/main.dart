@@ -30,6 +30,8 @@ void main() async {
   // Start up necessary services
   await CrashlyticsService().init();
 
+  await NotificationService().init();
+
   runApp(
     MultiProvider(
       providers: [
@@ -44,12 +46,8 @@ void main() async {
             ChatsNotifier>(
           create: (_) => ChatsNotifier(),
           update: (_, profileData, networkStatus, chatNotifier) {
-            // Update profile data in the chat notifier
             chatNotifier!.saveProfile(profileData.staticProfile);
-
-            // Update connectivity state in the chat notifier
             chatNotifier.updateConnectivity(networkStatus.isConnected);
-
             return chatNotifier;
           },
         ),
