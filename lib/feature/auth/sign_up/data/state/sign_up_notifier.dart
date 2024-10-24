@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -28,13 +29,16 @@ class SignUpNotifier extends ChangeNotifier {
   Future<void> setBaseData({
     String? email,
     String? phone,
-    String provider = 'local',
+    AuthMethod? authMethod = AuthMethod.local,
   }) async {
     final uid = userCredential!.user!.uid;
 
-    updateAppUser(uid: uid, email: email, authProvider: provider);
+    updateAppUser(uid: uid, email: email, authProvider: authMethod);
 
-    await _userRepository.setUserData(data: _user.toJson());
+    await _userRepository.setUserData(data: {
+      ..._user.toJson(),
+      'created_at': FieldValue.serverTimestamp(),
+    });
   }
 
   Future<void> completeCreation({
@@ -98,7 +102,7 @@ class SignUpNotifier extends ChangeNotifier {
       userCredential = await _authRepository.handlePhoneAuthentication(cred);
 
       // Update data in firebase
-      setBaseData(phone: phone, provider: 'phone');
+      setBaseData(phone: phone, authMethod: AuthMethod.phone);
 
       // Account creation successful, handle accordingly
       onAuthenticate();
@@ -150,7 +154,10 @@ class SignUpNotifier extends ChangeNotifier {
           await _authRepository.handleGoogleAuthentication(isLogin: false);
 
       // Update data in firebase
-      setBaseData(provider: 'google', email: userCredential!.user!.email);
+      setBaseData(
+        authMethod: AuthMethod.google,
+        email: userCredential!.user!.email,
+      );
 
       // Account creation successful, handle accordingly
       onAuthenticate();
@@ -183,7 +190,7 @@ class SignUpNotifier extends ChangeNotifier {
     String? gender,
     String? phoneNumber,
     String? countryOfOrigin,
-    String? authProvider,
+    AuthMethod? authProvider,
     bool? hasCompletedAccountCreation,
     bool? hasCompletedAccountOnboarding,
   }) {

@@ -7,7 +7,7 @@ class AppIconButton extends StatelessWidget {
     this.size = 25,
     this.icon,
     this.onTap,
-    this.margin = 8,
+    this.margin = 9,
     this.path,
   });
 

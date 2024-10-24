@@ -20,19 +20,22 @@ class AuthenticationRepository {
   }
 
   Future<ResetResponse> resetPassword(String email) async {
-    final auth = FirebaseAuth.instance;
-
     final emailExists = await _userRepository.doesEmailExist(email);
 
     if (emailExists) {
-      await auth.sendPasswordResetEmail(email: email);
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
 
       return ResetResponse(isSuccess: true, message: 'Verification email sent');
     }
 
     return ResetResponse(
-        isSuccess: false, message: 'Email is not registered with the app');
+      isSuccess: false,
+      message: 'Email is not registered with the app',
+    );
   }
+
+  Future<void> clearDeviceToken() async =>
+      await _userRepository.deleteUserToken();
 
   Future<UserCredential> handleEmailLogin(String email, String password) async {
     return await FirebaseAuth.instance.signInWithEmailAndPassword(

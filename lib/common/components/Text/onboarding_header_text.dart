@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../common/styles/text_style.dart';
 import '../../../common/utils/index.dart';
@@ -25,13 +24,17 @@ class OnboardingHeaderText extends StatelessWidget {
         skip ? addHeight(36) : const SizedBox.shrink(),
         Text(
           title,
-          style: TextStyles.title.copyWith(fontSize: 24.sp),
+          // style: TextStyles.title.copyWith(fontSize: 24.sp),
+          style: TextStyles.title.copyWith(
+            fontSize: AppUtils.scale(32) ?? 26,
+          ),
         ),
-        addHeight(4),
+        addHeight(6),
         Text(
           subtitle,
           style: TextStyles.hintText.copyWith(
-            fontSize: AppUtils.scale(11.5.sp),
+            // fontSize: AppUtils.scale(11.5.sp),
+            fontSize: AppUtils.scale(17) ?? 15,
             color: AppColors.black,
           ),
         ),

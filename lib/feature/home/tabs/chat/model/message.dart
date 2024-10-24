@@ -18,8 +18,8 @@ class Message {
 
   @JsonKey(
     name: 'timestamp',
-    fromJson: _timestampFromJson,
-    toJson: _timestampToJson,
+    fromJson: AppUtils.timestampFromJson,
+    toJson: AppUtils.timestampToJson,
   )
   final Timestamp? timestamp;
 
@@ -47,9 +47,6 @@ class Message {
       _$MessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$MessageToJson(this);
-
-  static Timestamp? _timestampFromJson(dynamic json) => json as Timestamp?;
-  static dynamic _timestampToJson(Timestamp? timestamp) => timestamp;
 
   @override
   String toString() {

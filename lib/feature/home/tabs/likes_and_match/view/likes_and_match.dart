@@ -6,6 +6,7 @@ import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/matche
 
 import '../../../../../common/components/index.dart';
 import '../../../../../common/styles/text_style.dart';
+import '../../../../../constants/index.dart';
 
 class LikesAndMatch extends StatefulWidget {
   const LikesAndMatch({super.key});
@@ -64,7 +65,7 @@ class _LikesAndMatchState extends State<LikesAndMatch>
           Padding(
             padding: pagePadding,
             child: HeaderBar(
-              icon: CupertinoIcons.bell_fill,
+              icon: AppAssets.bell,
               child: Row(
                 children: [
                   _headerText(0, 'Likes'),

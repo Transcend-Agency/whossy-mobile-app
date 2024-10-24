@@ -168,8 +168,14 @@ enum FutureFamilyPlans implements GenericEnum {
 }
 
 enum Religion implements GenericEnum {
-  christian('Christian'),
-  muslim('Muslim'),
+  christianity('Christianity'),
+  islam('Islam'),
+  judaism('Judaism'),
+  hinduism('Hinduism'),
+  buddhism('Buddhism'),
+  sikhism('Sikhism'),
+  atheism('Atheism'),
+  agnosticism('Agnosticism'),
   other('Other');
 
   const Religion(this.name);
@@ -269,3 +275,5 @@ enum MessageStatus {
 
   final String value;
 }
+
+enum AuthMethod { local, google, phone }

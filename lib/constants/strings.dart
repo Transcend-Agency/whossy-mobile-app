@@ -151,6 +151,8 @@ class AppStrings {
   // Misc
   static const String accUnselected = 'No account selected';
   static const String signOutFailure = 'Failed to sign out. Please try again.';
+  static const String logout =
+      'All your current sessions will be closed after logging out. Are you sure you want to log out?';
   static const String noProfilePic =
       'You need to add at least one photo to preview your profile.';
 

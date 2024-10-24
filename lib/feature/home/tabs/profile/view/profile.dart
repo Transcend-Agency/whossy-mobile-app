@@ -36,7 +36,7 @@ class Profile extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       HeaderBar(
-                        icon: Icons.settings,
+                        icon: AppAssets.settings,
                         onIconTap: () => Nav.push(context, const Settings()),
                       ),
                       const Header(),

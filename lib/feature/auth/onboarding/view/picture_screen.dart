@@ -260,12 +260,12 @@ class _PictureScreenState extends State<PictureScreen>
             clipBehavior: Clip.none,
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
-            children: List.generate(5, (_) {
+            children: List.generate(5, (index) {
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5.w),
                 child: GestureDetector(
-                  onTap: _images.length - 1 > _
-                      ? () => _moveImageToTop(_ + 1)
+                  onTap: _images.length - 1 > index
+                      ? () => _moveImageToTop(index + 1)
                       : _handlePermissions,
                   child: Stack(
                     clipBehavior: Clip.none,
@@ -277,20 +277,20 @@ class _PictureScreenState extends State<PictureScreen>
                           color: AppColors.listTileColor,
                           borderRadius: BorderRadius.circular(6.r),
                         ),
-                        child: _images.length - 1 > _
-                            ? Image.file(_images[_ + 1], fit: BoxFit.cover)
+                        child: _images.length - 1 > index
+                            ? Image.file(_images[index + 1], fit: BoxFit.cover)
                             : null,
                       ),
-                      _images.length - 1 > _
+                      _images.length - 1 > index
                           ? Positioned(
                               top: -4,
                               left: -4,
                               child: GestureDetector(
                                 onTap: () => showCustomModalBottomSheet(
                                   context,
-                                  onDelete: () => _deleteImage(_ + 1),
+                                  onDelete: () => _deleteImage(index + 1),
                                   onReUpload: () =>
-                                      _handlePermissions(index: _ + 1),
+                                      _handlePermissions(index: index + 1),
                                 ),
                                 child: Container(
                                   padding: const EdgeInsets.all(4),

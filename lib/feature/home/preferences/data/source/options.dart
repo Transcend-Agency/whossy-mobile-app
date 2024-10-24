@@ -108,12 +108,36 @@ class Options {
 
   static final List<Data<Religion>> religionOptions = [
     Data(
-      text: Religion.christian.name,
-      value: Religion.christian,
+      text: Religion.christianity.name,
+      value: Religion.christianity,
     ),
     Data(
-      text: Religion.muslim.name,
-      value: Religion.muslim,
+      text: Religion.islam.name,
+      value: Religion.islam,
+    ),
+    Data(
+      text: Religion.judaism.name,
+      value: Religion.judaism,
+    ),
+    Data(
+      text: Religion.hinduism.name,
+      value: Religion.hinduism,
+    ),
+    Data(
+      text: Religion.buddhism.name,
+      value: Religion.buddhism,
+    ),
+    Data(
+      text: Religion.sikhism.name,
+      value: Religion.sikhism,
+    ),
+    Data(
+      text: Religion.atheism.name,
+      value: Religion.atheism,
+    ),
+    Data(
+      text: Religion.agnosticism.name,
+      value: Religion.agnosticism,
     ),
     Data(
       text: Religion.other.name,

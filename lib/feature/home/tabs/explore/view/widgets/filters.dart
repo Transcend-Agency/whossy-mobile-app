@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/styles/text_style.dart';
@@ -20,8 +19,8 @@ class _ExploreFiltersState extends State<ExploreFilters> {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 10.w,
-      runSpacing: 6.h,
+      spacing: 10,
+      runSpacing: 6,
       children: List.generate(options.length, (index) {
         final explore = options[index];
         return ChoiceChip(

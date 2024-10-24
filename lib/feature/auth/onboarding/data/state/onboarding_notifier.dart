@@ -62,6 +62,8 @@ class OnboardingNotifier extends ChangeNotifier {
       await _userRepository
           .setUserData(data: {"has_completed_onboarding": true});
 
+      await _userRepository.addUserToken();
+
       onAuthenticate();
     } on FailedUploadException catch (e) {
       showSnackbar(e.message);

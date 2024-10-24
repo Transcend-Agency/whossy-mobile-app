@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../styles/text_style.dart';
 import '../../utils/index.dart';
@@ -16,9 +15,9 @@ class SignupHeaderText extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    this.top = 24,
+    this.top = 40,
     this.bottom = 24,
-    this.mid = 4,
+    this.mid = 8,
     this.center = false,
   });
 
@@ -32,7 +31,7 @@ class SignupHeaderText extends StatelessWidget {
           title,
           textAlign: center ? TextAlign.center : null,
           style: TextStyles.title.copyWith(
-            fontSize: AppUtils.scale(24.sp) ?? 26,
+            fontSize: AppUtils.scale(32) ?? 26,
           ),
         ),
         addHeight(mid),
@@ -40,7 +39,7 @@ class SignupHeaderText extends StatelessWidget {
           subtitle,
           textAlign: center ? TextAlign.center : null,
           style: TextStyles.bioText.copyWith(
-            fontSize: AppUtils.scale(16) ?? 15,
+            fontSize: AppUtils.scale(17) ?? 15,
           ),
         ),
         addHeight(bottom),

@@ -1,10 +1,11 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
+import 'package:whossy_app/feature/home/tabs/matching/view/widgets/match.dart';
 
-import '../../../../common/components/index.dart';
-import '../../../../common/styles/text_style.dart';
-import '../../../../common/utils/index.dart';
+import '../../../../../../common/components/index.dart';
+import '../../../../../constants/index.dart';
+import 'widgets/logo.dart';
 
 class Matching extends StatelessWidget {
   const Matching({super.key});
@@ -15,14 +16,13 @@ class Matching extends StatelessWidget {
       padding: pagePadding,
       child: SizedBox(
         width: 375.w,
-        child: Column(
+        child: const Column(
           children: [
-            const HeaderBar(icon: CupertinoIcons.bell_fill),
-            addHeight(36),
-            Text(
-              'One',
-              style: TextStyles.title.copyWith(fontSize: 24.sp),
+            HeaderBar(
+              icon: AppAssets.bell,
+              child: Logo(),
             ),
+            Expanded(child: Match()),
           ],
         ),
       ),

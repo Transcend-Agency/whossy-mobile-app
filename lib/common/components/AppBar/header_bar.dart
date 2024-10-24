@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/constants/asset_paths.dart';
 
 import '../../utils/index.dart';
@@ -17,7 +16,7 @@ class HeaderBar extends StatelessWidget {
     this.topPadding = 4, //8
   });
 
-  final IconData? icon;
+  final String? icon;
   final String? icon2;
   final double topPadding;
   final VoidCallback? onIconTap;
@@ -31,30 +30,39 @@ class HeaderBar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         addHeight(MediaQuery.paddingOf(context).top + topPadding),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            child ?? const SizedBox.shrink(),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (icon != null)
-                  Padding(
-                    padding: EdgeInsets.only(right: 2.w),
-                    child: AppIconButton(
-                      icon: icon!,
+        Padding(
+          padding: const EdgeInsets.only(top: 6, left: 6, right: 6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              child ?? const SizedBox.shrink(),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (icon != null) ...[
+                    GestureDetector(
                       onTap: onIconTap,
+                      child: Container(
+                        margin: const EdgeInsets.all(9),
+                        child: svgIcon(
+                          icon!,
+                          color: Colors.black,
+                          size: 18,
+                        ),
+                      ),
                     ),
+                    addWidth(2),
+                  ],
+                  AppIconButton(
+                    path: icon2 ?? AppAssets.tune,
+                    size: 24,
+                    onTap: onIcon2Tap ??
+                        () => Nav.push(context, const PreferenceRoute()),
                   ),
-                AppIconButton(
-                  path: icon2 ?? AppAssets.tune,
-                  size: 24,
-                  onTap: onIcon2Tap ??
-                      () => Nav.push(context, const PreferenceRoute()),
-                ),
-              ],
-            )
-          ],
+                ],
+              )
+            ],
+          ),
         ),
       ],
     );

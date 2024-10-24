@@ -23,13 +23,13 @@ class Explore extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             HeaderBar(
-              icon: CupertinoIcons.bell_fill,
+              icon: AppAssets.bell,
               icon2: AppAssets.explore,
               onIcon2Tap: () => Nav.push(context, const AdvancedSearchRoute()),
             ),
             addHeight(8),
             const ExploreFilters(),
-            ExploreGrid(),
+            const ExploreGrid(),
           ],
         ),
       ),

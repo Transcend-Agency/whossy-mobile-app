@@ -26,6 +26,7 @@ class EditProfileRepository {
   Future<void> updateProfileData({
     required Map<String, dynamic> coreProfileData,
     required Map<String, dynamic> corePrefData,
+    required bool updateUserDeletePic,
   }) async {
     if (coreProfileData.isNotEmpty) {
       await _userRepository.setUserData(data: coreProfileData);
@@ -33,6 +34,10 @@ class EditProfileRepository {
 
     if (corePrefData.isNotEmpty) {
       await _prefRepository.uploadPreferences(data: corePrefData);
+    }
+
+    if (updateUserDeletePic) {
+      await _prefRepository.addDeletePicQueue();
     }
   }
 }

@@ -2,7 +2,6 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:readmore/readmore.dart';
-import 'package:whossy_app/common/styles/component_style.dart';
 
 import '../../../../../common/components/index.dart';
 import '../../../../../common/styles/text_style.dart';
@@ -77,13 +76,11 @@ class MatchingScreen extends StatelessWidget {
                           MatchIconButton(
                             onTap: () {},
                             assetPath: AppAssets.cancel,
-                            shadow: [matchButtonShadow],
                           ),
                           addWidth(40),
                           MatchIconButton(
                             onTap: () {},
                             assetPath: AppAssets.like,
-                            shadow: [matchButtonShadow],
                           ),
                         ],
                       ),

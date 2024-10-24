@@ -12,7 +12,7 @@ import '../../model/current_chat.dart';
 import '../../model/message.dart';
 
 class ChatRepository {
-  final _chatFirestore = FirebaseFirestore.instance.collection('userchats');
+  final _chatFirestore = FirebaseFirestore.instance.collection('chats');
 
   static DatabaseReference statusRef(String id) =>
       FirebaseDatabase.instance.ref().child('users/$id/presence');

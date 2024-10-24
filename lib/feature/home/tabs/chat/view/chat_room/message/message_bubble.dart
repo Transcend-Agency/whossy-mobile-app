@@ -40,8 +40,8 @@ class _MessageBubbleState extends State<MessageBubble>
   double _slideOffset = 0.0;
   // Map to track upload states for local photos
   late Map<String, bool> uploadStates;
-  static final double _dragThreshold = -86.r;
-  static final double _revealThreshold = -72.r;
+  late double _dragThreshold;
+  late double _revealThreshold;
 
   late ChatsNotifier _chatNotifier;
   late AnimationController _animationController;
@@ -50,6 +50,9 @@ class _MessageBubbleState extends State<MessageBubble>
   @override
   void initState() {
     super.initState();
+
+    _initThreshold();
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -63,6 +66,17 @@ class _MessageBubbleState extends State<MessageBubble>
     uploadStates = {
       for (var photo in widget.data.localPhotos ?? []) photo: false,
     };
+  }
+
+  // Todo: Test this out
+  void _initThreshold() {
+    if (widget.data.timestamp == null) {
+      _dragThreshold = -60.r;
+      _revealThreshold = -50.r;
+    } else {
+      _dragThreshold = -86.r;
+      _revealThreshold = -72.r;
+    }
   }
 
   void _animateBackToPosition(DragEndDetails details) {

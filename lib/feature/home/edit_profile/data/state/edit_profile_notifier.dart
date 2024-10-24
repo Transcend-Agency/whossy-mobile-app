@@ -28,6 +28,15 @@ class EditProfileNotifier extends ChangeNotifier {
 
   bool _hasSafetyGuideOpened = true;
 
+  bool _didUserDeletePic = false;
+
+  // Setter for _didUserDeletePic
+  set didUserDeletePic(bool value) {
+    if (value != _didUserDeletePic) {
+      _didUserDeletePic = value;
+    }
+  }
+
   // Getter for hasSafetyGuideOpened
   bool get hasSafetyGuideOpened => _hasSafetyGuideOpened;
 
@@ -150,7 +159,7 @@ class EditProfileNotifier extends ChangeNotifier {
       if (corePrefsDiff.containsKey("photos")) {
         final photos = corePrefsDiff["photos"];
 
-        if (photos is List) {
+        if (photos is List<String>) {
           final updatedPhotos =
               await FileService().processPhotos(photos, showSnackbar);
 
@@ -162,6 +171,7 @@ class EditProfileNotifier extends ChangeNotifier {
       await _editProfileRepo.updateProfileData(
         corePrefData: {...corePrefsDiff},
         coreProfileData: {...coreProfileDiff},
+        updateUserDeletePic: _didUserDeletePic,
       );
 
       // Once saved, update the static preferences to match the dynamic ones

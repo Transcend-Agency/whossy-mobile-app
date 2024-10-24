@@ -29,6 +29,29 @@ class _SettingsState extends State<Settings> {
     }
   }
 
+  // Adjusted method to return Future<bool?>?
+  Future<bool?>? _handleLogout() async {
+    bool? result = await showConfirmationDialog(
+      context,
+      title: 'Confirm Log out',
+      content: contentText(AppStrings.logout),
+      yes: 'Log out',
+      no: 'Cancel',
+    );
+
+    if (result == null) return null;
+
+    if (result && mounted) {
+      await context.read<SettingsNotifier>().signOut(showSnackbar);
+
+      if (!mounted) return null;
+
+      Nav.replaceAll(context, [const LoginRoute()]);
+    }
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
@@ -61,28 +84,7 @@ class _SettingsState extends State<Settings> {
           Padding(
             padding: EdgeInsets.only(bottom: 24.h),
             child: ExtraCoreSettings(
-              onTap: () async {
-                bool? result = await showConfirmationDialog(
-                  context,
-                  title: 'Confirm Log out',
-                  content: contentText(
-                      'All your current sessions will be closed after logging out. Are you sure you want to log out?'),
-                  yes: 'Log out',
-                  no: 'Cancel',
-                );
-
-                if (result == null || !context.mounted) return;
-
-                if (result) {
-                  await context.read<SettingsNotifier>().signOut(showSnackbar);
-
-                  if (!context.mounted) return;
-
-                  Nav.replaceAll(context, [const LoginRoute()]);
-                }
-
-                return null;
-              },
+              onTap: _handleLogout,
               customChildren: [
                 SvgPicture.asset(AppAssets.logout, width: 18),
                 addWidth(8),

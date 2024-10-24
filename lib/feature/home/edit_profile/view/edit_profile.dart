@@ -68,19 +68,25 @@ class _EditProfileState extends State<EditProfile>
       return await onValidateSave();
     }
 
-    await showLoadingSheet(
+    // Show loading sheet and wait for it to display
+    showLoadingSheet(
       context,
       _controller,
       header: 'Changes are saving 🎉',
       subHeader: 'Your changes will be saved in a minute',
     );
 
-    await wait();
-
+    // Save user profile and wait for it to complete
     await _profileNotifier.saveUserProfile(
-        showSnackbar: (msg) => showSnackbar(msg, pop: true));
+      showSnackbar: (msg) => showSnackbar(msg, pop: true),
+    );
 
     if (!mounted) return;
+
+    // Dismiss the loading sheet before navigating
+    Navigator.of(context).pop(); // Pop the loading sheet
+
+    // Navigate to the HomeWrapper after the loading sheet is dismissed
     Nav.popUntil(context, HomeWrapper.name);
   }
 

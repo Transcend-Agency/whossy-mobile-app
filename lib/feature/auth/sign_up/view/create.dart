@@ -178,7 +178,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
       back: true,
       padding: pagePadding,
       useScrollView: useScroll,
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: Selector<SignUpNotifier, bool>(
         selector: (_, auth) => auth.spinnerState,
         builder: (_, spinner, __) {

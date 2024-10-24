@@ -13,7 +13,7 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final String icon = 'notification';
+  final String icon = 'icon';
   final Priority androidPriority = Priority.high;
   final String groupKey = 'com.whossy.whossy_app';
   final String threadId = 'whossy_notifications';
@@ -56,6 +56,7 @@ class NotificationService {
   }
 
   Future<String> getToken() async => (await _messaging.getToken()) ?? '';
+  Future<void> deleteToken() async => await _messaging.deleteToken();
 
   Future<void> initPushNotifications() async {
     _messaging.getInitialMessage().then(handleInitialMessage);
@@ -89,11 +90,17 @@ class NotificationService {
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
-    final AndroidFlutterLocalNotificationsPlugin? platform =
+    final androidPlugin =
         _localNotifications.resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>();
 
-    await platform?.createNotificationChannel(_androidChannel);
+    if (androidPlugin != null) {
+      await androidPlugin.requestNotificationsPermission();
+      await androidPlugin.createNotificationChannel(_androidChannel);
+    }
+
+    _localNotifications.resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>();
   }
 }
 

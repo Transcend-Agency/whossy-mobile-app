@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
@@ -7,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
+import 'package:whossy_app/common/utils/services/notification_service.dart';
 
 import '../../../../../constants/index.dart';
 import '../../model/app_user.dart';
@@ -31,10 +33,50 @@ class UserRepository {
     return false;
   }
 
+  Future<void> deleteUserToken() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    String token = await NotificationService().getToken();
+
+    await _usersFirestore.doc(userId).update({
+      'tokens': FieldValue.arrayRemove([token])
+    });
+
+    await NotificationService().deleteToken();
+
+    log('Deleted token $token');
+  }
+
+  Future<void> addUserToken({List<String>? tokens}) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    String token = await NotificationService().getToken();
+
+    if (tokens != null && tokens.contains(token)) {
+      log('Token $token already exists for user $userId');
+      return;
+    }
+
+    await _usersFirestore.doc(userId).update({
+      'tokens': FieldValue.arrayUnion([token])
+    });
+
+    log('Added token $token for user $userId');
+  }
+
   Future<void> setUserData({required Map<String, dynamic> data}) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
-    await _usersFirestore.doc(uid).set(data, SetOptions(merge: true));
+    try {
+      await _usersFirestore.doc(uid).set(data, SetOptions(merge: true)).timeout(
+            const Duration(seconds: 5),
+            onTimeout: () =>
+                throw TimeoutException('The upload operation timed out'),
+          );
+    } on TimeoutException catch (e) {
+      log("Timeout: ${e.message}");
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> isPhoneUnique(String phone) async {
@@ -153,6 +195,8 @@ class UserRepository {
           return;
         }
       }
+
+      await addUserToken(tokens: appUser?.tokens);
 
       onAuthenticate();
     } else {

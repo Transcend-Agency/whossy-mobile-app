@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whossy_app/common/styles/component_style.dart';
 
 class MatchIconButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -13,7 +14,7 @@ class MatchIconButton extends StatelessWidget {
     super.key,
     required this.onTap,
     required this.assetPath,
-    this.size = 40.0,
+    this.size = 38.0,
     this.padding = 12.0,
     this.backgroundColor = Colors.white,
     this.shadow,
@@ -28,7 +29,7 @@ class MatchIconButton extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: backgroundColor,
-          boxShadow: shadow,
+          boxShadow: [matchButtonShadow],
         ),
         child: Image.asset(
           assetPath,

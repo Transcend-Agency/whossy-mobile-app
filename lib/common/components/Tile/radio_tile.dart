@@ -70,7 +70,7 @@ class RadioTile<T> extends StatelessWidget {
             title: Text(
               title,
               style: TextStyles.hintText.copyWith(
-                fontSize: AppUtils.scale(12.sp),
+                fontSize: AppUtils.scale(10.5.sp),
                 color: AppColors.black,
                 fontWeight: FontWeight.w600,
               ),

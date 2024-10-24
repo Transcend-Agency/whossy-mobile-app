@@ -1,9 +1,13 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppUtils {
+  static Timestamp? timestampFromJson(dynamic json) => json as Timestamp?;
+  static dynamic timestampToJson(Timestamp? timestamp) => timestamp;
+
   static String countryCodeToEmoji(String countryCode) {
     // 0x41 is Letter A
     // 0x1F1E6 is Regional Indicator Symbol Letter A

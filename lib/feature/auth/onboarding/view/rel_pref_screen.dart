@@ -47,11 +47,11 @@ class _RelPrefScreenState extends State<RelPrefScreen>
                       leadingAsset: data.leadingAsset,
                       value: data.value,
                       groupValue: _pref,
-                      onChanged: (_) {
-                        setState(() => _pref = _);
+                      onChanged: (pref) {
+                        setState(() => _pref = pref);
                         onboarding.select(widget.pageIndex);
                         onboarding.updateUserProfile(
-                            relationshipPref: _?.index);
+                            relationshipPref: pref?.index);
                       },
                       title: data.title,
                       subtitle: data.subtitle,

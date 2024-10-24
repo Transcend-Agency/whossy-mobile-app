@@ -52,6 +52,8 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
     setState(() {
       widget.profilePics.removeAt(index);
 
+      edit.didUserDeletePic = true;
+
       edit.updateProfile(profilePics: widget.profilePics);
     });
   }

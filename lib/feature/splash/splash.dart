@@ -30,18 +30,31 @@ class _SplashState extends State<Splash> {
   Future<void> _checkAuthentication() async {
     User? user = FirebaseAuth.instance.currentUser;
 
+    // Ensure there's a fallback after a timeout (e.g., 5 seconds) to avoid hanging
+    final fallbackTimer =
+        Future.delayed(const Duration(seconds: 10), onUnAuthUser);
+
     if (user != null) {
       await _userRepo.accountCheck(
         enablePhoneCheck: true,
         user: user,
         showSnackbar: (_) {},
-        onAuthenticate: onAuthenticate,
-        toCreateAccount: doNothing,
-        toOnboarding: doNothing,
+        onAuthenticate: () {
+          fallbackTimer.ignore();
+          onAuthenticate();
+        },
+        toCreateAccount: () {
+          fallbackTimer.ignore();
+          onUnAuthUser();
+        },
+        toOnboarding: () {
+          fallbackTimer.ignore();
+          onUnAuthUser();
+        },
       );
     } else {
       await Future.delayed(const Duration(seconds: 2));
-
+      fallbackTimer.ignore();
       onUnAuthUser();
     }
   }

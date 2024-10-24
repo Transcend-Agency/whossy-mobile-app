@@ -10,7 +10,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       id: json['id'] as String?,
       senderId: json['senderId'] as String?,
       message: json['message'] as String,
-      timestamp: Message._timestampFromJson(json['timestamp']),
+      timestamp: AppUtils.timestampFromJson(json['timestamp']),
       photos:
           (json['photos'] as List<dynamic>?)?.map((e) => e as String).toList(),
       localPhotos: (json['local_photos'] as List<dynamic>?)
@@ -33,7 +33,7 @@ Map<String, dynamic> _$MessageToJson(Message instance) {
     }
   }
 
-  writeNotNull('timestamp', Message._timestampToJson(instance.timestamp));
+  writeNotNull('timestamp', AppUtils.timestampToJson(instance.timestamp));
   writeNotNull('local_photos', instance.localPhotos);
   writeNotNull('photos', instance.photos);
   writeNotNull('status', _$MessageStatusEnumMap[instance.status]);

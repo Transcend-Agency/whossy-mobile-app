@@ -71,15 +71,15 @@ class _SignUpGenderScreenState extends State<SignUpGenderScreen> {
                     label: 'Male',
                     value: Gender.male,
                     groupValue: _gender,
-                    onChanged: (_) => setState(() => _gender = _),
+                    onChanged: (gender) => setState(() => _gender = gender),
                   ),
                   addWidth(6.w),
                   GenderButton(
                     label: 'Female',
                     value: Gender.female,
                     groupValue: _gender,
-                    onChanged: (_) {
-                      setState(() => _gender = _);
+                    onChanged: (gender) {
+                      setState(() => _gender = gender);
                     },
                   ),
                 ],

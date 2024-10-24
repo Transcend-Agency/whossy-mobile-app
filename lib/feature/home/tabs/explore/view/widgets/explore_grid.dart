@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -15,14 +13,14 @@ import '../../../../../../constants/index.dart';
 import '../../data/source/explore_grid_mock_data.dart';
 
 class ExploreGrid extends StatelessWidget {
-  ExploreGrid({super.key});
-
-  final random = Random();
+  const ExploreGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Calculate the number of columns based on screen width
     int columns = (MediaQuery.sizeOf(context).width ~/ 160.r).toInt();
+
+    final List<double> predefinedHeights = [180.h, 220.h, 240.h];
 
     return Expanded(
       child: MasonryGridView.count(
@@ -32,20 +30,20 @@ class ExploreGrid extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = exploreGridItems[index];
 
-          final randomHeight = 150.h +
-              random.nextInt(101).h; // Random height between 100 and 300
+          final height = predefinedHeights[index % predefinedHeights.length];
 
           return GestureDetector(
             onTap: () => Nav.push(
-                context,
-                MatchingRoute(
-                    profile: dummyProfile, preferences: dummyPreferences)),
+              context,
+              MatchingRoute(
+                  profile: dummyProfile, preferences: dummyPreferences),
+            ),
             child: Container(
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.r),
               ),
-              height: randomHeight,
+              height: height,
               child: Stack(
                 fit: StackFit.expand,
                 children: [

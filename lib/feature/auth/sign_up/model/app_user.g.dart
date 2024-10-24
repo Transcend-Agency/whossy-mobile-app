@@ -14,13 +14,18 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       gender: json['gender'] as String?,
       phoneNumber: json['phone_number'] as String?,
       countryOfOrigin: json['country_of_origin'] as String?,
-      authProvider: json['authProvider'] as String?,
+      authProvider:
+          $enumDecodeNullable(_$AuthMethodEnumMap, json['auth_provider']),
       weight: (json['weight'] as num?)?.toDouble(),
       height: (json['height'] as num?)?.toDouble(),
       hasCompletedAccountCreation:
           json['has_completed_account_creation'] as bool? ?? false,
       hasCompletedOnboarding:
           json['has_completed_onboarding'] as bool? ?? false,
+      tokens:
+          (json['tokens'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      isVerified: json['is_verified'] as bool? ?? false,
+      createdAt: AppUtils.timestampFromJson(json['created_at']),
     );
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) {
@@ -39,10 +44,19 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   writeNotNull('gender', instance.gender);
   writeNotNull('phone_number', instance.phoneNumber);
   writeNotNull('country_of_origin', instance.countryOfOrigin);
-  writeNotNull('authProvider', instance.authProvider);
+  writeNotNull('auth_provider', _$AuthMethodEnumMap[instance.authProvider]);
   writeNotNull('weight', instance.weight);
   writeNotNull('height', instance.height);
   val['has_completed_account_creation'] = instance.hasCompletedAccountCreation;
   val['has_completed_onboarding'] = instance.hasCompletedOnboarding;
+  writeNotNull('tokens', instance.tokens);
+  val['is_verified'] = instance.isVerified;
+  writeNotNull('created_at', AppUtils.timestampToJson(instance.createdAt));
   return val;
 }
+
+const _$AuthMethodEnumMap = {
+  AuthMethod.local: 'local',
+  AuthMethod.google: 'google',
+  AuthMethod.phone: 'phone',
+};

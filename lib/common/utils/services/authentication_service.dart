@@ -1,14 +1,16 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:whossy_app/feature/auth/login/data/repository/authentication_repository.dart';
 
 class AuthenticationService {
   final _auth = FirebaseAuth.instance;
+  final _authRepo = AuthenticationRepository();
 
   Future<void> signOut() async {
     try {
       // Reset FCM token
-      // await _firebaseMessaging.deleteToken();
+      await _authRepo.clearDeviceToken();
 
       // Any other clean-up tasks (e.g., clearing local storage, revoking tokens)
       // Example:

@@ -52,9 +52,13 @@ class AppAssets {
   static const blockUser = 'assets/icons/user_block.png';
   static const report = 'assets/icons/report.png';
   static const logo = 'assets/icons/logo.svg';
+  static const logoColored = 'assets/icons/logo_colored.svg';
   static const whossy = 'assets/icons/whossy.svg';
+  static const whossyColored = 'assets/icons/whossy_colored.svg';
   static const photo = 'assets/icons/photo.svg';
   static const gallery = 'assets/icons/gallery.svg';
+  static const bell = 'assets/icons/bell.svg';
+  static const settings = 'assets/icons/settings.svg';
 
   static const credit = 'assets/icons/credit.png';
   static const boost = 'assets/icons/boost.png';
@@ -68,6 +72,7 @@ class AppAssets {
   static const faq = 'assets/icons/faq.png';
   static const cancel = 'assets/icons/cancel.png';
   static const like = 'assets/icons/like.png';
+  static const redo = 'assets/icons/redo.png';
 
   static const caution = 'assets/icons/caution.png';
   static const welcome = 'assets/icons/welcome.png';

@@ -75,7 +75,7 @@ class _SignUpVerificationScreenState extends State<SignUpVerificationScreen> {
               Text(
                 'Didn’t receive any email?',
                 style: TextStyles.bioText.copyWith(
-                  fontSize: AppUtils.scale(11.5.sp),
+                  fontSize: AppUtils.scale(17) ?? 15,
                 ),
               ),
               addWidth(4),
@@ -85,7 +85,7 @@ class _SignUpVerificationScreenState extends State<SignUpVerificationScreen> {
                         Text(
                           'Resend in ',
                           style: TextStyles.bioText.copyWith(
-                            fontSize: AppUtils.scale(11.5.sp),
+                            fontSize: AppUtils.scale(10.5.sp),
                           ),
                         ),
                         CountdownText(
@@ -93,17 +93,16 @@ class _SignUpVerificationScreenState extends State<SignUpVerificationScreen> {
                           textStyle: TextStyles.bioText.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppColors.black,
-                            fontSize: AppUtils.scale(11.5.sp),
+                            fontSize: AppUtils.scale(10.5.sp),
                           ),
                           durationInSeconds: countDownDuration,
-                          onTimerTick: (duration) => setState(() {}),
                           onFinished: onFinished,
                         ),
                         addWidth(3),
                         Text(
                           's',
                           style: TextStyles.bioText.copyWith(
-                            fontSize: AppUtils.scale(11.5.sp),
+                            fontSize: AppUtils.scale(10.5.sp),
                           ),
                         )
                       ],
@@ -117,7 +116,7 @@ class _SignUpVerificationScreenState extends State<SignUpVerificationScreen> {
                           style: TextStyles.bioText.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppColors.black,
-                            fontSize: AppUtils.scale(11.5.sp),
+                            fontSize: AppUtils.scale(10.5.sp),
                             decoration: TextDecoration.underline,
                           ),
                         ),

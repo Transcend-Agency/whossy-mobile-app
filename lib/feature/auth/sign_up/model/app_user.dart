@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../../../common/utils/index.dart';
 
 part 'app_user.g.dart';
 
@@ -22,7 +25,8 @@ class AppUser {
   @JsonKey(name: 'country_of_origin')
   final String? countryOfOrigin;
 
-  final String? authProvider;
+  @JsonKey(name: 'auth_provider')
+  final AuthMethod? authProvider;
 
   final double? weight;
 
@@ -33,6 +37,19 @@ class AppUser {
 
   @JsonKey(name: 'has_completed_onboarding')
   final bool hasCompletedOnboarding;
+
+  @JsonKey(name: 'tokens')
+  final List<String>? tokens;
+
+  @JsonKey(name: 'is_verified')
+  final bool isVerified;
+
+  @JsonKey(
+    name: 'created_at',
+    fromJson: AppUtils.timestampFromJson,
+    toJson: AppUtils.timestampToJson,
+  )
+  final Timestamp? createdAt;
 
   AppUser({
     this.uid,
@@ -47,6 +64,9 @@ class AppUser {
     this.height,
     this.hasCompletedAccountCreation = false,
     this.hasCompletedOnboarding = false,
+    this.tokens,
+    this.isVerified = false,
+    this.createdAt,
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>
@@ -60,7 +80,6 @@ class AppUser {
         'gender': gender,
         'phone_number': phoneNumber,
         'country_of_origin': countryOfOrigin,
-        'authProvider': authProvider,
         'has_completed_account_creation': hasCompletedAccountCreation,
       };
 
@@ -77,6 +96,9 @@ class AppUser {
         'height: $height\n'
         'weight: $weight\n'
         'hasCompletedAccountCreation: $hasCompletedAccountCreation\n'
-        'hasCompletedOnboarding: $hasCompletedOnboarding';
+        'hasCompletedOnboarding: $hasCompletedOnboarding\n'
+        'isVerified: $isVerified\n'
+        'createdAt: ${createdAt?.toDate()}\n'
+        'tokens: ${tokens?.join(", ") ?? "null"}';
   }
 }
