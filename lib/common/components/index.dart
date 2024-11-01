@@ -35,6 +35,7 @@ export '/common/components/Loader/app_loader.dart';
 export '/common/components/Marquee/marquee.dart';
 export '/common/components/Ring/ring.dart';
 export '/common/components/Scaffold/app_scaffold.dart';
+export '/common/components/Scaffold/profile_scaffold/index.dart';
 export '/common/components/Shade/profile_shade.dart';
 export '/common/components/Shake/shake.dart';
 export '/common/components/Shimmer/shimmer_switch.dart';

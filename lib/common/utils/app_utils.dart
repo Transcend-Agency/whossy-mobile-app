@@ -8,6 +8,20 @@ class AppUtils {
   static Timestamp? timestampFromJson(dynamic json) => json as Timestamp?;
   static dynamic timestampToJson(Timestamp? timestamp) => timestamp;
 
+  static Timestamp? timestampFromMilliseconds(int? milliseconds) {
+    if (milliseconds == null) return null;
+    return Timestamp.fromMillisecondsSinceEpoch(milliseconds);
+  }
+
+  static int? timestampToMilliseconds(Timestamp? timestamp) {
+    return timestamp?.millisecondsSinceEpoch;
+  }
+
+  static String generateCombinedId(String currentUserUid, String otherUserUid) {
+    List<String> userId = [currentUserUid, otherUserUid]..sort();
+    return '${userId[0]}_${userId[1]}';
+  }
+
   static String countryCodeToEmoji(String countryCode) {
     // 0x41 is Letter A
     // 0x1F1E6 is Regional Indicator Symbol Letter A

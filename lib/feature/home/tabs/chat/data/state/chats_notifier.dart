@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:whossy_app/common/utils/app_utils.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';
 
@@ -94,11 +95,6 @@ class ChatsNotifier extends ChangeNotifier {
   /// Chat Management Methods
   /// -------------------------
 
-  String generateChatId(String currentUserUid, String otherUserUid) {
-    List<String> userId = [currentUserUid, otherUserUid]..sort();
-    return '${userId[0]}_${userId[1]}';
-  }
-
   void setCurrentChat({
     required String username,
     required String uidUser1,
@@ -108,7 +104,7 @@ class ChatsNotifier extends ChangeNotifier {
     bool? isDeleted,
     bool? isBlocked,
   }) {
-    final chatId = generateChatId(uidUser1, uidUser2);
+    final chatId = AppUtils.generateCombinedId(uidUser1, uidUser2);
 
     currentChat = CurrentChat(
       chatId: chatId,

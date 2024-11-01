@@ -24,7 +24,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
   @override
   void initState() {
     _pages = [
-      Matching(),
+      const Matching(),
       const Explore(),
       const LikesAndMatch(),
       const Chat(),

@@ -72,6 +72,7 @@ class EditProfileNotifier extends ChangeNotifier {
     _dynCoreProfile = _staticCoreProfile;
     _dynCorePrefs = _staticCorePrefs;
 
+    didUserDeletePic = false;
     notifyListeners();
   }
 

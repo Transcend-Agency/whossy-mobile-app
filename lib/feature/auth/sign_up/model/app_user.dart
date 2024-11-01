@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../common/utils/index.dart';
+import 'user_status.dart';
 
 part 'app_user.g.dart';
 
 @JsonSerializable()
 class AppUser {
   final String? uid;
-
   final String? email;
 
   @JsonKey(name: 'first_name')
@@ -29,7 +29,6 @@ class AppUser {
   final AuthMethod? authProvider;
 
   final double? weight;
-
   final double? height;
 
   @JsonKey(name: 'has_completed_account_creation')
@@ -51,6 +50,9 @@ class AppUser {
   )
   final Timestamp? createdAt;
 
+  @JsonKey(name: 'status', includeToJson: false)
+  final UserStatus? status;
+
   AppUser({
     this.uid,
     this.email,
@@ -67,6 +69,7 @@ class AppUser {
     this.tokens,
     this.isVerified = false,
     this.createdAt,
+    this.status,
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>
@@ -99,6 +102,7 @@ class AppUser {
         'hasCompletedOnboarding: $hasCompletedOnboarding\n'
         'isVerified: $isVerified\n'
         'createdAt: ${createdAt?.toDate()}\n'
-        'tokens: ${tokens?.join(", ") ?? "null"}';
+        'tokens: ${tokens?.join(", ") ?? "null"}\n'
+        'status: ${status?.toString() ?? "null"}';
   }
 }

@@ -4,26 +4,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:readmore/readmore.dart';
+import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
-import '../../../data/source/extensions.dart';
-import '../../../model/core_profile.dart';
+import '../../model/user_profile.dart';
+import 'interests_widget.dart';
 
-class BottomPreviewImage extends StatelessWidget {
-  const BottomPreviewImage({
+class BottomProfilePreview extends StatelessWidget {
+  const BottomProfilePreview({
     super.key,
     this.showLess = false,
-    required this.profile,
+    required this.userProfile,
     this.activePage,
   });
 
   final bool showLess;
   final int? activePage;
-  final CoreProfile profile;
+  final UserProfile userProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -39,30 +40,63 @@ class BottomPreviewImage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF103B24),
-                      border: Border.all(
-                        color: const Color(0xFF09B45A),
-                        width: 1,
+                  if (userProfile.user.status?.online == true)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF103B24),
+                        border: Border.all(
+                          color: const Color(0xFF09B45A),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: 2.h,
-                      horizontal: 8.w,
-                    ),
-                    child: Text(
-                      'Active',
-                      style: TextStyles.prefText.copyWith(
-                        color: const Color(0xFF09B45A),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 2.h,
+                        horizontal: 8.w,
+                      ),
+                      child: Text(
+                        'Active',
+                        style: TextStyles.prefText.copyWith(
+                          color: const Color(0xFF09B45A),
+                          fontSize: AppUtils.scale(9.5.sp) ?? 12.sp,
+                        ),
+                      ),
+                    )
+                  else if (userProfile.user.createdAt != null &&
+                      DateTime.now()
+                              .difference(userProfile.user.createdAt!.toDate())
+                              .inDays <=
+                          7)
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 6.w, vertical: 1.5.h),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(6.r)),
+                        color: AppColors.buttonColor,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset(
+                            AppAssets.leaf,
+                            width: 14,
+                          ),
+                          addWidth(4),
+                          Text(
+                            'New',
+                            style: TextStyles.prefText.copyWith(
+                              color: Colors.white,
+                              fontSize: AppUtils.scale(9.5.sp) ?? 12.sp,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
                   Text(
                     "  ~ 22 mi away",
                     style: TextStyles.prefText.copyWith(
                       color: Colors.white,
+                      fontSize: AppUtils.scale(9.5.sp) ?? 12.sp,
                     ),
                   ),
                 ],
@@ -75,14 +109,14 @@ class BottomPreviewImage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "${profile.firstName ?? " "}, ",
+                        "${userProfile.user.firstName ?? " "}, ",
                         style: TextStyles.profileHead.copyWith(
                           fontSize: AppUtils.scale(23.sp) ?? 25.sp,
                           color: Colors.white,
                         ),
                       ),
                       Text(
-                        profile.dateOfBirth!.age.toString(),
+                        userProfile.preferences.dateOfBirth!.age.toString(),
                         style: TextStyles.profileHead.copyWith(
                           fontSize: AppUtils.scale(19.sp) ?? 21.sp,
                           fontWeight: FontWeight.w400,
@@ -116,11 +150,13 @@ class BottomPreviewImage extends StatelessWidget {
                     ),
                 ],
               ),
-              if (!showLess && profile.bio != null && profile.bio!.isNotEmpty)
+              if (!showLess &&
+                  userProfile.preferences.bio != null &&
+                  userProfile.preferences.bio!.isNotEmpty)
                 Padding(
                   padding: EdgeInsets.only(bottom: 4.r),
                   child: ReadMoreText(
-                    profile.bio!,
+                    userProfile.preferences.bio!,
                     trimLines: 2,
                     trimMode: TrimMode.Line,
                     textAlign: TextAlign.left,
@@ -150,53 +186,15 @@ class BottomPreviewImage extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: Padding(
-                          padding: EdgeInsets.only(top: 3.h), // 8
-                          child: profile.interests != null
-                              ? Wrap(
-                                  spacing: 8.w,
-                                  runSpacing: 8.h,
-                                  children:
-                                      profile.interests!.take(6).map((item) {
-                                    return Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8.r),
-                                            color: const Color(0xFF101010),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 6.r,
-                                            horizontal: 8.r,
-                                          ),
-                                          child: Text(
-                                            item,
-                                            style: TextStyles.hintText.copyWith(
-                                              fontSize: AppUtils.scale(10.sp),
-                                              color: AppColors.hintTextColor,
-                                            ),
-                                          ),
-                                        ),
-                                        // if (item.isSimilar)
-                                        //   Positioned(
-                                        //     top: -2,
-                                        //     right: -6,
-                                        //     child: SvgPicture.asset(
-                                        //       AppAssets.star,
-                                        //       width: 16.r,
-                                        //     ),
-                                        //   ),
-                                      ],
-                                    );
-                                  }).toList(),
-                                )
-                              : null),
+                      child: InterestsWidget(userProfile: userProfile),
                     ),
+                    addWidth(4),
                     GestureDetector(
                       onTap: () => Nav.push(
-                          context, PreviewProfileMore(index: activePage!)),
+                        context,
+                        UserProfilePreview(
+                            index: activePage!, userProfile: userProfile),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Transform.rotate(
@@ -220,7 +218,7 @@ class BottomPreviewImage extends StatelessWidget {
                       EdgeInsets.symmetric(horizontal: 4.w, vertical: 20.h),
                   child: PageIndicator(
                     activePage: activePage!,
-                    pageNo: profile.profilePics!.length,
+                    pageNo: userProfile.preferences.profilePics!.length,
                     height: 4,
                     activeColor: Colors.white,
                     inActiveColor: Colors.white.withOpacity(0.5),
@@ -234,11 +232,4 @@ class BottomPreviewImage extends StatelessWidget {
       ),
     );
   }
-}
-
-class Interest {
-  final String name;
-  final bool isSimilar;
-
-  Interest({required this.name, this.isSimilar = false});
 }

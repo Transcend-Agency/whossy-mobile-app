@@ -14,8 +14,8 @@ class MatchIconButton extends StatelessWidget {
     super.key,
     required this.onTap,
     required this.assetPath,
-    this.size = 38.0,
-    this.padding = 12.0,
+    this.size = 36.0,
+    this.padding = 10.0,
     this.backgroundColor = Colors.white,
     this.shadow,
   });

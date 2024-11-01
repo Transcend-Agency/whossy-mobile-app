@@ -22,7 +22,7 @@ class Logo extends StatelessWidget {
             addHeight(4),
             SvgPicture.asset(
               AppAssets.whossyColored,
-              width: 100,
+              width: 94,
             ),
           ],
         ),

@@ -14,11 +14,13 @@ class HeaderBar extends StatelessWidget {
     this.child,
     this.icon2,
     this.topPadding = 4, //8
+    this.iconSize = 18,
   });
 
   final String? icon;
   final String? icon2;
   final double topPadding;
+  final double iconSize;
   final VoidCallback? onIconTap;
   final VoidCallback? onIcon2Tap;
 
@@ -47,7 +49,7 @@ class HeaderBar extends StatelessWidget {
                         child: svgIcon(
                           icon!,
                           color: Colors.black,
-                          size: 18,
+                          size: iconSize,
                         ),
                       ),
                     ),

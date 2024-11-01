@@ -98,7 +98,7 @@ class Header extends StatelessWidget {
                     margin: const EdgeInsets.all(4),
                     child: SvgPicture.asset(
                       AppAssets.edit,
-                      height: 38.r,
+                      height: 36.r,
                     ),
                   ),
                 ),

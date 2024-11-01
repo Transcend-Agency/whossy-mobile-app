@@ -26,6 +26,9 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           (json['tokens'] as List<dynamic>?)?.map((e) => e as String).toList(),
       isVerified: json['is_verified'] as bool? ?? false,
       createdAt: AppUtils.timestampFromJson(json['created_at']),
+      status: json['status'] == null
+          ? null
+          : UserStatus.fromJson(json['status'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) {

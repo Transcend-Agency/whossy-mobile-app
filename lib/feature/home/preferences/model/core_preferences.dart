@@ -1,12 +1,15 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../common/utils/index.dart';
+import '../../tabs/matching/model/profile_base.dart';
 import 'generic_enum.dart';
 
 part 'core_preferences.g.dart';
+part 'core_preferences_utils.dart';
 
 @JsonSerializable()
-class CorePreferences {
+class CorePreferences implements ProfileBase {
+  // Relationship Preferences
   @JsonKey(
     name: "preference",
     toJson: enumToIndex,
@@ -14,6 +17,13 @@ class CorePreferences {
   )
   Preference? relationshipPreference;
 
+  @JsonKey(
+      name: "marital_status",
+      toJson: enumToIndex,
+      fromJson: indexToMaritalStatus)
+  MaritalStatus? maritalStatus;
+
+  // Personal Attributes
   @JsonKey(
     toJson: enumToIndex,
     fromJson: indexToSchool,
@@ -33,20 +43,7 @@ class CorePreferences {
   )
   Zodiac? zodiac;
 
-  @JsonKey(
-    name: "family_plans",
-    toJson: enumToIndex,
-    fromJson: indexToFutureFamilyPlans,
-  )
-  FutureFamilyPlans? futureFamilyPlans;
-
-  @JsonKey(
-    name: "communication_style",
-    toJson: enumToIndex,
-    fromJson: indexToCommunicationStyle,
-  )
-  CommunicationStyle? communicationStyle;
-
+  // Lifestyle Preferences
   @JsonKey(
     name: "smoke",
     toJson: enumToIndex,
@@ -61,7 +58,10 @@ class CorePreferences {
   )
   Drink? drinking;
 
-  @JsonKey(toJson: enumToIndex, fromJson: indexToWorkOut)
+  @JsonKey(
+    toJson: enumToIndex,
+    fromJson: indexToWorkOut,
+  )
   WorkOut? workout;
 
   @JsonKey(
@@ -71,18 +71,33 @@ class CorePreferences {
   )
   PetOwner? petOwner;
 
-  @JsonKey(toJson: enumToIndex, fromJson: indexToReligion)
+  // Beliefs and Values
+  @JsonKey(
+    toJson: enumToIndex,
+    fromJson: indexToReligion,
+  )
   Religion? religion;
 
-  @JsonKey(toJson: enumToIndex, fromJson: indexToDietary)
+  @JsonKey(
+    toJson: enumToIndex,
+    fromJson: indexToDietary,
+  )
   Dietary? dietary;
 
+  // Future Planning
   @JsonKey(
-    name: "marital_status",
+    name: "family_plans",
     toJson: enumToIndex,
-    fromJson: indexToMaritalStatus,
+    fromJson: indexToFutureFamilyPlans,
   )
-  MaritalStatus? maritalStatus;
+  FutureFamilyPlans? futureFamilyPlans;
+
+  @JsonKey(
+    name: "communication_style",
+    toJson: enumToIndex,
+    fromJson: indexToCommunicationStyle,
+  )
+  CommunicationStyle? communicationStyle;
 
   CorePreferences({
     this.relationshipPreference,
@@ -100,67 +115,57 @@ class CorePreferences {
     this.maritalStatus,
   });
 
-  GenericEnum? getValue(Type type) {
-    final selectedValues = <Type, GenericEnum?>{
-      Preference: relationshipPreference,
-      School: education,
-      LoveLanguage: loveLanguage,
-      Zodiac: zodiac,
-      FutureFamilyPlans: futureFamilyPlans,
-      CommunicationStyle: communicationStyle,
-      Smoke: smoker,
-      Drink: drinking,
-      WorkOut: workout,
-      PetOwner: petOwner,
-      Religion: religion,
-      Dietary: dietary,
-      MaritalStatus: maritalStatus,
-    };
+  // Methods for ProfileBase Interface
+  @override
+  String getSmoke() => smoker?.name ?? '';
+  @override
+  String getDrink() => drinking?.name ?? '';
+  @override
+  String getWorkOut() => workout?.name ?? '';
+  @override
+  String getPetOwner() => petOwner?.name ?? '';
+  @override
+  String getFutureFamilyPlans() => futureFamilyPlans?.name ?? '';
+  @override
+  String getCommunicationStyle() => communicationStyle?.name ?? '';
+  @override
+  String getLoveLanguage() => loveLanguage?.name ?? '';
+  @override
+  String getEducation() => education?.name ?? '';
+  @override
+  String getRelationshipPreference() => relationshipPreference?.name ?? '';
 
-    return selectedValues[type];
-  }
+  // Boolean Flags for Attributes Existence
+  @override
+  bool get isSmoker => smoker != null;
+  @override
+  bool get isDrinker => drinking != null;
+  @override
+  bool get isWorkout => workout != null;
+  @override
+  bool get isPetOwner => petOwner != null;
+  @override
+  bool get hasRelationshipPreference => relationshipPreference != null;
+  @override
+  bool get hasFutureFamilyPlans => futureFamilyPlans != null;
+  @override
+  bool get hasCommunicationStyle => communicationStyle != null;
+  @override
+  bool get hasLoveLanguage => loveLanguage != null;
+  @override
+  bool get hasEducation => education != null;
 
-  void setValue(GenericEnum value) {
-    if (value is Preference) {
-      relationshipPreference = value;
-    } else if (value is School) {
-      education = value;
-    } else if (value is LoveLanguage) {
-      loveLanguage = value;
-    } else if (value is Zodiac) {
-      zodiac = value;
-    } else if (value is FutureFamilyPlans) {
-      futureFamilyPlans = value;
-    } else if (value is CommunicationStyle) {
-      communicationStyle = value;
-    } else if (value is Smoke) {
-      smoker = value;
-    } else if (value is Drink) {
-      drinking = value;
-    } else if (value is WorkOut) {
-      workout = value;
-    } else if (value is PetOwner) {
-      petOwner = value;
-    } else if (value is Religion) {
-      religion = value;
-    } else if (value is Dietary) {
-      dietary = value;
-    } else if (value is MaritalStatus) {
-      maritalStatus = value;
-    } else {
-      // Do nothing
-    }
-  }
-
+  // JSON Serialization Methods
   factory CorePreferences.fromJson(Map<String, dynamic> json) =>
       _$CorePreferencesFromJson(json);
-
   Map<String, dynamic> toJson() => _$CorePreferencesToJson(this);
 
+  // String Representation
   @override
   String toString() {
     return 'CorePreferences(\n'
         '  relationshipPreference: $relationshipPreference,\n'
+        '  maritalStatus: $maritalStatus,\n'
         '  education: $education,\n'
         '  loveLanguage: $loveLanguage,\n'
         '  zodiac: $zodiac,\n'
@@ -171,15 +176,14 @@ class CorePreferences {
         '  workout: $workout,\n'
         '  petOwner: $petOwner,\n'
         '  religion: $religion,\n'
-        '  dietary: $dietary,\n'
-        '  maritalStatus: $maritalStatus\n'
+        '  dietary: $dietary\n'
         ')';
   }
 
+  // Equality and Hash Code Overrides
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-
     return other is CorePreferences &&
         other.relationshipPreference == relationshipPreference &&
         other.education == education &&
@@ -199,6 +203,7 @@ class CorePreferences {
   @override
   int get hashCode {
     return relationshipPreference.hashCode ^
+        maritalStatus.hashCode ^
         education.hashCode ^
         loveLanguage.hashCode ^
         zodiac.hashCode ^
@@ -209,7 +214,6 @@ class CorePreferences {
         workout.hashCode ^
         petOwner.hashCode ^
         religion.hashCode ^
-        dietary.hashCode ^
-        maritalStatus.hashCode;
+        dietary.hashCode;
   }
 }

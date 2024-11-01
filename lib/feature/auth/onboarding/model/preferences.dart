@@ -3,33 +3,38 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../../../common/utils/index.dart';
+import '../../../home/tabs/matching/model/profile_base.dart';
+
 part 'preferences.g.dart';
+part 'preferences_utils.dart';
 
 @JsonSerializable()
-class Preferences {
+class Preferences implements ProfileBase {
+  // Relationship preference and bio
   @JsonKey(name: 'preference')
   int? relationshipPref;
 
+  @JsonKey(name: 'bio')
+  String? bio;
+
+  // Match-related preferences
   int? meet;
-
-  @JsonKey(
-    name: 'date_of_birth',
-    fromJson: dateTimeFromJson,
-    toJson: dateTimeToJson,
-  )
-  DateTime? dateOfBirth;
-
   @JsonKey(name: 'distance')
   int? search;
+
+  // Core preferences (with JSON serialization)
+  @JsonKey(
+      name: 'date_of_birth', fromJson: dateTimeFromJson, toJson: dateTimeToJson)
+  DateTime? dateOfBirth;
 
   @JsonKey(name: 'interests')
   List<String>? ticks;
 
-  int? drink;
-
   @JsonKey(name: 'smoke')
   int? smoker;
 
+  int? drink;
   int? education;
 
   @JsonKey(name: "love_language")
@@ -39,9 +44,7 @@ class Preferences {
   int? communicationStyle;
 
   int? zodiac;
-
   int? religion;
-
   int? dietary;
 
   @JsonKey(name: "family_plans")
@@ -53,19 +56,14 @@ class Preferences {
   @JsonKey(name: "pet")
   int? petOwner;
 
-  @JsonKey(name: 'bio')
-  String? bio;
-
   @JsonKey(name: "marital_status")
   int? maritalStatus;
 
+  // Profile pictures
   @JsonKey(name: 'photos')
   List<String>? profilePics;
 
-  @JsonKey(
-    includeFromJson: false,
-    includeToJson: false,
-  )
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<File>? picFiles;
 
   Preferences({
@@ -74,8 +72,8 @@ class Preferences {
     this.dateOfBirth,
     this.search,
     this.ticks,
-    this.drink,
     this.smoker,
+    this.drink,
     this.education,
     this.loveLanguage,
     this.communicationStyle,
@@ -91,81 +89,75 @@ class Preferences {
     this.picFiles,
   });
 
-  void update({
-    int? relationshipPref,
-    int? meet,
-    DateTime? dateOfBirth,
-    int? search,
-    List<String>? ticks,
-    int? drink,
-    int? smoker,
-    int? education,
-    int? loveLanguage,
-    int? communicationStyle,
-    int? zodiac,
-    int? religion,
-    int? dietary,
-    int? futureFamilyPlans,
-    int? workOut,
-    int? petOwner,
-    String? bio,
-    int? maritalStatus,
-    List<String>? profilePics,
-    List<File>? picFiles,
-  }) {
-    if (relationshipPref != null) this.relationshipPref = relationshipPref;
-    if (meet != null) this.meet = meet;
-    if (dateOfBirth != null) this.dateOfBirth = dateOfBirth;
-    if (search != null) this.search = search;
-    if (ticks != null) this.ticks = ticks;
-    if (drink != null) this.drink = drink;
-    if (smoker != null) this.smoker = smoker;
-    if (education != null) this.education = education;
-    if (loveLanguage != null) this.loveLanguage = loveLanguage;
-    if (communicationStyle != null) {
-      this.communicationStyle = communicationStyle;
-    }
-    if (zodiac != null) this.zodiac = zodiac;
-    if (religion != null) this.religion = religion;
-    if (dietary != null) this.dietary = dietary;
-    if (futureFamilyPlans != null) this.futureFamilyPlans = futureFamilyPlans;
-    if (workOut != null) this.workOut = workOut;
-    if (petOwner != null) this.petOwner = petOwner;
-    if (bio != null) this.bio = bio;
-    if (maritalStatus != null) this.maritalStatus = maritalStatus;
-    if (profilePics != null) this.profilePics = profilePics;
-    if (picFiles != null) this.picFiles = picFiles;
-  }
+  // Implementations from ProfileBase
+  @override
+  String getSmoke() => indexToSmoke(smoker!)!.name;
+  @override
+  String getDrink() => indexToDrink(drink!)!.name;
+  @override
+  String getWorkOut() => indexToWorkOut(workOut!)!.name;
+  @override
+  String getPetOwner() => indexToPetOwner(petOwner!)!.name;
+  @override
+  String getFutureFamilyPlans() =>
+      indexToFutureFamilyPlans(futureFamilyPlans!)!.name;
+  @override
+  String getCommunicationStyle() =>
+      indexToCommunicationStyle(communicationStyle!)!.name;
+  @override
+  String getLoveLanguage() => indexToLoveLanguage(loveLanguage!)!.name;
+  @override
+  String getEducation() => indexToSchool(education!)!.name;
 
+  @override
+  String getRelationshipPreference() =>
+      indexToPreference(relationshipPref!)!.name;
+
+  // Boolean checks from ProfileBase
+  @override
+  bool get isSmoker => smoker != null;
+  @override
+  bool get isDrinker => drink != null;
+  @override
+  bool get isWorkout => workOut != null;
+  @override
+  bool get isPetOwner => petOwner != null;
+  @override
+  bool get hasFutureFamilyPlans => futureFamilyPlans != null;
+  @override
+  bool get hasCommunicationStyle => communicationStyle != null;
+  @override
+  bool get hasLoveLanguage => loveLanguage != null;
+  @override
+  bool get hasEducation => education != null;
+
+  @override
+  bool get hasRelationshipPreference => relationshipPref != null;
+
+  // JSON serialization and custom date handling
   factory Preferences.fromJson(Map<String, dynamic> json) =>
       _$PreferencesFromJson(json);
-
   Map<String, dynamic> toJson() => _$PreferencesToJson(this);
 
-  // Custom fromJson method for dateOfBirth
   static DateTime? dateTimeFromJson(dynamic json) {
-    if (json is Timestamp) {
-      return json.toDate();
-    } else if (json is String) {
-      return DateTime.parse(json);
-    }
+    if (json is Timestamp) return json.toDate();
+    if (json is String) return DateTime.parse(json);
     return null;
   }
 
-  // Custom toJson method for dateOfBirth
-  static dynamic dateTimeToJson(DateTime? date) {
-    return date != null ? Timestamp.fromDate(date) : null;
-  }
+  static dynamic dateTimeToJson(DateTime? date) =>
+      date != null ? Timestamp.fromDate(date) : null;
 
+  // String representation for debugging
   @override
   String toString() {
     return 'relationshipPref: $relationshipPref\n'
         'meet: $meet\n'
         'dateOfBirth: $dateOfBirth\n'
         'search: $search\n'
-        'ticks: ${ticks?.join(" ")}\n'
-        'drink: $drink\n'
+        'ticks: ${ticks?.join(", ")}\n'
         'smoker: $smoker\n'
+        'drink: $drink\n'
         'education: $education\n'
         'loveLanguage: $loveLanguage\n'
         'communicationStyle: $communicationStyle\n'
@@ -177,7 +169,7 @@ class Preferences {
         'petOwner: $petOwner\n'
         'bio: $bio\n'
         'maritalStatus: $maritalStatus\n'
-        'profilePics: ${profilePics?.join(" ")}\n'
-        'picFiles: ${picFiles?.map((file) => file.path).join(" ")}';
+        'profilePics: ${profilePics?.join(", ")}\n'
+        'picFiles: ${picFiles?.map((file) => file.path).join(", ")}';
   }
 }

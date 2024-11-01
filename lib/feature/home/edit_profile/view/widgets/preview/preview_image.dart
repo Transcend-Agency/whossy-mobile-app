@@ -6,6 +6,7 @@ import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/image_view.dart';
 import 'package:whossy_app/provider/providers.dart';
 
+import '../../../../../../constants/index.dart';
 import 'bottom_preview_image.dart';
 
 class PreviewImage extends StatefulWidget {
@@ -62,7 +63,10 @@ class _PreviewImageState extends State<PreviewImage> {
                         );
                       },
                     ),
-                    const ProfileShade(heightFactor: 0.35),
+                    ProfileShade(
+                      heightFactor: 0.35,
+                      gradient: AppColors.profileShade,
+                    ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: BottomPreviewImage(

@@ -26,7 +26,9 @@ class ChatRepository {
   void updateChatData(
       Message message, String chatId, WriteBatch batch, bool isConnected) {
     batch.update(
-        _chatFirestore.doc(chatId), Chat.updateChatData(message, isConnected));
+      _chatFirestore.doc(chatId),
+      Chat.updateChatData(message, isConnected),
+    );
   }
 
   Future<void> updatePhotosData({

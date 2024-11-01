@@ -40,6 +40,9 @@ class CoreProfile {
 
   List<String>? interests;
 
+  @JsonKey(name: 'country_of_origin')
+  final String? countryOfOrigin;
+
   static const List<String> validKeys = [
     "name",
     "birthday",
@@ -62,6 +65,7 @@ class CoreProfile {
     this.interests,
     this.weight,
     this.height,
+    this.countryOfOrigin,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -138,6 +142,7 @@ class CoreProfile {
         '  profilePics: $profilePics,\n'
         '  bio: $bio,\n'
         '  interests: $interests,\n'
+        '  countryOfOrigin: $countryOfOrigin,\n'
         '  weight $weight,\n'
         '  height $height,\n'
         ')';

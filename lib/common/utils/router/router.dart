@@ -33,6 +33,8 @@ class AppRouter extends RootStackRouter {
         // MAIN APP
         AutoRoute(page: HomeWrapper.page),
 
+        AutoRoute(page: UserProfilePreview.page),
+
         AutoRoute(page: PreferenceRoute.page),
         AutoRoute(page: InterestRoute.page),
 

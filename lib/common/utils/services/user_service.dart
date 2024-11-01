@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -44,9 +46,13 @@ class UserService {
 
     if (user == null) return;
 
-    await _userRef(user.uid).update({
-      'online': online,
-      'lastSeen': ServerValue.timestamp,
-    });
+    try {
+      await _userRef(user.uid).update({
+        'online': online,
+        'lastSeen': ServerValue.timestamp,
+      });
+    } catch (e) {
+      log('Online state update failed: $e');
+    }
   }
 }

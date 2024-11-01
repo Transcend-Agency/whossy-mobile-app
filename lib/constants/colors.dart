@@ -104,6 +104,15 @@ class AppColors {
     stops: const [0.0, 0.5, 1.0],
   );
 
+  static LinearGradient profileShade2 = const LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Colors.transparent,
+      Colors.black,
+    ],
+  );
+
   static LinearGradient likesAndMatchShade = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

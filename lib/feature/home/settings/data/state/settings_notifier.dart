@@ -8,6 +8,7 @@ import '../../model/settings_model.dart';
 class SettingsNotifier extends ChangeNotifier {
   final _settings = SettingsModel();
   final _authService = AuthenticationService();
+  final _userService = UserService();
 
   SettingsModel get settings => _settings;
 
@@ -29,6 +30,8 @@ class SettingsNotifier extends ChangeNotifier {
 
   Future<void> signOut(void Function(String) showSnackbar) async {
     try {
+      await _userService.updateUserStatus(false);
+
       await _authService.signOut();
     } catch (e) {
       showSnackbar(AppStrings.signOutFailure);

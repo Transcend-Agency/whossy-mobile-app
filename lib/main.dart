@@ -52,6 +52,7 @@ void main() async {
           },
         ),
         ChangeNotifierProvider(create: (_) => AdvancedSearchNotifier()),
+        ChangeNotifierProvider(create: (_) => MatchNotifier()),
       ],
       child: const Whossy(),
     ),
