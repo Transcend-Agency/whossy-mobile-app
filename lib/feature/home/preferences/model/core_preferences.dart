@@ -1,14 +1,14 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../common/utils/index.dart';
-import '../../tabs/matching/model/profile_base.dart';
+import '../../tabs/matching/model/profile_data.dart';
 import 'generic_enum.dart';
 
 part 'core_preferences.g.dart';
 part 'core_preferences_utils.dart';
 
 @JsonSerializable()
-class CorePreferences implements ProfileBase {
+class CorePreferences implements ProfileData {
   // Relationship Preferences
   @JsonKey(
     name: "preference",

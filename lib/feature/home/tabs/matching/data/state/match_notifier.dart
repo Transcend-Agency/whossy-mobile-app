@@ -118,4 +118,40 @@ class MatchNotifier with ChangeNotifier {
       showSnackbar(AppStrings.errorUnknown);
     }
   }
+
+  // Add a dislike
+  Future<void> addDislike(
+    String dislikedId, {
+    required void Function(String) showSnackbar,
+  }) async {
+    try {
+      await _likesRepository.addDislike(
+        dislikedId: dislikedId,
+        dislikerId: FirebaseAuth.instance.currentUser!.uid,
+      );
+    } on FirebaseException catch (e) {
+      handleFirebaseError(e, showSnackbar);
+    } catch (e) {
+      log('An error occurred when trying to dislike a profile');
+      showSnackbar(AppStrings.errorUnknown);
+    }
+  }
+
+  // Delete a dislike
+  Future<void> deleteDislike(
+    String dislikedId, {
+    required void Function(String) showSnackbar,
+  }) async {
+    try {
+      await _likesRepository.removeDislike(
+        dislikedId: dislikedId,
+        dislikerId: FirebaseAuth.instance.currentUser!.uid,
+      );
+    } on FirebaseException catch (e) {
+      handleFirebaseError(e, showSnackbar);
+    } catch (e) {
+      log('An error occurred when trying to undo a dislike');
+      showSnackbar(AppStrings.errorUnknown);
+    }
+  }
 }

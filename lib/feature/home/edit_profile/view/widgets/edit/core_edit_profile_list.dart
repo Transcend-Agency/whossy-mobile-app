@@ -18,7 +18,7 @@ class CoreEditProfileList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-       const AppDivider(),
+        const AppDivider(),
         Container(
           decoration: const BoxDecoration(color: AppColors.inputBackGround),
           padding: EdgeInsets.symmetric(horizontal: 14.r),
@@ -27,22 +27,21 @@ class CoreEditProfileList extends StatelessWidget {
               return ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: CoreProfile.validKeys.length - 2,
+                itemCount: CoreProfileUtils.validKeys.length - 2,
                 itemBuilder: (context, index) {
-                  String key = CoreProfile.validKeys[index];
+                  String key = CoreProfileUtils.validKeys[index];
                   return PreferenceTile(
                     text: key.toReadableFormat(),
                     onTap: handleTap(key, context, profile),
                     trailing: profile.getCoreValue(key),
-                    showDivider: index != CoreProfile.validKeys.length - 3,
+                    showDivider: index != CoreProfileUtils.validKeys.length - 3,
                   );
                 },
               );
             },
           ),
         ),
-         const AppDivider(),
-    
+        const AppDivider(),
       ],
     );
   }

@@ -6,8 +6,9 @@ import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/image_view.dart';
 import 'package:whossy_app/provider/providers.dart';
 
+import '../../../../../../common/utils/router/router.dart';
+import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
-import 'bottom_preview_image.dart';
 
 class PreviewImage extends StatefulWidget {
   const PreviewImage({super.key});
@@ -69,9 +70,14 @@ class _PreviewImageState extends State<PreviewImage> {
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: BottomPreviewImage(
-                        profile: profile,
+                      child: ProfileFooterScaffold(
+                        data: profile,
+                        isSameUser: true,
                         activePage: _activePage,
+                        onTap: (context, index) => Nav.push(
+                          context,
+                          EditProfilePreview(index: index),
+                        ),
                       ),
                     ),
                   ],

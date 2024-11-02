@@ -29,7 +29,7 @@ class ProfileDetailsCard extends StatelessWidget {
       ),
       padding: EdgeInsets.symmetric(
         vertical: 8.h,
-        horizontal: 12.w,
+        horizontal: 10.w,
       ),
       margin: EdgeInsets.only(bottom: 14.h),
       child: Column(

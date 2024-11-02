@@ -149,7 +149,7 @@ class EditProfileNotifier extends ChangeNotifier {
       final coreProfileDiff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
 
       // Iterate through keysToTransfer and transfer matching key-value pairs
-      for (final key in CoreProfile.transferKeys) {
+      for (final key in CoreProfileUtils.transferKeys) {
         if (coreProfileDiff.containsKey(key)) {
           corePrefsDiff[key] = coreProfileDiff.remove(key);
         }

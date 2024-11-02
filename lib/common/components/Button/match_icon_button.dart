@@ -5,8 +5,8 @@ import 'package:whossy_app/common/styles/component_style.dart';
 class MatchIconButton extends StatelessWidget {
   final VoidCallback onTap;
   final String assetPath;
-  final double size;
-  final double padding;
+  final double? size;
+  final double? padding;
   final Color backgroundColor;
   final List<BoxShadow>? shadow;
 
@@ -14,8 +14,8 @@ class MatchIconButton extends StatelessWidget {
     super.key,
     required this.onTap,
     required this.assetPath,
-    this.size = 36.0,
-    this.padding = 10.0,
+    this.size,
+    this.padding,
     this.backgroundColor = Colors.white,
     this.shadow,
   });
@@ -25,7 +25,7 @@ class MatchIconButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(padding),
+        padding: EdgeInsets.all(padding ?? 10),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: backgroundColor,
@@ -33,7 +33,7 @@ class MatchIconButton extends StatelessWidget {
         ),
         child: Image.asset(
           assetPath,
-          width: size.r,
+          width: (size ?? 36).r,
         ),
       ),
     );

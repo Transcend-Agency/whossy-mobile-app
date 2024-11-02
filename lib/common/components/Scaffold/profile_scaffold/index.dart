@@ -1,2 +1,2 @@
-export './profile_details_scaffold.dart';
-export './profile_view_scaffold.dart';
+export './profile_details_scaffold.dart' hide Interests;
+export './profile_footer_scaffold.dart' hide Interests;

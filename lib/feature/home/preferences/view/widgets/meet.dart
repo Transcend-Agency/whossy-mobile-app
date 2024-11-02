@@ -1,47 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/index.dart';
 import 'package:whossy_app/feature/home/preferences/model/other_preferences.dart';
-import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../common/components/index.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/onboarding/data/source/meet_data.dart';
 import '../../../../auth/onboarding/model/meet_model.dart';
+import '../../data/state/search_preferences_notifier.dart';
 
-class MeetComponent<T extends SearchPreferencesNotifier>
-    extends StatefulWidget {
+class MeetComponent<T extends SearchPreferencesNotifier> extends HookWidget {
   const MeetComponent({super.key});
 
   @override
-  State<MeetComponent<T>> createState() => _MeetComponentState();
-}
-
-class _MeetComponentState<T extends SearchPreferencesNotifier>
-    extends State<MeetComponent<T>> {
-  late T _notifier;
-  Meet? meet;
-
-  bool _hasUpdatedMeet = false;
-
-  @override
-  void initState() {
-    _notifier = context.read<T>();
-
-    super.initState();
-  }
-
-  void onChanged(Meet? newValue) {
-    setState(() => meet = newValue);
-
-    _notifier.updatePreferences(meet: newValue?.index);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final notifier = context.read<T>();
+    final meet = useState<Meet?>(null);
+    final hasUpdatedMeet = useState(false);
+
+    void onChanged(Meet? newValue) {
+      meet.value = newValue;
+      notifier.updatePreferences(meet: newValue?.index);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -60,12 +45,9 @@ class _MeetComponentState<T extends SearchPreferencesNotifier>
               Selector<T, OtherPreferences?>(
                 selector: (_, notifier) => notifier.otherPreferences,
                 builder: (_, prefs, __) {
-                  if (prefs != null) {
-                    if (!_hasUpdatedMeet) {
-                      meet = Meet.values[prefs.meet ?? 2];
-
-                      _hasUpdatedMeet = true;
-                    }
+                  if (prefs != null && !hasUpdatedMeet.value) {
+                    meet.value = Meet.values[prefs.meet ?? 2];
+                    hasUpdatedMeet.value = true;
                   }
                   return AppAnimatedSwitcher(
                     child: prefs == null
@@ -75,8 +57,8 @@ class _MeetComponentState<T extends SearchPreferencesNotifier>
                             runSpacing: 8.h,
                             children: List.generate(3, (index) {
                               return ShimmerWidget.rectangular(
-                                height: 25.h,
-                                width: 88.w,
+                                height: 22.h,
+                                width: 62.w,
                                 border: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.r),
                                 ),
@@ -88,7 +70,10 @@ class _MeetComponentState<T extends SearchPreferencesNotifier>
                             spacing: 12.w,
                             runSpacing: 8.h,
                             children: meetData
-                                .map((_) => _buildGenderChip(_, onChanged))
+                                .map(
+                                  (data) => _buildGenderChip(
+                                      data, onChanged, meet.value),
+                                )
                                 .toList(),
                           ),
                   );
@@ -105,30 +90,28 @@ class _MeetComponentState<T extends SearchPreferencesNotifier>
   Widget _buildGenderChip<U extends SearchPreferencesNotifier>(
     MeetModel data,
     void Function(Meet?) onChanged,
+    Meet? selectedMeet,
   ) {
     return GenderChip<Meet?>(
       value: data.value,
-      groupValue: meet,
+      groupValue: selectedMeet,
       onChanged: onChanged,
       title: data.value.name,
       leadingWidget: data.icon != null
           ? Icon(
               data.icon,
-              size: 24.r,
-              color: data.value == meet ? Colors.white : null,
+              size: 25,
+              color: data.value == selectedMeet ? Colors.white : null,
             )
           : Padding(
-              padding: const EdgeInsets.only(right: 3, left: 2),
-              child: Transform.scale(
-                scale: 0.85,
-                child: SvgPicture.asset(
-                  data.asset!,
-                  width: 20.r,
-                  height: 20.r,
-                  colorFilter: ColorFilter.mode(
-                    data.value == meet ? Colors.white : Colors.black,
-                    BlendMode.srcIn,
-                  ),
+              padding: const EdgeInsets.only(right: 4, left: 2),
+              child: SvgPicture.asset(
+                data.asset!,
+                width: 18,
+                height: 18,
+                colorFilter: ColorFilter.mode(
+                  data.value == selectedMeet ? Colors.white : Colors.black,
+                  BlendMode.srcIn,
                 ),
               ),
             ),

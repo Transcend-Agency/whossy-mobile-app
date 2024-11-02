@@ -38,17 +38,17 @@ Map<String, dynamic> _$CorePreferencesToJson(CorePreferences instance) {
   }
 
   writeNotNull('preference', enumToIndex(instance.relationshipPreference));
+  writeNotNull('marital_status', enumToIndex(instance.maritalStatus));
   writeNotNull('education', enumToIndex(instance.education));
   writeNotNull('love_language', enumToIndex(instance.loveLanguage));
   writeNotNull('zodiac', enumToIndex(instance.zodiac));
-  writeNotNull('family_plans', enumToIndex(instance.futureFamilyPlans));
-  writeNotNull('communication_style', enumToIndex(instance.communicationStyle));
   writeNotNull('smoke', enumToIndex(instance.smoker));
   writeNotNull('drink', enumToIndex(instance.drinking));
   writeNotNull('workout', enumToIndex(instance.workout));
   writeNotNull('pet', enumToIndex(instance.petOwner));
   writeNotNull('religion', enumToIndex(instance.religion));
   writeNotNull('dietary', enumToIndex(instance.dietary));
-  writeNotNull('marital_status', enumToIndex(instance.maritalStatus));
+  writeNotNull('family_plans', enumToIndex(instance.futureFamilyPlans));
+  writeNotNull('communication_style', enumToIndex(instance.communicationStyle));
   return val;
 }

@@ -3,28 +3,34 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
-import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
+import 'package:whossy_app/feature/home/tabs/matching/model/profile_data_footer.dart';
 
-import '../../../../../../common/components/index.dart';
-import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../common/utils/index.dart';
-import '../../../../../../common/utils/router/router.gr.dart';
-import '../../../../../../constants/index.dart';
-import '../../model/user_profile.dart';
-import 'interests_widget.dart';
+import '../../../../constants/index.dart';
+import '../../../../provider/providers.dart';
+import '../../../styles/text_style.dart';
+import '../../../utils/index.dart';
+import '../../index.dart';
 
-class BottomProfilePreview extends StatelessWidget {
-  const BottomProfilePreview({
+typedef TapCallback = void Function(BuildContext context, int index);
+
+class ProfileFooterScaffold extends StatelessWidget {
+  const ProfileFooterScaffold({
     super.key,
     this.showLess = false,
-    required this.userProfile,
+    this.isSameUser = false,
     this.activePage,
-  });
+    required this.data,
+    this.onTap,
+  }) : assert(showLess && onTap == null || !showLess && onTap != null,
+            'onTap must be null when showLess is true, and must not be null when showLess is false.'); // Assign the callback after the assertion
 
   final bool showLess;
   final int? activePage;
-  final UserProfile userProfile;
+  final bool isSameUser;
+  final TapCallback? onTap;
+  final ProfileDataFooter data;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +46,7 @@ class BottomProfilePreview extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  if (userProfile.user.status?.online == true)
+                  if (data.isOnline)
                     Container(
                       decoration: BoxDecoration(
                         color: const Color(0xFF103B24),
@@ -62,11 +68,7 @@ class BottomProfilePreview extends StatelessWidget {
                         ),
                       ),
                     )
-                  else if (userProfile.user.createdAt != null &&
-                      DateTime.now()
-                              .difference(userProfile.user.createdAt!.toDate())
-                              .inDays <=
-                          7)
+                  else if (data.newUser ?? false)
                     Container(
                       padding: EdgeInsets.symmetric(
                           horizontal: 6.w, vertical: 1.5.h),
@@ -109,24 +111,25 @@ class BottomProfilePreview extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        "${userProfile.user.firstName ?? " "}, ",
+                        "${data.name}, ",
                         style: TextStyles.profileHead.copyWith(
                           fontSize: AppUtils.scale(23.sp) ?? 25.sp,
                           color: Colors.white,
                         ),
                       ),
+                      // addWidth(6),
                       Text(
-                        userProfile.preferences.dateOfBirth!.age.toString(),
+                        "${data.userAge}",
                         style: TextStyles.profileHead.copyWith(
                           fontSize: AppUtils.scale(19.sp) ?? 21.sp,
                           fontWeight: FontWeight.w400,
                           color: Colors.white,
                         ),
                       ),
-                      addWidth(10),
+                      addWidth(6),
                       SvgPicture.asset(
                         AppAssets.tick,
-                        width: 24,
+                        width: 23,
                       ),
                     ],
                   ),
@@ -150,13 +153,11 @@ class BottomProfilePreview extends StatelessWidget {
                     ),
                 ],
               ),
-              if (!showLess &&
-                  userProfile.preferences.bio != null &&
-                  userProfile.preferences.bio!.isNotEmpty)
+              if (!showLess && data.userBio != null && data.userBio!.isNotEmpty)
                 Padding(
-                  padding: EdgeInsets.only(bottom: 4.r),
+                  padding: EdgeInsets.only(bottom: 8.r),
                   child: ReadMoreText(
-                    userProfile.preferences.bio!,
+                    data.userBio!,
                     trimLines: 2,
                     trimMode: TrimMode.Line,
                     textAlign: TextAlign.left,
@@ -185,16 +186,20 @@ class BottomProfilePreview extends StatelessWidget {
                             Colors.white, BlendMode.srcIn),
                       ),
                     ),
-                    Expanded(
-                      child: InterestsWidget(userProfile: userProfile),
-                    ),
+                    if (data.userInterests.isNotEmpty)
+                      Expanded(
+                        child: Interests(
+                          interests: data.userInterests,
+                          isSameUser: isSameUser,
+                        ),
+                      ),
                     addWidth(4),
                     GestureDetector(
-                      onTap: () => Nav.push(
-                        context,
-                        UserProfilePreview(
-                            index: activePage!, userProfile: userProfile),
-                      ),
+                      onTap: () {
+                        if (onTap != null && activePage != null) {
+                          onTap!(context, activePage!);
+                        }
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Transform.rotate(
@@ -218,7 +223,7 @@ class BottomProfilePreview extends StatelessWidget {
                       EdgeInsets.symmetric(horizontal: 4.w, vertical: 20.h),
                   child: PageIndicator(
                     activePage: activePage!,
-                    pageNo: userProfile.preferences.profilePics!.length,
+                    pageNo: data.pictures.length,
                     height: 4,
                     activeColor: Colors.white,
                     inActiveColor: Colors.white.withOpacity(0.5),
@@ -229,6 +234,67 @@ class BottomProfilePreview extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class Interests extends StatelessWidget {
+  const Interests(
+      {super.key, required this.interests, required this.isSameUser});
+
+  final List<String> interests;
+  final bool isSameUser;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 3.h),
+      child: Selector<EditProfileNotifier, List<String>?>(
+        selector: (_, editProfile) => editProfile.coreProfile?.interests,
+        builder: (_, interests, __) {
+          return Wrap(
+            spacing: 8.w,
+            runSpacing: 8.h,
+            children: this.interests.take(6).map((item) {
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      color: const Color(0xFF101010),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 6.r,
+                      horizontal: 8.r,
+                    ),
+                    child: Text(
+                      item,
+                      style: TextStyles.hintText.copyWith(
+                        fontSize: AppUtils.scale(10.sp),
+                        color: AppColors.hintTextColor,
+                      ),
+                    ),
+                  ),
+
+                  // Show star if item exists in interests
+                  if (!isSameUser &&
+                      interests != null &&
+                      interests.contains(item))
+                    Positioned(
+                      top: -2,
+                      right: -6,
+                      child: SvgPicture.asset(
+                        AppAssets.star,
+                        width: 14,
+                      ),
+                    ),
+                ],
+              );
+            }).toList(),
+          );
+        },
       ),
     );
   }

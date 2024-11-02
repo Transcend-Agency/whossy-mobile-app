@@ -1,5 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -14,39 +15,29 @@ import 'widgets/_.dart';
 typedef _Notifier = PreferencesNotifier;
 
 @RoutePage()
-class PreferenceScreen extends StatefulWidget {
+class PreferenceScreen extends HookWidget {
   const PreferenceScreen({super.key});
 
   @override
-  State<PreferenceScreen> createState() => _PreferenceScreenState();
-}
-
-class _PreferenceScreenState extends State<PreferenceScreen> {
-  late _Notifier _notifier;
-
-  @override
-  void initState() {
-    _notifier = context.read<_Notifier>();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _notifier.getFilters(showSnackbar: showSnackbar);
-    });
-
-    super.initState();
-  }
-
-  void onSaveTap() {
-    _notifier.saveFilters(showSnackbar: showSnackbar);
-  }
-
-  showSnackbar(String message) {
-    if (mounted) {
-      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final notifier = context.read<_Notifier>();
+
+    void showSnackbar(String message) {
+      if (context.mounted) {
+        showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+      }
+    }
+
+    // Use effect to replace initState
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        notifier.getFilters(showSnackbar: showSnackbar);
+      });
+      return null; // no cleanup needed
+    }, []);
+
+    void onSaveTap() => notifier.saveFilters(showSnackbar: showSnackbar);
+
     return AppScaffold(
       useScrollView: true,
       appBar: CustomAppBar(

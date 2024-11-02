@@ -33,7 +33,7 @@ class AppRouter extends RootStackRouter {
         // MAIN APP
         AutoRoute(page: HomeWrapper.page),
 
-        AutoRoute(page: UserProfilePreview.page),
+        AutoRoute(page: MatchingProfilePreview.page),
 
         AutoRoute(page: PreferenceRoute.page),
         AutoRoute(page: InterestRoute.page),
@@ -43,7 +43,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: EditProfile.page),
         AutoRoute(page: NameEditProfile.page),
         AutoRoute(page: PreviewProfile.page),
-        AutoRoute(page: PreviewProfileMore.page),
+        AutoRoute(page: EditProfilePreview.page),
         AutoRoute(page: SafetyGuide.page),
         AutoRoute(page: SubscriptionPlans.page),
 
@@ -56,7 +56,7 @@ class AppRouter extends RootStackRouter {
 
         // Explore / Tab 2
         AutoRoute(page: AdvancedSearchRoute.page),
-        AutoRoute(page: MatchingRoute.page),
+        AutoRoute(page: ExploreProfilePreview.page),
       ];
 }
 

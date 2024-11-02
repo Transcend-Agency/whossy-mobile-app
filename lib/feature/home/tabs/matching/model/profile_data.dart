@@ -1,4 +1,4 @@
-abstract class ProfileBase {
+abstract class ProfileData {
   String getSmoke();
   String getDrink();
   String getWorkOut();

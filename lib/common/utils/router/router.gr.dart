@@ -10,60 +10,60 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i31;
 import 'package:flutter/material.dart' as _i32;
-import 'package:image_picker/image_picker.dart' as _i33;
-import 'package:whossy_app/feature/auth/login/view/login_screen.dart' as _i7;
+import 'package:image_picker/image_picker.dart' as _i35;
+import 'package:whossy_app/feature/auth/login/view/login_screen.dart' as _i9;
 import 'package:whossy_app/feature/auth/login/view/phone_number_screen.dart'
-    as _i11;
-import 'package:whossy_app/feature/auth/login/view/reset_screen.dart' as _i15;
+    as _i13;
+import 'package:whossy_app/feature/auth/login/view/reset_screen.dart' as _i16;
 import 'package:whossy_app/feature/auth/login/view/reset_success_screen.dart'
-    as _i16;
+    as _i17;
 import 'package:whossy_app/feature/auth/login/view/verification_code_screen.dart'
     as _i28;
 import 'package:whossy_app/feature/auth/onboarding/view/wrapper.dart' as _i30;
-import 'package:whossy_app/feature/auth/sign_up/view/create.dart' as _i19;
-import 'package:whossy_app/feature/auth/sign_up/view/gender.dart' as _i20;
-import 'package:whossy_app/feature/auth/sign_up/view/name.dart' as _i21;
-import 'package:whossy_app/feature/auth/sign_up/view/phone.dart' as _i22;
-import 'package:whossy_app/feature/auth/sign_up/view/verification.dart' as _i23;
+import 'package:whossy_app/feature/auth/sign_up/view/create.dart' as _i20;
+import 'package:whossy_app/feature/auth/sign_up/view/gender.dart' as _i21;
+import 'package:whossy_app/feature/auth/sign_up/view/name.dart' as _i22;
+import 'package:whossy_app/feature/auth/sign_up/view/phone.dart' as _i23;
+import 'package:whossy_app/feature/auth/sign_up/view/verification.dart' as _i24;
 import 'package:whossy_app/feature/auth/sign_up/view/welcome.dart' as _i29;
 import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart'
-    as _i34;
+    as _i33;
 import 'package:whossy_app/feature/home/edit_profile/view/edit_profile.dart'
     as _i3;
+import 'package:whossy_app/feature/home/edit_profile/view/edit_profile_preview.dart'
+    as _i4;
 import 'package:whossy_app/feature/home/edit_profile/view/preview_profile.dart'
-    as _i13;
-import 'package:whossy_app/feature/home/edit_profile/view/preview_profile_more.dart'
-    as _i14;
+    as _i15;
 import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/name_edit_profile.dart'
-    as _i10;
-import 'package:whossy_app/feature/home/home_wrapper.dart' as _i4;
-import 'package:whossy_app/feature/home/preferences/model/core_preferences.dart'
-    as _i35;
-import 'package:whossy_app/feature/home/preferences/view/interest_screen.dart'
-    as _i6;
-import 'package:whossy_app/feature/home/preferences/view/preference_screen.dart'
     as _i12;
-import 'package:whossy_app/feature/home/settings/view/settings.dart' as _i18;
+import 'package:whossy_app/feature/home/home_wrapper.dart' as _i6;
+import 'package:whossy_app/feature/home/preferences/model/core_preferences.dart'
+    as _i34;
+import 'package:whossy_app/feature/home/preferences/view/interest_screen.dart'
+    as _i8;
+import 'package:whossy_app/feature/home/preferences/view/preference_screen.dart'
+    as _i14;
+import 'package:whossy_app/feature/home/settings/view/settings.dart' as _i19;
 import 'package:whossy_app/feature/home/tabs/chat/view/chat_room/chat_room.dart'
     as _i2;
 import 'package:whossy_app/feature/home/tabs/chat/view/image_preview/image_preview.dart'
-    as _i5;
+    as _i7;
 import 'package:whossy_app/feature/home/tabs/explore/view/advanced_search_screen.dart'
     as _i1;
-import 'package:whossy_app/feature/home/tabs/explore/view/matching_screen.dart'
-    as _i8;
+import 'package:whossy_app/feature/home/tabs/explore/view/explore_profile_preview.dart'
+    as _i5;
 import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/more_info.dart'
-    as _i9;
+    as _i11;
 import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart'
     as _i36;
-import 'package:whossy_app/feature/home/tabs/matching/view/widgets/user_profile_preview.dart'
-    as _i27;
+import 'package:whossy_app/feature/home/tabs/matching/view/widgets/matching_profile_preview.dart'
+    as _i10;
 import 'package:whossy_app/feature/home/tabs/profile/view/safety_guide.dart'
-    as _i17;
+    as _i18;
 import 'package:whossy_app/feature/home/tabs/profile/view/subscription_plans.dart'
-    as _i26;
-import 'package:whossy_app/feature/splash/splash.dart' as _i24;
-import 'package:whossy_app/feature/splash/splash_screen.dart' as _i25;
+    as _i27;
+import 'package:whossy_app/feature/splash/splash.dart' as _i25;
+import 'package:whossy_app/feature/splash/splash_screen.dart' as _i26;
 
 /// generated route for
 /// [_i1.AdvancedSearchScreen]
@@ -123,7 +123,106 @@ class EditProfile extends _i31.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i4.HomeWrapper]
+/// [_i4.EditProfilePreview]
+class EditProfilePreview extends _i31.PageRouteInfo<EditProfilePreviewArgs> {
+  EditProfilePreview({
+    _i32.Key? key,
+    required int index,
+    List<_i31.PageRouteInfo>? children,
+  }) : super(
+          EditProfilePreview.name,
+          args: EditProfilePreviewArgs(
+            key: key,
+            index: index,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'EditProfilePreview';
+
+  static _i31.PageInfo page = _i31.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<EditProfilePreviewArgs>();
+      return _i4.EditProfilePreview(
+        key: args.key,
+        index: args.index,
+      );
+    },
+  );
+}
+
+class EditProfilePreviewArgs {
+  const EditProfilePreviewArgs({
+    this.key,
+    required this.index,
+  });
+
+  final _i32.Key? key;
+
+  final int index;
+
+  @override
+  String toString() {
+    return 'EditProfilePreviewArgs{key: $key, index: $index}';
+  }
+}
+
+/// generated route for
+/// [_i5.ExploreProfilePreview]
+class ExploreProfilePreview
+    extends _i31.PageRouteInfo<ExploreProfilePreviewArgs> {
+  ExploreProfilePreview({
+    _i32.Key? key,
+    required _i33.CoreProfile profile,
+    required _i34.CorePreferences preferences,
+    List<_i31.PageRouteInfo>? children,
+  }) : super(
+          ExploreProfilePreview.name,
+          args: ExploreProfilePreviewArgs(
+            key: key,
+            profile: profile,
+            preferences: preferences,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ExploreProfilePreview';
+
+  static _i31.PageInfo page = _i31.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<ExploreProfilePreviewArgs>();
+      return _i5.ExploreProfilePreview(
+        key: args.key,
+        profile: args.profile,
+        preferences: args.preferences,
+      );
+    },
+  );
+}
+
+class ExploreProfilePreviewArgs {
+  const ExploreProfilePreviewArgs({
+    this.key,
+    required this.profile,
+    required this.preferences,
+  });
+
+  final _i32.Key? key;
+
+  final _i33.CoreProfile profile;
+
+  final _i34.CorePreferences preferences;
+
+  @override
+  String toString() {
+    return 'ExploreProfilePreviewArgs{key: $key, profile: $profile, preferences: $preferences}';
+  }
+}
+
+/// generated route for
+/// [_i6.HomeWrapper]
 class HomeWrapper extends _i31.PageRouteInfo<void> {
   const HomeWrapper({List<_i31.PageRouteInfo>? children})
       : super(
@@ -136,17 +235,17 @@ class HomeWrapper extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i4.HomeWrapper();
+      return const _i6.HomeWrapper();
     },
   );
 }
 
 /// generated route for
-/// [_i5.ImagePreview]
+/// [_i7.ImagePreview]
 class ImagePreview extends _i31.PageRouteInfo<ImagePreviewArgs> {
   ImagePreview({
     _i32.Key? key,
-    required List<_i33.XFile> images,
+    required List<_i35.XFile> images,
     required String? text,
     List<_i31.PageRouteInfo>? children,
   }) : super(
@@ -165,7 +264,7 @@ class ImagePreview extends _i31.PageRouteInfo<ImagePreviewArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<ImagePreviewArgs>();
-      return _i5.ImagePreview(
+      return _i7.ImagePreview(
         key: args.key,
         images: args.images,
         text: args.text,
@@ -183,7 +282,7 @@ class ImagePreviewArgs {
 
   final _i32.Key? key;
 
-  final List<_i33.XFile> images;
+  final List<_i35.XFile> images;
 
   final String? text;
 
@@ -194,7 +293,7 @@ class ImagePreviewArgs {
 }
 
 /// generated route for
-/// [_i6.InterestScreen]
+/// [_i8.InterestScreen]
 class InterestRoute extends _i31.PageRouteInfo<InterestRouteArgs> {
   InterestRoute({
     _i32.Key? key,
@@ -216,7 +315,7 @@ class InterestRoute extends _i31.PageRouteInfo<InterestRouteArgs> {
     builder: (data) {
       final args = data.argsAs<InterestRouteArgs>(
           orElse: () => const InterestRouteArgs());
-      return _i6.InterestScreen(
+      return _i8.InterestScreen(
         key: args.key,
         initialValues: args.initialValues,
       );
@@ -241,7 +340,7 @@ class InterestRouteArgs {
 }
 
 /// generated route for
-/// [_i7.LoginScreen]
+/// [_i9.LoginScreen]
 class LoginRoute extends _i31.PageRouteInfo<void> {
   const LoginRoute({List<_i31.PageRouteInfo>? children})
       : super(
@@ -254,65 +353,66 @@ class LoginRoute extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i7.LoginScreen();
+      return const _i9.LoginScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i8.MatchingScreen]
-class MatchingRoute extends _i31.PageRouteInfo<MatchingRouteArgs> {
-  MatchingRoute({
+/// [_i10.MatchingProfilePreview]
+class MatchingProfilePreview
+    extends _i31.PageRouteInfo<MatchingProfilePreviewArgs> {
+  MatchingProfilePreview({
     _i32.Key? key,
-    required _i34.CoreProfile profile,
-    required _i35.CorePreferences preferences,
+    required int index,
+    required _i36.UserProfile userProfile,
     List<_i31.PageRouteInfo>? children,
   }) : super(
-          MatchingRoute.name,
-          args: MatchingRouteArgs(
+          MatchingProfilePreview.name,
+          args: MatchingProfilePreviewArgs(
             key: key,
-            profile: profile,
-            preferences: preferences,
+            index: index,
+            userProfile: userProfile,
           ),
           initialChildren: children,
         );
 
-  static const String name = 'MatchingRoute';
+  static const String name = 'MatchingProfilePreview';
 
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<MatchingRouteArgs>();
-      return _i8.MatchingScreen(
+      final args = data.argsAs<MatchingProfilePreviewArgs>();
+      return _i10.MatchingProfilePreview(
         key: args.key,
-        profile: args.profile,
-        preferences: args.preferences,
+        index: args.index,
+        userProfile: args.userProfile,
       );
     },
   );
 }
 
-class MatchingRouteArgs {
-  const MatchingRouteArgs({
+class MatchingProfilePreviewArgs {
+  const MatchingProfilePreviewArgs({
     this.key,
-    required this.profile,
-    required this.preferences,
+    required this.index,
+    required this.userProfile,
   });
 
   final _i32.Key? key;
 
-  final _i34.CoreProfile profile;
+  final int index;
 
-  final _i35.CorePreferences preferences;
+  final _i36.UserProfile userProfile;
 
   @override
   String toString() {
-    return 'MatchingRouteArgs{key: $key, profile: $profile, preferences: $preferences}';
+    return 'MatchingProfilePreviewArgs{key: $key, index: $index, userProfile: $userProfile}';
   }
 }
 
 /// generated route for
-/// [_i9.MoreInfoScreen]
+/// [_i11.MoreInfoScreen]
 class MoreInfoRoute extends _i31.PageRouteInfo<void> {
   const MoreInfoRoute({List<_i31.PageRouteInfo>? children})
       : super(
@@ -325,13 +425,13 @@ class MoreInfoRoute extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i9.MoreInfoScreen();
+      return const _i11.MoreInfoScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i10.NameEditProfile]
+/// [_i12.NameEditProfile]
 class NameEditProfile extends _i31.PageRouteInfo<void> {
   const NameEditProfile({List<_i31.PageRouteInfo>? children})
       : super(
@@ -344,13 +444,13 @@ class NameEditProfile extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i10.NameEditProfile();
+      return const _i12.NameEditProfile();
     },
   );
 }
 
 /// generated route for
-/// [_i11.PhoneNumberScreen]
+/// [_i13.PhoneNumberScreen]
 class PhoneNumberRoute extends _i31.PageRouteInfo<PhoneNumberRouteArgs> {
   PhoneNumberRoute({
     _i32.Key? key,
@@ -372,7 +472,7 @@ class PhoneNumberRoute extends _i31.PageRouteInfo<PhoneNumberRouteArgs> {
     builder: (data) {
       final args = data.argsAs<PhoneNumberRouteArgs>(
           orElse: () => const PhoneNumberRouteArgs());
-      return _i11.PhoneNumberScreen(
+      return _i13.PhoneNumberScreen(
         key: args.key,
         signIn: args.signIn,
       );
@@ -397,7 +497,7 @@ class PhoneNumberRouteArgs {
 }
 
 /// generated route for
-/// [_i12.PreferenceScreen]
+/// [_i14.PreferenceScreen]
 class PreferenceRoute extends _i31.PageRouteInfo<void> {
   const PreferenceRoute({List<_i31.PageRouteInfo>? children})
       : super(
@@ -410,13 +510,13 @@ class PreferenceRoute extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i12.PreferenceScreen();
+      return const _i14.PreferenceScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i13.PreviewProfile]
+/// [_i15.PreviewProfile]
 class PreviewProfile extends _i31.PageRouteInfo<void> {
   const PreviewProfile({List<_i31.PageRouteInfo>? children})
       : super(
@@ -429,59 +529,13 @@ class PreviewProfile extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i13.PreviewProfile();
+      return const _i15.PreviewProfile();
     },
   );
 }
 
 /// generated route for
-/// [_i14.PreviewProfileMore]
-class PreviewProfileMore extends _i31.PageRouteInfo<PreviewProfileMoreArgs> {
-  PreviewProfileMore({
-    _i32.Key? key,
-    required int index,
-    List<_i31.PageRouteInfo>? children,
-  }) : super(
-          PreviewProfileMore.name,
-          args: PreviewProfileMoreArgs(
-            key: key,
-            index: index,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'PreviewProfileMore';
-
-  static _i31.PageInfo page = _i31.PageInfo(
-    name,
-    builder: (data) {
-      final args = data.argsAs<PreviewProfileMoreArgs>();
-      return _i14.PreviewProfileMore(
-        key: args.key,
-        index: args.index,
-      );
-    },
-  );
-}
-
-class PreviewProfileMoreArgs {
-  const PreviewProfileMoreArgs({
-    this.key,
-    required this.index,
-  });
-
-  final _i32.Key? key;
-
-  final int index;
-
-  @override
-  String toString() {
-    return 'PreviewProfileMoreArgs{key: $key, index: $index}';
-  }
-}
-
-/// generated route for
-/// [_i15.ResetPasswordScreen]
+/// [_i16.ResetPasswordScreen]
 class ResetPasswordRoute extends _i31.PageRouteInfo<void> {
   const ResetPasswordRoute({List<_i31.PageRouteInfo>? children})
       : super(
@@ -494,13 +548,13 @@ class ResetPasswordRoute extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i15.ResetPasswordScreen();
+      return const _i16.ResetPasswordScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i16.ResetSuccessScreen]
+/// [_i17.ResetSuccessScreen]
 class ResetSuccessRoute extends _i31.PageRouteInfo<ResetSuccessRouteArgs> {
   ResetSuccessRoute({
     _i32.Key? key,
@@ -521,7 +575,7 @@ class ResetSuccessRoute extends _i31.PageRouteInfo<ResetSuccessRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<ResetSuccessRouteArgs>();
-      return _i16.ResetSuccessScreen(
+      return _i17.ResetSuccessScreen(
         key: args.key,
         email: args.email,
       );
@@ -546,7 +600,7 @@ class ResetSuccessRouteArgs {
 }
 
 /// generated route for
-/// [_i17.SafetyGuide]
+/// [_i18.SafetyGuide]
 class SafetyGuide extends _i31.PageRouteInfo<void> {
   const SafetyGuide({List<_i31.PageRouteInfo>? children})
       : super(
@@ -559,13 +613,13 @@ class SafetyGuide extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i17.SafetyGuide();
+      return const _i18.SafetyGuide();
     },
   );
 }
 
 /// generated route for
-/// [_i18.Settings]
+/// [_i19.Settings]
 class Settings extends _i31.PageRouteInfo<void> {
   const Settings({List<_i31.PageRouteInfo>? children})
       : super(
@@ -578,13 +632,13 @@ class Settings extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i18.Settings();
+      return const _i19.Settings();
     },
   );
 }
 
 /// generated route for
-/// [_i19.SignUpCreateScreen]
+/// [_i20.SignUpCreateScreen]
 class SignUpCreateRoute extends _i31.PageRouteInfo<void> {
   const SignUpCreateRoute({List<_i31.PageRouteInfo>? children})
       : super(
@@ -597,13 +651,13 @@ class SignUpCreateRoute extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i19.SignUpCreateScreen();
+      return const _i20.SignUpCreateScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i20.SignUpGenderScreen]
+/// [_i21.SignUpGenderScreen]
 class SignUpGenderRoute extends _i31.PageRouteInfo<void> {
   const SignUpGenderRoute({List<_i31.PageRouteInfo>? children})
       : super(
@@ -616,13 +670,13 @@ class SignUpGenderRoute extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i20.SignUpGenderScreen();
+      return const _i21.SignUpGenderScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i21.SignUpNameScreen]
+/// [_i22.SignUpNameScreen]
 class SignUpNameRoute extends _i31.PageRouteInfo<void> {
   const SignUpNameRoute({List<_i31.PageRouteInfo>? children})
       : super(
@@ -635,13 +689,13 @@ class SignUpNameRoute extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i21.SignUpNameScreen();
+      return const _i22.SignUpNameScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i22.SignUpPhoneScreen]
+/// [_i23.SignUpPhoneScreen]
 class SignUpPhoneRoute extends _i31.PageRouteInfo<void> {
   const SignUpPhoneRoute({List<_i31.PageRouteInfo>? children})
       : super(
@@ -654,13 +708,13 @@ class SignUpPhoneRoute extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i22.SignUpPhoneScreen();
+      return const _i23.SignUpPhoneScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i23.SignUpVerificationScreen]
+/// [_i24.SignUpVerificationScreen]
 class SignUpVerificationRoute
     extends _i31.PageRouteInfo<SignUpVerificationRouteArgs> {
   SignUpVerificationRoute({
@@ -683,7 +737,7 @@ class SignUpVerificationRoute
     builder: (data) {
       final args = data.argsAs<SignUpVerificationRouteArgs>(
           orElse: () => const SignUpVerificationRouteArgs());
-      return _i23.SignUpVerificationScreen(
+      return _i24.SignUpVerificationScreen(
         key: args.key,
         pop: args.pop,
       );
@@ -708,7 +762,7 @@ class SignUpVerificationRouteArgs {
 }
 
 /// generated route for
-/// [_i24.Splash]
+/// [_i25.Splash]
 class Splash extends _i31.PageRouteInfo<void> {
   const Splash({List<_i31.PageRouteInfo>? children})
       : super(
@@ -721,13 +775,13 @@ class Splash extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i24.Splash();
+      return const _i25.Splash();
     },
   );
 }
 
 /// generated route for
-/// [_i25.SplashScreen]
+/// [_i26.SplashScreen]
 class SplashRoute extends _i31.PageRouteInfo<void> {
   const SplashRoute({List<_i31.PageRouteInfo>? children})
       : super(
@@ -740,13 +794,13 @@ class SplashRoute extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i25.SplashScreen();
+      return const _i26.SplashScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i26.SubscriptionPlans]
+/// [_i27.SubscriptionPlans]
 class SubscriptionPlans extends _i31.PageRouteInfo<SubscriptionPlansArgs> {
   SubscriptionPlans({
     _i32.Key? key,
@@ -767,7 +821,7 @@ class SubscriptionPlans extends _i31.PageRouteInfo<SubscriptionPlansArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<SubscriptionPlansArgs>();
-      return _i26.SubscriptionPlans(
+      return _i27.SubscriptionPlans(
         key: args.key,
         initialPage: args.initialPage,
       );
@@ -788,58 +842,6 @@ class SubscriptionPlansArgs {
   @override
   String toString() {
     return 'SubscriptionPlansArgs{key: $key, initialPage: $initialPage}';
-  }
-}
-
-/// generated route for
-/// [_i27.UserProfilePreview]
-class UserProfilePreview extends _i31.PageRouteInfo<UserProfilePreviewArgs> {
-  UserProfilePreview({
-    _i32.Key? key,
-    required int index,
-    required _i36.UserProfile userProfile,
-    List<_i31.PageRouteInfo>? children,
-  }) : super(
-          UserProfilePreview.name,
-          args: UserProfilePreviewArgs(
-            key: key,
-            index: index,
-            userProfile: userProfile,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'UserProfilePreview';
-
-  static _i31.PageInfo page = _i31.PageInfo(
-    name,
-    builder: (data) {
-      final args = data.argsAs<UserProfilePreviewArgs>();
-      return _i27.UserProfilePreview(
-        key: args.key,
-        index: args.index,
-        userProfile: args.userProfile,
-      );
-    },
-  );
-}
-
-class UserProfilePreviewArgs {
-  const UserProfilePreviewArgs({
-    this.key,
-    required this.index,
-    required this.userProfile,
-  });
-
-  final _i32.Key? key;
-
-  final int index;
-
-  final _i36.UserProfile userProfile;
-
-  @override
-  String toString() {
-    return 'UserProfilePreviewArgs{key: $key, index: $index, userProfile: $userProfile}';
   }
 }
 

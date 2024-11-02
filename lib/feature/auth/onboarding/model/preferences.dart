@@ -4,13 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../common/utils/index.dart';
-import '../../../home/tabs/matching/model/profile_base.dart';
+import '../../../home/tabs/matching/model/profile_data.dart';
 
 part 'preferences.g.dart';
 part 'preferences_utils.dart';
 
 @JsonSerializable()
-class Preferences implements ProfileBase {
+class Preferences implements ProfileData {
   // Relationship preference and bio
   @JsonKey(name: 'preference')
   int? relationshipPref;

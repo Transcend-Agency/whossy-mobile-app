@@ -14,8 +14,8 @@ Preferences _$PreferencesFromJson(Map<String, dynamic> json) => Preferences(
       ticks: (json['interests'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      drink: (json['drink'] as num?)?.toInt(),
       smoker: (json['smoke'] as num?)?.toInt(),
+      drink: (json['drink'] as num?)?.toInt(),
       education: (json['education'] as num?)?.toInt(),
       loveLanguage: (json['love_language'] as num?)?.toInt(),
       communicationStyle: (json['communication_style'] as num?)?.toInt(),
@@ -41,13 +41,14 @@ Map<String, dynamic> _$PreferencesToJson(Preferences instance) {
   }
 
   writeNotNull('preference', instance.relationshipPref);
+  writeNotNull('bio', instance.bio);
   writeNotNull('meet', instance.meet);
+  writeNotNull('distance', instance.search);
   writeNotNull(
       'date_of_birth', Preferences.dateTimeToJson(instance.dateOfBirth));
-  writeNotNull('distance', instance.search);
   writeNotNull('interests', instance.ticks);
-  writeNotNull('drink', instance.drink);
   writeNotNull('smoke', instance.smoker);
+  writeNotNull('drink', instance.drink);
   writeNotNull('education', instance.education);
   writeNotNull('love_language', instance.loveLanguage);
   writeNotNull('communication_style', instance.communicationStyle);
@@ -57,7 +58,6 @@ Map<String, dynamic> _$PreferencesToJson(Preferences instance) {
   writeNotNull('family_plans', instance.futureFamilyPlans);
   writeNotNull('workout', instance.workOut);
   writeNotNull('pet', instance.petOwner);
-  writeNotNull('bio', instance.bio);
   writeNotNull('marital_status', instance.maritalStatus);
   writeNotNull('photos', instance.profilePics);
   return val;

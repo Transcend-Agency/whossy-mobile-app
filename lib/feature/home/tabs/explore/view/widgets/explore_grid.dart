@@ -35,7 +35,7 @@ class ExploreGrid extends StatelessWidget {
           return GestureDetector(
             onTap: () => Nav.push(
               context,
-              MatchingRoute(
+              ExploreProfilePreview(
                   profile: dummyProfile, preferences: dummyPreferences),
             ),
             child: Container(

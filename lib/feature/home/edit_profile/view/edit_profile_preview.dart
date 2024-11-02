@@ -6,11 +6,10 @@ import 'package:provider/provider.dart';
 import '../../../../common/components/index.dart';
 import '../../../../provider/providers.dart';
 import '../model/edit_profile_data.dart';
-import 'widgets/_.dart';
 
 @RoutePage()
-class PreviewProfileMore extends HookWidget {
-  const PreviewProfileMore({super.key, required this.index});
+class EditProfilePreview extends HookWidget {
+  const EditProfilePreview({super.key, required this.index});
 
   final int index;
 
@@ -45,15 +44,16 @@ class PreviewProfileMore extends HookWidget {
             final profile = data.profile;
             final preferences = data.preferences;
             return ProfileDetailsScaffold(
+              isSameUser: true,
               preferences: preferences,
               interests: profile.interests,
               gender: profile.gender,
               country: profile.countryOfOrigin,
               bio: profile.bio,
               image: profile.profilePics![index],
-              bottomWidget: BottomPreviewImage(
+              bottomWidget: ProfileFooterScaffold(
                 showLess: true,
-                profile: profile,
+                data: profile,
               ),
               options: null,
             );

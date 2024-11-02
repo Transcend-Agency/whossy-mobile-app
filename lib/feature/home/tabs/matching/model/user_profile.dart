@@ -1,7 +1,10 @@
+import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
+
 import '../../../../auth/onboarding/model/preferences.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
+import 'profile_data_footer.dart';
 
-class UserProfile {
+class UserProfile implements ProfileDataFooter {
   final AppUser user;
   final Preferences preferences;
 
@@ -12,4 +15,30 @@ class UserProfile {
     final preferences = Preferences.fromJson(json);
     return UserProfile(user: user, preferences: preferences);
   }
+
+  @override
+  bool get isOnline => user.status?.online == true;
+
+  @override
+  bool get newUser =>
+      user.createdAt != null &&
+      DateTime.now().difference(user.createdAt!.toDate()).inDays <= 7;
+
+  @override
+  String get name => user.firstName ?? " ";
+
+  @override
+  int get userAge => preferences.dateOfBirth?.age ?? 0;
+
+  @override
+  String? get userBio => preferences.bio;
+
+  @override
+  List<String> get pictures => preferences.profilePics ?? [];
+
+  @override
+  double? get distance => 22.0; // Replace with actual calculation if needed
+
+  @override
+  List<String> get userInterests => preferences.ticks ?? [];
 }

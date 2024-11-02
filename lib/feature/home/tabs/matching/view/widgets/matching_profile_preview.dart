@@ -1,16 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
-import 'bottom_profile_preview.dart';
+import '../../model/user_profile.dart';
 
 @RoutePage()
-class UserProfilePreview extends HookWidget {
-  const UserProfilePreview({
+class MatchingProfilePreview extends HookWidget {
+  const MatchingProfilePreview({
     super.key,
     required this.index,
     required this.userProfile,
@@ -50,10 +49,10 @@ class UserProfilePreview extends HookWidget {
           gender: user.gender,
           bio: preferences.bio,
           image: preferences.profilePics![index],
-          bottomWidget: BottomProfilePreview(
-            userProfile: userProfile,
-            activePage: index,
+          bottomWidget: ProfileFooterScaffold(
+            data: userProfile,
             showLess: true,
+            activePage: index,
           ),
           options: Positioned(
             bottom: -54,

@@ -44,7 +44,7 @@ class AppChip extends StatelessWidget {
         padding: padding ??
             (outlined
                 ? EdgeInsets.symmetric(vertical: 3.h, horizontal: 5.w)
-                : EdgeInsets.symmetric(vertical: 2.h, horizontal: 8.w)),
+                : EdgeInsets.symmetric(vertical: 2.h, horizontal: 6.w)),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -60,7 +60,7 @@ class AppChip extends StatelessWidget {
                       fontWeight: isBold ? FontWeight.w500 : null,
                       fontSize: isBold
                           ? AppUtils.scale(9.5.sp) ?? 12.sp
-                          : AppUtils.scale(11.5.sp) ?? 13.sp,
+                          : AppUtils.scale(10.sp) ?? 13.sp,
                     ),
             ),
           ],

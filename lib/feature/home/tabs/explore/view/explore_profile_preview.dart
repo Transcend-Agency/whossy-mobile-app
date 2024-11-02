@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../../common/components/index.dart';
+import '../../../../../common/utils/index.dart';
+import '../../../../../constants/index.dart';
 import '../../../edit_profile/model/core_profile.dart';
-import '../../../edit_profile/view/widgets/_.dart';
 import '../../../preferences/model/core_preferences.dart';
 
 @RoutePage()
-class MatchingScreen extends HookWidget {
-  const MatchingScreen(
+class ExploreProfilePreview extends HookWidget {
+  const ExploreProfilePreview(
       {super.key, required this.profile, required this.preferences});
 
   final CoreProfile profile;
@@ -44,11 +45,29 @@ class MatchingScreen extends HookWidget {
           country: profile.countryOfOrigin,
           bio: profile.bio,
           image: profile.profilePics![0],
-          bottomWidget: BottomPreviewImage(
+          bottomWidget: ProfileFooterScaffold(
             showLess: true,
-            profile: profile,
+            data: profile,
           ),
-          options: null,
+          options: Positioned(
+            bottom: -54,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MatchIconButton(
+                  onTap: () {},
+                  assetPath: AppAssets.cancel,
+                ),
+                addWidth(40),
+                MatchIconButton(
+                  onTap: () {},
+                  assetPath: AppAssets.like,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

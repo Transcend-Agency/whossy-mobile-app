@@ -30,10 +30,10 @@ class GenderChip<T> extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(6.r),
           color: isSelected ? AppColors.black : Colors.white,
         ),
-        padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 8.w),
+        padding: EdgeInsets.symmetric(vertical: 2.5.h, horizontal: 6.w),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -43,7 +43,7 @@ class GenderChip<T> extends StatelessWidget {
               title,
               style: TextStyles.prefText.copyWith(
                 color: isSelected ? Colors.white : null,
-                fontSize: AppUtils.scale(11.5.sp) ?? 13.sp,
+                fontSize: AppUtils.scale(10.sp) ?? 12.sp,
               ),
             ),
           ],

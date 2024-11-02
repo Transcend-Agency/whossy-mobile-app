@@ -2,13 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
+import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
+import 'package:whossy_app/feature/home/tabs/matching/model/profile_data_footer.dart';
 
 import '../../../../common/utils/index.dart';
 
 part 'core_profile.g.dart';
+part 'core_profile_utils.dart';
 
 @JsonSerializable()
-class CoreProfile {
+class CoreProfile implements ProfileDataFooter {
   @JsonKey(name: 'first_name')
   String? firstName;
 
@@ -43,16 +46,6 @@ class CoreProfile {
   @JsonKey(name: 'country_of_origin')
   final String? countryOfOrigin;
 
-  static const List<String> validKeys = [
-    "name",
-    "birthday",
-    "gender",
-    "email",
-    "phoneNumber",
-    "bio",
-    "full_name"
-  ];
-
   CoreProfile({
     this.firstName,
     this.lastName,
@@ -73,63 +66,6 @@ class CoreProfile {
 
   Map<String, dynamic> toJson() => _$CoreProfileToJson(this);
 
-  void updateFromPreferences(Preferences prefs) {
-    dateOfBirth = prefs.dateOfBirth ?? dateOfBirth;
-    profilePics = prefs.profilePics ?? profilePics;
-    bio = prefs.bio ?? bio;
-    interests = prefs.ticks ?? interests;
-  }
-
-  static List<String> transferKeys = ['photos', 'bio', 'interests'];
-
-  Map<String, String?> getName() => {
-        "firstName": firstName,
-        "lastName": lastName,
-      };
-
-  dynamic getValue(String key) {
-    if (!validKeys.contains(key)) {
-      throw ArgumentError("Invalid key: $key");
-    }
-
-    final selectedValues = <String, dynamic>{
-      "name": firstName,
-      "birthday": DateFormat('MMMM d, y').format(dateOfBirth!),
-      "gender": gender,
-      "email": email,
-      "phoneNumber": phoneNumber,
-      "bio": bio,
-      "full_name": {
-        "firstName": firstName,
-        "lastName": lastName,
-      }
-    };
-
-    return selectedValues[key];
-  }
-
-  void update({
-    String? bio,
-    String? gender,
-    String? firstName,
-    String? lastName,
-    double? height,
-    double? weight,
-    List<String>? interests,
-    List<String>? profilePics,
-  }) {
-    if (bio != null) this.bio = bio;
-    if (gender != null) this.gender = gender;
-    if (firstName != null) this.firstName = firstName;
-    if (lastName != null) this.lastName = lastName;
-    if (height != null) this.height = height;
-    if (weight != null) this.weight = weight;
-    if (interests != null) this.interests = interests;
-    if (profilePics != null) this.profilePics = profilePics;
-  }
-
-  bool get hasFullName => firstName != null && lastName != null;
-
   @override
   String toString() {
     return 'CoreProfile(\n'
@@ -147,6 +83,30 @@ class CoreProfile {
         '  height $height,\n'
         ')';
   }
+
+  @override
+  bool get isOnline => true;
+
+  @override
+  bool? get newUser => null;
+
+  @override
+  String get name => firstName ?? " ";
+
+  @override
+  int get userAge => dateOfBirth?.age ?? 0;
+
+  @override
+  String? get userBio => bio;
+
+  @override
+  List<String> get pictures => profilePics ?? [];
+
+  @override
+  double? get distance => null;
+
+  @override
+  List<String> get userInterests => interests ?? [];
 
   @override
   bool operator ==(Object other) {
