@@ -1,36 +1,41 @@
+import 'dart:developer';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
+import 'package:whossy_app/feature/home/tabs/likes_and_match/data/state/likes_notifier.dart';
+import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
-import '../../data/source/likes_mock_data.dart';
-import '../../model/like_item.dart';
 
 class LikesGridView extends StatelessWidget {
-  const LikesGridView({super.key});
+  const LikesGridView({super.key, required this.pageName});
 
-  // Simulate a Future with a delay of 3 seconds
-  Future<String> _mockFuture() async {
-    await Future.delayed(const Duration(seconds: 3));
-    // throw Exception('An error occurred!'); // Uncomment to simulate error
-    return "Data loaded successfully!";
-  }
+  final String pageName;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.only(top: 14.h),
-        child: FutureBuilder<String>(
-          future: _mockFuture(),
-          builder: (context, snapshot) {
-            return AppAnimatedSwitcher(
-              child: _buildContentBasedOnSnapshot(context, snapshot),
+        child: Selector<LikesNotifier, Stream<List<UserProfile>>>(
+          selector: (_, likesNotifier) => likesNotifier.likesStream,
+          builder: (_, likes, __) {
+            return StreamBuilder(
+              stream: likes,
+              builder: (context, snapshot) {
+                return AppAnimatedSwitcher(
+                  child: _buildContentBasedOnSnapshot(context, snapshot),
+                );
+              },
             );
           },
         ),
@@ -40,7 +45,9 @@ class LikesGridView extends StatelessWidget {
 
   // Function to handle the content building based on the snapshot state
   Widget _buildContentBasedOnSnapshot(
-      BuildContext context, AsyncSnapshot<String> snapshot) {
+    BuildContext context,
+    AsyncSnapshot<List<UserProfile>> snapshot,
+  ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return GridView.builder(
         key: const ValueKey('loading'),
@@ -64,12 +71,14 @@ class LikesGridView extends StatelessWidget {
         ),
       );
     } else if (snapshot.hasData) {
+      final tileData = snapshot.data!;
+
       return GridView.builder(
         key: const ValueKey('data'),
         padding: EdgeInsets.zero,
         gridDelegate: _buildGridDelegate(context),
-        itemCount: likeItems.length,
-        itemBuilder: (ctx, item) => _buildGridItem(ctx, likeItems[item]),
+        itemCount: tileData.length,
+        itemBuilder: (ctx, item) => _buildGridItem(ctx, tileData[item]),
       );
     } else {
       return const Text('No data found');
@@ -87,28 +96,61 @@ class LikesGridView extends StatelessWidget {
   }
 
   // Build individual grid item
-  Widget _buildGridItem(BuildContext context, LikeItem item) {
-    return Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(item.imageUrl, fit: BoxFit.cover),
-          ProfileShade(
-            heightFactor: 0.35,
-            gradient: AppColors.likesAndMatchShade,
+  Widget _buildGridItem(BuildContext context, UserProfile profile) {
+    return Hero(
+      tag: '${profile.user.uid!}$pageName',
+      child: GestureDetector(
+        onTap: () => Nav.push(
+          context,
+          MatchingProfilePreview(
+            index: 0,
+            userProfile: profile,
+            showMessaging: true,
+            pageName: pageName,
           ),
-          _buildGridItemContent(item),
-        ],
+        ),
+        child: Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              CachedNetworkImage(
+                imageUrl: profile.preferences.profilePics![0],
+                imageBuilder: (_, imageProvider) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                },
+                placeholder: (_, __) => const ShimmerWidget.rectangular(),
+                errorWidget: (context, url, error) {
+                  log('Error loading image: ${error.toString()}');
+
+                  return offline(size: 24);
+                },
+              ),
+              ProfileShade(
+                heightFactor: 0.35,
+                gradient: AppColors.likesAndMatchShade,
+              ),
+              _buildGridItemContent(profile),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   // Reusable content builder for each grid item
-  Widget _buildGridItemContent(LikeItem item) {
+  Widget _buildGridItemContent(UserProfile profile) {
     return Align(
       alignment: Alignment.bottomLeft,
       child: Row(
@@ -120,7 +162,7 @@ class LikesGridView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildBlurredViewButton(),
-                _buildUserDetails(item),
+                _buildUserDetails(profile),
               ],
             ),
           ),
@@ -138,11 +180,14 @@ class LikesGridView extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           color: Colors.white.withOpacity(0.2),
-          child: Text(
-            'View',
-            style: TextStyles.hintThemeText.copyWith(
-              fontSize: AppUtils.scale(9.sp) ?? 13.sp,
-              color: Colors.white,
+          child: Material(
+            type: MaterialType.transparency,
+            child: Text(
+              'View',
+              style: TextStyles.hintThemeText.copyWith(
+                fontSize: AppUtils.scale(9.sp) ?? 13.sp,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
@@ -151,29 +196,33 @@ class LikesGridView extends StatelessWidget {
   }
 
   // Build user details with name, age, and verified status
-  Widget _buildUserDetails(LikeItem item) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          '${item.name}, ',
-          style: TextStyles.profileHead.copyWith(
-            fontSize: AppUtils.scale(14.sp),
-            color: Colors.white,
+  Widget _buildUserDetails(UserProfile profile) {
+    return Material(
+      type: MaterialType.transparency,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '${profile.user.firstName}, ',
+            style: TextStyles.profileHead.copyWith(
+              fontSize: AppUtils.scale(14.sp),
+              color: Colors.white,
+            ),
           ),
-        ),
-        Text(
-          '${item.age}',
-          style: TextStyles.profileHead.copyWith(
-            fontSize: AppUtils.scale(12.sp) ?? 16.sp,
-            fontWeight: FontWeight.w400,
-            color: Colors.white,
+          Text(
+            profile.preferences.dateOfBirth!.age.toString(),
+            style: TextStyles.profileHead.copyWith(
+              fontSize: AppUtils.scale(12.sp) ?? 16.sp,
+              fontWeight: FontWeight.w400,
+              color: Colors.white,
+            ),
           ),
-        ),
-        addWidth(6),
-        if (item.isVerified) SvgPicture.asset(AppAssets.tick, width: 18),
-      ],
+          addWidth(6),
+          if (profile.user.isVerified)
+            SvgPicture.asset(AppAssets.tick, width: 18),
+        ],
+      ),
     );
   }
 }

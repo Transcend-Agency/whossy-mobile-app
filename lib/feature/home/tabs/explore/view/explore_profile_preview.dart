@@ -44,6 +44,7 @@ class ExploreProfilePreview extends HookWidget {
           gender: profile.gender,
           country: profile.countryOfOrigin,
           bio: profile.bio,
+          name: profile.name,
           image: profile.profilePics![0],
           bottomWidget: ProfileFooterScaffold(
             showLess: true,

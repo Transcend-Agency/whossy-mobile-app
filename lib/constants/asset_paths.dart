@@ -73,6 +73,7 @@ class AppAssets {
   static const cancel = 'assets/icons/cancel.png';
   static const like = 'assets/icons/like.png';
   static const redo = 'assets/icons/redo.png';
+  static const message = 'assets/icons/message.png';
 
   static const caution = 'assets/icons/caution.png';
   static const welcome = 'assets/icons/welcome.png';

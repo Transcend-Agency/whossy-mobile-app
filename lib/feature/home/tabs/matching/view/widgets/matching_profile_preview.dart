@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
@@ -13,9 +14,15 @@ class MatchingProfilePreview extends HookWidget {
     super.key,
     required this.index,
     required this.userProfile,
+    this.pageName,
+    this.showMessaging = false,
+    this.useDefaultTag = false,
   });
 
   final int index;
+  final String? pageName;
+  final bool showMessaging;
+  final bool useDefaultTag; // default is "preview"
   final UserProfile userProfile;
 
   @override
@@ -43,12 +50,15 @@ class MatchingProfilePreview extends HookWidget {
       body: SingleChildScrollView(
         controller: scrollController,
         child: ProfileDetailsScaffold(
+          tagId: useDefaultTag ? null : user.uid,
           preferences: preferences,
           interests: preferences.ticks,
           country: user.countryOfOrigin,
           gender: user.gender,
           bio: preferences.bio,
           image: preferences.profilePics![index],
+          name: user.firstName ?? '',
+          pageName: pageName,
           bottomWidget: ProfileFooterScaffold(
             data: userProfile,
             showLess: true,
@@ -65,7 +75,18 @@ class MatchingProfilePreview extends HookWidget {
                   onTap: () {},
                   assetPath: AppAssets.cancel,
                 ),
-                addWidth(40),
+                if (showMessaging) ...[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30.h),
+                    child: MatchIconButton(
+                      size: 20,
+                      padding: 12,
+                      onTap: () => {},
+                      assetPath: AppAssets.message,
+                    ),
+                  )
+                ] else
+                  addWidth(40),
                 MatchIconButton(
                   onTap: () {},
                   assetPath: AppAssets.like,

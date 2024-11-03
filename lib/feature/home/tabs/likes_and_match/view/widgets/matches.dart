@@ -8,14 +8,22 @@ import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
 import 'likes_grid_view.dart';
 
-class Matches extends StatelessWidget {
+class Matches extends StatefulWidget {
   const Matches({super.key});
 
+  @override
+  State<Matches> createState() => _MatchesState();
+}
+
+class _MatchesState extends State<Matches>
+    with AutomaticKeepAliveClientMixin<Matches> {
   final bool flag = true;
+
   final bool isPremium = true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -137,7 +145,9 @@ class Matches extends StatelessWidget {
                   ),
                 ),
         flag
-            ? const LikesGridView()
+            ? const LikesGridView(
+                pageName: 'matches',
+              )
             : const EmptyDataBox(
                 image: AppAssets.noMatches,
                 text: 'No match yet ^_^',
@@ -145,4 +155,7 @@ class Matches extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true; // This keeps the widget alive
 }

@@ -50,6 +50,7 @@ class EditProfilePreview extends HookWidget {
               gender: profile.gender,
               country: profile.countryOfOrigin,
               bio: profile.bio,
+              name: profile.name,
               image: profile.profilePics![index],
               bottomWidget: ProfileFooterScaffold(
                 showLess: true,

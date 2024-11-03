@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,6 +29,9 @@ class ProfileDetailsScaffold extends StatelessWidget {
     required this.image,
     required this.options,
     this.isSameUser = false,
+    required this.name,
+    this.tagId,
+    this.pageName,
   });
 
   final Widget bottomWidget;
@@ -37,11 +42,20 @@ class ProfileDetailsScaffold extends StatelessWidget {
   final String? gender;
   final String? bio;
   final String image;
+  final String name;
+  final String? tagId;
+  final String? pageName;
 
   final bool isSameUser;
 
   @override
   Widget build(BuildContext context) {
+    final tag = (tagId != null && pageName != null)
+        ? '$tagId$pageName'
+        : (tagId ?? 'preview');
+
+    log('The profile details tag $tag');
+
     return Column(
       children: [
         Stack(
@@ -58,7 +72,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 Hero(
-                  tag: 'preview',
+                  tag: tag,
                   child: ProfileCard(
                     bottomOnly: true,
                     child: Stack(
@@ -213,7 +227,44 @@ class ProfileDetailsScaffold extends StatelessWidget {
                         ),
                     ],
                   ),
-                )
+                ),
+              AppButton(
+                color: AppColors.listTileColor,
+                onPress: () {},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(AppAssets.blockUser, height: 26),
+                    addWidth(10),
+                    Text(
+                      'Block $name',
+                      style: TextStyles.prefText.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              addHeight(14),
+              AppButton(
+                color: AppColors.listTileColor,
+                onPress: () {},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(AppAssets.report, height: 26),
+                    addWidth(10),
+                    Text(
+                      "Report $name",
+                      style: TextStyles.buttonText.copyWith(
+                        fontSize: AppUtils.scale(17),
+                        color: AppColors.buttonColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              addHeight(28),
             ],
           ),
         )
@@ -306,7 +357,7 @@ class Interests extends HookWidget {
                           horizontal: 2.r,
                         ),
                         child: Text(
-                          showAll.value ? 'See Less' : 'See All',
+                          showAll.value ? 'see less' : 'see all',
                           style: TextStyles.hintText.copyWith(
                             fontSize: AppUtils.scale(10.sp),
                             color: Colors.grey,

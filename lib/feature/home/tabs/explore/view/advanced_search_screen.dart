@@ -53,6 +53,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
       child: AppScaffold(
         useScrollView: true,
         appBar: CustomAppBar(
+          addBarHeight: 4,
           title: 'Advanced search',
           action: Selector<_Notifier, bool>(
             selector: (_, pref) => pref.hasChanges,

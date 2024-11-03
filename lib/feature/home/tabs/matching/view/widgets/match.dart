@@ -129,7 +129,7 @@ class _MatchState extends State<Match> {
                 else
                   Flexible(
                     child: Hero(
-                      tag: 'preview',
+                      tag: "preview",
                       child: CardSwiper(
                         controller: controller,
                         padding: const EdgeInsets.only(top: 32, bottom: 20),
@@ -181,6 +181,7 @@ class _MatchState extends State<Match> {
                                       MatchingProfilePreview(
                                         index: index,
                                         userProfile: profileData,
+                                        useDefaultTag: true ,
                                       ),
                                     ),
                                     activePage: _activePage,

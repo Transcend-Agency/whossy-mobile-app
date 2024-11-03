@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/app/whossy.dart';
+import 'package:whossy_app/feature/home/tabs/likes_and_match/data/state/likes_notifier.dart';
 import 'package:whossy_app/provider/providers.dart';
 
 import 'common/utils/services/services.dart';
@@ -53,6 +54,7 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (_) => AdvancedSearchNotifier()),
         ChangeNotifierProvider(create: (_) => MatchNotifier()),
+        ChangeNotifierProvider(create: (_) => LikesNotifier()),
       ],
       child: const Whossy(),
     ),

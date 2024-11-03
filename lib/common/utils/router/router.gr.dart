@@ -366,6 +366,9 @@ class MatchingProfilePreview
     _i32.Key? key,
     required int index,
     required _i36.UserProfile userProfile,
+    String? pageName,
+    bool showMessaging = false,
+    bool useDefaultTag = false,
     List<_i31.PageRouteInfo>? children,
   }) : super(
           MatchingProfilePreview.name,
@@ -373,6 +376,9 @@ class MatchingProfilePreview
             key: key,
             index: index,
             userProfile: userProfile,
+            pageName: pageName,
+            showMessaging: showMessaging,
+            useDefaultTag: useDefaultTag,
           ),
           initialChildren: children,
         );
@@ -387,6 +393,9 @@ class MatchingProfilePreview
         key: args.key,
         index: args.index,
         userProfile: args.userProfile,
+        pageName: args.pageName,
+        showMessaging: args.showMessaging,
+        useDefaultTag: args.useDefaultTag,
       );
     },
   );
@@ -397,6 +406,9 @@ class MatchingProfilePreviewArgs {
     this.key,
     required this.index,
     required this.userProfile,
+    this.pageName,
+    this.showMessaging = false,
+    this.useDefaultTag = false,
   });
 
   final _i32.Key? key;
@@ -405,9 +417,15 @@ class MatchingProfilePreviewArgs {
 
   final _i36.UserProfile userProfile;
 
+  final String? pageName;
+
+  final bool showMessaging;
+
+  final bool useDefaultTag;
+
   @override
   String toString() {
-    return 'MatchingProfilePreviewArgs{key: $key, index: $index, userProfile: $userProfile}';
+    return 'MatchingProfilePreviewArgs{key: $key, index: $index, userProfile: $userProfile, pageName: $pageName, showMessaging: $showMessaging, useDefaultTag: $useDefaultTag}';
   }
 }
 
