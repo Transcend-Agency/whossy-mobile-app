@@ -20,6 +20,7 @@ class LikesComponent extends StatelessWidget {
         children: [
           addWidth(14),
           GradientOutlineBox(
+            size: const Size(132, 144),
             child: Container(
               width: 132,
               height: 144,

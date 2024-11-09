@@ -198,8 +198,8 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                     hintText:
                         '${country?.phoneCode != null ? '' : '(+1) '}000 000 0000',
                     isPhone: true,
-                    validation: (_) =>
-                        _?.trim().validatePhoneNumber(existingPhoneNumber),
+                    validation: (text) =>
+                        text?.trim().validatePhoneNumber(existingPhoneNumber),
                     prefixIcon: GestureDetector(
                       onTap: () => showPicker(onSelect: updateCountry),
                       child: Padding(

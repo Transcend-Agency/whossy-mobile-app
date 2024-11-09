@@ -16,7 +16,7 @@ class ShimmerTile extends StatelessWidget {
         radius: 27,
         child: ShimmerWidget.circular(),
       ),
-      horizontalTitleGap: 14, //
+      horizontalTitleGap: 14,
       trailing: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [

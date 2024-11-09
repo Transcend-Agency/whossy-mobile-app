@@ -9,7 +9,7 @@ import '../../../../../../constants/index.dart';
 import '../../model/user_profile.dart';
 import '../repository/match_repository.dart';
 
-class MatchNotifier with ChangeNotifier {
+class SwipeAndMatchNotifier with ChangeNotifier {
   final _matchRepository = MatchRepository();
   final _likesRepository = LikesRepository();
 

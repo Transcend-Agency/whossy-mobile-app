@@ -5,7 +5,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
-import 'package:whossy_app/feature/home/tabs/matching/view/widgets/logo.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/component_style.dart';
@@ -65,10 +64,11 @@ class Profile extends StatelessWidget {
                             ),
                           ),
                           addWidth(6),
-                          SvgPicture.asset(
-                            AppAssets.tick,
-                            width: 18,
-                          ),
+                          if (data!.isUserVerified)
+                            SvgPicture.asset(
+                              AppAssets.tick,
+                              width: 18,
+                            ),
                         ],
                       ),
                       addHeight(10),

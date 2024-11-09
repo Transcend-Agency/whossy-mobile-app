@@ -4,7 +4,7 @@ class AppAnimatedSwitcher extends StatelessWidget {
   const AppAnimatedSwitcher({
     super.key,
     required this.child,
-    this.duration = const Duration(milliseconds: 750),
+    this.duration = const Duration(milliseconds: 600),
   });
 
   final Widget child;
@@ -12,11 +12,13 @@ class AppAnimatedSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 750),
-      switchInCurve: Curves.easeIn,
-      switchOutCurve: Curves.easeOut,
-      child: child,
+    return RepaintBoundary(
+      child: AnimatedSwitcher(
+        duration: duration,
+        switchInCurve: Curves.easeIn,
+        switchOutCurve: Curves.easeOut,
+        child: child,
+      ),
     );
   }
 }

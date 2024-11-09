@@ -16,8 +16,11 @@ import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
 
-class LikesGridView extends StatelessWidget {
-  const LikesGridView({super.key, required this.pageName});
+class LikesGridView<T extends LikesAndMatch> extends StatelessWidget {
+  const LikesGridView({
+    super.key,
+    required this.pageName,
+  });
 
   final String pageName;
 
@@ -26,11 +29,11 @@ class LikesGridView extends StatelessWidget {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.only(top: 14.h),
-        child: Selector<LikesNotifier, Stream<List<UserProfile>>>(
-          selector: (_, likesNotifier) => likesNotifier.likesStream,
-          builder: (_, likes, __) {
-            return StreamBuilder(
-              stream: likes,
+        child: Selector<T, Stream<List<UserProfile>>>(
+          selector: (_, notifier) => notifier.profileStream,
+          builder: (_, profileStream, __) {
+            return StreamBuilder<List<UserProfile>>(
+              stream: profileStream,
               builder: (context, snapshot) {
                 return AppAnimatedSwitcher(
                   child: _buildContentBasedOnSnapshot(context, snapshot),

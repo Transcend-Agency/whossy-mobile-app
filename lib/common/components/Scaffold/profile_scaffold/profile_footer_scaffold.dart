@@ -127,10 +127,11 @@ class ProfileFooterScaffold extends StatelessWidget {
                         ),
                       ),
                       addWidth(6),
-                      SvgPicture.asset(
-                        AppAssets.tick,
-                        width: 23,
-                      ),
+                      if (data.isUserVerified)
+                        SvgPicture.asset(
+                          AppAssets.tick,
+                          width: 23,
+                        ),
                     ],
                   ),
                   if (showLess)
@@ -186,13 +187,14 @@ class ProfileFooterScaffold extends StatelessWidget {
                             Colors.white, BlendMode.srcIn),
                       ),
                     ),
-                    if (data.userInterests.isNotEmpty)
-                      Expanded(
-                        child: Interests(
-                          interests: data.userInterests,
-                          isSameUser: isSameUser,
-                        ),
-                      ),
+                    Expanded(
+                      child: data.userInterests.isNotEmpty
+                          ? Interests(
+                              interests: data.userInterests,
+                              isSameUser: isSameUser,
+                            )
+                          : Container(color: Colors.transparent),
+                    ),
                     addWidth(4),
                     GestureDetector(
                       onTap: () {

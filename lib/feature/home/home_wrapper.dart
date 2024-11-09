@@ -5,8 +5,9 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/constants/asset_paths.dart';
 
-import '../../provider/providers.dart';
+import 'edit_profile/data/state/edit_profile_notifier.dart';
 import 'tabs/_.dart';
+import 'tabs/chat/data/state/chats_notifier.dart';
 
 @RoutePage()
 class HomeWrapper extends StatefulWidget {

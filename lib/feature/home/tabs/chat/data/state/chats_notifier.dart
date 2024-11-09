@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whossy_app/common/utils/app_utils.dart';
@@ -18,6 +19,7 @@ class ChatsNotifier extends ChangeNotifier {
   // Internal services and repository
   final _sharedPrefs = SharedPrefsService();
   final _chatRepository = ChatRepository();
+
   final _fileService = FileService();
 
   final Queue<List<String>> _uploadQueue = Queue();
@@ -73,6 +75,9 @@ class ChatsNotifier extends ChangeNotifier {
 
   // Chat stream getter
   Stream<List<Chat>> get chatStream => _chatRepository.getChatsStream();
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> statusStream(String id) =>
+      _chatRepository.getStatusStream(id);
 
   // Manage the opened chat room state
   bool get hasChatOpened => _hasChatRoomOpened;

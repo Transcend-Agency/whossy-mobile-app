@@ -1,48 +1,43 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
-import '../../data/repository/chat_repository.dart';
 import '../../model/status.dart';
 
-class OnlineStatus extends StatefulWidget {
+class OnlineStatus extends HookWidget {
   const OnlineStatus({super.key, required this.userId});
 
   final String userId;
 
   @override
-  State<OnlineStatus> createState() => _OnlineStatusState();
-}
-
-class _OnlineStatusState extends State<OnlineStatus> {
-  late Stream<DatabaseEvent> status;
-
-  @override
-  void initState() {
-    status = ChatRepository.statusRef(widget.userId).onValue;
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.sizeOf(context).width;
-    return StreamBuilder(
-      stream: status,
-      builder: (context, snapshot) {
-        return AppAnimatedSwitcher(
-          child: _buildStreamContent(snapshot, width),
-        );
-      },
+    final chatsNotifier = context.read<ChatsNotifier>();
+
+    final statusStream = useMemoized(
+      () => chatsNotifier.statusStream(userId),
+      [userId],
+    );
+
+    // Use useStream to manage stream subscription and update state on new data
+    final snapshot = useStream(statusStream);
+
+    return AppAnimatedSwitcher(
+      child: _buildStreamContent(snapshot, width),
     );
   }
 
-  Widget _buildStreamContent(AsyncSnapshot snapshot, double width) {
+  Widget _buildStreamContent(
+    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+    double width,
+  ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const SizedBox.square(dimension: 14);
     }
@@ -52,13 +47,12 @@ class _OnlineStatusState extends State<OnlineStatus> {
       return const SizedBox.shrink();
     }
 
-    final data = snapshot.data?.snapshot.value as Map<dynamic, dynamic>?;
-
-    if (data == null) {
+    final data = snapshot.data?.data();
+    if (data == null || data['status'] == null) {
       return Text('Offline', style: TextStyles.hintThemeText);
     }
 
-    final status = Status.fromJson(Map<String, dynamic>.from(data));
+    final status = Status.fromJson(Map<String, dynamic>.from(data['status']));
 
     return status.online
         ? Row(
@@ -79,7 +73,9 @@ class _OnlineStatusState extends State<OnlineStatus> {
           )
         : Text(
             status.getLastSeen(Timestamp.now()),
-            style: TextStyles.hintThemeText,
+            style: TextStyles.hintThemeText.copyWith(
+              fontSize: 15,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           );

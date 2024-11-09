@@ -50,6 +50,15 @@ class TextStyles {
     fontWeight: FontWeight.w400,
   );
 
+  static TextStyle notificationCountText = TextStyle(
+    fontFamily: 'NeueMontreal',
+    height: 1.4,
+    letterSpacing: 0.4,
+    fontSize: AppUtils.scale(8.5.sp) ?? 12.sp,
+    color: Colors.white,
+    fontWeight: FontWeight.w500,
+  );
+
   static TextStyle hintText = hintThemeText.copyWith(
     fontSize: 13.sp,
   );

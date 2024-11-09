@@ -22,6 +22,8 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       weight: (json['weight'] as num?)?.toDouble(),
       height: (json['height'] as num?)?.toDouble(),
       countryOfOrigin: json['country_of_origin'] as String?,
+      isPremium: json['isPremium'] as bool?,
+      isVerified: json['is_verified'] as bool?,
     );
 
 Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
@@ -46,5 +48,7 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
   writeNotNull('bio', instance.bio);
   writeNotNull('interests', instance.interests);
   writeNotNull('country_of_origin', instance.countryOfOrigin);
+  writeNotNull('isPremium', instance.isPremium);
+  writeNotNull('is_verified', instance.isVerified);
   return val;
 }

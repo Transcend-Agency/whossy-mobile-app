@@ -1,7 +1,9 @@
 export '/common/components/Animated/app_animated_switcher.dart';
 export '/common/components/AppBar/custom_app_bar.dart';
 export '/common/components/AppBar/header_bar.dart';
-export '/common/components/Avatar/app_avatar.dart';
+export '/common/components/AppLogo/logo.dart';
+export '/common/components/Avatar/circle_app_avatar.dart';
+export '/common/components/Avatar/rectangle_app_avatar.dart';
 export '/common/components/BottomAppBar/bottom_app_bar.dart';
 export '/common/components/BottomSheet/app_sheet.dart';
 export '/common/components/BottomSheet/app_sheet_scaffold.dart';

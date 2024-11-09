@@ -7,4 +7,6 @@ abstract class ProfileDataFooter {
   List<String> get pictures; // was profilePics
   double? get distance; // was distanceInMiles
   List<String> get userInterests;
+  bool get premiumUser;
+  bool get isUserVerified;
 }

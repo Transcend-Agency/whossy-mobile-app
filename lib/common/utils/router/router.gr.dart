@@ -35,8 +35,10 @@ import 'package:whossy_app/feature/home/edit_profile/view/edit_profile_preview.d
 import 'package:whossy_app/feature/home/edit_profile/view/preview_profile.dart'
     as _i15;
 import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/name_edit_profile.dart'
-    as _i12;
+    as _i11;
 import 'package:whossy_app/feature/home/home_wrapper.dart' as _i6;
+import 'package:whossy_app/feature/home/notifications/view/notification_screen.dart'
+    as _i12;
 import 'package:whossy_app/feature/home/preferences/model/core_preferences.dart'
     as _i34;
 import 'package:whossy_app/feature/home/preferences/view/interest_screen.dart'
@@ -52,8 +54,6 @@ import 'package:whossy_app/feature/home/tabs/explore/view/advanced_search_screen
     as _i1;
 import 'package:whossy_app/feature/home/tabs/explore/view/explore_profile_preview.dart'
     as _i5;
-import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/more_info.dart'
-    as _i11;
 import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart'
     as _i36;
 import 'package:whossy_app/feature/home/tabs/matching/view/widgets/matching_profile_preview.dart'
@@ -430,26 +430,7 @@ class MatchingProfilePreviewArgs {
 }
 
 /// generated route for
-/// [_i11.MoreInfoScreen]
-class MoreInfoRoute extends _i31.PageRouteInfo<void> {
-  const MoreInfoRoute({List<_i31.PageRouteInfo>? children})
-      : super(
-          MoreInfoRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'MoreInfoRoute';
-
-  static _i31.PageInfo page = _i31.PageInfo(
-    name,
-    builder: (data) {
-      return const _i11.MoreInfoScreen();
-    },
-  );
-}
-
-/// generated route for
-/// [_i12.NameEditProfile]
+/// [_i11.NameEditProfile]
 class NameEditProfile extends _i31.PageRouteInfo<void> {
   const NameEditProfile({List<_i31.PageRouteInfo>? children})
       : super(
@@ -462,7 +443,26 @@ class NameEditProfile extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i12.NameEditProfile();
+      return const _i11.NameEditProfile();
+    },
+  );
+}
+
+/// generated route for
+/// [_i12.NotificationScreen]
+class NotificationRoute extends _i31.PageRouteInfo<void> {
+  const NotificationRoute({List<_i31.PageRouteInfo>? children})
+      : super(
+          NotificationRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'NotificationRoute';
+
+  static _i31.PageInfo page = _i31.PageInfo(
+    name,
+    builder: (data) {
+      return const _i12.NotificationScreen();
     },
   );
 }

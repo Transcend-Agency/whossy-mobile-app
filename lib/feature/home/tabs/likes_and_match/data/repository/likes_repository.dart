@@ -65,7 +65,6 @@ class LikesRepository {
         .map((snapshot) => snapshot.docs.length);
   }
 
-
   Stream<List<UserProfile>> getLikersWithProfiles() {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
@@ -79,18 +78,31 @@ class LikesRepository {
           .toSet()
           .toList();
 
-      List<UserProfile> likersProfiles = [];
-
-      for (int i = 0; i < likerIds.length; i += 10) {
-        final batchIds = likerIds.sublist(
-            i, i + 10 > likerIds.length ? likerIds.length : i + 10);
-        final userSnapshots =
-            await _users.where(FieldPath.documentId, whereIn: batchIds).get();
-        likersProfiles.addAll(
-            userSnapshots.docs.map((doc) => UserProfile.fromJson(doc.data())));
-      }
-
-      return likersProfiles;
+      // Use the helper function to fetch profiles in batches
+      return await _fetchUserProfilesInBatches(likerIds);
     });
+  }
+
+  // Helper function to fetch user profiles in batches
+  Future<List<UserProfile>> _fetchUserProfilesInBatches(
+    List<String> userIds,
+  ) async {
+    List<UserProfile> profiles = [];
+
+    for (int i = 0; i < userIds.length; i += 10) {
+      final batchIds =
+          userIds.sublist(i, i + 10 > userIds.length ? userIds.length : i + 10);
+
+      final userSnapshots =
+          await _users.where(FieldPath.documentId, whereIn: batchIds).get();
+
+      profiles.addAll(
+        userSnapshots.docs.map(
+          (doc) => UserProfile.fromJson(doc.data()),
+        ),
+      );
+    }
+
+    return profiles;
   }
 }

@@ -307,3 +307,36 @@ Widget hide({bool visible = false, Widget? child}) {
     child: child ?? const SizedBox.shrink(),
   );
 }
+
+Widget notificationDot(num count) {
+  double dotSize;
+
+  if (count > 99) {
+    dotSize = 8.r;
+  } else if (count > 9) {
+    dotSize = 20.r;
+  } else {
+    dotSize = 16.r;
+  }
+
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      Container(
+        width: dotSize,
+        height: dotSize,
+        decoration: const BoxDecoration(
+          color: AppColors.primaryColor,
+          shape: BoxShape.circle,
+        ),
+      ),
+      if (count < 100)
+        Text(
+          count.toString(),
+          style: TextStyles.notificationCountText,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+    ],
+  );
+}

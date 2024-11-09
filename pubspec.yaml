@@ -62,6 +62,8 @@ dependencies:
   json_annotation: ^4.9.0
   flutter_hooks: ^0.20.5
   collection: ^1.18.0
+  geolocator: ^13.0.1
+  # geoflutterfire: ^3.0.3
 
   # Navigation
   auto_route: ^9.2.2 # Routing

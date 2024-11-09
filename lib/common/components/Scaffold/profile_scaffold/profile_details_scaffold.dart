@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,6 +27,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
     required this.image,
     required this.options,
     this.isSameUser = false,
+    this.addedHeight = 0,
     required this.name,
     this.tagId,
     this.pageName,
@@ -45,6 +44,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
   final String name;
   final String? tagId;
   final String? pageName;
+  final double addedHeight;
 
   final bool isSameUser;
 
@@ -54,15 +54,13 @@ class ProfileDetailsScaffold extends StatelessWidget {
         ? '$tagId$pageName'
         : (tagId ?? 'preview');
 
-    log('The profile details tag $tag');
-
     return Column(
       children: [
         Stack(
           children: [
             Padding(
               padding: EdgeInsets.fromLTRB(32.r, 24.r, 32.r, 0),
-              child: const ProfileCard(),
+              child: ProfileCard(addedHeight: addedHeight),
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(16.r, 12.r, 16.r, 0),
@@ -89,15 +87,15 @@ class ProfileDetailsScaffold extends StatelessWidget {
                           child: bottomWidget,
                         ),
                       ],
-                    ),
+                    ), //
                   ),
                 ),
-                if (options != null) options!,
               ],
-            )
+            ), //
+            if (options != null) options!,
           ],
         ),
-        addHeight(40),
+        addHeight(40 - addedHeight),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Column(

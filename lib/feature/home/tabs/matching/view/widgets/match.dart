@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
@@ -20,7 +21,7 @@ class Match extends StatefulWidget {
 class _MatchState extends State<Match> {
   final CardSwiperController controller = CardSwiperController();
   final PageController _pageController = PageController();
-  late MatchNotifier matchNotifier;
+  late SwipeAndMatchNotifier matchNotifier;
 
   double thresholdX = 0.0;
   int _activePage = 0;
@@ -40,7 +41,7 @@ class _MatchState extends State<Match> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      matchNotifier = context.read<MatchNotifier>();
+      matchNotifier = context.read<SwipeAndMatchNotifier>();
 
       matchNotifier.fetchInitialProfiles();
     });
@@ -112,99 +113,109 @@ class _MatchState extends State<Match> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MatchNotifier>(
-      builder: (context, matchNotifier, child) {
-        return Stack(
+    return Stack(
+      children: [
+        Column(
           children: [
-            Column(
-              children: [
-                if (matchNotifier.isLoading)
-                  const Flexible(
+            // Use a Selector to listen to only isLoading
+            Selector<SwipeAndMatchNotifier, bool>(
+              selector: (_, matchNotifier) => matchNotifier.isLoading,
+              builder: (context, isLoading, child) {
+                if (isLoading) {
+                  return const Flexible(
                     child: Center(
                       child: AppLoader(color: AppColors.primaryColor),
                     ),
-                  )
-                else if (matchNotifier.profiles.isEmpty)
-                  const SizedBox.shrink()
-                else
-                  Flexible(
-                    child: Hero(
-                      tag: "preview",
-                      child: CardSwiper(
-                        controller: controller,
-                        padding: const EdgeInsets.only(top: 32, bottom: 20),
-                        cardsCount: matchNotifier.profiles.length,
-                        numberOfCardsDisplayed: 3,
-                        threshold: 100,
-                        onSwipe: handleSwipe,
-                        onSwipeDirectionChange: handleSwipeDirectionChange,
-                        cardBuilder: (
-                          context,
-                          index,
-                          percentThresholdX,
-                          percentThresholdY,
-                        ) {
-                          updateThresholds(percentThresholdX.toDouble());
+                  );
+                } else {
+                  return child!;
+                }
+              },
+              child: Selector<SwipeAndMatchNotifier, List<UserProfile>>(
+                selector: (_, matchNotifier) => matchNotifier.profiles,
+                builder: (context, profiles, _) {
+                  if (profiles.isEmpty) {
+                    return const SizedBox.shrink();
+                  } else {
+                    return Flexible(
+                      child: Hero(
+                        tag: "preview",
+                        child: CardSwiper(
+                          controller: controller,
+                          padding: const EdgeInsets.only(top: 32, bottom: 20),
+                          cardsCount: profiles.length,
+                          numberOfCardsDisplayed: 3,
+                          threshold: 100,
+                          onSwipe: handleSwipe,
+                          onSwipeDirectionChange: handleSwipeDirectionChange,
+                          cardBuilder: (
+                            context,
+                            index,
+                            percentThresholdX,
+                            percentThresholdY,
+                          ) {
+                            updateThresholds(percentThresholdX.toDouble());
+                            final profileData = profiles[index];
 
-                          final profileData = matchNotifier.profiles[index];
-
-                          return ProfileCard(
-                            color: Colors.white,
-                            child: Stack(
-                              children: [
-                                PageView.builder(
-                                  key: const PageStorageKey("my_pageView"),
-                                  controller: _pageController,
-                                  onPageChanged: _onPageChange,
-                                  itemCount: profileData
-                                      .preferences.profilePics?.length,
-                                  itemBuilder: (_, index) {
-                                    return SizedBox.expand(
-                                      child: Preview(
-                                        image: profileData.preferences
-                                                .profilePics?[index] ??
-                                            '',
-                                      ),
-                                    );
-                                  },
-                                ),
-                                ProfileShade(
-                                  heightFactor: 0.35,
-                                  gradient: AppColors.profileShade,
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: ProfileFooterScaffold(
-                                    data: profileData,
-                                    onTap: (context, index) => Nav.push(
-                                      context,
-                                      MatchingProfilePreview(
-                                        index: index,
-                                        userProfile: profileData,
-                                        useDefaultTag: true ,
-                                      ),
-                                    ),
-                                    activePage: _activePage,
+                            return ProfileCard(
+                              color: Colors.white,
+                              child: Stack(
+                                children: [
+                                  PageView.builder(
+                                    key: const PageStorageKey("my_pageView"),
+                                    controller: _pageController,
+                                    onPageChanged: _onPageChange,
+                                    itemCount: profileData
+                                        .preferences.profilePics?.length,
+                                    itemBuilder: (_, index) {
+                                      return SizedBox.expand(
+                                        child: Preview(
+                                          image: profileData.preferences
+                                                  .profilePics?[index] ??
+                                              '',
+                                        ),
+                                      );
+                                    },
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        backCardOffset: const Offset(0, 46),
-                        allowedSwipeDirection:
-                            const AllowedSwipeDirection.symmetric(
-                          horizontal: true,
+                                  ProfileShade(
+                                    heightFactor: 0.35,
+                                    gradient: AppColors.profileShade,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: ProfileFooterScaffold(
+                                      data: profileData,
+                                      onTap: (context, index) => Nav.push(
+                                        context,
+                                        MatchingProfilePreview(
+                                          index: index,
+                                          userProfile: profileData,
+                                          useDefaultTag: true,
+                                        ),
+                                      ),
+                                      activePage: _activePage,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          backCardOffset: const Offset(0, 46),
+                          allowedSwipeDirection:
+                              const AllowedSwipeDirection.symmetric(
+                            horizontal: true,
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-              ],
+                    );
+                  }
+                },
+              ),
             ),
-            _buildBottomIcons(),
           ],
-        );
-      },
+        ),
+        _buildBottomIcons(),
+      ],
     );
   }
 

@@ -43,6 +43,8 @@
 	<string>We need access to your camera to let you capture and upload photos directly for your profile.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library to allow you to upload and select photos for your profile.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>Whossy needs access to location when open.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

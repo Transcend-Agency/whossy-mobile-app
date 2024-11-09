@@ -7,7 +7,7 @@ class PermissionService {
   static Future<bool> requestPhotoPermission() async {
     var status = await Permission.photos.status;
 
-    // Log the permission status
+    // Log the permission status`
     log('Permission status after error: $status');
 
     if (status.isDenied || status.isRestricted) {

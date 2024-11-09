@@ -38,6 +38,8 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: PreferenceRoute.page),
         AutoRoute(page: InterestRoute.page),
 
+        AutoRoute(page: NotificationRoute.page),
+
         // Profile / Tab 5
         AutoRoute(page: Settings.page),
         AutoRoute(page: EditProfile.page),
@@ -48,7 +50,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: SubscriptionPlans.page),
 
         // Likes and Match / Tab 3
-        AutoRoute(page: MoreInfoRoute.page),
+        //AutoRoute(page: MoreInfoRoute.page),
 
         // Chat / Tab 4
         AutoRoute(page: ChatRoom.page),

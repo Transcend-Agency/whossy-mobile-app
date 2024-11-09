@@ -5,9 +5,15 @@ import '../../../constants/index.dart';
 
 class GradientOutlineBox extends StatelessWidget {
   final Widget child;
+  final Size size;
   final Gradient? gradient;
 
-  const GradientOutlineBox({super.key, required this.child, this.gradient});
+  const GradientOutlineBox({
+    super.key,
+    required this.child,
+    this.gradient,
+    required this.size,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +25,8 @@ class GradientOutlineBox extends StatelessWidget {
             gradient: gradient ?? AppColors.splashGradient,
             borderRadius: BorderRadius.circular(18.r),
           ),
-          width: 138,
-          height: 150,
+          width: size.width + 6,
+          height: size.height + 6,
         ),
         child,
       ],

@@ -27,7 +27,7 @@ class ChatTile extends StatelessWidget {
       splashColor: Colors.transparent,
       hoverColor: Colors.transparent,
       contentPadding: EdgeInsets.only(top: 6.h),
-      leading: AppAvatar(
+      leading: CircleAppAvatar(
         radius: 27,
         imageUrl: data.profilePicUrls[oppIndex],
       ),

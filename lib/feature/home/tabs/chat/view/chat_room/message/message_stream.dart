@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/index.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/state/chats_notifier.dart';
@@ -103,7 +102,7 @@ class _MessageStreamState extends State<MessageStream> {
 
       final earliestMessage = messages.last;
       final formattedDate = earliestMessage.timestamp != null
-          ? 'on ${DateFormat('d/M/yyyy').format(earliestMessage.timestamp!.toDate())}'
+          ? 'on ${earliestMessage.timestamp!.toDate().formatWithSuffix()}'
           : 'now';
 
       return ListView.builder(

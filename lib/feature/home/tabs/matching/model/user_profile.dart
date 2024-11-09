@@ -41,4 +41,10 @@ class UserProfile implements ProfileDataFooter {
 
   @override
   List<String> get userInterests => preferences.ticks ?? [];
+
+  @override
+  bool get premiumUser => user.isPremium ?? false;
+
+  @override
+  bool get isUserVerified => user.isVerified;
 }

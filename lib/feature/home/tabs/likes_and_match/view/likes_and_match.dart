@@ -16,7 +16,7 @@ class LikesAndMatch extends StatefulWidget {
 }
 
 class _LikesAndMatchState extends State<LikesAndMatch>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late PageController _pageController;
   late List<Widget> _pages;
 
@@ -57,6 +57,7 @@ class _LikesAndMatchState extends State<LikesAndMatch>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SizedBox(
       width: 375.w,
       child: Column(
@@ -107,4 +108,7 @@ class _LikesAndMatchState extends State<LikesAndMatch>
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -6,11 +6,11 @@ import '../../../constants/index.dart';
 import '../../utils/index.dart';
 import '../index.dart';
 
-class AppAvatar extends StatelessWidget {
+class CircleAppAvatar extends StatelessWidget {
   final String? imageUrl;
   final double radius;
 
-  const AppAvatar({
+  const CircleAppAvatar({
     super.key,
     this.imageUrl,
     this.radius = 22,

@@ -46,6 +46,12 @@ class CoreProfile implements ProfileDataFooter {
   @JsonKey(name: 'country_of_origin')
   final String? countryOfOrigin;
 
+  @JsonKey(name: "isPremium")
+  bool? isPremium;
+
+  @JsonKey(name: "is_verified")
+  bool? isVerified;
+
   CoreProfile({
     this.firstName,
     this.lastName,
@@ -59,6 +65,8 @@ class CoreProfile implements ProfileDataFooter {
     this.weight,
     this.height,
     this.countryOfOrigin,
+    this.isPremium,
+    this.isVerified,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -81,6 +89,8 @@ class CoreProfile implements ProfileDataFooter {
         '  countryOfOrigin: $countryOfOrigin,\n'
         '  weight $weight,\n'
         '  height $height,\n'
+        '  isPremium $isPremium,\n'
+        '  isVerified $isVerified,\n'
         ')';
   }
 
@@ -107,6 +117,12 @@ class CoreProfile implements ProfileDataFooter {
 
   @override
   List<String> get userInterests => interests ?? [];
+
+  @override
+  bool get premiumUser => isPremium ?? false;
+
+  @override
+  bool get isUserVerified => isVerified ?? false;
 
   @override
   bool operator ==(Object other) {

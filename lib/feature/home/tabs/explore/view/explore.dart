@@ -26,6 +26,7 @@ class Explore extends StatelessWidget {
               icon: AppAssets.bell,
               icon2: AppAssets.explore,
               onIcon2Tap: () => Nav.push(context, const AdvancedSearchRoute()),
+              child: const Logo(),
             ),
             addHeight(8),
             const ExploreFilters(),

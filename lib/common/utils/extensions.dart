@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 extension StringExtention on String? {
   /// Validate the email input (checks if it's a valid email format)
@@ -195,5 +196,38 @@ extension StringExtention on String? {
 
     // Handle specific cases for formatting
     return formattedField == 'Phone Number' ? 'Phone number' : formattedField;
+  }
+}
+
+extension DateTimeFormatting on DateTime {
+  String formatWithSuffix() {
+    // Get the day of the month
+    int day = this.day;
+
+    // Determine the suffix
+    String suffix;
+    if (day >= 11 && day <= 13) {
+      suffix = 'th';
+    } else {
+      switch (day % 10) {
+        case 1:
+          suffix = 'st';
+          break;
+        case 2:
+          suffix = 'nd';
+          break;
+        case 3:
+          suffix = 'rd';
+          break;
+        default:
+          suffix = 'th';
+      }
+    }
+
+    // Format the date
+    String formattedDate = DateFormat('d MMMM, yyyy').format(this);
+
+    // Append the suffix to the day
+    return formattedDate.replaceFirst(RegExp(r'\d+'), '$day$suffix');
   }
 }

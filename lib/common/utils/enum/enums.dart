@@ -277,3 +277,5 @@ enum MessageStatus {
 }
 
 enum AuthMethod { local, google, phone }
+
+enum NotificationType { like, match, message }

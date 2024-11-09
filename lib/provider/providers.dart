@@ -8,4 +8,6 @@ export 'package:whossy_app/feature/home/preferences/data/state/search_preference
 export 'package:whossy_app/feature/home/settings/data/state/settings_notifier.dart';
 export 'package:whossy_app/feature/home/tabs/chat/data/state/chats_notifier.dart';
 export 'package:whossy_app/feature/home/tabs/explore/data/state/advanced_search_notifier.dart';
-export 'package:whossy_app/feature/home/tabs/matching/data/state/match_notifier.dart';
+export 'package:whossy_app/feature/home/tabs/likes_and_match/data/state/likes_notifier.dart';
+export 'package:whossy_app/feature/home/tabs/likes_and_match/data/state/matches_notifier.dart';
+export 'package:whossy_app/feature/home/tabs/matching/data/state/swipe_and_match_notifier.dart';

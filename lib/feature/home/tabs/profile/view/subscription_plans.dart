@@ -24,8 +24,6 @@ class _SubscriptionPlansState extends State<SubscriptionPlans> {
   late PageController _pageController;
   late List<Widget> _pages;
 
-  int _activePage = 0;
-
   @override
   void initState() {
     super.initState();
@@ -45,10 +43,6 @@ class _SubscriptionPlansState extends State<SubscriptionPlans> {
     _pageController.dispose();
   }
 
-  void _onPageChange(int page) {
-    setState(() => _activePage = page);
-  }
-
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
@@ -64,7 +58,7 @@ class _SubscriptionPlansState extends State<SubscriptionPlans> {
             child: PageView.builder(
               controller: _pageController,
               itemCount: _pages.length,
-              onPageChanged: _onPageChange,
+              onPageChanged: (page) {},
               itemBuilder: (_, index) {
                 return Padding(
                   padding: EdgeInsets.only(left: 14.r, right: 14.r, top: 16.r),

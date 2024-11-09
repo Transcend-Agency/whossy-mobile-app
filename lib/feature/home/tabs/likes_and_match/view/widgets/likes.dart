@@ -1,25 +1,24 @@
-import 'dart:developer';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/utils/widget_functions.dart';
-import 'package:whossy_app/feature/home/tabs/likes_and_match/data/state/likes_notifier.dart';
+import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/profile_view.dart';
 import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
+import '../../../../edit_profile/model/core_profile.dart';
 import 'likes_grid_view.dart';
+import 'profile_view_stack.dart';
 
 class Likes extends HookWidget {
   const Likes({super.key});
 
-  final bool isPremium = true;
+  final double height = 142;
+  final double width = 135;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +29,13 @@ class Likes extends HookWidget {
     return StreamBuilder<int>(
       stream: likesNotifier.likesCount,
       builder: (context, snapshot) {
-        return AppAnimatedSwitcher(
-          child: _buildContentBasedOnSnapshot(context, snapshot),
+        return Selector<EditProfileNotifier, CoreProfile>(
+          selector: (_, editProfile) => editProfile.coreProfile!,
+          builder: (_, profile, __) {
+            return AppAnimatedSwitcher(
+              child: _buildContentBasedOnSnapshot(context, snapshot, profile),
+            );
+          },
         );
       },
     );
@@ -40,14 +44,15 @@ class Likes extends HookWidget {
   Widget _buildContentBasedOnSnapshot(
     BuildContext context,
     AsyncSnapshot<int> snapshot,
+    CoreProfile profile,
   ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return Align(
         key: const ValueKey('loading'),
         alignment: Alignment.topLeft,
         child: ShimmerWidget.rectangular(
-          height: isPremium ? 142.r : 150.h,
-          width: isPremium ? 130.r : null,
+          height: profile.premiumUser ? height.r : 150.h,
+          width: profile.premiumUser ? width.r : null,
           border: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18.r),
           ),
@@ -74,7 +79,7 @@ class Likes extends HookWidget {
               image: AppAssets.noLikes,
               text: 'No likes yet',
             ),
-          ], //
+          ],
         );
       } else {
         return Column(
@@ -82,237 +87,83 @@ class Likes extends HookWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Selector<EditProfileNotifier, String?>(
-              selector: (_, editProfile) =>
-                  editProfile.coreProfile?.profilePics?[0],
-              builder: (_, picture, __) {
-                return isPremium
-                    ? Align(
-                        alignment: Alignment.centerLeft,
-                        child: GradientOutlineBox(
+            profile.premiumUser
+                ? ProfileView(
+                    size: Size(width.r, height.r),
+                    child: ProfileViewStack(
+                      imageUrl: profile.profilePics![0],
+                      likesCount: likesCount,
+                      labelText: 'Likes',
+                    ),
+                  )
+                : Container(
+                    height: 150.h,
+                    padding: EdgeInsets.all(8.r),
+                    decoration: BoxDecoration(
+                      gradient: AppColors.splashGradient,
+                      borderRadius: BorderRadius.circular(18.r),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 136.r,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14.r),
+                          ),
+                          padding: EdgeInsets.all(3.r),
                           child: Container(
-                            height: 142.r,
-                            width: 130.r,
                             clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                              border:
-                                  Border.all(color: Colors.white, width: 3.r),
+                              borderRadius: BorderRadius.circular(12.r),
                             ),
-                            child: Container(
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14.r),
-                              ),
-                              child: Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  CachedNetworkImage(
-                                    imageUrl: picture ?? '',
-                                    imageBuilder: (_, imageProvider) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.rectangle,
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    placeholder: (_, __) =>
-                                        const ShimmerWidget.rectangular(),
-                                    errorWidget: (context, url, error) {
-                                      log('Error loading image: ${error.toString()}');
-
-                                      return offline(size: 24);
-                                    },
-                                  ),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(18.r),
-                                        gradient: AppColors.splashGradient,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 8.r,
-                                        vertical: 2.r,
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            likesCount.toString(),
-                                            style: TextStyles.hintThemeText
-                                                .copyWith(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          addWidth(4),
-                                          SvgPicture.asset(
-                                            AppAssets.love,
-                                            width: 18,
-                                            colorFilter: const ColorFilter.mode(
-                                              Colors.white,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(bottom: 6.h),
-                                      child: const GradientChip(
-                                        text: 'Likes',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            child: ProfileViewStack(
+                              imageUrl: profile.profilePics![0],
+                              likesCount: likesCount,
+                              labelText: 'Likes',
                             ),
                           ),
                         ),
-                      )
-                    : Container(
-                        height: 150.h,
-                        padding: EdgeInsets.all(8.r),
-                        decoration: BoxDecoration(
-                          gradient: AppColors.splashGradient,
-                          borderRadius: BorderRadius.circular(18.r),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 110.w,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(14.r),
+                        addWidth(10),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Subscribe to Premium to Chat Who Liked You',
+                                style: TextStyles.title.copyWith(
+                                    fontSize: 20, color: Colors.white),
+                                textAlign: TextAlign.left,
                               ),
-                              padding: EdgeInsets.all(3.r),
-                              child: Container(
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12.r),
+                              addHeight(10),
+                              GestureDetector(
+                                onTap: () => Nav.push(
+                                  context,
+                                  SubscriptionPlans(initialPage: 1),
                                 ),
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    CachedNetworkImage(
-                                      imageUrl: picture ?? "",
-                                      imageBuilder: (_, imageProvider) {
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.rectangle,
-                                            image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      placeholder: (_, __) =>
-                                          const ShimmerWidget.rectangular(),
-                                      errorWidget: (context, url, error) {
-                                        log('Error loading image: ${error.toString()}');
-
-                                        return offline(size: 24);
-                                      },
-                                    ),
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(18.r),
-                                          gradient: AppColors.splashGradient,
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 8.r, vertical: 2.r),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              likesCount.toString(),
-                                              style: TextStyles.hintThemeText
-                                                  .copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            addWidth(4),
-                                            SvgPicture.asset(
-                                              AppAssets.love,
-                                              width: 18,
-                                              colorFilter:
-                                                  const ColorFilter.mode(
-                                                Colors.white,
-                                                BlendMode.srcIn,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(bottom: 6.h),
-                                        child: const GradientChip(
-                                          text: 'Likes',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10.r, vertical: 6.r),
+                                  decoration: BoxDecoration(
+                                    gradient: AppColors.upgradeButtonGradient,
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                  child: Text(
+                                    'UPGRADE',
+                                    style: TextStyles.pageHeader
+                                        .copyWith(color: Colors.white),
+                                  ),
                                 ),
                               ),
-                            ),
-                            addWidth(10),
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Subscribe to Premium to Chat Who Liked You',
-                                    style: TextStyles.title.copyWith(
-                                        fontSize: 20, color: Colors.white),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  addHeight(10),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 10.r, vertical: 6.r),
-                                    decoration: BoxDecoration(
-                                      gradient: AppColors.upgradeButtonGradient,
-                                      borderRadius: BorderRadius.circular(12.r),
-                                    ),
-                                    child: Text(
-                                      'UPGRADE',
-                                      style: TextStyles.pageHeader
-                                          .copyWith(color: Colors.white),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      );
-              },
-            ),
-            const LikesGridView(pageName: 'likes'),
+                      ],
+                    ),
+                  ),
+            const LikesGridView<LikesNotifier>(pageName: 'likes'),
           ],
         );
       }

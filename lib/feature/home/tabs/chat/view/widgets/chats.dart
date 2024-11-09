@@ -54,7 +54,9 @@ class _ChatsState extends State<Chats> {
 
   // Build content for the StreamBuilder
   Widget _buildStreamContent(
-      AsyncSnapshot<List<Chat>> snapshot, BuildContext context) {
+    AsyncSnapshot<List<Chat>> snapshot,
+    BuildContext context,
+  ) {
     if (snapshot.hasData) {
       final tileData = snapshot.data!;
       if (tileData.isEmpty) {

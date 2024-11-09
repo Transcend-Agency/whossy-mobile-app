@@ -29,6 +29,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       status: json['status'] == null
           ? null
           : UserStatus.fromJson(json['status'] as Map<String, dynamic>),
+      isPremium: json['isPremium'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) {
@@ -55,6 +56,7 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   writeNotNull('tokens', instance.tokens);
   val['is_verified'] = instance.isVerified;
   writeNotNull('created_at', AppUtils.timestampToJson(instance.createdAt));
+  writeNotNull('isPremium', instance.isPremium);
   return val;
 }
 

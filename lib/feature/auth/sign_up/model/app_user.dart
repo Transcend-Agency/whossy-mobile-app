@@ -53,6 +53,9 @@ class AppUser {
   @JsonKey(name: 'status', includeToJson: false)
   final UserStatus? status;
 
+  @JsonKey(name: "isPremium")
+  final bool? isPremium;
+
   AppUser({
     this.uid,
     this.email,
@@ -70,6 +73,7 @@ class AppUser {
     this.isVerified = false,
     this.createdAt,
     this.status,
+    this.isPremium = false,
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>
@@ -103,6 +107,7 @@ class AppUser {
         'isVerified: $isVerified\n'
         'createdAt: ${createdAt?.toDate()}\n'
         'tokens: ${tokens?.join(", ") ?? "null"}\n'
+        'isPremium $isPremium,\n'
         'status: ${status?.toString() ?? "null"}';
   }
 }

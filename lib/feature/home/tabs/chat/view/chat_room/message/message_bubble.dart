@@ -7,12 +7,12 @@ import 'package:readmore/readmore.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/common/utils/index.dart';
-import 'package:whossy_app/feature/home/tabs/chat/view/chat_room/message/message_details.dart';
 import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../../../common/styles/text_style.dart';
 import '../../../../../../../constants/index.dart';
 import '../../../model/message.dart';
+import 'message_details.dart';
 import 'message_image_grid.dart';
 
 class MessageBubble extends StatefulWidget {
@@ -28,7 +28,7 @@ class MessageBubble extends StatefulWidget {
   final Message data;
   final bool isSender;
   final String? url;
-  final bool isPreviousSameSender;
+  final bool isPreviousSameSender;//
   final bool isNextSameSender;
 
   @override
@@ -157,11 +157,11 @@ class _MessageBubbleState extends State<MessageBubble>
                 children: [
                   if (!widget.isSender && !widget.isPreviousSameSender) ...[
                     addWidth(10),
-                    AppAvatar(imageUrl: widget.url, radius: 17)
+                    CircleAppAvatar(imageUrl: widget.url, radius: 17)
                   ] else if (!widget.isSender) ...[
                     addWidth(10),
                     hide(
-                      child: AppAvatar(imageUrl: widget.url, radius: 17),
+                      child: CircleAppAvatar(imageUrl: widget.url, radius: 17),
                     ),
                   ],
                   Container(

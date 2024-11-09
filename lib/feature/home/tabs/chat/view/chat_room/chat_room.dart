@@ -191,7 +191,7 @@ class _ChatRoomState extends State<ChatRoom> {
             addBarHeight: 4,
             titleWidget: Row(
               children: [
-                AppAvatar(imageUrl: currentChat.profilePicUrl, radius: 20),
+                CircleAppAvatar(imageUrl: currentChat.profilePicUrl, radius: 20),
                 addWidth(10),
                 Expanded(
                   child: Column(

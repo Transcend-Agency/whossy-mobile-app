@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whossy_app/common/utils/enum/enums.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/source/extensions.dart';
@@ -13,18 +12,25 @@ import '../../model/message.dart';
 
 class ChatRepository {
   final _chatFirestore = FirebaseFirestore.instance.collection('chats');
-
-  static DatabaseReference statusRef(String id) =>
-      FirebaseDatabase.instance.ref().child('users/$id/presence');
+  final _usersFirestore = FirebaseFirestore.instance.collection('users');
 
   CollectionReference<Map<String, dynamic>> _msgFirestore(String id) =>
       _chatFirestore.doc(id).collection('messages');
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getStatusStream(
+    String id,
+  ) =>
+      _usersFirestore.doc(id).snapshots();
 
   Future<bool> doesChatExist(String chatId) =>
       _chatFirestore.doc(chatId).get().then((data) => data.exists);
 
   void updateChatData(
-      Message message, String chatId, WriteBatch batch, bool isConnected) {
+    Message message,
+    String chatId,
+    WriteBatch batch,
+    bool isConnected,
+  ) {
     batch.update(
       _chatFirestore.doc(chatId),
       Chat.updateChatData(message, isConnected),
