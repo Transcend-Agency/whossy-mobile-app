@@ -11,11 +11,12 @@ import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
 import 'package:whossy_app/common/utils/services/notification_service.dart';
 
 import '../../../../../constants/index.dart';
+import '../../../../home/tabs/matching/model/user_profile.dart';
 import '../../model/app_user.dart';
 
 /// Interacting with the database [Firebase](www.firebase.com) directly
 class UserRepository {
-  final _usersFirestore = FirebaseFirestore.instance.collection('users');
+  final _users = FirebaseFirestore.instance.collection('users');
   final _storage = FirebaseStorage.instance;
 
   Future<bool> didUserCreateWithPhoneNumber() async {
@@ -38,7 +39,7 @@ class UserRepository {
 
     String token = await NotificationService().getToken();
 
-    await _usersFirestore.doc(userId).update({
+    await _users.doc(userId).update({
       'tokens': FieldValue.arrayRemove([token])
     });
 
@@ -56,7 +57,7 @@ class UserRepository {
       return;
     }
 
-    await _usersFirestore.doc(userId).update({
+    await _users.doc(userId).update({
       'tokens': FieldValue.arrayUnion([token])
     });
 
@@ -67,7 +68,7 @@ class UserRepository {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
     try {
-      await _usersFirestore.doc(uid).set(data, SetOptions(merge: true)).timeout(
+      await _users.doc(uid).set(data, SetOptions(merge: true)).timeout(
             const Duration(seconds: 5),
             onTimeout: () =>
                 throw TimeoutException('The upload operation timed out'),
@@ -80,7 +81,7 @@ class UserRepository {
   }
 
   Future<bool> isPhoneUnique(String phone) async {
-    var result = await _usersFirestore
+    var result = await _users
         .where('phone_number', isEqualTo: phone)
         .get(const GetOptions(source: Source.server));
 
@@ -120,7 +121,7 @@ class UserRepository {
   Future<AppUser?> getUserData() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
-    final docSnapshot = await _usersFirestore.doc(uid).get();
+    final docSnapshot = await _users.doc(uid).get();
 
     if (docSnapshot.exists) {
       final data = docSnapshot.data();
@@ -131,8 +132,31 @@ class UserRepository {
     return null;
   }
 
+  // Helper function to fetch user profiles in batches
+  Future<List<UserProfile>> getUserProfilesInBatches(
+    List<String> userIds,
+  ) async {
+    List<UserProfile> profiles = [];
+
+    for (int i = 0; i < userIds.length; i += 10) {
+      final batchIds =
+          userIds.sublist(i, i + 10 > userIds.length ? userIds.length : i + 10);
+
+      final userSnapshots =
+          await _users.where(FieldPath.documentId, whereIn: batchIds).get();
+
+      profiles.addAll(
+        userSnapshots.docs.map(
+          (doc) => UserProfile.fromJson(doc.data()),
+        ),
+      );
+    }
+
+    return profiles;
+  }
+
   Future<bool> doesEmailExist(String email) async {
-    var result = await _usersFirestore
+    var result = await _users
         .where('email', isEqualTo: email)
         .get(const GetOptions(source: Source.server));
 

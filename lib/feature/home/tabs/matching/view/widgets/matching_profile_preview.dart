@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
@@ -35,7 +36,7 @@ class MatchingProfilePreview extends HookWidget {
     final user = userProfile.user;
     final preferences = userProfile.preferences;
     final isAtTop = useState(false);
-    //final isNavigating = useState(false);
+    final name = user.firstName ?? '';
 
     useEffect(() {
       void handleScroll() {
@@ -63,8 +64,11 @@ class MatchingProfilePreview extends HookWidget {
           gender: user.gender,
           bio: preferences.bio,
           image: preferences.profilePics![index],
-          name: user.firstName ?? '',
+          name: name,
           pageName: pageName,
+          blockUser: () async {
+            await _blockUser(name: name, context: context, uid: user.uid!);
+          },
           bottomWidget: ProfileFooterScaffold(
             data: userProfile,
             showLess: true,
@@ -119,7 +123,55 @@ class MatchingProfilePreview extends HookWidget {
     toChat(context);
   }
 
-  void toChat(BuildContext context) {
-    Nav.push(context, const ChatRoom());
+  Future<void> _blockUser({
+    required String name,
+    required String uid,
+    required BuildContext context,
+  }) async {
+    bool? result = await showConfirmationDialog(
+      context,
+      title: 'Block ',
+      content: contentText(AppStrings.blockUser(name)),
+      yes: 'Yes',
+      no: 'Cancel',
+    );
+
+    // Exit if user cancels or dismisses the dialog
+    if (result != true || !context.mounted) return;
+
+    final editNotifier = context.read<EditProfileNotifier>();
+    var blockedIds = editNotifier.coreProfile?.blockedIds ?? [];
+
+    // Check if the user is already blocked
+    if (blockedIds.contains(uid)) {
+      showSnackbar('$name is already blocked');
+      return;
+    }
+
+    // Temporarily update the blocked IDs
+    var newBlockedIds = [...blockedIds, uid];
+    editNotifier.updateProfile(blockedIds: newBlockedIds);
+
+    bool success = await editNotifier.saveUserProfile(
+      showSnackbar: (msg) => showSnackbar(msg),
+      returnResult: true,
+    );
+
+    if (!success) {
+      editNotifier.updateProfile(blockedIds: blockedIds);
+      showSnackbar(AppStrings.blockFailure);
+      return;
+    }
+
+    // Navigate back on success
+    if (context.mounted) Navigator.pop(context);
+  }
+
+  void toChat(BuildContext context) => Nav.push(context, const ChatRoom());
+
+  showSnackbar(String message) {
+    if (useContext().mounted) {
+      showTopSnackBar(Overlay.of(useContext()), AppSnackbar(text: message));
+    }
   }
 }

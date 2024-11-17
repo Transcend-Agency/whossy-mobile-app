@@ -37,6 +37,9 @@ extension CoreProfileExtension on CoreProfile {
     if (!AppUtils.areListsEqual(interests, other.interests)) {
       updatedFields['interests'] = interests;
     }
+    if (!AppUtils.areListsEqual(blockedIds, other.blockedIds)) {
+      updatedFields['blockedIds'] = blockedIds;
+    }
 
     return updatedFields;
   }

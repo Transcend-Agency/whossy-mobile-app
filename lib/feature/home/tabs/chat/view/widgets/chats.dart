@@ -104,7 +104,7 @@ class _ChatsState extends State<Chats> {
         itemBuilder: (context, index) {
           return Column(
             children: [
-              const ShimmerTile(),
+              const ShimmerChatTile(),
               Padding(
                 padding: EdgeInsets.only(left: 48.w, top: 1),
                 child: const AppDivider(),

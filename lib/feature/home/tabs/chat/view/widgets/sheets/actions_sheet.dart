@@ -50,7 +50,7 @@ class ActionsSheet extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(AppAssets.blockUser, height: 26),
+                  svgIcon(AppAssets.blockUser, color: Colors.black, size: 21.r),
                   addWidth(10),
                   Text(
                     "Block $name",

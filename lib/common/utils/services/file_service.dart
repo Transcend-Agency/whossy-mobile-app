@@ -198,14 +198,13 @@ class FileService {
 
         // Ensure no local file paths are left unprocessed
         if (localFilePaths.isNotEmpty) {
-          showSnackbar('Some photos could not be uploaded.');
+          showSnackbar(AppStrings.unUploadedPhotos);
+
+          throw FailedUploadException(AppStrings.unUploadedPhotos);
         }
-      } on Exception catch (e) {
-        if (e is FailedUploadException) {
-          showSnackbar((e as dynamic).message);
-        } else {
-          rethrow;
-        }
+      } catch (e) {
+        log('An error occurred while processing photos from file service');
+        rethrow;
       }
     }
 

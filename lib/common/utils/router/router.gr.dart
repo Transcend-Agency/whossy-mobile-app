@@ -10,7 +10,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i31;
 import 'package:flutter/material.dart' as _i32;
-import 'package:image_picker/image_picker.dart' as _i35;
+import 'package:image_picker/image_picker.dart' as _i33;
 import 'package:whossy_app/feature/auth/login/view/login_screen.dart' as _i9;
 import 'package:whossy_app/feature/auth/login/view/phone_number_screen.dart'
     as _i13;
@@ -26,12 +26,10 @@ import 'package:whossy_app/feature/auth/sign_up/view/name.dart' as _i22;
 import 'package:whossy_app/feature/auth/sign_up/view/phone.dart' as _i23;
 import 'package:whossy_app/feature/auth/sign_up/view/verification.dart' as _i24;
 import 'package:whossy_app/feature/auth/sign_up/view/welcome.dart' as _i29;
-import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart'
-    as _i33;
 import 'package:whossy_app/feature/home/edit_profile/view/edit_profile.dart'
-    as _i3;
-import 'package:whossy_app/feature/home/edit_profile/view/edit_profile_preview.dart'
     as _i4;
+import 'package:whossy_app/feature/home/edit_profile/view/edit_profile_preview.dart'
+    as _i5;
 import 'package:whossy_app/feature/home/edit_profile/view/preview_profile.dart'
     as _i15;
 import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/name_edit_profile.dart'
@@ -39,23 +37,21 @@ import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/name_edit
 import 'package:whossy_app/feature/home/home_wrapper.dart' as _i6;
 import 'package:whossy_app/feature/home/notifications/view/notification_screen.dart'
     as _i12;
-import 'package:whossy_app/feature/home/preferences/model/core_preferences.dart'
-    as _i34;
 import 'package:whossy_app/feature/home/preferences/view/interest_screen.dart'
     as _i8;
 import 'package:whossy_app/feature/home/preferences/view/preference_screen.dart'
     as _i14;
+import 'package:whossy_app/feature/home/settings/view/blocked_contacts/blocked_contacts.dart'
+    as _i2;
 import 'package:whossy_app/feature/home/settings/view/settings.dart' as _i19;
 import 'package:whossy_app/feature/home/tabs/chat/view/chat_room/chat_room.dart'
-    as _i2;
+    as _i3;
 import 'package:whossy_app/feature/home/tabs/chat/view/image_preview/image_preview.dart'
     as _i7;
 import 'package:whossy_app/feature/home/tabs/explore/view/advanced_search_screen.dart'
     as _i1;
-import 'package:whossy_app/feature/home/tabs/explore/view/explore_profile_preview.dart'
-    as _i5;
 import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart'
-    as _i36;
+    as _i34;
 import 'package:whossy_app/feature/home/tabs/matching/view/widgets/matching_profile_preview.dart'
     as _i10;
 import 'package:whossy_app/feature/home/tabs/profile/view/safety_guide.dart'
@@ -85,7 +81,53 @@ class AdvancedSearchRoute extends _i31.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i2.ChatRoom]
+/// [_i2.BlockedContacts]
+class BlockedContacts extends _i31.PageRouteInfo<BlockedContactsArgs> {
+  BlockedContacts({
+    _i32.Key? key,
+    required List<String> uids,
+    List<_i31.PageRouteInfo>? children,
+  }) : super(
+          BlockedContacts.name,
+          args: BlockedContactsArgs(
+            key: key,
+            uids: uids,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'BlockedContacts';
+
+  static _i31.PageInfo page = _i31.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<BlockedContactsArgs>();
+      return _i2.BlockedContacts(
+        key: args.key,
+        uids: args.uids,
+      );
+    },
+  );
+}
+
+class BlockedContactsArgs {
+  const BlockedContactsArgs({
+    this.key,
+    required this.uids,
+  });
+
+  final _i32.Key? key;
+
+  final List<String> uids;
+
+  @override
+  String toString() {
+    return 'BlockedContactsArgs{key: $key, uids: $uids}';
+  }
+}
+
+/// generated route for
+/// [_i3.ChatRoom]
 class ChatRoom extends _i31.PageRouteInfo<void> {
   const ChatRoom({List<_i31.PageRouteInfo>? children})
       : super(
@@ -98,13 +140,13 @@ class ChatRoom extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i2.ChatRoom();
+      return const _i3.ChatRoom();
     },
   );
 }
 
 /// generated route for
-/// [_i3.EditProfile]
+/// [_i4.EditProfile]
 class EditProfile extends _i31.PageRouteInfo<void> {
   const EditProfile({List<_i31.PageRouteInfo>? children})
       : super(
@@ -117,13 +159,13 @@ class EditProfile extends _i31.PageRouteInfo<void> {
   static _i31.PageInfo page = _i31.PageInfo(
     name,
     builder: (data) {
-      return const _i3.EditProfile();
+      return const _i4.EditProfile();
     },
   );
 }
 
 /// generated route for
-/// [_i4.EditProfilePreview]
+/// [_i5.EditProfilePreview]
 class EditProfilePreview extends _i31.PageRouteInfo<EditProfilePreviewArgs> {
   EditProfilePreview({
     _i32.Key? key,
@@ -144,7 +186,7 @@ class EditProfilePreview extends _i31.PageRouteInfo<EditProfilePreviewArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<EditProfilePreviewArgs>();
-      return _i4.EditProfilePreview(
+      return _i5.EditProfilePreview(
         key: args.key,
         index: args.index,
       );
@@ -165,59 +207,6 @@ class EditProfilePreviewArgs {
   @override
   String toString() {
     return 'EditProfilePreviewArgs{key: $key, index: $index}';
-  }
-}
-
-/// generated route for
-/// [_i5.ExploreProfilePreview]
-class ExploreProfilePreview
-    extends _i31.PageRouteInfo<ExploreProfilePreviewArgs> {
-  ExploreProfilePreview({
-    _i32.Key? key,
-    required _i33.CoreProfile profile,
-    required _i34.CorePreferences preferences,
-    List<_i31.PageRouteInfo>? children,
-  }) : super(
-          ExploreProfilePreview.name,
-          args: ExploreProfilePreviewArgs(
-            key: key,
-            profile: profile,
-            preferences: preferences,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'ExploreProfilePreview';
-
-  static _i31.PageInfo page = _i31.PageInfo(
-    name,
-    builder: (data) {
-      final args = data.argsAs<ExploreProfilePreviewArgs>();
-      return _i5.ExploreProfilePreview(
-        key: args.key,
-        profile: args.profile,
-        preferences: args.preferences,
-      );
-    },
-  );
-}
-
-class ExploreProfilePreviewArgs {
-  const ExploreProfilePreviewArgs({
-    this.key,
-    required this.profile,
-    required this.preferences,
-  });
-
-  final _i32.Key? key;
-
-  final _i33.CoreProfile profile;
-
-  final _i34.CorePreferences preferences;
-
-  @override
-  String toString() {
-    return 'ExploreProfilePreviewArgs{key: $key, profile: $profile, preferences: $preferences}';
   }
 }
 
@@ -245,7 +234,7 @@ class HomeWrapper extends _i31.PageRouteInfo<void> {
 class ImagePreview extends _i31.PageRouteInfo<ImagePreviewArgs> {
   ImagePreview({
     _i32.Key? key,
-    required List<_i35.XFile> images,
+    required List<_i33.XFile> images,
     required String? text,
     List<_i31.PageRouteInfo>? children,
   }) : super(
@@ -282,7 +271,7 @@ class ImagePreviewArgs {
 
   final _i32.Key? key;
 
-  final List<_i35.XFile> images;
+  final List<_i33.XFile> images;
 
   final String? text;
 
@@ -365,7 +354,7 @@ class MatchingProfilePreview
   MatchingProfilePreview({
     _i32.Key? key,
     required int index,
-    required _i36.UserProfile userProfile,
+    required _i34.UserProfile userProfile,
     String? pageName,
     bool showMessaging = false,
     bool useDefaultTag = false,
@@ -415,7 +404,7 @@ class MatchingProfilePreviewArgs {
 
   final int index;
 
-  final _i36.UserProfile userProfile;
+  final _i34.UserProfile userProfile;
 
   final String? pageName;
 

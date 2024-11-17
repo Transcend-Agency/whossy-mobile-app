@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whossy_app/common/utils/app_utils.dart';
+import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
 class LikesRepository {
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
-  final _users = FirebaseFirestore.instance.collection('users');
+  final _userRepository = UserRepository();
 
   Future<void> addLike({
     required String likedId,
@@ -79,30 +80,7 @@ class LikesRepository {
           .toList();
 
       // Use the helper function to fetch profiles in batches
-      return await _fetchUserProfilesInBatches(likerIds);
+      return await _userRepository.getUserProfilesInBatches(likerIds);
     });
-  }
-
-  // Helper function to fetch user profiles in batches
-  Future<List<UserProfile>> _fetchUserProfilesInBatches(
-    List<String> userIds,
-  ) async {
-    List<UserProfile> profiles = [];
-
-    for (int i = 0; i < userIds.length; i += 10) {
-      final batchIds =
-          userIds.sublist(i, i + 10 > userIds.length ? userIds.length : i + 10);
-
-      final userSnapshots =
-          await _users.where(FieldPath.documentId, whereIn: batchIds).get();
-
-      profiles.addAll(
-        userSnapshots.docs.map(
-          (doc) => UserProfile.fromJson(doc.data()),
-        ),
-      );
-    }
-
-    return profiles;
   }
 }

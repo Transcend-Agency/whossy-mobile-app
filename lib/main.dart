@@ -55,6 +55,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SwipeAndMatchNotifier()),
         ChangeNotifierProvider(create: (_) => LikesNotifier()),
         ChangeNotifierProvider(create: (_) => MatchesNotifier()),
+        ChangeNotifierProvider(create: (_) => ExploreNotifier()),
       ],
       child: const Whossy(),
     ),

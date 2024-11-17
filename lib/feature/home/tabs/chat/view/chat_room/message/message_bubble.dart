@@ -28,7 +28,7 @@ class MessageBubble extends StatefulWidget {
   final Message data;
   final bool isSender;
   final String? url;
-  final bool isPreviousSameSender;//
+  final bool isPreviousSameSender;
   final bool isNextSameSender;
 
   @override

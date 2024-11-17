@@ -118,7 +118,7 @@ class Matches extends HookWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Subscribe to Premium to Chat New Matches',
+                            'Upgrade to Premium to Chat New Matches',
                             style: TextStyles.title
                                 .copyWith(fontSize: 20, color: Colors.white),
                             textAlign: TextAlign.left,

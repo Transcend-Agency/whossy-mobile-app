@@ -52,6 +52,9 @@ class CoreProfile implements ProfileDataFooter {
   @JsonKey(name: "is_verified")
   bool? isVerified;
 
+  @JsonKey(name: "blockedIds")
+  List<String>? blockedIds;
+
   CoreProfile({
     this.firstName,
     this.lastName,
@@ -67,6 +70,7 @@ class CoreProfile implements ProfileDataFooter {
     this.countryOfOrigin,
     this.isPremium,
     this.isVerified,
+    this.blockedIds,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -91,6 +95,7 @@ class CoreProfile implements ProfileDataFooter {
         '  height $height,\n'
         '  isPremium $isPremium,\n'
         '  isVerified $isVerified,\n'
+        '  blockedIds: ${blockedIds?.join(", ") ?? "[]"}, \n'
         ')';
   }
 

@@ -74,10 +74,13 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
 
     useEffect(() {
       if (debouncedAgeRange != null) {
-        notifier.updatePreferences(
-          minAge: debouncedAgeRange.start.toInt(),
-          maxAge: debouncedAgeRange.end.toInt(),
-        );
+        // Todo: Check this out
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          notifier.updatePreferences(
+            minAge: debouncedAgeRange.start.toInt(),
+            maxAge: debouncedAgeRange.end.toInt(),
+          );
+        });
       }
       return null;
     }, [debouncedAgeRange]);

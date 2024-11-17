@@ -8,6 +8,7 @@ import 'package:whossy_app/feature/home/edit_profile/data/repository/edit_profil
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 
+import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/onboarding/model/preferences.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
@@ -141,8 +142,9 @@ class EditProfileNotifier extends ChangeNotifier {
     }
   }
 
-  Future<void> saveUserProfile({
+  Future<bool> saveUserProfile({
     required void Function(String) showSnackbar,
+    bool returnResult = false,
   }) async {
     try {
       final corePrefsDiff = _dynCorePrefs?.diff(_staticCorePrefs!) ?? {};
@@ -155,7 +157,7 @@ class EditProfileNotifier extends ChangeNotifier {
         }
       }
 
-      if (corePrefsDiff.isEmpty && coreProfileDiff.isEmpty) return;
+      if (corePrefsDiff.isEmpty && coreProfileDiff.isEmpty) return true;
 
       if (corePrefsDiff.containsKey("photos")) {
         final photos = corePrefsDiff["photos"];
@@ -178,11 +180,18 @@ class EditProfileNotifier extends ChangeNotifier {
       // Once saved, update the static preferences to match the dynamic ones
       _staticCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
       _staticCoreProfile = CoreProfile.fromJson(_dynCoreProfile!.toJson());
-    } on FirebaseException catch (e) {
-      handleFirebaseError(e, showSnackbar);
-    } catch (e) {
-      showSnackbar(AppStrings.errorUnknown);
-      log(e.toString());
+
+      return true;
+    } on Exception catch (e) {
+      if (e is FirebaseException) {
+        handleFirebaseError(e, showSnackbar);
+      } else if (e is FailedUploadException) {
+        showSnackbar((e as dynamic).message);
+      } else {
+        showSnackbar(AppStrings.errorUnknown);
+        log(e.toString());
+      }
+      return false;
     } finally {
       notifyListeners();
     }
@@ -197,6 +206,7 @@ class EditProfileNotifier extends ChangeNotifier {
     double? height,
     List<String>? interests,
     List<String>? profilePics,
+    List<String>? blockedIds,
   }) {
     _dynCoreProfile?.update(
       bio: bio,
@@ -207,6 +217,7 @@ class EditProfileNotifier extends ChangeNotifier {
       height: height,
       interests: interests,
       profilePics: profilePics,
+      blockedIds: blockedIds,
     );
     notifyListeners();
   }

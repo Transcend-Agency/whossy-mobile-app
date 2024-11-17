@@ -24,6 +24,9 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       countryOfOrigin: json['country_of_origin'] as String?,
       isPremium: json['isPremium'] as bool?,
       isVerified: json['is_verified'] as bool?,
+      blockedIds: (json['blockedIds'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
@@ -50,5 +53,6 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
   writeNotNull('country_of_origin', instance.countryOfOrigin);
   writeNotNull('isPremium', instance.isPremium);
   writeNotNull('is_verified', instance.isVerified);
+  writeNotNull('blockedIds', instance.blockedIds);
   return val;
 }

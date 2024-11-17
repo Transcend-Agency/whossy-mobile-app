@@ -44,9 +44,7 @@ class _InterestsTileState extends State<InterestsTile> {
       return "Choose";
     }
     int length = items.length;
-    if (length == 10) {
-      return "10 Selected";
-    } else if (length < 10) {
+     if (length < 11) {
       return "$length Selected";
     } else {
       return "10+ Selected";

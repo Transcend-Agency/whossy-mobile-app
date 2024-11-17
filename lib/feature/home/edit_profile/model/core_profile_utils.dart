@@ -45,6 +45,7 @@ extension CoreProfileUtils on CoreProfile {
     double? weight,
     List<String>? interests,
     List<String>? profilePics,
+    List<String>? blockedIds,
   }) {
     if (bio != null) this.bio = bio;
     if (gender != null) this.gender = gender;
@@ -54,6 +55,7 @@ extension CoreProfileUtils on CoreProfile {
     if (weight != null) this.weight = weight;
     if (interests != null) this.interests = interests;
     if (profilePics != null) this.profilePics = profilePics;
+    if (blockedIds != null) this.blockedIds = blockedIds;
   }
 
   bool get hasFullName => firstName != null && lastName != null;

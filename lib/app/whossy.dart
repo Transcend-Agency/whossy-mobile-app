@@ -14,7 +14,7 @@ class Whossy extends StatefulWidget {
 
 class _WhossyState extends State<Whossy> with WidgetsBindingObserver {
   late UserService _userService;
-  bool _isInBackground = false; // Track background state
+  bool _isInBackground = false;
 
   @override
   void initState() {

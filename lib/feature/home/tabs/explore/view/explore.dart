@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
-import 'package:whossy_app/feature/home/tabs/explore/view/widgets/explore_grid.dart';
-import 'package:whossy_app/feature/home/tabs/explore/view/widgets/filters.dart';
+import 'package:whossy_app/feature/home/tabs/explore/view/widgets/explore_filters_component.dart';
+import 'package:whossy_app/feature/home/tabs/explore/view/widgets/grid/explore_grid.dart';
 
 import '../../../../../../common/utils/index.dart';
 import '../../../../../common/components/index.dart';
@@ -29,8 +29,8 @@ class Explore extends StatelessWidget {
               child: const Logo(),
             ),
             addHeight(8),
-            const ExploreFilters(),
-            const ExploreGrid(),
+            const ExploreFiltersComponent(),
+            const Expanded(child: ExploreGrid()),
           ],
         ),
       ),

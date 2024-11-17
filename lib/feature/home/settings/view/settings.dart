@@ -58,6 +58,7 @@ class _SettingsState extends State<Settings> {
       useScrollView: true,
       appBar: const CustomAppBar(
         title: 'Settings',
+        addBarHeight: 4,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -68,7 +69,7 @@ class _SettingsState extends State<Settings> {
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 8.h),
-            child: const BlockedTile(),
+            child: const BlockedContactsTile(),
           ),
           ListView(
             physics: const NeverScrollableScrollPhysics(),

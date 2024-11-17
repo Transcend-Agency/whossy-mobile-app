@@ -49,7 +49,8 @@ class AppAssets {
   static const gift = 'assets/icons/gift.svg';
   static const leaf = 'assets/icons/leaf.svg';
   static const unMatch = 'assets/icons/unmatch.png';
-  static const blockUser = 'assets/icons/user_block.png';
+  static const blockUser = 'assets/icons/block_user.svg';
+
   static const report = 'assets/icons/report.png';
   static const logo = 'assets/icons/logo.svg';
   static const logoColored = 'assets/icons/logo_colored.svg';

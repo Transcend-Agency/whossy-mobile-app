@@ -42,6 +42,7 @@ class AppRouter extends RootStackRouter {
 
         // Profile / Tab 5
         AutoRoute(page: Settings.page),
+        AutoRoute(page: BlockedContacts.page),
         AutoRoute(page: EditProfile.page),
         AutoRoute(page: NameEditProfile.page),
         AutoRoute(page: PreviewProfile.page),
@@ -58,7 +59,6 @@ class AppRouter extends RootStackRouter {
 
         // Explore / Tab 2
         AutoRoute(page: AdvancedSearchRoute.page),
-        AutoRoute(page: ExploreProfilePreview.page),
       ];
 }
 

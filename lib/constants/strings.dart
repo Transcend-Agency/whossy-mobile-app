@@ -131,6 +131,13 @@ class AppStrings {
   static const String deniedAccess =
       'Unable to access photos. Please update your permissions in settings.';
 
+  static const String unblockFailure =
+      'Failed to unblock user, Please try again';
+
+  static const String blockFailure = 'Failed to block user, Please try again';
+
+  static const String unUploadedPhotos = 'Some photos could not be uploaded';
+
   // Login User Errors
   static const String disabledAccount = 'Your account has been disabled';
   static const String userNotFound = 'Invalid email or password';
@@ -178,6 +185,10 @@ class AppStrings {
   static String chatPicsPath(String fileName, String chatId) {
     return 'chats/$chatId/$fileName';
   }
+
+  static String blockUser(String name) =>
+      "Are you sure you want to block $name? They won't know they've been blocked. "
+      "You can unblock them later under Settings -> Blocked Contacts.";
 
   static const String permissionDeniedPhoneCheck =
       'Unable to check for phone number uniqueness due to insufficient permissions.';

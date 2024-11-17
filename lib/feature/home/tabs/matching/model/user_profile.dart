@@ -11,13 +11,14 @@ class UserProfile implements ProfileDataFooter {
   UserProfile({required this.user, required this.preferences});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
-    final user = AppUser.fromJson(json);
-    final preferences = Preferences.fromJson(json);
-    return UserProfile(user: user, preferences: preferences);
+    return UserProfile(
+      user: AppUser.fromJson(json),
+      preferences: Preferences.fromJson(json),
+    );
   }
 
   @override
-  bool get isOnline => user.status?.online == true;
+  bool get isOnline => user.status?.online ?? false;
 
   @override
   bool get newUser =>

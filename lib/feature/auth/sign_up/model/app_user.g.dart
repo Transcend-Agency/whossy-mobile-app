@@ -30,6 +30,9 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           ? null
           : UserStatus.fromJson(json['status'] as Map<String, dynamic>),
       isPremium: json['isPremium'] as bool? ?? false,
+      blockedIds: (json['blockedIds'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) {
@@ -57,6 +60,7 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   val['is_verified'] = instance.isVerified;
   writeNotNull('created_at', AppUtils.timestampToJson(instance.createdAt));
   writeNotNull('isPremium', instance.isPremium);
+  writeNotNull('blockedIds', instance.blockedIds);
   return val;
 }
 

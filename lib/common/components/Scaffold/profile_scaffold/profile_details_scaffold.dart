@@ -31,6 +31,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
     required this.name,
     this.tagId,
     this.pageName,
+    this.blockUser,
   });
 
   final Widget bottomWidget;
@@ -45,6 +46,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
   final String? tagId;
   final String? pageName;
   final double addedHeight;
+  final VoidCallback? blockUser;
 
   final bool isSameUser;
 
@@ -226,43 +228,46 @@ class ProfileDetailsScaffold extends StatelessWidget {
                     ],
                   ),
                 ),
-              AppButton(
-                color: AppColors.listTileColor,
-                onPress: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(AppAssets.blockUser, height: 26),
-                    addWidth(10),
-                    Text(
-                      'Block $name',
-                      style: TextStyles.prefText.copyWith(
-                        fontWeight: FontWeight.w500,
+              if (!isSameUser) ...[
+                AppButton(
+                  color: AppColors.listTileColor,
+                  onPress: blockUser,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      svgIcon(AppAssets.blockUser,
+                          color: Colors.black, size: 21.r),
+                      addWidth(10),
+                      Text(
+                        'Block $name',
+                        style: TextStyles.prefText.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              addHeight(14),
-              AppButton(
-                color: AppColors.listTileColor,
-                onPress: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(AppAssets.report, height: 26),
-                    addWidth(10),
-                    Text(
-                      "Report $name",
-                      style: TextStyles.buttonText.copyWith(
-                        fontSize: AppUtils.scale(17),
-                        color: AppColors.buttonColor,
+                addHeight(14),
+                AppButton(
+                  color: AppColors.listTileColor,
+                  onPress: () {},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(AppAssets.report, height: 26),
+                      addWidth(10),
+                      Text(
+                        "Report $name",
+                        style: TextStyles.buttonText.copyWith(
+                          fontSize: AppUtils.scale(17),
+                          color: AppColors.buttonColor,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              addHeight(28),
+                addHeight(28),
+              ],
             ],
           ),
         )

@@ -56,6 +56,9 @@ class AppUser {
   @JsonKey(name: "isPremium")
   final bool? isPremium;
 
+  @JsonKey(name: "blockedIds")
+  final List<String>? blockedIds;
+
   AppUser({
     this.uid,
     this.email,
@@ -74,12 +77,25 @@ class AppUser {
     this.createdAt,
     this.status,
     this.isPremium = false,
-  });
+    List<String>? blockedIds, // Accept null here
+  }) : blockedIds = blockedIds ?? []; // Default to an empty list if null
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>
       _$AppUserFromJson(json);
 
   Map<String, dynamic> toJson() => _$AppUserToJson(this);
+
+  String getName() {
+    if (firstName != null && lastName != null) {
+      return "$firstName $lastName";
+    } else if (firstName != null) {
+      return firstName!;
+    } else if (lastName != null) {
+      return lastName!;
+    } else {
+      return "";
+    }
+  }
 
   Map<String, dynamic> toUpdateCreate() => {
         'first_name': firstName,
@@ -108,6 +124,7 @@ class AppUser {
         'createdAt: ${createdAt?.toDate()}\n'
         'tokens: ${tokens?.join(", ") ?? "null"}\n'
         'isPremium $isPremium,\n'
-        'status: ${status?.toString() ?? "null"}';
+        'status: ${status?.toString() ?? "null"}'
+        'blockedIds: ${blockedIds?.join(", ") ?? "[]"}';
   }
 }

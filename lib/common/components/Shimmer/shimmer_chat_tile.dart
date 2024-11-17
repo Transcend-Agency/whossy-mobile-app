@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../utils/index.dart';
 import '../index.dart';
 
-class ShimmerTile extends StatelessWidget {
-  const ShimmerTile({super.key});
+class ShimmerChatTile extends StatelessWidget {
+  const ShimmerChatTile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class ShimmerTile extends StatelessWidget {
           ShimmerWidget.rectangular(
             width: width * 0.125,
             border: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(6.r)),
+              borderRadius: BorderRadius.all(Radius.circular(4.r)),
             ),
             height: 18,
           ),
@@ -39,7 +39,7 @@ class ShimmerTile extends StatelessWidget {
               width: width * 0.3,
               height: 18,
               border: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6.r),
+                borderRadius: BorderRadius.circular(4.r),
               ),
             ),
           ),

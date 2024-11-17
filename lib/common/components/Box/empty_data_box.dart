@@ -7,16 +7,19 @@ import '../../styles/text_style.dart';
 class EmptyDataBox extends StatelessWidget {
   const EmptyDataBox({
     super.key,
-    required this.image,
-    required this.text,
+    this.image,
+    this.text = '',
     this.imageSize = 110,
     this.spacing,
-  });
+    this.header,
+  }) : assert(image != null || header != null,
+            'Either image or header must be provided. Both cannot be null.');
 
-  final String image;
+  final String? image;
   final String text;
   final double imageSize;
   final double? spacing;
+  final Widget? header;
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +27,16 @@ class EmptyDataBox extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(
-            image,
-            height: imageSize.r,
-          ),
+          if (header != null) header!,
+          if (image != null) Image.asset(image!, height: imageSize.r),
           addHeight(spacing ?? 0),
-          Text(
-            text,
-            style: TextStyles.boldPrefText,
-          ),
+          if (text.isNotEmpty)
+            Text(
+              text,
+              style: TextStyles.boldPrefText.copyWith(
+                fontSize: AppUtils.scale(11.sp) ?? 12.5.sp,
+              ),
+            ),
         ],
       ),
     );
