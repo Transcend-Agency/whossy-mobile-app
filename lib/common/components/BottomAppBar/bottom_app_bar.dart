@@ -50,7 +50,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
         children: items,
       ),
     );
-  }
+  } //
 
   Widget _buildTabItem({
     required String item,

@@ -82,7 +82,10 @@ class _MessageStreamState extends State<MessageStream> {
     CurrentChat? currentChat,
   ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
-      return const AppLoader(color: Colors.black);
+      return const AppLoader(
+        key: ValueKey('loading'),
+        color: Colors.black,
+      );
     }
 
     if (snapshot.hasError) {
@@ -106,6 +109,7 @@ class _MessageStreamState extends State<MessageStream> {
           : 'now';
 
       return ListView.builder(
+        key: const ValueKey('data'),
         reverse: true,
         controller: widget.scrollController,
         itemCount: messages.length,

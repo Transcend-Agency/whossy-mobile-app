@@ -83,7 +83,7 @@ class _ChatsState extends State<Chats> {
                 onTileTap: () => onTileTap(context, tile, oppIndex),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 48.w, top: 1),
+                padding: EdgeInsets.only(left: 48.r, top: 1),
                 child: const AppDivider(),
               ),
             ],

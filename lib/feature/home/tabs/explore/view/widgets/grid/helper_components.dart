@@ -183,7 +183,7 @@ Widget _buildUserTags(UserProfile item) {
                 ],
               ),
             ),
-            // addWidth(8),
+            addWidth(8),
           ],
           // Text(
           //   item.distance > 7

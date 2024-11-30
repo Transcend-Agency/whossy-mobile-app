@@ -13,7 +13,10 @@ class ExploreRepository {
   }) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
+    // Base query, ensuring profiles with 'uid' not equal to the current user
     Query query = _profiles.where('uid', isNotEqualTo: uid);
+
+    query = query.where('has_completed_onboarding', isEqualTo: true);
 
     // Dynamically apply filters using FilterConfig
     filters.filters.forEach((filter, value) {
@@ -22,7 +25,7 @@ class ExploreRepository {
       }
     });
 
-    query = query.limit(10); // Apply pagination
+    query = query.limit(10);
 
     return query.snapshots().map((querySnapshot) {
       return querySnapshot.docs

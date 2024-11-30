@@ -9,10 +9,12 @@ class ProfileCard extends StatelessWidget {
     this.child,
     this.bottomOnly = false,
     this.addedHeight = 0,
+    this.heightFactor = 0.8,
   });
 
   final Color? color;
   final Widget? child;
+  final double heightFactor;
   final bool bottomOnly;
   final double addedHeight;
 
@@ -20,7 +22,7 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final container = Container(
       clipBehavior: Clip.antiAlias,
-      height: ScreenUtil().screenHeight * 0.8,
+      height: ScreenUtil().screenHeight * heightFactor,
       decoration: BoxDecoration(
         borderRadius: bottomOnly
             ? BorderRadius.vertical(bottom: Radius.circular(14.r))

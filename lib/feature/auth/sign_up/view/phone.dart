@@ -200,8 +200,8 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
                 hintText:
                     '${country?.phoneCode != null ? '' : '(+1) '}000 000 0000',
                 isPhone: true,
-                validation: (_) =>
-                    _?.trim().validatePhoneNumber(existingPhoneNumber),
+                validation: (text) =>
+                    text?.trim().validatePhoneNumber(existingPhoneNumber),
                 prefixIcon: GestureDetector(
                   onTap: () => showPicker(onSelect: updateCountry),
                   child: Padding(
@@ -271,7 +271,7 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
                   ),
                 ),
                 onFieldSubmitted: (_) => validate(),
-                validation: (_) => _?.trim().validateCountry(),
+                validation: (text) => text?.trim().validateCountry(),
               ),
             ),
           ),

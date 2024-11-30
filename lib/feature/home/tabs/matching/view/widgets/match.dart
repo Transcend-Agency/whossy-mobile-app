@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
@@ -22,6 +23,8 @@ class _MatchState extends State<Match> {
   final CardSwiperController controller = CardSwiperController();
   final PageController _pageController = PageController();
   late SwipeAndMatchNotifier matchNotifier;
+
+  final currentProfile = ValueNotifier<UserProfile?>(null);
 
   double thresholdX = 0.0;
   int _activePage = 0;
@@ -62,6 +65,24 @@ class _MatchState extends State<Match> {
     }
   }
 
+  void like() {
+    if (currentProfile.value != null) {
+      matchNotifier.addLike(
+        currentProfile.value!.user.uid!,
+        showSnackbar: showSnackbar,
+      );
+    }
+  }
+
+  void dislike() {
+    if (currentProfile.value != null) {
+      matchNotifier.addDislike(
+        currentProfile.value!.user.uid!,
+        showSnackbar: showSnackbar,
+      );
+    }
+  }
+
   Future<bool> handleSwipe(
     int index,
     int? previousIndex,
@@ -78,17 +99,11 @@ class _MatchState extends State<Match> {
     }
 
     if (direction == CardSwiperDirection.right) {
-      matchNotifier.addLike(
-        matchNotifier.profiles[index].user.uid!,
-        showSnackbar: showSnackbar,
-      );
+      like();
     }
 
     if (direction == CardSwiperDirection.left) {
-      matchNotifier.addDislike(
-        matchNotifier.profiles[index].user.uid!,
-        showSnackbar: showSnackbar,
-      );
+      dislike();
     }
 
     // Pagination trigger when near the end
@@ -117,7 +132,6 @@ class _MatchState extends State<Match> {
       children: [
         Column(
           children: [
-            // Use a Selector to listen to only isLoading
             Selector<SwipeAndMatchNotifier, bool>(
               selector: (_, matchNotifier) => matchNotifier.isLoading,
               builder: (context, isLoading, child) {
@@ -155,7 +169,10 @@ class _MatchState extends State<Match> {
                             percentThresholdY,
                           ) {
                             updateThresholds(percentThresholdX.toDouble());
+
                             final profileData = profiles[index];
+
+                            currentProfile.value = profileData;
 
                             return ProfileCard(
                               color: Colors.white,
@@ -200,7 +217,7 @@ class _MatchState extends State<Match> {
                               ),
                             );
                           },
-                          backCardOffset: const Offset(0, 46),
+                          backCardOffset: Offset(0, 41.r),
                           allowedSwipeDirection:
                               const AllowedSwipeDirection.symmetric(
                             horizontal: true,
@@ -238,7 +255,10 @@ class _MatchState extends State<Match> {
           opacity: (!_isSwiping || thresholdX < 0) ? 1 : 0,
           duration: const Duration(milliseconds: 300),
           child: MatchIconButton(
-            onTap: () => controller.swipe(CardSwiperDirection.left),
+            onTap: () {
+              controller.swipe(CardSwiperDirection.left);
+              dislike();
+            },
             assetPath: AppAssets.cancel,
           ),
         ),
@@ -247,7 +267,10 @@ class _MatchState extends State<Match> {
           opacity: (!_isSwiping || thresholdX > 0) ? 1 : 0,
           duration: const Duration(milliseconds: 300),
           child: MatchIconButton(
-            onTap: () => controller.swipe(CardSwiperDirection.right),
+            onTap: () {
+              controller.swipe(CardSwiperDirection.right);
+              like();
+            },
             assetPath: AppAssets.like,
           ),
         ),

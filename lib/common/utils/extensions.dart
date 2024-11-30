@@ -65,7 +65,7 @@ extension StringExtention on String? {
       return false;
     } else if (!RegExp(r'^\+?[0-9 -]+$').hasMatch(value)) {
       return false;
-    } else if (value.length != 12) {
+    } else if (value.length < 10 || value.length > 14) {
       return false;
     } else {
       return true;
@@ -78,12 +78,12 @@ extension StringExtention on String? {
       return 'Enter a phone number';
     } else if (!RegExp(r'^\+?[0-9 -]+$').hasMatch(value)) {
       return 'Invalid character';
-    } else if (value.length != 12) {
+    } else if (value.length < 10 || value.length > 14) {
       return 'Invalid length';
     } else {
       return existingPhoneNumber;
     }
-  }
+  } //
 
   String formatNumber(String countryCode) {
     // Remove all whitespace from the string
