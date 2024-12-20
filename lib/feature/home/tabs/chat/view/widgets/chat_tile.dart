@@ -15,10 +15,14 @@ class ChatTile extends StatelessWidget {
     required this.data,
     required this.oppIndex,
     this.onTileTap,
+    this.images,
+    this.name,
   });
 
   final Chat data;
   final int oppIndex;
+  final List<String>? images;
+  final String? name;
   final VoidCallback? onTileTap;
 
   @override
@@ -29,11 +33,11 @@ class ChatTile extends StatelessWidget {
       contentPadding: EdgeInsets.only(top: 6.h),
       leading: CircleAppAvatar(
         radius: 27,
-        imageUrl: data.profilePicUrls[oppIndex],
+        imageUrl: (images?.isNotEmpty ?? false) ? images![0] : null,
       ),
       horizontalTitleGap: 14,
       title: Text(
-        data.userNames[oppIndex],
+        name ?? 'Deleted Account',
         style: TextStyles.profileHead.copyWith(
           fontSize: AppUtils.scale(12.sp) ?? 17,
         ),
@@ -64,13 +68,15 @@ class ChatTile extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(6.r)),
               color: AppColors.listTileColor,
             ),
-            child: Text(
-              data.lastMessageTimestamp!.toTime(),
-              style: TextStyles.hintThemeText.copyWith(
-                color: AppColors.black,
-                fontSize: AppUtils.scale(9.sp) ?? 12.5.sp,
-              ),
-            ),
+            child: data.lastMessageTimestamp?.toTimestamp()?.toDate() != null
+                ? Text(
+                    data.lastMessageTimestamp!.toTimestamp()!.toTime(),
+                    style: TextStyles.hintThemeText.copyWith(
+                      color: AppColors.black,
+                      fontSize: AppUtils.scale(9.sp) ?? 12.5.sp,
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ),
           const Spacer(),
           Row(

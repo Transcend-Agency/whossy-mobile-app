@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
+import 'package:whossy_app/feature/home/tabs/likes_and_match/model/likes_match_data.dart';
 import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/profile_view.dart';
 import 'package:whossy_app/provider/providers.dart';
 
@@ -15,12 +16,12 @@ import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
-import 'likes_grid_view.dart';
+import '../../../matching/model/user_profile.dart';
+import 'grid_view.dart';
+import 'loading_grid_view.dart';
 
 class Matches extends HookWidget {
   const Matches({super.key});
-
-  final bool isPremium = true;
 
   final double height = 144;
   final double width = 132;
@@ -29,16 +30,18 @@ class Matches extends HookWidget {
   Widget build(BuildContext context) {
     useAutomaticKeepAlive();
 
-    final matchesNotifier = useContext().read<MatchesNotifier>();
-
-    return StreamBuilder(
-      stream: matchesNotifier.matchesCount,
-      builder: (context, snapshot) {
-        return Selector<EditProfileNotifier, CoreProfile>(
-          selector: (_, editProfile) => editProfile.coreProfile!,
-          builder: (_, profile, __) {
+    return Selector2<MatchesNotifier, EditProfileNotifier, LikesMatchData>(
+      selector: (_, match, edit) => LikesMatchData(
+        user: edit.coreProfile!,
+        profileStream: match.dataStream(edit.coreProfile!.blockedIds),
+      ),
+      builder: (_, result, __) {
+        return StreamBuilder<List<UserProfile>>(
+          stream: result.profileStream,
+          builder: (context, snapshot) {
             return AppAnimatedSwitcher(
-              child: _buildContentBasedOnSnapshot(context, snapshot, profile),
+              child:
+                  _buildContentBasedOnSnapshot(context, snapshot, result.user),
             );
           },
         );
@@ -48,23 +51,16 @@ class Matches extends HookWidget {
 
   Widget _buildContentBasedOnSnapshot(
     BuildContext context,
-    AsyncSnapshot<int> snapshot,
+    AsyncSnapshot<List<UserProfile>> snapshot,
     CoreProfile profile,
   ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
-      return Align(
+      return LoadingGridView(
         key: const ValueKey('loading'),
-        alignment: Alignment.topLeft,
-        child: ShimmerWidget.rectangular(
-          height: isPremium ? height.r : 150.h,
-          width: isPremium ? width.r : null,
-          border: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18.r),
-          ),
-        ),
+        width: profile.premiumUser ? width.r : null,
+        height: profile.premiumUser ? height.r : 150.h,
       );
     } else if (snapshot.hasError) {
-      // Todo : Error handling
       return Center(
         key: const ValueKey('error'),
         child: Text(
@@ -73,9 +69,10 @@ class Matches extends HookWidget {
         ),
       );
     } else if (snapshot.hasData) {
-      final matchesCount = snapshot.data!;
+      final data = snapshot.data!;
+      final matchesCount = data.length;
 
-      if (matchesCount == 0) {
+      if (data.isEmpty) {
         return Column(
           key: const ValueKey('empty_data'),
           children: [
@@ -150,7 +147,7 @@ class Matches extends HookWidget {
                   ],
                 ),
               ),
-            const LikesGridView<MatchesNotifier>(pageName: 'matches'),
+            LikesGridView(pageName: 'matches', data: data),
           ],
         );
       }

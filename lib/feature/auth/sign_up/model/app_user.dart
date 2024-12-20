@@ -59,6 +59,22 @@ class AppUser {
   @JsonKey(name: "blockedIds")
   final List<String>? blockedIds;
 
+  @JsonKey(name: "latitude")
+  final double? latitude;
+
+  @JsonKey(name: "longitude")
+  final double? longitude;
+
+  @JsonKey(
+    name: "location",
+    toJson: AppUtils.geoPointToJson,
+    fromJson: AppUtils.geoPointFromJson,
+  )
+  final GeoPoint? location;
+
+  @JsonKey(name: "geohash")
+  final String? geohash;
+
   AppUser({
     this.uid,
     this.email,
@@ -77,8 +93,12 @@ class AppUser {
     this.createdAt,
     this.status,
     this.isPremium = false,
-    List<String>? blockedIds, // Accept null here
-  }) : blockedIds = blockedIds ?? []; // Default to an empty list if null
+    this.latitude,
+    this.longitude,
+    this.location,
+    this.geohash,
+    List<String>? blockedIds,
+  }) : blockedIds = blockedIds ?? [];
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>
       _$AppUserFromJson(json);

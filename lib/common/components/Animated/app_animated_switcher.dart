@@ -4,7 +4,7 @@ class AppAnimatedSwitcher extends StatelessWidget {
   const AppAnimatedSwitcher({
     super.key,
     required this.child,
-    this.duration = const Duration(milliseconds: 600),
+    this.duration = const Duration(milliseconds: 300),
   });
 
   final Widget child;

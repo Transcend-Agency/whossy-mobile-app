@@ -20,7 +20,11 @@ class SettingsNotifier extends ChangeNotifier {
   }
 
   Future<List<UserProfile>> getBlockedUsers(List<String> userIds) {
-    return _userRepository.getUserProfilesInBatches(userIds);
+    return _userRepository.getUserProfilesInBatches(
+      userIds: userIds,
+      blockedIds: [],
+      showBlocked: true,
+    );
   }
 
   void updateSwitch(CoreSettings setting, bool newValue) {

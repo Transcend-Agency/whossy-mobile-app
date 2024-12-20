@@ -19,41 +19,55 @@ class ExploreFiltersComponent extends HookWidget {
     final explore = useContext().watch<ExploreNotifier>();
     final profileData = useContext().read<EditProfileNotifier>().coreProfile;
 
-    return Wrap(
-      spacing: 10,
-      runSpacing: 4,
-      children: Filters.values.map((filter) {
-        final isSelected = explore.getFilter(filter) != null;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: Filters.values.map((filter) {
+          final isSelected = explore.getFilter(filter) != null;
 
-        return ChoiceChip(
-          padding: const EdgeInsets.all(7),
-          label: Text(
-            filter.label,
-            style: TextStyles.prefText.copyWith(
-              color: isSelected ? Colors.white : AppColors.hintTextColor,
-              fontWeight: FontWeight.w500,
-              fontSize: AppUtils.scale(9.5.sp) ?? 12,
-            ),
-          ),
-          avatar: filter.avatar != null
-              ? svgIcon(
-                  filter.avatar!,
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: ChoiceChip(
+              padding: const EdgeInsets.all(7),
+              label: Text(
+                filter.label,
+                style: TextStyles.prefText.copyWith(
                   color: isSelected ? Colors.white : AppColors.hintTextColor,
-                )
-              : null,
-          selected: isSelected,
-          showCheckmark: false,
-          backgroundColor: AppColors.listTileColor,
-          selectedColor: AppColors.primaryColor,
-          shape: chipShape,
-          onSelected: (selected) {
-            selected
-                ? explore.addFilter(
-                    filter, _getFilterValue(filter, profileData))
-                : explore.removeFilter(filter);
-          },
-        );
-      }).toList(),
+                  fontWeight: FontWeight.w500,
+                  fontSize: AppUtils.scale(9.5.sp) ?? 12,
+                ),
+              ),
+              avatar: filter.avatar != null
+                  ? svgIcon(
+                      filter.avatar!,
+                      color:
+                          isSelected ? Colors.white : AppColors.hintTextColor,
+                    )
+                  : null,
+              selected: isSelected,
+              showCheckmark: false,
+              backgroundColor: AppColors.listTileColor,
+              selectedColor: AppColors.primaryColor,
+              shape: chipShape,
+              onSelected: (selected) {
+                if (selected) {
+                  // Clear all other filters
+                  explore.clearFilters();
+
+                  // Add the selected filter
+                  explore.addFilter(
+                    filter,
+                    _getFilterValue(filter, profileData),
+                  );
+                } else {
+                  // Remove the filter when deselected
+                  explore.removeFilter(filter);
+                }
+              },
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 

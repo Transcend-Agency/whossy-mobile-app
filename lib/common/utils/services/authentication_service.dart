@@ -10,12 +10,6 @@ class AuthenticationService {
   Future<void> signOut() async {
     try {
       // Reset FCM token
-      await _authRepo.clearDeviceToken();
-
-      // Any other clean-up tasks (e.g., clearing local storage, revoking tokens)
-      // Example:
-      // await LocalStorage.clearUserData();
-
       // Sign out from Firebase
       await _auth.signOut();
     } catch (e) {

@@ -15,6 +15,7 @@ class HeaderBar extends StatelessWidget {
     this.icon2,
     this.topPadding = 4, //8
     this.iconSize = 18,
+    this.customWidget,
   });
 
   final String? icon;
@@ -23,6 +24,7 @@ class HeaderBar extends StatelessWidget {
   final double iconSize;
   final VoidCallback? onIconTap;
   final VoidCallback? onIcon2Tap;
+  final Widget? customWidget;
 
   final Widget? child;
 
@@ -32,39 +34,39 @@ class HeaderBar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         addHeight(MediaQuery.paddingOf(context).top + topPadding),
-        Padding(
-          padding: const EdgeInsets.only(top: 6, left: 6, right: 6),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              child ?? const SizedBox.shrink(),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (icon != null) ...[
-                    GestureDetector(
-                      onTap: onIconTap,
-                      child: Container(
-                        margin: const EdgeInsets.all(9),
-                        child: svgIcon(
-                          icon!,
-                          color: Colors.black,
-                          size: iconSize,
-                        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            child ?? const SizedBox.shrink(),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (customWidget != null) ...[
+                  customWidget!,
+                ],
+                if (icon != null) ...[
+                  GestureDetector(
+                    onTap: onIconTap,
+                    child: Container(
+                      margin: const EdgeInsets.all(9),
+                      child: svgIcon(
+                        icon!,
+                        color: Colors.black,
+                        size: iconSize,
                       ),
                     ),
-                    addWidth(2),
-                  ],
-                  AppIconButton(
-                    path: icon2 ?? AppAssets.tune,
-                    size: 24,
-                    onTap: onIcon2Tap ??
-                        () => Nav.push(context, const PreferenceRoute()),
                   ),
+                  addWidth(2),
                 ],
-              )
-            ],
-          ),
+                AppIconButton(
+                  path: icon2 ?? AppAssets.tune,
+                  size: 24,
+                  onTap: onIcon2Tap ??
+                      () => Nav.push(context, const PreferenceRoute()),
+                ),
+              ],
+            )
+          ],
         ),
       ],
     );

@@ -140,7 +140,6 @@ class _ImagePreviewState extends State<ImagePreview> {
                               child: MessageTextField(
                                 node: messagesFocusNode,
                                 controller: messagesController,
-                                onPrefixIconTap: () {},
                                 isReplying: false,
                               ),
                             ),

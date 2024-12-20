@@ -50,6 +50,8 @@ class MatchingProfilePreview extends HookWidget {
       return () => scrollController.removeListener(handleScroll);
     }, [scrollController]);
 
+    final swipeAndMatch = useContext().read<SwipeAndMatchNotifier>();
+
     return AppScaffold(
       applyTop: false,
       useScrollView: false,
@@ -82,7 +84,11 @@ class MatchingProfilePreview extends HookWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 MatchIconButton(
-                  onTap: () {},
+                  onTap: () => swipeAndMatch.addDislike(
+                    userProfile.user.uid!,
+                    addAction: false,
+                    showSnackbar: showSnackbar,
+                  ),
                   assetPath: AppAssets.cancel,
                 ),
                 if (showMessaging) ...[
@@ -98,7 +104,11 @@ class MatchingProfilePreview extends HookWidget {
                 ] else
                   addWidth(40),
                 MatchIconButton(
-                  onTap: () {},
+                  onTap: () => swipeAndMatch.addLike(
+                    userProfile.user.uid!,
+                    addAction: false,
+                    showSnackbar: showSnackbar,
+                  ),
                   assetPath: AppAssets.like,
                 ),
               ],
@@ -148,6 +158,9 @@ class MatchingProfilePreview extends HookWidget {
       return;
     }
 
+    // Navigate back on success
+    if (context.mounted) Navigator.pop(context);
+
     // Temporarily update the blocked IDs
     var newBlockedIds = [...blockedIds, uid];
     editNotifier.updateProfile(blockedIds: newBlockedIds);
@@ -162,9 +175,6 @@ class MatchingProfilePreview extends HookWidget {
       showSnackbar(AppStrings.blockFailure);
       return;
     }
-
-    // Navigate back on success
-    if (context.mounted) Navigator.pop(context);
   }
 
   void toChat(BuildContext context) => Nav.push(context, const ChatRoom());

@@ -4,9 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../feature/home/tabs/matching/model/user_profile.dart';
+
 class AppUtils {
   static Timestamp? timestampFromJson(dynamic json) => json as Timestamp?;
   static dynamic timestampToJson(Timestamp? timestamp) => timestamp;
+
+  static GeoPoint? geoPointFromJson(dynamic json) => json as GeoPoint?;
+
+  static dynamic geoPointToJson(GeoPoint? location) => location;
 
   static Timestamp? timestampFromMilliseconds(int? milliseconds) {
     if (milliseconds == null) return null;
@@ -99,4 +105,42 @@ class AppUtils {
 
     return Size(width, calculatedHeight);
   }
+
+  static bool shouldExcludeProfile(
+    UserProfile profile,
+    String currentUserId,
+    List<String> blockedIds,
+  ) {
+    return profile.user.uid == currentUserId ||
+        blockedIds.contains(profile.user.uid) ||
+        (profile.user.blockedIds?.contains(currentUserId) ?? false);
+  }
+}
+
+class TimestampWrapper {
+  final dynamic timestamp;
+
+  TimestampWrapper(this.timestamp);
+
+  // Method to check and convert to Timestamp
+  Timestamp? toTimestamp() {
+    if (timestamp is Timestamp) {
+      return timestamp as Timestamp; // It's already a Timestamp
+    } else if (timestamp is Map<String, int> &&
+        timestamp.containsKey('seconds') &&
+        timestamp.containsKey('nanoseconds')) {
+      final seconds = timestamp['seconds']!;
+      final nanoseconds = timestamp['nanoseconds']!;
+      return Timestamp(seconds, nanoseconds); // Convert Map to Timestamp
+    }
+    return null; // Return null if it's neither a Timestamp nor a valid Map
+  }
+
+  // Custom fromJson function for timestamp
+  static TimestampWrapper? timestampFromJson(dynamic json) =>
+      TimestampWrapper(json);
+
+  // Custom toJson function for timestamp
+  static dynamic timestampToJson(TimestampWrapper? timestamp) =>
+      timestamp?.timestamp;
 }

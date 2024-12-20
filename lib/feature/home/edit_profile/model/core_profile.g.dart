@@ -27,6 +27,10 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       blockedIds: (json['blockedIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      location: AppUtils.geoPointFromJson(json['location']),
+      geohash: json['geohash'] as String?,
     );
 
 Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
@@ -54,5 +58,9 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
   writeNotNull('isPremium', instance.isPremium);
   writeNotNull('is_verified', instance.isVerified);
   writeNotNull('blockedIds', instance.blockedIds);
+  writeNotNull('latitude', instance.latitude);
+  writeNotNull('longitude', instance.longitude);
+  writeNotNull('location', AppUtils.geoPointToJson(instance.location));
+  writeNotNull('geohash', instance.geohash);
   return val;
 }

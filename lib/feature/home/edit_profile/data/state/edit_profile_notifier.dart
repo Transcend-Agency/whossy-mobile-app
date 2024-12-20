@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/common/utils/services/services.dart';
@@ -51,8 +51,10 @@ class EditProfileNotifier extends ChangeNotifier {
   }
 
   checkOpenedState() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
     hasSafetyGuideOpened =
-        !await _sharedPrefs.isFirstTimeOpened(SafetyGuide.name);
+        !await _sharedPrefs.isFirstTimeOpened(SafetyGuide.name, uid);
   }
 
   CoreProfile? get coreProfile => _dynCoreProfile;

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../../../../common/utils/index.dart';
 import '../../../matching/model/user_profile.dart';
 import '../../model/explore_filters.dart';
 import '../../model/filter_configuration.dart';
@@ -10,28 +11,32 @@ class ExploreRepository {
 
   Stream<List<UserProfile>> streamFilteredProfiles({
     required ExploreFilters filters,
+    required List<String> blockedIds,
   }) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
-    // Base query, ensuring profiles with 'uid' not equal to the current user
-    Query query = _profiles.where('uid', isNotEqualTo: uid);
+    // Base query without 'uid != currentUserUid' condition
+    Query query = _profiles.where('has_completed_onboarding', isEqualTo: true);
 
-    query = query.where('has_completed_onboarding', isEqualTo: true);
-
-    // Dynamically apply filters using FilterConfig
     filters.filters.forEach((filter, value) {
       if (value != null && filterConfigs.containsKey(filter)) {
         query = filterConfigs[filter]!.apply(query, value);
       }
     });
 
-    query = query.limit(10);
+    query = query.limit(20);
 
     return query.snapshots().map((querySnapshot) {
-      return querySnapshot.docs
+      List<UserProfile> profiles = querySnapshot.docs
           .map(
               (doc) => UserProfile.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
+
+      // Apply local filtering using the helper method
+      profiles.removeWhere(
+          (profile) => AppUtils.shouldExcludeProfile(profile, uid, blockedIds));
+
+      return profiles;
     });
   }
 }

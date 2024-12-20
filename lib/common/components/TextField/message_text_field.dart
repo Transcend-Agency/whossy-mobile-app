@@ -42,31 +42,11 @@ class MessageTextField extends StatelessWidget {
       controller: controller,
       onFieldSubmitted: onFieldSubmitted,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(8.r),
+        contentPadding: EdgeInsets.all(8.r).copyWith(left: 12.r),
         enabledBorder: customBorder(isReplying: isReplying),
         focusedBorder: customBorder(isReplying: isReplying),
         fillColor: AppColors.listTileColor,
         hintText: hintText,
-        prefixIcon: GestureDetector(
-          onTap: onPrefixIconTap,
-          child: Padding(
-            padding: EdgeInsets.all(4.r).copyWith(right: 10),
-            child: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 20.r,
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

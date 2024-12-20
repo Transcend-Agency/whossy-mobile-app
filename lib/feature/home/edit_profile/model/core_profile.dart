@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -55,6 +56,22 @@ class CoreProfile implements ProfileDataFooter {
   @JsonKey(name: "blockedIds")
   List<String>? blockedIds;
 
+  @JsonKey(name: "latitude")
+  final double? latitude;
+
+  @JsonKey(name: "longitude")
+  final double? longitude;
+
+  @JsonKey(
+    name: "location",
+    toJson: AppUtils.geoPointToJson,
+    fromJson: AppUtils.geoPointFromJson,
+  )
+  final GeoPoint? location;
+
+  @JsonKey(name: "geohash")
+  final String? geohash;
+
   CoreProfile({
     this.firstName,
     this.lastName,
@@ -71,6 +88,10 @@ class CoreProfile implements ProfileDataFooter {
     this.isPremium,
     this.isVerified,
     this.blockedIds,
+    this.latitude,
+    this.longitude,
+    this.location,
+    this.geohash,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -91,11 +112,17 @@ class CoreProfile implements ProfileDataFooter {
         '  bio: $bio,\n'
         '  interests: $interests,\n'
         '  countryOfOrigin: $countryOfOrigin,\n'
-        '  weight $weight,\n'
-        '  height $height,\n'
-        '  isPremium $isPremium,\n'
-        '  isVerified $isVerified,\n'
-        '  blockedIds: ${blockedIds?.join(", ") ?? "[]"}, \n'
+        '  weight: $weight,\n'
+        '  height: $height,\n'
+        '  isPremium: $isPremium,\n'
+        '  isVerified: $isVerified,\n'
+        '  blockedIds: ${blockedIds?.join(", ") ?? "[]"},\n'
+        '  latitude: $latitude,\n'
+        '  longitude: $longitude,\n'
+        '  location: {\n'
+        '     longitude: ${location?.longitude},\n'
+        '     latitude: ${location?.latitude}, \n },\n'
+        '  geohash: $geohash\n'
         ')';
   }
 

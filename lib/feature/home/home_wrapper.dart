@@ -1,10 +1,16 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
-import 'package:whossy_app/constants/asset_paths.dart';
+import 'package:whossy_app/feature/home/tabs/matching/data/state/swipe_and_match_notifier.dart';
 
+import '../../common/utils/index.dart';
+import '../../common/utils/services/services.dart';
+import '../../constants/index.dart';
 import 'edit_profile/data/state/edit_profile_notifier.dart';
 import 'tabs/_.dart';
 import 'tabs/chat/data/state/chats_notifier.dart';
@@ -19,6 +25,7 @@ class HomeWrapper extends StatefulWidget {
 
 class _HomeWrapperState extends State<HomeWrapper> {
   late EditProfileNotifier _editProfileNotifier;
+  late SwipeAndMatchNotifier _swipeAndMatchNotifier;
   late List<Widget> _pages;
   int selectedIndex = 0;
 
@@ -33,6 +40,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
     ];
 
     _editProfileNotifier = context.read<EditProfileNotifier>();
+    _swipeAndMatchNotifier = context.read<SwipeAndMatchNotifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _editProfileNotifier.getUserData(showSnackbar: showSnackbar);
@@ -43,7 +51,46 @@ class _HomeWrapperState extends State<HomeWrapper> {
       context.read<ChatsNotifier>().checkOpenedState();
     });
 
+    _requestLocationPermission();
+
     super.initState();
+  }
+
+  Future<void> _requestLocationPermission() async {
+    try {
+      // Try to get the location
+      final position = await LocationService.determinePosition(
+        _swipeAndMatchNotifier.hasDeniedLocationPermission,
+      );
+
+      if (position != null) {
+        await LocationService().updateUserLocation(position);
+      }
+    } catch (e) {
+      if (e is LocationPermissionDeniedException) {
+        await _showPermissionDialog(e.message);
+
+        _swipeAndMatchNotifier.hasDeniedLocationPermission = true;
+      } else {
+        log('An error occurred while requesting location permission $e');
+      }
+    }
+  }
+
+  Future<void>? _showPermissionDialog(String message) async {
+    bool? result = await showConfirmationDialog(
+      context,
+      title: 'Permission Denied',
+      content: contentText(message),
+      yes: 'Open settings',
+      no: 'Cancel',
+    );
+
+    if (result == null) return;
+
+    if (result && mounted) {
+      await openAppSettings();
+    }
   }
 
   void _selectedTab(int index) {

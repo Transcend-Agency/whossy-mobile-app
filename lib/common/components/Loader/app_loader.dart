@@ -7,9 +7,11 @@ class AppLoader extends StatelessWidget {
     super.key,
     this.size = 20,
     this.color = Colors.white,
+    this.value,
   });
   final double size;
   final Color color;
+  final double? value;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,7 @@ class AppLoader extends StatelessWidget {
           child: CircularProgressIndicator.adaptive(
             backgroundColor: Platform.isIOS ? color : Colors.transparent,
             strokeWidth: 2.5,
+            value: value,
           ),
         ),
       ),

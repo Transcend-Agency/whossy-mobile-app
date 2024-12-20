@@ -7,9 +7,12 @@ import '../repository/explore_repository.dart';
 class ExploreNotifier extends ChangeNotifier {
   final _exploreRepository = ExploreRepository();
 
-  // Get the current stream of filtered profiles
-  Stream<List<UserProfile>> get profileStream =>
-      _exploreRepository.streamFilteredProfiles(filters: _filters);
+  Stream<List<UserProfile>> profileStream(List<String>? blockedIds) {
+    return _exploreRepository.streamFilteredProfiles(
+      filters: _filters,
+      blockedIds: blockedIds ?? [],
+    );
+  }
 
   var _filters = ExploreFilters(filters: {});
 

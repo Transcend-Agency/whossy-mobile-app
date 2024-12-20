@@ -41,3 +41,27 @@ extension TimestampExtensions on Timestamp? {
     return '$formattedHour:$minutes $period';
   }
 }
+
+String getMessageContent(String content, List<XFile>? pictures) {
+  if (content.isEmpty && pictures != null && pictures.isNotEmpty) {
+    final photoCount = pictures.length;
+    return photoCount == 1 ? "Sent a photo" : "Sent $photoCount photos";
+  }
+  return content; // Return the original content if it's not empty
+}
+
+bool areListsEqual(List<String> list1, List<String> list2) {
+  if (list1.length != list2.length) {
+    return false;
+  }
+
+  list1.sort();
+  list2.sort();
+  // Compare the sorted lists element by element
+  for (int i = 0; i < list1.length; i++) {
+    if (list1[i] != list2[i]) {
+      return false;
+    }
+  }
+  return true;
+}

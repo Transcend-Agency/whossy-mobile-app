@@ -4,26 +4,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whossy_app/common/utils/enum/enums.dart';
-import 'package:whossy_app/feature/home/tabs/chat/data/source/extensions.dart';
 
+import '../../../matching/model/user_profile.dart';
 import '../../model/chat.dart';
+import '../../model/chat_with_user.dart';
 import '../../model/current_chat.dart';
 import '../../model/message.dart';
+import '../source/extensions.dart';
 
 class ChatRepository {
-  final _chatFirestore = FirebaseFirestore.instance.collection('chats');
-  final _usersFirestore = FirebaseFirestore.instance.collection('users');
+  final _chats = FirebaseFirestore.instance.collection('chats');
+  final _users = FirebaseFirestore.instance.collection('users');
 
   CollectionReference<Map<String, dynamic>> _msgFirestore(String id) =>
-      _chatFirestore.doc(id).collection('messages');
+      _chats.doc(id).collection('messages');
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> getStatusStream(
-    String id,
-  ) =>
-      _usersFirestore.doc(id).snapshots();
+  Stream<UserProfile?> getChatterDataStream(String id) =>
+      _users.doc(id).snapshots().map((docSnapshot) {
+        if (docSnapshot.exists) {
+          final data = docSnapshot.data();
+
+          if (data != null) return UserProfile.fromJson(data);
+        }
+
+        return null;
+      });
 
   Future<bool> doesChatExist(String chatId) =>
-      _chatFirestore.doc(chatId).get().then((data) => data.exists);
+      _chats.doc(chatId).get().then((data) => data.exists);
 
   void updateChatData(
     Message message,
@@ -32,7 +40,7 @@ class ChatRepository {
     bool isConnected,
   ) {
     batch.update(
-      _chatFirestore.doc(chatId),
+      _chats.doc(chatId),
       Chat.updateChatData(message, isConnected),
     );
   }
@@ -41,11 +49,7 @@ class ChatRepository {
     required String chatId,
     required String docId,
     required Map<String, String> uploadResults,
-  }) async
-  // lb
-  {
-    log('Upload Results: $uploadResults'); // Log the upload results
-
+  }) async {
     try {
       final msgRef = _msgFirestore(chatId).doc(docId);
 
@@ -53,35 +57,22 @@ class ChatRepository {
         final snapshot = await transaction.get(msgRef);
         if (!snapshot.exists) return;
 
-        // Use your `Message.fromJson` method to deserialize the snapshot data
-        final message =
-            Message.fromJson(snapshot.data() as Map<String, dynamic>);
+        final message = Message.fromJson(snapshot.data()!);
 
-        log('Original Message Data: ${message.toString()}'); // Log the original message data
+        String? localPhoto = message.localPhoto;
+        String? photo = message.photo;
 
-        final localPhotos = List<String>.from(message.localPhotos ?? []);
-        final photos = List<String>.from(message.photos ?? []);
-
-        // For each uploaded file, remove local path and add download URL
         uploadResults.forEach((localPath, downloadUrl) {
-          localPhotos.remove(localPath);
-
-          // Only add the downloadUrl if it doesn't already exist
-          if (!photos.contains(downloadUrl)) {
-            photos.add(downloadUrl);
+          if (localPhoto == localPath) {
+            photo = downloadUrl;
           }
         });
 
-        // Prepare the updated data
         final updatedData = {
-          'local_photos': localPhotos,
-          'photos': photos,
+          'local_photo': FieldValue.delete(),
+          'photo': photo,
         };
 
-        // Log the data you're about to write
-        log('Updated Data to Write: $updatedData');
-
-        // Update Firestore with the modified lists
         transaction.update(msgRef, updatedData);
       });
     } catch (e) {
@@ -102,14 +93,11 @@ class ChatRepository {
     final chat = Chat(
       participants: [currentChat.uidUser1, currentChat.uidUser2],
       lastMessage: content,
-      userNames: [userName, currentChat.username],
-      profilePicUrls: [picUrl, currentChat.profilePicUrl],
       lastMessageId: '',
-      lastMessageStatus:
-          isConnected ? MessageStatus.sent : MessageStatus.undelivered,
+      lastMessageStatus: MessageStatus.sent,
     );
 
-    await _chatFirestore.doc(currentChat.chatId).set(
+    await _chats.doc(currentChat.chatId).set(
       {
         ...chat.toJson(),
         'last_message_timestamp': FieldValue.serverTimestamp(),
@@ -135,8 +123,9 @@ class ChatRepository {
     final batch = FirebaseFirestore.instance.batch();
 
     final message = Message(
-      message: content,
-      localPhotos: pictures?.paths,
+      message: content.isEmpty ? null : content,
+      localPhoto:
+          (pictures != null && pictures.isNotEmpty) ? pictures[0].path : null,
       status: isConnected ? MessageStatus.sent : MessageStatus.undelivered,
     );
 
@@ -148,80 +137,111 @@ class ChatRepository {
       },
     );
 
-    updateChatData(message, chatId, batch, isConnected);
+    final updatedMessage = message.copyWith(
+      message: getMessageContent(content, pictures),
+    );
+
+    updateChatData(updatedMessage, chatId, batch, isConnected);
 
     await batch.commit();
 
     return message.id;
   }
 
-  Stream<List<Chat>> getChatsStream() {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
+  Future<void> updateMessageStatus({
+    required Message message,
+    required String? chatId,
+    required String? lastMessageId,
+  }) async {
+    if (chatId == null) return;
 
-    return _chatFirestore
-        .where('participants', arrayContains: userId)
+    try {
+      // Update the message status
+      await _chats
+          .doc(chatId)
+          .collection('messages')
+          .doc(message.id)
+          .update({'status': MessageStatus.seen.value});
+
+      if (message.id == lastMessageId) {
+        await _chats.doc(chatId).update({'status': MessageStatus.seen.value});
+      }
+    } catch (e) {
+      log('Error updating message status: $e');
+    }
+  }
+
+  Stream<Chat?> getChatDataStream(String? chatId) {
+    return _chats.doc(chatId).snapshots().map(
+          (doc) => doc.exists
+              ? Chat.fromJson(
+                  {...doc.data()!, 'id': doc.id},
+                )
+              : null,
+        );
+  }
+
+  Stream<List<ChatWithUser>> getChatsStream() {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+    return _chats
+        .where('participants', arrayContains: uid)
         .orderBy('last_message_timestamp', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            // .where((chat) => filterDeleted(chat.data(), userId))
-            // .where((chat) => filterBlocked(chat.data(), userId))
-            // .where((chat) => filterChatSearchQuery(chat.data(), userId))
-            .map((doc) => Chat.fromJson({...doc.data(), 'id': doc.id}))
-            .toList());
+        .asyncMap((snapshot) async {
+      final chats = snapshot.docs
+          .map((doc) => Chat.fromJson({...doc.data(), 'id': doc.id}))
+          .toList();
+
+      // Collect unique user IDs from participants (excluding current user)
+      final userIds = chats
+          .expand((chat) => chat.participants)
+          .where((id) => id != uid)
+          .toSet()
+          .toList();
+
+      // If userIds is empty, return an empty list
+      if (userIds.isEmpty) {
+        return <ChatWithUser>[];
+      }
+
+      // Fetch user profiles for the participants
+      final userProfiles = await _fetchUserProfiles(userIds);
+
+      // Enrich chats with user profiles and return as ChatWithUser list
+      return chats.map((chat) {
+        final oppId = chat.participants.firstWhere((id) => id != uid);
+        final userProfile = userProfiles[oppId];
+        return ChatWithUser(chat: chat, userProfile: userProfile);
+      }).toList();
+    });
+  }
+
+  Future<Map<String, UserProfile>> _fetchUserProfiles(
+    List<String> userIds,
+  ) async {
+    final usersSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where(FieldPath.documentId, whereIn: userIds)
+        .get();
+
+    return {
+      for (var doc in usersSnapshot.docs)
+        doc.id: UserProfile.fromJson(doc.data()),
+    };
   }
 
   Stream<List<Message>> getChatMessagesStream({
     required int limit,
     required String chatId,
-  })
-  // lb
-  {
-    // Use the limit method to fetch a specific number of messages
-    final query = _msgFirestore(chatId)
+  }) {
+    return _msgFirestore(chatId)
         .orderBy('timestamp', descending: true)
-        .limit(limit);
-
-    return query.snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList());
+        .limit(limit)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList(),
+        );
   }
 }
-
-/*
- bool filterDeleted(Map<String, dynamic> chatData, String uid) {
-    final participants = chatData['participants'] as List<dynamic>?;
-
-    final deletedAccount = chatData['deletedAccount'] as List<dynamic>?;
-
-    if (participants == null || deletedAccount == null) {
-      return true; // Handle missing data gracefully
-    }
-
-    int currentUserIndex = participants.indexOf(uid);
-    final data = deletedAccount[currentUserIndex] as bool?;
-
-    return data != null ? !data : false;
-  }
-
-  bool filterBlocked(
-    Map<String, dynamic> chatData,
-    String uid, {
-    bool onlyBlocked = false,
-  }) {
-    log('Chat data $chatData');
-    final participants = chatData['participants'] as List<dynamic>;
-    final currentUserPosition = participants.indexOf(uid);
-
-    if (currentUserPosition != -1) {
-      final oppositePosition = (currentUserPosition + 1) % 2;
-      final oppUserBlocked = chatData['user_blocked'][oppositePosition] as bool;
-
-      if (onlyBlocked) {
-        return oppUserBlocked;
-      } else {
-        return !oppUserBlocked;
-      }
-    }
-
-    return false;
-  }
- */

@@ -27,7 +27,12 @@ class FileService {
 
   /// Uploads an image file to Firebase Storage
   Future<String> uploadImage(
-      String chatId, File file, Function(double) onProgress) async {
+    String chatId,
+    File file,
+    Function(double) onProgress,
+  ) async
+  // lb
+  {
     final fName = p.basenameWithoutExtension(file.path);
     final storageRef =
         _storage.ref().child(AppStrings.chatPicsPath(fName, chatId));
@@ -35,6 +40,7 @@ class FileService {
 
     // Track the upload progress
     _uploadTasks[file.path] = uploadTask;
+
     uploadTask.snapshotEvents.listen((taskSnapshot) {
       final progress = taskSnapshot.bytesTransferred / taskSnapshot.totalBytes;
       onProgress(progress); // Report upload progress
@@ -77,6 +83,7 @@ class FileService {
         uploadResults[localPath] = downloadUrl;
       } catch (e) {
         log('An error occurred ${e.toString()}');
+        rethrow;
       }
     }
 

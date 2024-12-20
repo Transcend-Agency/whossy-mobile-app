@@ -46,7 +46,7 @@ Icon alert() {
 Widget sendIcon() {
   return Icon(
     IconlyBold.send,
-    size: 23.r,
+    size: 24.r,
     color: Colors.black,
   );
 }
@@ -182,25 +182,25 @@ Widget contentText(String data) {
   );
 }
 
-Widget messageStatus(MessageStatus status) {
+Widget messageStatus(MessageStatus status, {double? size = 18}) {
   if (status == MessageStatus.sent) {
-    return singleTick();
+    return singleTick(size: size);
   } else if (status == MessageStatus.seen) {
-    return seenIcon();
+    return seenIcon(size: size);
   } else {
-    return offlineIcon();
+    return offlineIcon(size: size); //
   }
 }
 
-Icon seenIcon() {
-  return const Icon(
+Icon seenIcon({double? size = 18}) {
+  return Icon(
     Icons.done_all,
-    size: 20,
+    size: size! + 2,
     color: AppColors.saveColor,
   );
 }
 
-Widget singleTick({double size = 18}) {
+Widget singleTick({double? size = 18}) {
   return Icon(
     Icons.check,
     color: Colors.black,
@@ -208,10 +208,10 @@ Widget singleTick({double size = 18}) {
   );
 }
 
-Icon offlineIcon() {
-  return const Icon(
+Icon offlineIcon({double? size = 18}) {
+  return Icon(
     Icons.error_outline_outlined,
-    size: 18,
+    size: size,
     color: AppColors.primaryColor,
   );
 }

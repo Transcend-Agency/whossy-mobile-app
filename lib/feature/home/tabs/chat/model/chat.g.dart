@@ -11,27 +11,14 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       participants: (json['participants'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
-      userNames:
-          (json['names'] as List<dynamic>).map((e) => e as String).toList(),
-      profilePicUrls: (json['profile_pic_urls'] as List<dynamic>)
-          .map((e) => e as String?)
-          .toList(),
       lastMessage: json['last_message'] as String,
-      lastMessageTimestamp: Chat._fromTimestamp(json['last_message_timestamp']),
-      unreadCount: json['unread_count'] as num?,
-      lastMessageStatus: $enumDecodeNullable(
-              _$MessageStatusEnumMap, json['last_message_status']) ??
-          MessageStatus.undelivered,
+      lastMessageTimestamp:
+          TimestampWrapper.timestampFromJson(json['last_message_timestamp']),
+      lastMessageStatus:
+          $enumDecodeNullable(_$MessageStatusEnumMap, json['status']) ??
+              MessageStatus.undelivered,
       lastMessageId: json['last_message_id'] as String?,
-      userMuted: (json['user_muted'] as List<dynamic>?)
-          ?.map((e) => e as bool)
-          .toList(),
-      userBlocked: (json['user_blocked'] as List<dynamic>?)
-          ?.map((e) => e as bool)
-          .toList(),
-      deletedAccount: (json['deleted_account'] as List<dynamic>?)
-          ?.map((e) => e as bool)
-          .toList(),
+      isSeenByReceiver: json['is_seen_by_receiver'] as bool?,
     );
 
 Map<String, dynamic> _$ChatToJson(Chat instance) {
@@ -45,18 +32,12 @@ Map<String, dynamic> _$ChatToJson(Chat instance) {
 
   writeNotNull('id', instance.id);
   val['participants'] = instance.participants;
-  val['names'] = instance.userNames;
-  val['profile_pic_urls'] = instance.profilePicUrls;
   val['last_message'] = instance.lastMessage;
   writeNotNull('last_message_timestamp',
-      Chat._toTimestamp(instance.lastMessageTimestamp));
-  writeNotNull('unread_count', instance.unreadCount);
-  writeNotNull('last_message_status',
-      _$MessageStatusEnumMap[instance.lastMessageStatus]);
+      TimestampWrapper.timestampToJson(instance.lastMessageTimestamp));
+  writeNotNull('status', _$MessageStatusEnumMap[instance.lastMessageStatus]);
   writeNotNull('last_message_id', instance.lastMessageId);
-  val['user_blocked'] = instance.userBlocked;
-  val['user_muted'] = instance.userMuted;
-  val['deleted_account'] = instance.deletedAccount;
+  writeNotNull('is_seen_by_receiver', instance.isSeenByReceiver);
   return val;
 }
 

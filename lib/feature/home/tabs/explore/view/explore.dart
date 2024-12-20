@@ -8,6 +8,7 @@ import 'package:whossy_app/feature/home/tabs/explore/view/widgets/grid/explore_g
 import '../../../../../../common/utils/index.dart';
 import '../../../../../common/components/index.dart';
 import '../../../../../constants/index.dart';
+import '../../../notifications/view/widgets/notification_bell.dart';
 
 class Explore extends StatelessWidget {
   const Explore({super.key});
@@ -23,12 +24,15 @@ class Explore extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             HeaderBar(
-              icon: AppAssets.bell,
+              customWidget: NotificationBell(
+                onTap: () => Nav.push(context, const NotificationRoute()),
+                rightSpacing: 2,
+              ),
               icon2: AppAssets.explore,
               onIcon2Tap: () => Nav.push(context, const AdvancedSearchRoute()),
               child: const Logo(),
             ),
-            addHeight(8),
+            addHeight(4),
             const ExploreFiltersComponent(),
             const Expanded(child: ExploreGrid()),
           ],

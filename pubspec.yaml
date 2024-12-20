@@ -1,7 +1,7 @@
 name: whossy_app
 description: "The mobile app for Whossy"
 publish_to: 'none' # Prevents accidental publication to pub.dev
-version: 1.0.0+1801
+version: 1.0.0+18010
 
 environment:
   sdk: '>=3.3.4 <4.0.0'
@@ -22,33 +22,23 @@ dependencies:
   firebase_crashlytics: ^4.1.3
   firebase_app_check: ^0.3.0+4
   firebase_messaging: ^15.1.3
-
-  # Authentication & Connectivity
   google_sign_in: ^6.2.1
   connectivity_plus: ^6.0.4
   internet_connection_checker: ^1.0.0+1
-
-  # UI & Animation Libraries
-  flutter_screenutil: ^5.9.3 # Responsive design
-  lottie: ^3.1.2 # Animations
-  flutter_svg: ^2.0.10+1 # SVG handling
-  shimmer: ^3.0.0 # Loading effects
+  flutter_screenutil: ^5.9.3
+  lottie: ^3.1.2
+  flutter_svg: ^2.0.10+1
+  shimmer: ^3.0.0
   modal_bottom_sheet: ^3.0.0 # Custom bottom sheet dialogs
-
-  # UI Elements - Custom & Core
   iconly: ^1.0.1 # Icons
   top_snackbar_flutter: ^3.1.0 # Snack bars
   pin_code_fields: ^8.0.1 # PIN fields
   readmore: ^3.0.0 # Expandable text
   flutter_staggered_grid_view: ^0.7.0 # Staggered grid layout
   cupertino_range_slider_improved: ^2.0.1
-
-  # Image & Media Processing
   image_picker: ^1.1.2
   image_cropper: ^8.0.2
   cached_network_image: ^3.4.1
-
-  # Additional Functionalities
   provider: ^6.1.2 # State management
   url_launcher: ^6.3.0 # Opening URLs
   email_validator: ^3.0.0 # Email validation
@@ -62,14 +52,10 @@ dependencies:
   json_annotation: ^4.9.0
   flutter_hooks: ^0.20.5
   collection: ^1.18.0
-  geolocator: ^13.0.1
-  # geoflutterfire: ^3.0.3
-
-  # Navigation
-  auto_route: ^9.2.2 # Routing
-
-  # Swipe Interaction
+  geolocator: ^13.0.2
+  auto_route: ^9.2.2
   flutter_card_swiper: ^7.0.2 # Card swipe functionality
+  visibility_detector: ^0.4.0+2
 
   # Git Dependencies
   country_picker:
@@ -77,14 +63,19 @@ dependencies:
       url: https://github.com/devBamidele/flutter_country_picker.git
       ref: dev
 
+  geoflutterfire2:
+    git:
+      url: https://github.com/Transcend-Agency/GeoFlutterFire.git
+      ref: 917f7d4d0ae3ad63134f7c945208d7c983c07301
+
 # Development Dependencies
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0 # Linting
-  auto_route_generator: ^9.0.0 # Code generation for routes
-  build_runner: # Code generation
-  json_serializable: ^6.8.0 # JSON serialization
+  auto_route_generator: ^9.0.0
+  build_runner:
+  json_serializable: ^6.8.0
 
 # Flutter-Specific Settings
 flutter:
