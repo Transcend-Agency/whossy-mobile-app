@@ -139,7 +139,7 @@ Widget buildDataGrid(BuildContext context, List<UserProfile> tileData) {
                   gradient: AppColors.likesAndMatchShade,
                 ),
                 _buildUserTags(item),
-                _buildUserDetails(item)
+                _buildUserDetails(item, columns)
               ],
             ),
           ),
@@ -221,16 +221,17 @@ Widget _buildUserTags(UserProfile item) {
   );
 }
 
-Widget _buildUserDetails(UserProfile item) {
+Widget _buildUserDetails(UserProfile item, int columnCount) {
   return Align(
     alignment: Alignment.bottomLeft,
     child: Padding(
-      padding: const EdgeInsets.only(left: 10, bottom: 6),
+      padding: const EdgeInsets.only(left: 10, bottom: 6, right: 10),
       child: Material(
         type: MaterialType.transparency,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 4,
+          runSpacing: 2,
           children: [
             Text(
               '${item.name}, ',
@@ -247,7 +248,6 @@ Widget _buildUserDetails(UserProfile item) {
                 color: Colors.white,
               ),
             ),
-            addWidth(6),
             if (item.isUserVerified)
               SvgPicture.asset(AppAssets.tick, width: 18),
           ],

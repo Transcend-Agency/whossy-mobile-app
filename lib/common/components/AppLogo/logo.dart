@@ -14,7 +14,7 @@ class Logo extends StatelessWidget {
       children: [
         SvgPicture.asset(
           AppAssets.logoColored,
-          width: 30.r,
+          width: 26.r,
         ),
         addWidth(6),
         Column(
@@ -22,7 +22,7 @@ class Logo extends StatelessWidget {
             addHeight(4),
             SvgPicture.asset(
               AppAssets.whossyColored,
-              width: 94,
+              width: 92,
             ),
           ],
         ),

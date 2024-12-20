@@ -34,9 +34,6 @@ class AuthenticationRepository {
     );
   }
 
-  Future<void> clearDeviceToken() async =>
-      await _userRepository.deleteUserToken();
-
   Future<UserCredential> handleEmailLogin(String email, String password) async {
     return await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,

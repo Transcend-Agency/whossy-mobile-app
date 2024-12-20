@@ -30,6 +30,10 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           ? null
           : UserStatus.fromJson(json['status'] as Map<String, dynamic>),
       isPremium: json['isPremium'] as bool? ?? false,
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      location: AppUtils.geoPointFromJson(json['location']),
+      geohash: json['geohash'] as String?,
       blockedIds: (json['blockedIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -61,6 +65,10 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   writeNotNull('created_at', AppUtils.timestampToJson(instance.createdAt));
   writeNotNull('isPremium', instance.isPremium);
   writeNotNull('blockedIds', instance.blockedIds);
+  writeNotNull('latitude', instance.latitude);
+  writeNotNull('longitude', instance.longitude);
+  writeNotNull('location', AppUtils.geoPointToJson(instance.location));
+  writeNotNull('geohash', instance.geohash);
   return val;
 }
 

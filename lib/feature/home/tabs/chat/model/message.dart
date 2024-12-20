@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
@@ -10,24 +9,24 @@ part 'message.g.dart'; // Generated file for JSON serialization
 class Message {
   final String id;
 
-  @JsonKey(name: 'senderId')
+  @JsonKey(name: 'sender_id')
   final String senderId;
 
   @JsonKey(name: 'message')
-  final String message;
+  final String? message;
 
   @JsonKey(
     name: 'timestamp',
-    fromJson: AppUtils.timestampFromJson,
-    toJson: AppUtils.timestampToJson,
+    fromJson: TimestampWrapper.timestampFromJson,
+    toJson: TimestampWrapper.timestampToJson,
   )
-  final Timestamp? timestamp;
+  final TimestampWrapper? timestamp;
 
-  @JsonKey(name: 'local_photos')
-  final List<String>? localPhotos;
+  @JsonKey(name: 'local_photo')
+  final String? localPhoto;
 
-  @JsonKey(name: 'photos')
-  final List<String>? photos;
+  @JsonKey(name: 'photo')
+  final String? photo;
 
   @JsonKey(name: 'status')
   final MessageStatus? status;
@@ -37,8 +36,8 @@ class Message {
     String? senderId,
     required this.message,
     this.timestamp,
-    this.photos,
-    this.localPhotos,
+    this.photo,
+    this.localPhoto,
     this.status = MessageStatus.undelivered,
   })  : id = id ?? const Uuid().v4(),
         senderId = senderId ?? FirebaseAuth.instance.currentUser!.uid;
@@ -48,6 +47,27 @@ class Message {
 
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 
+  // Manually added copyWith method
+  Message copyWith({
+    String? id,
+    String? senderId,
+    String? message,
+    TimestampWrapper? timestamp,
+    String? localPhoto,
+    String? photo,
+    MessageStatus? status,
+  }) {
+    return Message(
+      id: id ?? this.id,
+      senderId: senderId ?? this.senderId,
+      message: message ?? this.message,
+      timestamp: timestamp ?? this.timestamp,
+      localPhoto: localPhoto ?? this.localPhoto,
+      photo: photo ?? this.photo,
+      status: status ?? this.status,
+    );
+  }
+
   @override
   String toString() {
     return '''
@@ -55,9 +75,9 @@ Message {
   id: $id,
   senderId: $senderId,
   message: $message,
-  timestamp: ${timestamp?.toDate().toString() ?? 'null'},
-  localPhotos: ${localPhotos?.join(', ') ?? 'null'},
-  photos: ${photos?.join(', ') ?? 'null'},
+  timestamp: ${timestamp?.timestamp?.toDate().toString() ?? 'null'},
+  localPhotos: $localPhoto ?? 'null'},
+  photos: $photo ?? 'null'},
   status: $status
 }''';
   }

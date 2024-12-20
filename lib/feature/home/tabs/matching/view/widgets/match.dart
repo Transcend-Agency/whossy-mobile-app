@@ -83,6 +83,10 @@ class _MatchState extends State<Match> {
     }
   }
 
+  void undo() {
+    matchNotifier.undoLastAction(showSnackbar: showSnackbar);
+  }
+
   Future<bool> handleSwipe(
     int index,
     int? previousIndex,
@@ -246,7 +250,11 @@ class _MatchState extends State<Match> {
           child: MatchIconButton(
             size: 24,
             padding: 8,
-            onTap: () => controller.undo(),
+            onTap: () {
+              controller.undo();
+
+              undo();
+            },
             assetPath: AppAssets.redo,
           ),
         ),

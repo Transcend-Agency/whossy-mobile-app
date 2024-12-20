@@ -6,7 +6,9 @@ import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/matche
 
 import '../../../../../common/components/index.dart';
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../constants/index.dart';
+import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/router/router.gr.dart';
+import '../../../notifications/view/widgets/notification_bell.dart';
 
 class LikesAndMatch extends StatefulWidget {
   const LikesAndMatch({super.key});
@@ -66,7 +68,10 @@ class _LikesAndMatchState extends State<LikesAndMatch>
           Padding(
             padding: pagePadding,
             child: HeaderBar(
-              icon: AppAssets.bell,
+              customWidget: NotificationBell(
+                onTap: () => Nav.push(context, const NotificationRoute()),
+                rightSpacing: 2,
+              ),
               child: Row(
                 children: [
                   _headerText(0, 'Likes'),

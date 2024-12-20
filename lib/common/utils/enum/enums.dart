@@ -267,9 +267,9 @@ enum PetOwner implements GenericEnum {
 }
 
 enum MessageStatus {
-  sent('Sent'),
-  seen('Seen'),
-  undelivered('Undelivered');
+  sent('sent'),
+  seen('seen'),
+  undelivered('undelivered');
 
   const MessageStatus(this.value);
 
@@ -278,4 +278,13 @@ enum MessageStatus {
 
 enum AuthMethod { local, google, phone }
 
-enum NotificationType { like, match, message }
+enum NotificationType {
+  like('New Like'),
+  match('It\'s a Match!'),
+  message('New Message'),
+  unknown('New Notification');
+
+  const NotificationType(this.value);
+
+  final String value;
+}

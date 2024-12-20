@@ -4,6 +4,7 @@ export 'debouncer.dart';
 export 'enum/enum_conversions.dart';
 export 'enum/enums.dart';
 export 'exceptions/failed_upload.dart';
+export 'exceptions/location_service.dart';
 export 'exceptions/registered_email.dart';
 export 'exceptions/unregistered_email.dart';
 export 'extensions.dart';

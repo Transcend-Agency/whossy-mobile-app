@@ -43,6 +43,21 @@ class _ChatRoomState extends State<ChatRoom> {
   bool showIcon = false;
   bool typing = false;
 
+  bool isTab = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Check if the value has changed before updating state
+    if (screenWidth > 500 != isTab) {
+      setState(() {
+        isTab = screenWidth > 500;
+      });
+    }
+  }
+
   void _scrollToBottom() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients) {
@@ -98,46 +113,36 @@ class _ChatRoomState extends State<ChatRoom> {
 
   Future<bool> _addPhoto({Picture? pic}) async {
     bool result = false;
-    List<XFile> pickedImages = [];
 
     try {
+      XFile? pickedImage;
+
+      // Pick a single image based on the source
       if (pic == Picture.gallery) {
-        // pickMultiImage returns List<XFile>
-        pickedImages = await _picker.pickMultiImage();
+        pickedImage = await _picker.pickImage(source: ImageSource.gallery);
       } else if (pic == Picture.photo) {
-        // pickImage returns a single XFile, so we convert it to a list
-        final image = await _picker.pickImage(source: ImageSource.camera);
-        if (image != null) {
-          pickedImages = [image];
-        }
+        pickedImage = await _picker.pickImage(source: ImageSource.camera);
       }
 
-      if (mounted && pickedImages.isNotEmpty) {
+      // Proceed if an image was picked and the widget is mounted
+      if (mounted && pickedImage != null) {
         Nav.push(
           context,
           ImagePreview(
-            images: pickedImages,
+            images: [pickedImage], // Pass the single picked image as a list
             text: messagesController.text.trim().isNotEmpty
                 ? messagesController.text.trim()
                 : null,
           ),
         );
       }
-
-      // for (var file in pickedImages) {
-      //   final croppedImage = await FileService.cropImage(File(file.path));
-      //
-      //   if (croppedImage != null) {
-      //     setState(() {});
-      //   }
-      // }
     } catch (e) {
-      // Throw an error if permission is denied
+      // Log the error and rethrow for further handling
       log('Error picking image: $e');
       rethrow;
     }
 
-    return result; // Return true if re-uploading succeeded, otherwise false
+    return result; // Return true if needed for further logic
   }
 
   void onAddPhoto() async {
@@ -155,7 +160,7 @@ class _ChatRoomState extends State<ChatRoom> {
     _chatsNotifier = context.read<ChatsNotifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 500), () async {
+      Future.delayed(const Duration(milliseconds: 300), () async {
         isPrevOpened = _chatsNotifier.hasChatOpened;
 
         if (!isPrevOpened) {
@@ -168,6 +173,8 @@ class _ChatRoomState extends State<ChatRoom> {
 
     messagesController.addListener(_updateIcon);
 
+    _chatsNotifier.listenToChatUpdates();
+
     _scrollToBottomIcon();
   }
 
@@ -176,6 +183,8 @@ class _ChatRoomState extends State<ChatRoom> {
     messagesFocusNode.dispose();
     scrollController.dispose();
     messagesController.dispose();
+
+    _chatsNotifier.cancelChatUpdates();
 
     super.dispose();
   }
@@ -191,8 +200,11 @@ class _ChatRoomState extends State<ChatRoom> {
             addBarHeight: 4,
             titleWidget: Row(
               children: [
-                CircleAppAvatar(imageUrl: currentChat.profilePicUrl, radius: 20),
-                addWidth(10),
+                CircleAppAvatar(
+                  imageUrl: currentChat.profilePicUrl,
+                  radius: isTab ? 20 : 22.r,
+                ),
+                addWidth(isTab ? 10 : 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,7 +214,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         style: TextStyles.profileHead,
                       ),
                       addHeight(1),
-                      OnlineStatus(userId: currentChat.uidUser2),
+                      OnlineStatus(oppUserId: currentChat.uidUser2),
                     ],
                   ),
                 ),
@@ -238,51 +250,95 @@ class _ChatRoomState extends State<ChatRoom> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: chatFieldPadding,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxHeight: 5 * 16 * 1.4,
-                                ),
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  reverse: true,
-                                  child: MessageTextField(
-                                    node: messagesFocusNode,
-                                    controller: messagesController,
-                                    onPrefixIconTap: onAddPhoto,
-                                    isReplying: false,
+                  Selector<EditProfileNotifier, List<String>>(
+                    selector: (_, edit) => edit.coreProfile?.blockedIds ?? [],
+                    builder: (_, blockedIds, __) {
+                      return blockedIds.contains(currentChat.uidUser2)
+                          ? Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              height: 50.r,
+                              width: double.infinity,
+                              color: AppColors.inputBackGround.withOpacity(0.9),
+                              child: Center(
+                                child: Text(
+                                  'UNBLOCK',
+                                  style: TextStyles.chatText.copyWith(
+                                    fontSize: AppUtils.scale(11.5.sp) ?? 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.primaryColor,
                                   ),
                                 ),
-                              ), //
-                            ],
-                          ),
-                        ),
-
-                        // Some horizontal spacing
-                        addWidth(6),
-
-                        // Record audio / Send message button
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: typing ? sendMessage : null,
-                              child: CircleAvatar(
-                                radius: 21,
-                                backgroundColor: Colors.white,
-                                child: typing ? sendIcon() : voiceIcon(),
                               ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
+                            )
+                          : Padding(
+                              padding: chatFieldPadding,
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: onAddPhoto,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(4.r)
+                                          .copyWith(right: 10),
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.black,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            Icons.add,
+                                            color: Colors.white,
+                                            size: 22.r,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                            maxHeight: 5 * 16 * 1.4,
+                                          ),
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.vertical,
+                                            reverse: true,
+                                            child: MessageTextField(
+                                              node: messagesFocusNode,
+                                              controller: messagesController,
+                                              onPrefixIconTap: onAddPhoto,
+                                              isReplying: false,
+                                            ),
+                                          ),
+                                        ), //
+                                      ],
+                                    ),
+                                  ),
+
+                                  addWidth(6),
+
+                                  // Record audio / Send message button
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: typing ? sendMessage : null,
+                                        child: CircleAvatar(
+                                          radius: 21,
+                                          backgroundColor: Colors.white,
+                                          child:
+                                              typing ? sendIcon() : voiceIcon(),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            );
+                    },
                   ),
                 ],
               )

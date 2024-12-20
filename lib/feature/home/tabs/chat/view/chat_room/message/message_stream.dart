@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -41,11 +43,9 @@ class _MessageStreamState extends State<MessageStream> {
   void _onScroll() {
     final scroll = widget.scrollController;
 
-    // Check if the user has reached the end of the list by scrolling up
     if (scroll.position.atEdge &&
         scroll.position.pixels != 0 &&
         scroll.position.userScrollDirection == ScrollDirection.reverse) {
-      // Increase the limit but avoid re-creating the stream multiple times.
       setState(() {
         messageLimit += 20;
         messagesStream = _chatsNotifier.messagesStream(messageLimit);
@@ -105,7 +105,7 @@ class _MessageStreamState extends State<MessageStream> {
 
       final earliestMessage = messages.last;
       final formattedDate = earliestMessage.timestamp != null
-          ? 'on ${earliestMessage.timestamp!.toDate().formatWithSuffix()}'
+          ? 'on ${earliestMessage.timestamp!.toTimestamp()?.toDate().formatWithSuffix()}'
           : 'now';
 
       return ListView.builder(
@@ -118,11 +118,9 @@ class _MessageStreamState extends State<MessageStream> {
           final message = messages[idx];
           final isFirstMessage = idx == messages.length - 1;
 
-          // Check if the next message (index + 1) exists and has the same sender
           final isPreviousSameSender = (idx < messages.length - 1) &&
               messages[idx + 1].senderId == message.senderId;
 
-          // Check if the previous message (index - 1) exists and has the same sender
           final isNextSameSender =
               (idx > 0) && messages[idx - 1].senderId == message.senderId;
 

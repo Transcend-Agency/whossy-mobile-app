@@ -9,11 +9,17 @@ class LikesRepository {
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
   final _userRepository = UserRepository();
 
-  Future<void> addLike({
+  Future<String> addLike({
     required String likedId,
     required String likerId,
   }) async {
     final uid = AppUtils.generateCombinedId(likerId, likedId);
+
+    final dislikeDoc = await _dislikes.doc(uid).get();
+
+    if (dislikeDoc.exists) {
+      await _likes.doc(uid).delete();
+    }
 
     final likeData = {
       'liked_id': likedId,
@@ -23,22 +29,33 @@ class LikesRepository {
     };
 
     await _likes.doc(uid).set(likeData);
+
+    return uid;
   }
 
-  Future<void> removeLike({
-    required String likedId,
-    required String likerId,
+  Future<void> undoAction({
+    required Map<String, dynamic> action,
   }) async {
-    final uid = AppUtils.generateCombinedId(likerId, likedId);
-    await _likes.doc(uid).delete();
+    String uid = action['uid'];
+    String collection = action['collection'];
+
+    // Delete the document from the appropriate collection
+    FirebaseFirestore.instance.collection(collection).doc(uid).delete();
   }
 
-  Future<void> addDislike({
+  Future<String> addDislike({
     required String dislikedId,
     required String dislikerId,
   }) async {
     final uid = AppUtils.generateCombinedId(dislikerId, dislikedId);
 
+    final likeDoc = await _likes.doc(uid).get();
+
+    if (likeDoc.exists) {
+      await _likes.doc(uid).delete();
+    }
+
+    // Add the dislike
     final dislikeData = {
       'disliked_id': dislikedId,
       'disliker_id': dislikerId,
@@ -47,27 +64,24 @@ class LikesRepository {
     };
 
     await _dislikes.doc(uid).set(dislikeData);
+
+    return uid;
   }
 
-  Future<void> removeDislike({
-    required String dislikedId,
-    required String dislikerId,
-  }) async {
-    final uid = AppUtils.generateCombinedId(dislikerId, dislikedId);
-    await _dislikes.doc(uid).delete();
-  }
-
-  Stream<int> getLikesCount() {
+  Stream<List<UserProfile>> getLikersWithProfiles(
+    List<String> blockedIds, {
+    List<String>? testLikerIds,
+  }) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    return _likes
-        .where('liked_id', isEqualTo: userId)
-        .snapshots()
-        .map((snapshot) => snapshot.docs.length);
-  }
-
-  Stream<List<UserProfile>> getLikersWithProfiles() {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
+    if (testLikerIds != null) {
+      return Stream.value(testLikerIds).asyncMap((likerIds) async {
+        return await _userRepository.getUserProfilesInBatches(
+          userIds: likerIds,
+          blockedIds: blockedIds,
+        );
+      });
+    }
 
     return _likes
         .where('liked_id', isEqualTo: userId)
@@ -80,7 +94,10 @@ class LikesRepository {
           .toList();
 
       // Use the helper function to fetch profiles in batches
-      return await _userRepository.getUserProfilesInBatches(likerIds);
+      return await _userRepository.getUserProfilesInBatches(
+        userIds: likerIds,
+        blockedIds: blockedIds,
+      );
     });
   }
 }

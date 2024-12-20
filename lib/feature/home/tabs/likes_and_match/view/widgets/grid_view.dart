@@ -5,96 +5,41 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
-import 'package:whossy_app/feature/home/tabs/likes_and_match/data/state/likes_notifier.dart';
 import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
 
-class LikesGridView<T extends LikesAndMatch> extends StatelessWidget {
+class LikesGridView extends StatelessWidget {
   const LikesGridView({
     super.key,
     required this.pageName,
+    required this.data,
   });
 
   final String pageName;
+  final List<UserProfile> data;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.only(top: 14.h),
-        child: Selector<T, Stream<List<UserProfile>>>(
-          selector: (_, notifier) => notifier.profileStream,
-          builder: (_, profileStream, __) {
-            return StreamBuilder<List<UserProfile>>(
-              stream: profileStream,
-              builder: (context, snapshot) {
-                return AppAnimatedSwitcher(
-                  child: _buildContentBasedOnSnapshot(context, snapshot),
-                );
-              },
-            );
-          },
-        ),
+        child: _buildGrid(context),
       ),
     );
   }
 
-  // Function to handle the content building based on the snapshot state
-  Widget _buildContentBasedOnSnapshot(
-    BuildContext context,
-    AsyncSnapshot<List<UserProfile>> snapshot,
-  ) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return GridView.builder(
-        key: const ValueKey('loading'),
-        padding: EdgeInsets.zero,
-        gridDelegate: _buildGridDelegate(context),
-        itemCount: 14,
-        itemBuilder: (context, index) {
-          return ShimmerWidget.rectangular(
-            border: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-          );
-        },
-      );
-    } else if (snapshot.hasError) {
-      return Center(
-        key: const ValueKey('error'),
-        child: Text(
-          'Error: ${snapshot.error}',
-          style: const TextStyle(color: Colors.red),
-        ),
-      );
-    } else if (snapshot.hasData) {
-      final tileData = snapshot.data!;
-
-      return GridView.builder(
-        key: const ValueKey('data'),
-        padding: EdgeInsets.zero,
-        gridDelegate: _buildGridDelegate(context),
-        itemCount: tileData.length,
-        itemBuilder: (ctx, item) => _buildGridItem(ctx, tileData[item]),
-      );
-    } else {
-      return const Text('No data found');
-    }
-  }
-
-  // Grid Delegate for both shimmer and data grids
-  _buildGridDelegate(BuildContext context) {
-    return SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: (MediaQuery.sizeOf(context).width ~/ 160.r).toInt(),
-      crossAxisSpacing: 6.w, // Spacing between columns
-      mainAxisSpacing: 6.h, // Spacing between rows
-      childAspectRatio: 1.15,
+  Widget _buildGrid(BuildContext context) {
+    return GridView.builder(
+      padding: EdgeInsets.zero,
+      gridDelegate: buildGridDelegate(context),
+      itemCount: data.length,
+      itemBuilder: (ctx, item) => _buildGridItem(ctx, data[item]),
     );
   }
 
@@ -156,20 +101,16 @@ class LikesGridView<T extends LikesAndMatch> extends StatelessWidget {
   Widget _buildGridItemContent(UserProfile profile) {
     return Align(
       alignment: Alignment.bottomLeft,
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 10, bottom: 4),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildBlurredViewButton(),
-                _buildUserDetails(profile),
-              ],
-            ),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10, bottom: 4, right: 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildBlurredViewButton(),
+            _buildUserDetails(profile),
+          ],
+        ),
       ),
     );
   }
@@ -202,9 +143,10 @@ class LikesGridView<T extends LikesAndMatch> extends StatelessWidget {
   Widget _buildUserDetails(UserProfile profile) {
     return Material(
       type: MaterialType.transparency,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 4,
+        runSpacing: 2,
         children: [
           Text(
             '${profile.user.firstName}, ',
@@ -228,4 +170,16 @@ class LikesGridView<T extends LikesAndMatch> extends StatelessWidget {
       ),
     );
   }
+}
+
+// Grid Delegate for both shimmer and data grids
+SliverGridDelegateWithFixedCrossAxisCount buildGridDelegate(
+  BuildContext context,
+) {
+  return SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: (MediaQuery.sizeOf(context).width ~/ 160.r).toInt(),
+    crossAxisSpacing: 6.w, // Spacing between columns
+    mainAxisSpacing: 6.h, // Spacing between rows
+    childAspectRatio: 1.15,
+  );
 }

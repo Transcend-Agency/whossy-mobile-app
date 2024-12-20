@@ -6,10 +6,12 @@ import 'package:whossy_app/feature/home/tabs/matching/view/widgets/match.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../common/utils/index.dart';
-import '../../../../../constants/index.dart';
+import '../../../notifications/view/widgets/notification_bell.dart';
 
 class Matching extends StatelessWidget {
   const Matching({super.key});
+
+  static String name = 'Matching';
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +22,10 @@ class Matching extends StatelessWidget {
         child: Column(
           children: [
             HeaderBar(
-              icon: AppAssets.bell,
-              onIconTap: () => Nav.push(context, const NotificationRoute()),
+              customWidget: NotificationBell(
+                onTap: () => Nav.push(context, const NotificationRoute()),
+                rightSpacing: 2,
+              ),
               child: const Logo(),
             ),
             const Expanded(child: Match()),

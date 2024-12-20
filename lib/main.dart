@@ -52,10 +52,17 @@ void main() async {
           },
         ),
         ChangeNotifierProvider(create: (_) => AdvancedSearchNotifier()),
-        ChangeNotifierProvider(create: (_) => SwipeAndMatchNotifier()),
+        ChangeNotifierProxyProvider<EditProfileNotifier, SwipeAndMatchNotifier>(
+          create: (_) => SwipeAndMatchNotifier(),
+          update: (_, profileData, swipeAndMatch) {
+            swipeAndMatch!.saveProfile(profileData.staticProfile);
+            return swipeAndMatch;
+          },
+        ),
         ChangeNotifierProvider(create: (_) => LikesNotifier()),
         ChangeNotifierProvider(create: (_) => MatchesNotifier()),
         ChangeNotifierProvider(create: (_) => ExploreNotifier()),
+        ChangeNotifierProvider(create: (_) => NotificationNotifier()),
       ],
       child: const Whossy(),
     ),

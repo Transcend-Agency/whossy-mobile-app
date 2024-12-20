@@ -4,6 +4,7 @@ import '../../../../auth/onboarding/model/preferences.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
 import 'profile_data_footer.dart';
 
+// In a scenario where I want to fetch all the users
 class UserProfile implements ProfileDataFooter {
   final AppUser user;
   final Preferences preferences;

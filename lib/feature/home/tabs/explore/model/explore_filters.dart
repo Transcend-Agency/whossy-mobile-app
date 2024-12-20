@@ -29,7 +29,6 @@ enum Filters {
   popularInMyArea('Popular in my area'),
   lookingToDate('Looking to date'),
   outsideMyCountry('Outside my country'),
-  flirty('Flirty'),
   advancedSearch('Advanced search', AppAssets.wwSearch);
 
   final String label;

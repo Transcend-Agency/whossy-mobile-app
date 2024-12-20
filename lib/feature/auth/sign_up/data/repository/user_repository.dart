@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as p;
+import 'package:whossy_app/common/utils/app_utils.dart';
 import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
 import 'package:whossy_app/common/utils/services/notification_service.dart';
 
@@ -34,34 +35,17 @@ class UserRepository {
     return false;
   }
 
-  Future<void> deleteUserToken() async {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
-
-    String token = await NotificationService().getToken();
-
-    await _users.doc(userId).update({
-      'tokens': FieldValue.arrayRemove([token])
-    });
-
-    await NotificationService().deleteToken();
-
-    log('Deleted token $token');
-  }
-
   Future<void> addUserToken({List<String>? tokens}) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     String token = await NotificationService().getToken();
 
     if (tokens != null && tokens.contains(token)) {
-      log('Token $token already exists for user $userId');
       return;
     }
 
     await _users.doc(userId).update({
       'tokens': FieldValue.arrayUnion([token])
     });
-
-    log('Added token $token for user $userId');
   }
 
   Future<void> setUserData({required Map<String, dynamic> data}) async {
@@ -132,26 +116,40 @@ class UserRepository {
     return null;
   }
 
-  // Helper function to fetch user profiles in batches
-  Future<List<UserProfile>> getUserProfilesInBatches(
-    List<String> userIds,
-  ) async {
+  Future<List<UserProfile>> getUserProfilesInBatches({
+    required List<String> userIds,
+    required List<String> blockedIds,
+    bool showBlocked = false,
+  }) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
     List<UserProfile> profiles = [];
 
     for (int i = 0; i < userIds.length; i += 10) {
       final batchIds =
           userIds.sublist(i, i + 10 > userIds.length ? userIds.length : i + 10);
 
-      final userSnapshots =
-          await _users.where(FieldPath.documentId, whereIn: batchIds).get();
+      try {
+        final userSnapshots =
+            await _users.where(FieldPath.documentId, whereIn: batchIds).get();
 
-      profiles.addAll(
-        userSnapshots.docs.map(
-          (doc) => UserProfile.fromJson(doc.data()),
-        ),
-      );
+        // Map Firestore data to `UserProfile` objects
+        List<UserProfile> batchProfiles = userSnapshots.docs.map(
+          (doc) {
+            return UserProfile.fromJson(doc.data());
+          },
+        ).toList();
+
+        if (!showBlocked) {
+          batchProfiles.removeWhere((profile) =>
+              AppUtils.shouldExcludeProfile(profile, userId, blockedIds));
+        }
+
+        profiles.addAll(batchProfiles);
+      } catch (e) {
+        log('Error processing batch $batchIds: $e');
+      }
     }
-
     return profiles;
   }
 

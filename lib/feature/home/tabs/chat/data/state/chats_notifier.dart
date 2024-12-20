@@ -2,18 +2,21 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whossy_app/common/utils/app_utils.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/home/tabs/chat/model/chat_with_user.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';
 
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../edit_profile/model/core_profile.dart';
+import '../../../matching/model/user_profile.dart';
 import '../../model/chat.dart';
 import '../../model/current_chat.dart';
 import '../repository/chat_repository.dart';
+import '../source/extensions.dart';
 
 class ChatsNotifier extends ChangeNotifier {
   // Internal services and repository
@@ -24,6 +27,8 @@ class ChatsNotifier extends ChangeNotifier {
 
   final Queue<List<String>> _uploadQueue = Queue();
   bool _isProcessingQueue = false;
+  String? _lastMessageId;
+  StreamSubscription<Chat?>? _chatSubscription;
 
   // Variables to manage state
   CurrentChat? currentChat;
@@ -33,51 +38,46 @@ class ChatsNotifier extends ChangeNotifier {
   bool _isUserConnected = false;
   Timer? _uploadTimeout;
 
-  // Updated variables to manage upload states for multiple files
-  List<double> _progressList = [];
-  List<bool> _isUploadingList = [];
-  List<bool> _hasUploadFailedList = [];
+  final Map<String, double> _progressMap = {};
+  final Map<String, bool> _isUploadingMap = {};
+  final Map<String, bool> _hasUploadFailedMap = {};
 
-  // Getters for the updated lists
-  List<double> get progressList => _progressList;
-  List<bool> get hasUploadFailedList => _hasUploadFailedList;
-  List<bool> get isUploadingList => _isUploadingList;
+  // Getters
+  Map<String, double> get progressMap => _progressMap;
+  Map<String, bool> get isUploadingMap => _isUploadingMap;
+  Map<String, bool> get hasUploadFailedMap => _hasUploadFailedMap;
 
-  // Update progress for a specific image
-  void updateProgress(int index, double value) {
-    if (index >= 0 && index < _progressList.length) {
-      _progressList[index] = value;
-      notifyListeners();
-    }
+// Update methods for progress and state
+  void updateProgress(String localPhotoPath, double value) {
+    _progressMap[localPhotoPath] = value;
+    notifyListeners();
   }
 
-  void setUploading(int index, bool value) {
-    if (index >= 0 && index < _isUploadingList.length) {
-      _isUploadingList[index] = value;
-      notifyListeners();
-    }
+  void setUploading(String localPhotoPath, bool value) {
+    _isUploadingMap[localPhotoPath] = value;
+    notifyListeners();
   }
 
-  void setUploadFailed(int index, bool value) {
-    if (index >= 0 && index < _hasUploadFailedList.length) {
-      _hasUploadFailedList[index] = value;
-      notifyListeners();
-    }
+  void setUploadFailed(String localPhotoPath, bool value) {
+    _hasUploadFailedMap[localPhotoPath] = value;
+    notifyListeners();
   }
 
-  // Method to initialize upload states for a list of images
-  void initializeUploadStates(int count) {
-    _progressList = List<double>.filled(count, 0.0);
-    _isUploadingList = List<bool>.filled(count, false);
-    _hasUploadFailedList = List<bool>.filled(count, false);
+  // Initialize states for a list of files
+  void initializeUploadStates(List<String> localPhotoPaths) {
+    for (var path in localPhotoPaths) {
+      _progressMap[path] = 0.0;
+      _isUploadingMap[path] = false;
+      _hasUploadFailedMap[path] = false;
+    }
     notifyListeners();
   }
 
   // Chat stream getter
-  Stream<List<Chat>> get chatStream => _chatRepository.getChatsStream();
+  Stream<List<ChatWithUser>> get chatStream => _chatRepository.getChatsStream();
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> statusStream(String id) =>
-      _chatRepository.getStatusStream(id);
+  Stream<UserProfile?> chatterDataStream(String id) =>
+      _chatRepository.getChatterDataStream(id);
 
   // Manage the opened chat room state
   bool get hasChatOpened => _hasChatRoomOpened;
@@ -124,7 +124,6 @@ class ChatsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Fetches messages from the chat repository based on the chat ID
   Stream<List<Message>> messagesStream(int limit) => _chatRepository
       .getChatMessagesStream(limit: limit, chatId: currentChat!.chatId!);
 
@@ -153,38 +152,84 @@ class ChatsNotifier extends ChangeNotifier {
       );
     }
 
-    // // If there are pictures to upload
-    // if (pictures != null && pictures.isNotEmpty) {
-    //   uploadFiles(
-    //     localPhotoPaths: pictures.map((pic) => pic.path).toList(),
-    //     id: messageId,
-    //     onUploadComplete: (success) => log(
-    //         success ? 'Uploaded successfully' : 'Did not upload successfully'),
-    //   );
-    // }
+    // If there are pictures to upload
+    if (pictures != null && pictures.isNotEmpty) {
+      uploadFiles(
+        localPhotoPaths: pictures.map((pic) => pic.path).toList(),
+        id: messageId,
+        onUploadComplete: (success) => log(
+            success ? 'Uploaded successfully' : 'Did not upload successfully'),
+      );
+    }
+  }
+
+  Future<void> updateMessageStatus(Message message) {
+    return _chatRepository.updateMessageStatus(
+      message: message,
+      chatId: currentChat?.chatId,
+      lastMessageId: _lastMessageId,
+    );
+  }
+
+  void listenToChatUpdates() {
+    _chatSubscription =
+        _chatRepository.getChatDataStream(currentChat?.chatId).listen((chat) {
+      if (chat != null && chat.lastMessageId != _lastMessageId) {
+        _lastMessageId = chat.lastMessageId;
+      }
+    });
+  }
+
+  void cancelChatUpdates() {
+    _chatSubscription?.cancel();
+    _chatSubscription = null;
+    _lastMessageId == null;
   }
 
   /// Checks if the chat room has been opened for the first time
   Future<void> checkOpenedState() async {
-    _hasChatRoomOpened = !await _sharedPrefs.isFirstTimeOpened(ChatRoom.name);
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
+    _hasChatRoomOpened =
+        !await _sharedPrefs.isFirstTimeOpened(ChatRoom.name, uid);
   }
 
   /// -------------------------
   /// File Uploading Methods
   /// -------------------------
-
+  ///
   Future<void> uploadFiles({
     required List<String> localPhotoPaths,
     required String id,
-    required Function(bool success) onUploadComplete, // Accept the callback
+    required Function(bool success) onUploadComplete,
   }) async {
-    // Add to the queue
+    // Check if the upload for these paths is already in progress
+    if (_uploadQueue.any(
+      (existingPaths) => areListsEqual(existingPaths, localPhotoPaths),
+    )) {
+      log('\n[INFO] Upload for these paths is already in the queue: $localPhotoPaths');
+      return;
+    }
+
+    // Log the current state of the queue before adding new paths
+    log('\n[INFO] Current upload queue state before adding: $_uploadQueue');
+
+    // Add the photo paths to the queue
+    log('\n[INFO] Adding new paths to the upload queue: $localPhotoPaths');
     _uploadQueue.add(localPhotoPaths);
 
+    // Log the updated state of the queue after adding new paths
+    log('\n[INFO] Updated upload queue state after adding: $_uploadQueue');
+
+    // If no upload is currently being processed, start processing the queue
     if (!_isProcessingQueue) {
+      log('\n[INFO] Starting upload process for ID: $id');
       _isProcessingQueue = true;
-      await _processUploadQueue(id, onUploadComplete); // Pass the callback here
+      await _processUploadQueue(id, onUploadComplete);
       _isProcessingQueue = false;
+      log('\n[INFO] Upload process complete for ID: $id');
+    } else {
+      log('\n[INFO] Upload queue is already being processed. Waiting for the current upload to finish.');
     }
   }
 
@@ -192,58 +237,54 @@ class ChatsNotifier extends ChangeNotifier {
     String id,
     Function(bool success) onUploadComplete,
   ) async {
-    bool allUploadsSuccessful = true; // Track overall success of the batch
+    bool allUploadsSuccessful = true;
 
     while (_uploadQueue.isNotEmpty) {
-      List<String> currentBatch = _uploadQueue.removeFirst();
-      initializeUploadStates(currentBatch.length);
+      List<String> currentBatch = _uploadQueue.first;
+      initializeUploadStates(currentBatch);
 
-      for (int i = 0; i < currentBatch.length; i++) {
-        String localPhotoPath = currentBatch[i];
-
+      for (String localPhotoPath in currentBatch) {
         if (!_fileService.isUploading(localPhotoPath)) {
-          setUploading(i, true);
-          setUploadFailed(i, false);
+          setUploading(localPhotoPath, true);
+          setUploadFailed(localPhotoPath, false);
 
           try {
-            // Set a 60-second timeout for the upload operation
             _uploadTimeout = Timer(
               const Duration(seconds: 60),
               () {
-                // Mark as unsuccessful if timed out
-                setUploading(i, false);
-                setUploadFailed(i, true);
+                setUploading(localPhotoPath, false);
+                setUploadFailed(localPhotoPath, true);
                 allUploadsSuccessful = false;
               },
             );
 
             // Start uploading the file
+
             await _fileService.uploadImagesInBackground(
               chatId: currentChat!.chatId!,
               messageId: id,
               localPaths: [localPhotoPath],
               onProgress: (localPath, progress) {
-                updateProgress(i, progress);
+                updateProgress(localPath, progress);
               },
             );
 
             _uploadTimeout?.cancel();
-            setUploading(i, false);
-            setUploadFailed(i, false);
+            setUploading(localPhotoPath, false);
+            setUploadFailed(localPhotoPath, false);
           } catch (e) {
-            setUploading(i, false);
-            setUploadFailed(i, true);
-            log('Error uploading file at index $i: ${e.toString()}');
-            allUploadsSuccessful =
-                false; // Mark as unsuccessful if an error occurs
+            setUploading(localPhotoPath, false);
+            setUploadFailed(localPhotoPath, true);
+            log('Error uploading file at index $localPhotoPath: ${e.toString()}');
+            allUploadsSuccessful = false;
           }
         }
       }
+      _uploadQueue.removeFirst();
     }
 
     // After processing all uploads, call the completion callback
-    onUploadComplete(
-        allUploadsSuccessful); // Pass true if all uploads succeeded
+    onUploadComplete(allUploadsSuccessful);
   }
 
   Future<void> retryUpload(String id, String localPhotoPath) async {

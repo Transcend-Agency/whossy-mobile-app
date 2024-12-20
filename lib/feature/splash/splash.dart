@@ -3,10 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/index.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 
 import '../../constants/index.dart';
+import '../../provider/providers.dart';
 import '../auth/sign_up/data/repository/user_repository.dart';
 
 @RoutePage()
@@ -24,7 +26,15 @@ class _SplashState extends State<Splash> {
   void initState() {
     _checkAuthentication();
 
+    _checkLocationPermissionState();
+
     super.initState();
+  }
+
+  void _checkLocationPermissionState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SwipeAndMatchNotifier>().checkLocationPermissionState();
+    });
   }
 
   Future<void> _checkAuthentication() async {

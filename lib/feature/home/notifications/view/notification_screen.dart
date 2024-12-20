@@ -1,13 +1,15 @@
+import 'dart:developer';
+
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
-import 'package:whossy_app/common/utils/index.dart';
 
 import '../../../../constants/index.dart';
-import '../model/sample_data.dart';
+import '../../../../provider/providers.dart';
+import '../model/app_notification.dart';
 import 'widgets/_.dart';
+import 'widgets/notification_bell.dart';
 
 @RoutePage()
 class NotificationScreen extends StatelessWidget {
@@ -15,42 +17,75 @@ class NotificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const count = 300;
     return AppScaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         addBarHeight: 4,
         title: 'Notifications',
         color: Colors.white,
-        action: GestureDetector(
-          onTap: () {},
-          child: Padding(
-            padding: EdgeInsets.only(right: 16.w),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  child: SvgPicture.asset(AppAssets.bell, width: 16.r),
-                ),
-                Positioned(
-                  right: count < 10 ? 0 : (count < 100 ? -3 : 2),
-                  top: count > 100 ? 2 : null,
-                  child: notificationDot(count),
-                )
-              ],
+        action: NotificationBell(),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child:
+                Selector<NotificationNotifier, Stream<List<AppNotification>>>(
+              selector: (_, notifier) => notifier.notificationStream,
+              builder: (_, notifications, __) {
+                return StreamBuilder(
+                  stream: notifications,
+                  builder: (context, snapshot) {
+                    return AppAnimatedSwitcher(
+                      child: _buildStreamContent(snapshot, context),
+                    );
+                  },
+                );
+              },
             ),
           ),
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          notifications.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-          return NotificationTile(notification: notifications[index]);
-        },
+        ],
       ),
     );
+  }
+
+  Widget _buildStreamContent(
+    AsyncSnapshot<List<AppNotification>> snapshot,
+    BuildContext context,
+  ) {
+    if (snapshot.hasData) {
+      final tileData = snapshot.data!;
+
+      if (tileData.isEmpty) {
+        return const EmptyDataBox(
+          key: ValueKey('empty'),
+          image: AppAssets.noNotifications,
+          text: 'No notifications',
+          imageSize: 100,
+          spacing: 10,
+        );
+      }
+
+      return AppListBuilder(
+        key: const ValueKey('data'),
+        padding: EdgeInsets.zero,
+        itemCount: tileData.length,
+        itemBuilder: (_, index) {
+          final tile = tileData[index];
+
+          return NotificationTile(notification: tile);
+        },
+      );
+    } else if (snapshot.hasError) {
+      log('Error fetching chat tiles: ${snapshot.error}');
+      return const Text(
+        'Sorry, try again later',
+        key: ValueKey('error'),
+      ); //
+    } else {
+      return const AppLoader(
+        key: ValueKey('loading'),
+        color: AppColors.primaryColor,
+      );
+    }
   }
 }
 
@@ -63,5 +98,16 @@ const Center(
           imageSize: 100,
           spacing: 10,
         ),
+      ),
+ */
+
+/*
+ListView.builder(
+        itemCount: notifications.length,
+        itemBuilder: (context, index) {
+          notifications.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+          return NotificationTile(notification: notifications[index]);
+        },
       ),
  */

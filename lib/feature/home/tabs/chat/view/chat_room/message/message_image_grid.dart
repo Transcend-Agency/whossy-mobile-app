@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
@@ -14,14 +15,12 @@ import '../../../../../../../provider/providers.dart';
 class ImageGrid extends StatelessWidget {
   final List<String>? localPhotos;
   final List<String>? photos;
-  final List<bool> uploadStates;
   final String messageId;
 
   const ImageGrid({
     super.key,
     this.localPhotos,
     this.photos,
-    required this.uploadStates,
     required this.messageId,
   });
 
@@ -91,16 +90,9 @@ class ImageGrid extends StatelessWidget {
   }
 
   Widget _buildImage(String imageUrl, int index) {
-    bool isUploading = false;
-    if (index < uploadStates.length) {
-      isUploading = uploadStates[index];
-    }
-
     return imageUrl.isUrl
         ? NetworkImage(url: imageUrl)
         : LocalImage(
-            isUploading: isUploading,
-            hasUploadFailed: false,
             path: imageUrl,
             id: messageId,
           );
@@ -145,15 +137,11 @@ class NetworkImage extends StatelessWidget {
 }
 
 class LocalImage extends StatelessWidget {
-  final bool isUploading;
-  final bool hasUploadFailed;
   final String path;
   final String id;
 
   const LocalImage({
     super.key,
-    required this.isUploading,
-    required this.hasUploadFailed,
     required this.path,
     required this.id,
   });
@@ -179,25 +167,36 @@ class LocalImage extends StatelessWidget {
             ],
           ),
         ),
-
-        // Show loader if uploading
-        if (isUploading)
-          const Align(
-            alignment: Alignment.center,
-            child: AppLoader(),
-          ),
-
-        // Show retry button if upload failed
-        if (hasUploadFailed)
-          Align(
-            alignment: Alignment.center,
-            child: IconButton(
-              icon: const Icon(Icons.refresh, color: Colors.red),
-              onPressed: () {
-                context.read<ChatsNotifier>().retryUpload(id, path);
-              },
-            ),
-          ),
+        Selector<ChatsNotifier, bool?>(
+          selector: (_, chats) => chats.isUploadingMap[path],
+          builder: (_, value, __) {
+            return value == true
+                ? const Align(
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Color(0XFFE5F2FF),
+                      child: AppLoader(),
+                    ),
+                  )
+                : const SizedBox.shrink();
+          },
+        ),
+        Selector<ChatsNotifier, bool?>(
+          selector: (_, chats) => chats.hasUploadFailedMap[path],
+          builder: (_, value, __) {
+            return value == true
+                ? Align(
+                    alignment: Alignment.center,
+                    child: IconButton(
+                      icon: Icon(Icons.refresh, color: Colors.red, size: 32.r),
+                      onPressed: () =>
+                          context.read<ChatsNotifier>().retryUpload(id, path),
+                    ),
+                  )
+                : const SizedBox.shrink();
+          },
+        )
       ],
     );
   }

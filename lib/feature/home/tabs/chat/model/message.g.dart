@@ -8,14 +8,11 @@ part of 'message.dart';
 
 Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       id: json['id'] as String?,
-      senderId: json['senderId'] as String?,
-      message: json['message'] as String,
-      timestamp: AppUtils.timestampFromJson(json['timestamp']),
-      photos:
-          (json['photos'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      localPhotos: (json['local_photos'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      senderId: json['sender_id'] as String?,
+      message: json['message'] as String?,
+      timestamp: TimestampWrapper.timestampFromJson(json['timestamp']),
+      photo: json['photo'] as String?,
+      localPhoto: json['local_photo'] as String?,
       status: $enumDecodeNullable(_$MessageStatusEnumMap, json['status']) ??
           MessageStatus.undelivered,
     );
@@ -23,8 +20,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
 Map<String, dynamic> _$MessageToJson(Message instance) {
   final val = <String, dynamic>{
     'id': instance.id,
-    'senderId': instance.senderId,
-    'message': instance.message,
+    'sender_id': instance.senderId,
   };
 
   void writeNotNull(String key, dynamic value) {
@@ -33,9 +29,11 @@ Map<String, dynamic> _$MessageToJson(Message instance) {
     }
   }
 
-  writeNotNull('timestamp', AppUtils.timestampToJson(instance.timestamp));
-  writeNotNull('local_photos', instance.localPhotos);
-  writeNotNull('photos', instance.photos);
+  writeNotNull('message', instance.message);
+  writeNotNull(
+      'timestamp', TimestampWrapper.timestampToJson(instance.timestamp));
+  writeNotNull('local_photo', instance.localPhoto);
+  writeNotNull('photo', instance.photo);
   writeNotNull('status', _$MessageStatusEnumMap[instance.status]);
   return val;
 }
