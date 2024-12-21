@@ -68,9 +68,8 @@ class MatchingProfilePreview extends HookWidget {
           image: preferences.profilePics![index],
           name: name,
           pageName: pageName,
-          blockUser: () async {
-            await _blockUser(name: name, context: context, uid: user.uid!);
-          },
+          blockUser: () async =>
+              await _blockUser(name: name, context: context, uid: user.uid!),
           bottomWidget: ProfileFooterScaffold(
             data: userProfile,
             showLess: true,
@@ -166,7 +165,7 @@ class MatchingProfilePreview extends HookWidget {
     editNotifier.updateProfile(blockedIds: newBlockedIds);
 
     bool success = await editNotifier.saveUserProfile(
-      showSnackbar: (msg) => showSnackbar(msg),
+      showSnackbar: showSnackbar,
       returnResult: true,
     );
 

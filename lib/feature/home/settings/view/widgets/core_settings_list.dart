@@ -16,7 +16,7 @@ class CoreSettingsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-         const AppDivider(),
+        const AppDivider(),
         Container(
             decoration: const BoxDecoration(color: AppColors.inputBackGround),
             padding: pagePadding,
@@ -31,8 +31,8 @@ class CoreSettingsList extends StatelessWidget {
                       subtitle: data.value.subtitle,
                       isPremium: data.isPremium,
                       switchValue: settings.getValue(data.value),
-                      onSwitchChanged: (_) =>
-                          settings.updateSwitch(data.value, _),
+                      onSwitchChanged: (value) =>
+                          settings.updateSwitch(data.value, value),
                     );
                   }).toList(),
                 );

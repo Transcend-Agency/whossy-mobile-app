@@ -5,15 +5,15 @@ import '../../../../../common/utils/enum/enums.dart';
 import '../../../../../common/utils/services/services.dart';
 import '../../../../../constants/index.dart';
 import '../../../tabs/matching/model/user_profile.dart';
-import '../../model/settings_model.dart';
+import '../../model/user_settings.dart';
 
 class SettingsNotifier extends ChangeNotifier {
-  final _settings = SettingsModel();
+  final _settings = UserSettings();
   final _authService = AuthenticationService();
   final _userService = UserService();
   final _userRepository = UserRepository();
 
-  SettingsModel get settings => _settings;
+  UserSettings get settings => _settings;
 
   bool getValue(CoreSettings setting) {
     return _settings.getValue(setting) ?? false;
@@ -29,12 +29,6 @@ class SettingsNotifier extends ChangeNotifier {
 
   void updateSwitch(CoreSettings setting, bool newValue) {
     _settings.updateSwitch(setting, newValue);
-
-    notifyListeners();
-  }
-
-  void updateSettings({List<String>? blocked}) {
-    _settings.update(blocked: blocked);
 
     notifyListeners();
   }

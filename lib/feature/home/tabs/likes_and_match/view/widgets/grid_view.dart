@@ -164,7 +164,7 @@ class LikesGridView extends StatelessWidget {
             ),
           ),
           addWidth(6),
-          if (profile.user.isVerified)
+          if (profile.user.isApproved)
             SvgPicture.asset(AppAssets.tick, width: 18),
         ],
       ),

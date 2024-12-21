@@ -2,7 +2,7 @@ class ExploreGridItem {
   final String imageUrl;
   final String name;
   final int age;
-  final bool isVerified;
+  final bool isApproved;
   final bool isNew;
   final double distance;
   final String country;
@@ -12,7 +12,7 @@ class ExploreGridItem {
     required this.imageUrl,
     required this.name,
     required this.age,
-    required this.isVerified,
+    required this.isApproved,
     required this.isNew,
     required this.distance,
     required this.country,

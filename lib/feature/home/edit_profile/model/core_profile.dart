@@ -7,6 +7,7 @@ import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart
 import 'package:whossy_app/feature/home/tabs/matching/model/profile_data_footer.dart';
 
 import '../../../../common/utils/index.dart';
+import '../../settings/model/user_settings.dart';
 
 part 'core_profile.g.dart';
 part 'core_profile_utils.dart';
@@ -45,32 +46,41 @@ class CoreProfile implements ProfileDataFooter {
   List<String>? interests;
 
   @JsonKey(name: 'country_of_origin')
-  final String? countryOfOrigin;
+  String? countryOfOrigin;
 
-  @JsonKey(name: "isPremium")
+  @JsonKey(name: "is_premium")
   bool? isPremium;
 
-  @JsonKey(name: "is_verified")
-  bool? isVerified;
+  @JsonKey(name: "is_approved")
+  bool? isApproved;
+
+  @JsonKey(name: 'is_banned')
+  bool? isBanned;
 
   @JsonKey(name: "blockedIds")
   List<String>? blockedIds;
 
   @JsonKey(name: "latitude")
-  final double? latitude;
+  double? latitude;
 
   @JsonKey(name: "longitude")
-  final double? longitude;
+  double? longitude;
 
   @JsonKey(
     name: "location",
     toJson: AppUtils.geoPointToJson,
     fromJson: AppUtils.geoPointFromJson,
   )
-  final GeoPoint? location;
+  GeoPoint? location;
 
   @JsonKey(name: "geohash")
-  final String? geohash;
+  String? geohash;
+
+  @JsonKey(name: "credit_balance")
+  int? creditBalance;
+
+  @JsonKey(name: 'user_settings')
+  final UserSettings? userSettings;
 
   CoreProfile({
     this.firstName,
@@ -86,12 +96,15 @@ class CoreProfile implements ProfileDataFooter {
     this.height,
     this.countryOfOrigin,
     this.isPremium,
-    this.isVerified,
+    this.isApproved,
     this.blockedIds,
     this.latitude,
     this.longitude,
     this.location,
     this.geohash,
+    this.isBanned,
+    this.creditBalance,
+    this.userSettings,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -104,25 +117,29 @@ class CoreProfile implements ProfileDataFooter {
     return 'CoreProfile(\n'
         '  firstName: $firstName,\n'
         '  lastName: $lastName,\n'
-        '  dateOfBirth: $dateOfBirth,\n'
+        '  dateOfBirth: ${dateOfBirth != null ? DateFormat.yMd().format(dateOfBirth!) : "null"},\n'
         '  gender: $gender,\n'
         '  email: $email,\n'
         '  phoneNumber: $phoneNumber,\n'
-        '  profilePics: $profilePics,\n'
+        '  profilePics: ${profilePics?.join(", ") ?? "null"},\n'
         '  bio: $bio,\n'
-        '  interests: $interests,\n'
-        '  countryOfOrigin: $countryOfOrigin,\n'
+        '  interests: ${interests?.join(", ") ?? "null"},\n'
         '  weight: $weight,\n'
         '  height: $height,\n'
+        '  countryOfOrigin: $countryOfOrigin,\n'
         '  isPremium: $isPremium,\n'
-        '  isVerified: $isVerified,\n'
-        '  blockedIds: ${blockedIds?.join(", ") ?? "[]"},\n'
+        '  isApproved: $isApproved,\n'
+        '  isBanned: $isBanned,\n'
+        '  blockedIds: ${blockedIds?.join(", ") ?? "null"},\n'
         '  latitude: $latitude,\n'
         '  longitude: $longitude,\n'
         '  location: {\n'
-        '     longitude: ${location?.longitude},\n'
-        '     latitude: ${location?.latitude}, \n },\n'
-        '  geohash: $geohash\n'
+        '    latitude: ${location?.latitude ?? "null"},\n'
+        '    longitude: ${location?.longitude ?? "null"}\n'
+        '  },\n'
+        '  geohash: $geohash,\n'
+        '  creditBalance: $creditBalance,\n'
+        '  userSettings: $userSettings\n'
         ')';
   }
 
@@ -154,7 +171,7 @@ class CoreProfile implements ProfileDataFooter {
   bool get premiumUser => isPremium ?? false;
 
   @override
-  bool get isUserVerified => isVerified ?? false;
+  bool get isUserVerified => isApproved ?? false;
 
   @override
   bool operator ==(Object other) {
