@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:whossy_app/feature/home/settings/model/user_settings.dart';
 
 import '../../../../common/utils/index.dart';
 import 'user_status.dart';
@@ -40,8 +41,11 @@ class AppUser {
   @JsonKey(name: 'tokens')
   final List<String>? tokens;
 
-  @JsonKey(name: 'is_verified')
-  final bool isVerified;
+  @JsonKey(name: 'is_approved')
+  final bool isApproved;
+
+  @JsonKey(name: 'is_banned')
+  final bool isBanned;
 
   @JsonKey(
     name: 'created_at',
@@ -53,7 +57,10 @@ class AppUser {
   @JsonKey(name: 'status', includeToJson: false)
   final UserStatus? status;
 
-  @JsonKey(name: "isPremium")
+  @JsonKey(name: 'user_settings')
+  final UserSettings? userSettings;
+
+  @JsonKey(name: "is_premium")
   final bool? isPremium;
 
   @JsonKey(name: "blockedIds")
@@ -75,6 +82,9 @@ class AppUser {
   @JsonKey(name: "geohash")
   final String? geohash;
 
+  @JsonKey(name: "credit_balance")
+  final int? creditBalance;
+
   AppUser({
     this.uid,
     this.email,
@@ -89,14 +99,17 @@ class AppUser {
     this.hasCompletedAccountCreation = false,
     this.hasCompletedOnboarding = false,
     this.tokens,
-    this.isVerified = false,
+    this.isApproved = false,
+    this.isBanned = false,
     this.createdAt,
     this.status,
+    this.userSettings,
     this.isPremium = false,
     this.latitude,
     this.longitude,
     this.location,
     this.geohash,
+    this.creditBalance = 0,
     List<String>? blockedIds,
   }) : blockedIds = blockedIds ?? [];
 
@@ -140,7 +153,7 @@ class AppUser {
         'weight: $weight\n'
         'hasCompletedAccountCreation: $hasCompletedAccountCreation\n'
         'hasCompletedOnboarding: $hasCompletedOnboarding\n'
-        'isVerified: $isVerified\n'
+        'isApproved: $isApproved\n'
         'createdAt: ${createdAt?.toDate()}\n'
         'tokens: ${tokens?.join(", ") ?? "null"}\n'
         'isPremium $isPremium,\n'

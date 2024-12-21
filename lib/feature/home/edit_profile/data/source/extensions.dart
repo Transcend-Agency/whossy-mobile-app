@@ -22,6 +22,10 @@ extension CoreProfileExtension on CoreProfile {
     if (phoneNumber != other.phoneNumber) {
       updatedFields['phone_number'] = phoneNumber;
     }
+
+    if (creditBalance != other.creditBalance) {
+      updatedFields['credit_balance'] = creditBalance;
+    }
     if (!listEquals(profilePics, other.profilePics)) {
       updatedFields['photos'] = profilePics;
     }

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 
@@ -125,7 +126,11 @@ class Profile extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const CustomButton(
+                          CustomButton(
+                            onTap: () => showSnackbar(
+                              'This feature is coming soon',
+                              context,
+                            ),
                             imagePath: AppAssets.boost,
                             title: 'Profile Boost',
                             subTitle: 'Get Now',
@@ -133,7 +138,8 @@ class Profile extends StatelessWidget {
                             textColor: AppColors.purpleText,
                           ),
                           addWidth(10),
-                          const CustomButton(
+                          CustomButton(
+                            onTap: () => Nav.push(context, const Credits()),
                             imagePath: AppAssets.credit,
                             title: '10 Credits',
                             subTitle: 'Get Now',
@@ -185,6 +191,13 @@ class Profile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  showSnackbar(String message, BuildContext context) {
+    showTopSnackBar(
+      Overlay.of(context),
+      AppSnackbar(text: message),
     );
   }
 }

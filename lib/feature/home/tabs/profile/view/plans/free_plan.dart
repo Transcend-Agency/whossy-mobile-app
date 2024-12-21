@@ -43,7 +43,7 @@ class FreePlan extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(bottom: 16.r),
+          padding: EdgeInsets.only(bottom: 8.r),
           child: DialogButton(
             text: "Subscribe",
             color: AppColors.freeContainer,

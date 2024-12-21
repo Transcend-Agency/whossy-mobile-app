@@ -43,6 +43,7 @@ extension CoreProfileUtils on CoreProfile {
     String? lastName,
     double? height,
     double? weight,
+    int? creditBalance,
     List<String>? interests,
     List<String>? profilePics,
     List<String>? blockedIds,
@@ -53,6 +54,7 @@ extension CoreProfileUtils on CoreProfile {
     if (lastName != null) this.lastName = lastName;
     if (height != null) this.height = height;
     if (weight != null) this.weight = weight;
+    if (creditBalance != null) this.creditBalance = creditBalance;
     if (interests != null) this.interests = interests;
     if (profilePics != null) this.profilePics = profilePics;
     if (blockedIds != null) this.blockedIds = blockedIds;

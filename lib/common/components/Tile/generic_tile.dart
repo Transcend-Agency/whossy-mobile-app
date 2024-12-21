@@ -11,6 +11,10 @@ class GenericTile<T> extends StatelessWidget {
   final T groupValue;
   final ValueChanged<T?> onChanged;
   final String title;
+  final double? bottom;
+  final Color? borderColor;
+  final Color? tileColor;
+  final Widget? subtitle;
 
   const GenericTile({
     super.key,
@@ -18,7 +22,11 @@ class GenericTile<T> extends StatelessWidget {
     required this.groupValue,
     required this.onChanged,
     required this.title,
+    this.bottom,
     this.leadingWidget,
+    this.tileColor,
+    this.borderColor,
+    this.subtitle,
   });
 
   @override
@@ -26,7 +34,7 @@ class GenericTile<T> extends StatelessWidget {
     bool isSelected = value == groupValue;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 6.h),
+      padding: EdgeInsets.only(bottom: bottom ?? 6.h),
       child: GestureDetector(
         onTap: () => onChanged(value),
         child: AnimatedContainer(
@@ -34,7 +42,9 @@ class GenericTile<T> extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
             border: Border.all(
-              color: isSelected ? AppColors.primaryColor : Colors.transparent,
+              color: isSelected
+                  ? AppColors.primaryColor
+                  : borderColor ?? Colors.transparent,
               width: 1.5,
             ),
           ),
@@ -44,7 +54,7 @@ class GenericTile<T> extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(9.r),
             ),
-            tileColor: AppColors.whiteShade200,
+            tileColor: tileColor ?? AppColors.whiteShade200,
             trailing: Container(
               width: 16.r,
               height: 16.r,
@@ -65,6 +75,7 @@ class GenericTile<T> extends StatelessWidget {
                 color: AppColors.black,
               ),
             ),
+            subtitle: subtitle,
           ),
         ),
       ),

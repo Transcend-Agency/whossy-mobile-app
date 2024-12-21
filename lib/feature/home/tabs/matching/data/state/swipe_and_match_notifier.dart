@@ -43,7 +43,7 @@ class SwipeAndMatchNotifier with ChangeNotifier {
 
     notifyListeners();
 
-    log('Profile Data ${data.toString()}');
+   log(data.toString());
   }
 
   bool get hasDeniedLocationPermission => _hasDeniedLocationPermission;

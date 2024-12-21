@@ -3,17 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../feature/home/preferences/model/generic_enum.dart';
 
 enum CoreSettings implements GenericEnum {
-  incognito(
-    'Incognito',
-    'Your profile will be hidden from public users but will be seen by people you like.',
-  ),
   incomingMessages(
     'Incoming messages',
     'This will allow only verified users to message you.',
-  ),
-  hideVerificationBadge(
-    'Hide verification badge',
-    'This will hide the verification badge on your profile.',
   ),
   publicSearch(
     'Public search',
@@ -22,6 +14,11 @@ enum CoreSettings implements GenericEnum {
   onlineStatus(
     'Online status',
     'Users won’t be able to see when you’re online.',
+  ),
+
+  readReceipts(
+    'Read receipts',
+    'Matches won’t be able to see when you have read and their messages and you won’t be able to see theirs.',
   );
 
   const CoreSettings(this.name, this.subtitle);

@@ -41,11 +41,14 @@ class SubscriptionContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Text(
-                  feature,
-                  style: TextStyles.hintThemeText.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: AppUtils.scale(10.sp) ?? 13.5.sp,
+                child: Opacity(
+                  opacity: 0.9,
+                  child: Text(
+                    feature,
+                    style: TextStyles.hintThemeText.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: AppUtils.scale(10.sp) ?? 13.5.sp,
+                    ),
                   ),
                 ),
               ),

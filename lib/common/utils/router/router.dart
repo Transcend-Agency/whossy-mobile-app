@@ -49,6 +49,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: EditProfilePreview.page),
         AutoRoute(page: SafetyGuide.page),
         AutoRoute(page: SubscriptionPlans.page),
+        AutoRoute(page: Credits.page),
 
         // Likes and Match / Tab 3
         //AutoRoute(page: MoreInfoRoute.page),

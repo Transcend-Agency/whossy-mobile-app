@@ -92,8 +92,6 @@ class ChatsNotifier extends ChangeNotifier {
   void saveProfile(CoreProfile? data) => _profileData = data;
   void updateConnectivity(bool isConnected) {
     _isUserConnected = isConnected;
-
-    log('Connectivity changed within the Chat Notifier to $isConnected');
   }
 
   /// -------------------------

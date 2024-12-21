@@ -62,6 +62,7 @@ class AppAssets {
   static const settings = 'assets/icons/settings.svg';
 
   static const credit = 'assets/icons/credit.png';
+  static const credit2 = 'assets/icons/credit2.png';
   static const boost = 'assets/icons/boost.png';
 
   static const bulb = 'assets/icons/bulb.png';

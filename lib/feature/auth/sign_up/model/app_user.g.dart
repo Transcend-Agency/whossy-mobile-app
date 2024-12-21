@@ -24,16 +24,22 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           json['has_completed_onboarding'] as bool? ?? false,
       tokens:
           (json['tokens'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      isVerified: json['is_verified'] as bool? ?? false,
+      isApproved: json['is_approved'] as bool? ?? false,
+      isBanned: json['is_banned'] as bool? ?? false,
       createdAt: AppUtils.timestampFromJson(json['created_at']),
       status: json['status'] == null
           ? null
           : UserStatus.fromJson(json['status'] as Map<String, dynamic>),
-      isPremium: json['isPremium'] as bool? ?? false,
+      userSettings: json['user_settings'] == null
+          ? null
+          : UserSettings.fromJson(
+              json['user_settings'] as Map<String, dynamic>),
+      isPremium: json['is_premium'] as bool? ?? false,
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
       location: AppUtils.geoPointFromJson(json['location']),
       geohash: json['geohash'] as String?,
+      creditBalance: (json['credit_balance'] as num?)?.toInt() ?? 0,
       blockedIds: (json['blockedIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -61,14 +67,17 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   val['has_completed_account_creation'] = instance.hasCompletedAccountCreation;
   val['has_completed_onboarding'] = instance.hasCompletedOnboarding;
   writeNotNull('tokens', instance.tokens);
-  val['is_verified'] = instance.isVerified;
+  val['is_approved'] = instance.isApproved;
+  val['is_banned'] = instance.isBanned;
   writeNotNull('created_at', AppUtils.timestampToJson(instance.createdAt));
-  writeNotNull('isPremium', instance.isPremium);
+  writeNotNull('user_settings', instance.userSettings);
+  writeNotNull('is_premium', instance.isPremium);
   writeNotNull('blockedIds', instance.blockedIds);
   writeNotNull('latitude', instance.latitude);
   writeNotNull('longitude', instance.longitude);
   writeNotNull('location', AppUtils.geoPointToJson(instance.location));
   writeNotNull('geohash', instance.geohash);
+  writeNotNull('credit_balance', instance.creditBalance);
   return val;
 }
 

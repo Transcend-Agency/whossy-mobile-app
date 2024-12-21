@@ -2,45 +2,38 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../common/utils/enum/enums.dart';
 
-part 'settings_model.g.dart';
+part 'user_settings.g.dart';
 
 @JsonSerializable()
-class SettingsModel {
-  bool? incognito;
-
+class UserSettings {
   @JsonKey(name: 'incoming_messages')
   bool? incomingMessages;
-
-  @JsonKey(name: 'hide_badge')
-  bool? hideBadge;
-
-  @JsonKey(name: 'public_search')
-  bool? publicSearch;
 
   @JsonKey(name: 'online_status')
   bool? onlineStatus;
 
-  List<String>? blocked;
+  @JsonKey(name: 'public_search')
+  bool? publicSearch;
 
-  SettingsModel({
-    this.incognito,
-    this.incomingMessages,
-    this.hideBadge,
-    this.publicSearch,
-    this.onlineStatus,
-    this.blocked,
+  @JsonKey(name: 'read_receipts')
+  bool? readReceipts;
+
+  UserSettings({
+    this.incomingMessages = true,
+    this.onlineStatus = false,
+    this.publicSearch = false,
+    this.readReceipts = false,
   });
 
-  factory SettingsModel.fromJson(Map<String, dynamic> json) =>
-      _$SettingsModelFromJson(json);
+  factory UserSettings.fromJson(Map<String, dynamic> json) =>
+      _$UserSettingsFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SettingsModelToJson(this);
+  Map<String, dynamic> toJson() => _$UserSettingsToJson(this);
 
   bool? getValue(CoreSettings setting) {
     final selectedValues = <CoreSettings, bool?>{
-      CoreSettings.incognito: incognito,
       CoreSettings.incomingMessages: incomingMessages,
-      CoreSettings.hideVerificationBadge: hideBadge,
+      CoreSettings.readReceipts: readReceipts,
       CoreSettings.publicSearch: publicSearch,
       CoreSettings.onlineStatus: onlineStatus,
     };
@@ -50,27 +43,18 @@ class SettingsModel {
 
   void updateSwitch(CoreSettings setting, bool newValue) {
     switch (setting) {
-      case CoreSettings.incognito:
-        incognito = newValue;
-        break;
       case CoreSettings.incomingMessages:
         incomingMessages = newValue;
         break;
-      case CoreSettings.hideVerificationBadge:
-        hideBadge = newValue;
-        break;
       case CoreSettings.publicSearch:
         publicSearch = newValue;
+        break;
+      case CoreSettings.readReceipts:
+        readReceipts = newValue;
         break;
       case CoreSettings.onlineStatus:
         onlineStatus = newValue;
         break;
     }
-  }
-
-  void update({
-    List<String>? blocked,
-  }) {
-    if (blocked != null) this.blocked = blocked;
   }
 }

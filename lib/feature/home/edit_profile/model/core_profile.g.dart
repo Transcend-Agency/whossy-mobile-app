@@ -22,8 +22,8 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       weight: (json['weight'] as num?)?.toDouble(),
       height: (json['height'] as num?)?.toDouble(),
       countryOfOrigin: json['country_of_origin'] as String?,
-      isPremium: json['isPremium'] as bool?,
-      isVerified: json['is_verified'] as bool?,
+      isPremium: json['is_premium'] as bool?,
+      isApproved: json['is_approved'] as bool?,
       blockedIds: (json['blockedIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -31,6 +31,12 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       longitude: (json['longitude'] as num?)?.toDouble(),
       location: AppUtils.geoPointFromJson(json['location']),
       geohash: json['geohash'] as String?,
+      isBanned: json['is_banned'] as bool?,
+      creditBalance: (json['credit_balance'] as num?)?.toInt(),
+      userSettings: json['user_settings'] == null
+          ? null
+          : UserSettings.fromJson(
+              json['user_settings'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
@@ -55,12 +61,15 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
   writeNotNull('bio', instance.bio);
   writeNotNull('interests', instance.interests);
   writeNotNull('country_of_origin', instance.countryOfOrigin);
-  writeNotNull('isPremium', instance.isPremium);
-  writeNotNull('is_verified', instance.isVerified);
+  writeNotNull('is_premium', instance.isPremium);
+  writeNotNull('is_approved', instance.isApproved);
+  writeNotNull('is_banned', instance.isBanned);
   writeNotNull('blockedIds', instance.blockedIds);
   writeNotNull('latitude', instance.latitude);
   writeNotNull('longitude', instance.longitude);
   writeNotNull('location', AppUtils.geoPointToJson(instance.location));
   writeNotNull('geohash', instance.geohash);
+  writeNotNull('credit_balance', instance.creditBalance);
+  writeNotNull('user_settings', instance.userSettings);
   return val;
 }

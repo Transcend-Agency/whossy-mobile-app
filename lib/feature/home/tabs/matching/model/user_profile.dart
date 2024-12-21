@@ -48,5 +48,5 @@ class UserProfile implements ProfileDataFooter {
   bool get premiumUser => user.isPremium ?? false;
 
   @override
-  bool get isUserVerified => user.isVerified;
+  bool get isUserVerified => user.isApproved;
 }

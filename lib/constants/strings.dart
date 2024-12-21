@@ -135,6 +135,8 @@ class AppStrings {
       'Failed to unblock user, Please try again';
 
   static const String blockFailure = 'Failed to block user, Please try again';
+  static const String addCreditsFailure =
+      'Failed to add credits, Please try again';
 
   static const String unUploadedPhotos = 'Some photos could not be uploaded';
 

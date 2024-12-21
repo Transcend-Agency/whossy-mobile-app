@@ -173,6 +173,7 @@ class EditProfileNotifier extends ChangeNotifier {
         }
       }
 
+      //log(' Saving ${coreProfileDiff.toString()} \n ${corePrefsDiff.toString()}');
       await _editProfileRepo.updateProfileData(
         corePrefData: {...corePrefsDiff},
         coreProfileData: {...coreProfileDiff},
@@ -206,6 +207,7 @@ class EditProfileNotifier extends ChangeNotifier {
     String? lastName,
     double? weight,
     double? height,
+    int? creditBalance,
     List<String>? interests,
     List<String>? profilePics,
     List<String>? blockedIds,
@@ -220,6 +222,7 @@ class EditProfileNotifier extends ChangeNotifier {
       interests: interests,
       profilePics: profilePics,
       blockedIds: blockedIds,
+      creditBalance: creditBalance,
     );
     notifyListeners();
   }

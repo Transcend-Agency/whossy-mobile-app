@@ -12,6 +12,7 @@ class CustomButton extends StatelessWidget {
     required this.subTitle,
     required this.containerColor,
     required this.textColor,
+    this.onTap,
   });
 
   final String imagePath;
@@ -19,43 +20,47 @@ class CustomButton extends StatelessWidget {
   final String subTitle;
   final Color containerColor;
   final Color textColor;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          color: containerColor,
-          borderRadius: BorderRadius.circular(10.r),
-        ),
-        padding: EdgeInsets.all(12.r),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox.square(
-              dimension: 40.r,
-              child: Image.asset(imagePath),
-            ),
-            addWidth(10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  title,
-                  style: TextStyles.whossyGuideText,
-                ),
-                Text(
-                  subTitle,
-                  style: TextStyles.underlineWhossyGuide.copyWith(
-                    color: textColor,
-                    decorationColor: textColor,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: containerColor,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          padding: EdgeInsets.all(12.r),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox.square(
+                dimension: 40.r,
+                child: Image.asset(imagePath),
+              ),
+              addWidth(10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyles.whossyGuideText,
                   ),
-                ),
-              ],
-            ),
-          ],
+                  Text(
+                    subTitle,
+                    style: TextStyles.underlineWhossyGuide.copyWith(
+                      color: textColor,
+                      decorationColor: textColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

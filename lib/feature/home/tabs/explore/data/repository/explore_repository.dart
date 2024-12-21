@@ -15,8 +15,10 @@ class ExploreRepository {
   }) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
-    // Base query without 'uid != currentUserUid' condition
-    Query query = _profiles.where('has_completed_onboarding', isEqualTo: true);
+    Query query = _profiles
+        .where('has_completed_onboarding', isEqualTo: true)
+        .where('is_banned', isEqualTo: false)
+        .where('is_approved', isEqualTo: true);
 
     filters.filters.forEach((filter, value) {
       if (value != null && filterConfigs.containsKey(filter)) {
