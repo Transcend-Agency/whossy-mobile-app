@@ -22,9 +22,14 @@ class UserProfile implements ProfileDataFooter {
   bool get isOnline => user.status?.online ?? false;
 
   @override
-  bool get newUser =>
-      user.createdAt != null &&
-      DateTime.now().difference(user.createdAt!.toDate()).inDays <= 7;
+  bool get newUser {
+    // Convert TimestampWrapper to Timestamp
+    final timestamp = user.createdAt?.toTimestamp();
+
+    // Check if timestamp is valid and calculate the difference
+    return timestamp != null &&
+        DateTime.now().difference(timestamp.toDate()).inDays <= 7;
+  }
 
   @override
   String get name => user.firstName ?? " ";

@@ -10,6 +10,7 @@ import '../../model/chat.dart';
 import '../../model/chat_with_user.dart';
 import '../../model/current_chat.dart';
 import '../../model/message.dart';
+import '../../model/sub_chat.dart';
 import '../source/extensions.dart';
 
 class ChatRepository {
@@ -30,8 +31,14 @@ class ChatRepository {
         return null;
       });
 
-  Future<bool> doesChatExist(String chatId) =>
-      _chats.doc(chatId).get().then((data) => data.exists);
+  Future<bool> doesChatExist(String userId1, String userId2) async {
+    // final querySnapshot = await _chats
+    //     .where('participants', arrayContains: userId1)
+    //     .where('participants', arrayContains: userId2)
+    //     .get();
+
+    return true;
+  }
 
   void updateChatData(
     Message message,
@@ -80,6 +87,22 @@ class ChatRepository {
     }
   }
 
+  Future<void> updateUnlockTime({String? chatId}) async {
+    if (chatId == null) return;
+
+    await _chats.doc(chatId).set(
+      {
+        'unlock_time': FieldValue.serverTimestamp(),
+        'expiration_time': Timestamp.fromDate(
+          DateTime.now().add(
+            const Duration(days: 7),
+          ),
+        ),
+      },
+      SetOptions(merge: true),
+    );
+  }
+
   Future<String> createNewChat(
     String content, {
     required CurrentChat currentChat,
@@ -102,6 +125,7 @@ class ChatRepository {
         ...chat.toJson(),
         'last_message_timestamp': FieldValue.serverTimestamp(),
       },
+      SetOptions(merge: true),
     );
 
     return await sendMessage(
@@ -171,10 +195,10 @@ class ChatRepository {
     }
   }
 
-  Stream<Chat?> getChatDataStream(String? chatId) {
+  Stream<SubChat?> getChatDataStream(String? chatId) {
     return _chats.doc(chatId).snapshots().map(
           (doc) => doc.exists
-              ? Chat.fromJson(
+              ? SubChat.fromJson(
                   {...doc.data()!, 'id': doc.id},
                 )
               : null,

@@ -6,14 +6,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whossy_app/common/utils/app_utils.dart';
+import 'package:whossy_app/common/utils/index.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/chat_with_user.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';
+import 'package:whossy_app/feature/home/tabs/chat/model/sub_chat.dart';
 
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../edit_profile/model/core_profile.dart';
 import '../../../matching/model/user_profile.dart';
-import '../../model/chat.dart';
 import '../../model/current_chat.dart';
 import '../repository/chat_repository.dart';
 import '../source/extensions.dart';
@@ -28,11 +29,12 @@ class ChatsNotifier extends ChangeNotifier {
   final Queue<List<String>> _uploadQueue = Queue();
   bool _isProcessingQueue = false;
   String? _lastMessageId;
-  StreamSubscription<Chat?>? _chatSubscription;
+  StreamSubscription<SubChat?>? _chatSubscription;
 
   // Variables to manage state
   CurrentChat? currentChat;
   CoreProfile? _profileData;
+  TimestampWrapper? chatExpTime;
   bool _hasChatRoomOpened = true;
 
   bool _isUserConnected = false;
@@ -46,6 +48,30 @@ class ChatsNotifier extends ChangeNotifier {
   Map<String, double> get progressMap => _progressMap;
   Map<String, bool> get isUploadingMap => _isUploadingMap;
   Map<String, bool> get hasUploadFailedMap => _hasUploadFailedMap;
+
+  bool get viewPermission {
+    // Check if chatExpTime is available and in the past
+    bool? isCreditFinished = chatExpTime?.isInThePast();
+
+    // If isCreditFinished is null (meaning chatExpTime is not available),
+    // assume no permission
+    if (isCreditFinished == null) {
+      return _profileData?.premiumUser ?? false;
+    }
+
+    // If isCreditFinished is false (credit hasn't finished),
+    // return true if user has premium access or if credit is still active
+    bool isPremiumUser = _profileData?.premiumUser ?? false;
+    return isPremiumUser || !isCreditFinished;
+  }
+
+  CoreProfile? get userData => _profileData;
+
+  void updateExpirationTime(TimestampWrapper? expTime) {
+    chatExpTime = expTime;
+
+    notifyListeners();
+  }
 
 // Update methods for progress and state
   void updateProgress(String localPhotoPath, double value) {
@@ -89,7 +115,12 @@ class ChatsNotifier extends ChangeNotifier {
     }
   }
 
-  void saveProfile(CoreProfile? data) => _profileData = data;
+  void saveProfile(CoreProfile? data) {
+    _profileData = data;
+
+    notifyListeners();
+  }
+
   void updateConnectivity(bool isConnected) {
     _isUserConnected = isConnected;
   }
@@ -122,6 +153,9 @@ class ChatsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateUnlockTime() async =>
+      await _chatRepository.updateUnlockTime(chatId: currentChat?.chatId);
+
   Stream<List<Message>> messagesStream(int limit) => _chatRepository
       .getChatMessagesStream(limit: limit, chatId: currentChat!.chatId!);
 
@@ -130,7 +164,10 @@ class ChatsNotifier extends ChangeNotifier {
     if (currentChat == null) return;
 
     String messageId = '';
-    final exists = await _chatRepository.doesChatExist(currentChat!.chatId!);
+    final exists = await _chatRepository.doesChatExist(
+      currentChat!.uidUser1,
+      currentChat!.uidUser2,
+    );
 
     if (exists) {
       messageId = await _chatRepository.sendMessage(
@@ -161,19 +198,24 @@ class ChatsNotifier extends ChangeNotifier {
     }
   }
 
-  Future<void> updateMessageStatus(Message message) {
-    return _chatRepository.updateMessageStatus(
-      message: message,
-      chatId: currentChat?.chatId,
-      lastMessageId: _lastMessageId,
-    );
+  Future<void> updateMessageStatus(Message message) async {
+    if (viewPermission) {
+      return _chatRepository.updateMessageStatus(
+        message: message,
+        chatId: currentChat?.chatId,
+        lastMessageId: _lastMessageId,
+      );
+    }
   }
 
   void listenToChatUpdates() {
     _chatSubscription =
         _chatRepository.getChatDataStream(currentChat?.chatId).listen((chat) {
-      if (chat != null && chat.lastMessageId != _lastMessageId) {
-        _lastMessageId = chat.lastMessageId;
+      updateExpirationTime(chat?.expirationTime);
+      if (chat != null) {
+        if (chat.lastMessageId != _lastMessageId) {
+          _lastMessageId = chat.lastMessageId;
+        }
       }
     });
   }
@@ -205,29 +247,17 @@ class ChatsNotifier extends ChangeNotifier {
     if (_uploadQueue.any(
       (existingPaths) => areListsEqual(existingPaths, localPhotoPaths),
     )) {
-      log('\n[INFO] Upload for these paths is already in the queue: $localPhotoPaths');
       return;
     }
 
-    // Log the current state of the queue before adding new paths
-    log('\n[INFO] Current upload queue state before adding: $_uploadQueue');
-
     // Add the photo paths to the queue
-    log('\n[INFO] Adding new paths to the upload queue: $localPhotoPaths');
     _uploadQueue.add(localPhotoPaths);
-
-    // Log the updated state of the queue after adding new paths
-    log('\n[INFO] Updated upload queue state after adding: $_uploadQueue');
 
     // If no upload is currently being processed, start processing the queue
     if (!_isProcessingQueue) {
-      log('\n[INFO] Starting upload process for ID: $id');
       _isProcessingQueue = true;
       await _processUploadQueue(id, onUploadComplete);
       _isProcessingQueue = false;
-      log('\n[INFO] Upload process complete for ID: $id');
-    } else {
-      log('\n[INFO] Upload queue is already being processed. Waiting for the current upload to finish.');
     }
   }
 

@@ -194,27 +194,27 @@ Widget _buildUserTags(UserProfile item) {
           //     fontSize: AppUtils.scale(9.5.sp),
           //   ),
           // ),
-          if (item.isOnline) ...[
-            // addWidth(8),
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF103B24),
-                border: Border.all(
-                  color: const Color(0xFF09B45A),
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(6.r),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 6.r, vertical: 1.r),
-              child: Text(
-                'Active',
-                style: TextStyles.prefText.copyWith(
-                  color: const Color(0xFF09B45A),
-                  fontSize: AppUtils.scale(9.5.sp) ?? 11.sp,
-                ),
-              ),
-            ),
-          ]
+          // if (item.isOnline) ...[
+          //   // addWidth(8),
+          //   Container(
+          //     decoration: BoxDecoration(
+          //       color: const Color(0xFF103B24),
+          //       border: Border.all(
+          //         color: const Color(0xFF09B45A),
+          //         width: 1,
+          //       ),
+          //       borderRadius: BorderRadius.circular(6.r),
+          //     ),
+          //     padding: EdgeInsets.symmetric(horizontal: 6.r, vertical: 1.r),
+          //     child: Text(
+          //       'Active',
+          //       style: TextStyles.prefText.copyWith(
+          //         color: const Color(0xFF09B45A),
+          //         fontSize: AppUtils.scale(9.5.sp) ?? 11.sp,
+          //       ),
+          //     ),
+          //   ),
+          // ]
         ],
       ),
     ),
@@ -227,32 +227,35 @@ Widget _buildUserDetails(UserProfile item, int columnCount) {
     child: Padding(
       padding: const EdgeInsets.only(left: 10, bottom: 6, right: 10),
       child: Material(
-        type: MaterialType.transparency,
-        child: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 4,
-          runSpacing: 2,
-          children: [
-            Text(
-              '${item.name}, ',
+          type: MaterialType.transparency,
+          child: RichText(
+            text: TextSpan(
+              text: item.name, // Name text
               style: TextStyles.profileHead.copyWith(
                 fontSize: AppUtils.scale(14.sp),
                 color: Colors.white,
               ),
+              children: [
+                if (item.preferences.dateOfBirth != null)
+                  TextSpan(
+                    text: ', ${item.preferences.dateOfBirth!.age}', // Age text
+                    style: TextStyles.profileHead.copyWith(
+                      fontSize: AppUtils.scale(12.sp) ?? 16.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                if (item.isOnline)
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: greenDot(),
+                    ),
+                  ),
+              ],
             ),
-            Text(
-              '${item.preferences.dateOfBirth?.age}',
-              style: TextStyles.profileHead.copyWith(
-                fontSize: AppUtils.scale(12.sp) ?? 16.sp,
-                fontWeight: FontWeight.w400,
-                color: Colors.white,
-              ),
-            ),
-            if (item.isUserVerified)
-              SvgPicture.asset(AppAssets.tick, width: 18),
-          ],
-        ),
-      ),
+          )),
     ),
   );
 }

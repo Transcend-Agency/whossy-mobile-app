@@ -49,10 +49,10 @@ class AppUser {
 
   @JsonKey(
     name: 'created_at',
-    fromJson: AppUtils.timestampFromJson,
-    toJson: AppUtils.timestampToJson,
+    fromJson: TimestampWrapper.timestampFromJson,
+    toJson: TimestampWrapper.timestampToJson,
   )
-  final Timestamp? createdAt;
+  final TimestampWrapper? createdAt;
 
   @JsonKey(name: 'status', includeToJson: false)
   final UserStatus? status;
@@ -85,6 +85,9 @@ class AppUser {
   @JsonKey(name: "credit_balance")
   final int? creditBalance;
 
+  @JsonKey(name: "amount_paid_in_total")
+  final double? amountPaid;
+
   AppUser({
     this.uid,
     this.email,
@@ -110,6 +113,7 @@ class AppUser {
     this.location,
     this.geohash,
     this.creditBalance = 0,
+    this.amountPaid = 0,
     List<String>? blockedIds,
   }) : blockedIds = blockedIds ?? [];
 
@@ -154,7 +158,7 @@ class AppUser {
         'hasCompletedAccountCreation: $hasCompletedAccountCreation\n'
         'hasCompletedOnboarding: $hasCompletedOnboarding\n'
         'isApproved: $isApproved\n'
-        'createdAt: ${createdAt?.toDate()}\n'
+        'createdAt: ${createdAt?.toString()}\n'
         'tokens: ${tokens?.join(", ") ?? "null"}\n'
         'isPremium $isPremium,\n'
         'status: ${status?.toString() ?? "null"}'

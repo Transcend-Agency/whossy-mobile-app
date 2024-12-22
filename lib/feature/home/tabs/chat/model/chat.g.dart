@@ -19,6 +19,9 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
               MessageStatus.undelivered,
       lastMessageId: json['last_message_id'] as String?,
       isSeenByReceiver: json['is_seen_by_receiver'] as bool?,
+      unlockTime: TimestampWrapper.timestampFromJson(json['unlock_time']),
+      expirationTime:
+          TimestampWrapper.timestampFromJson(json['expiration_time']),
     );
 
 Map<String, dynamic> _$ChatToJson(Chat instance) {
@@ -35,6 +38,10 @@ Map<String, dynamic> _$ChatToJson(Chat instance) {
   val['last_message'] = instance.lastMessage;
   writeNotNull('last_message_timestamp',
       TimestampWrapper.timestampToJson(instance.lastMessageTimestamp));
+  writeNotNull(
+      'unlock_time', TimestampWrapper.timestampToJson(instance.unlockTime));
+  writeNotNull('expiration_time',
+      TimestampWrapper.timestampToJson(instance.expirationTime));
   writeNotNull('status', _$MessageStatusEnumMap[instance.lastMessageStatus]);
   writeNotNull('last_message_id', instance.lastMessageId);
   writeNotNull('is_seen_by_receiver', instance.isSeenByReceiver);

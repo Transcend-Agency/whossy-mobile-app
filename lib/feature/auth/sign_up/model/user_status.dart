@@ -42,7 +42,7 @@ class UserStatus {
       return 'last seen ${formatter.format(time)}';
     } else if (difference.inHours >= 24) {
       final formatter = DateFormat("h:mm a");
-      return 'Yesterday at ${formatter.format(time)}';
+      return 'yesterday at ${formatter.format(time).toLowerCase()}';
     } else if (difference.inHours >= 1) {
       return 'last seen ${difference.inHours} hour${difference.inHours == 1 ? '' : 's'} ago';
     } else if (difference.inMinutes >= 1) {

@@ -14,6 +14,7 @@ class AppButton extends StatelessWidget {
   final bool loading;
   final String? text; // Change to nullable
   final Widget? child;
+  final TextStyle? textStyle;
 
   const AppButton({
     super.key,
@@ -23,6 +24,7 @@ class AppButton extends StatelessWidget {
     this.loading = false,
     this.text, // Change to nullable
     this.child,
+    this.textStyle,
   }) : assert(text == null || child == null,
             'You cannot provide both text and child. Please provide either one.');
 
@@ -38,15 +40,16 @@ class AppButton extends StatelessWidget {
         elevation: 0,
         highlightElevation: 0,
         shape: circularBorder,
-        disabledColor: AppColors.buttonColor.withOpacity(0.8),
+        disabledColor: (color ?? AppColors.buttonColor).withOpacity(0.8),
         child: loading
             ? const AppLoader()
             : child ??
                 Text(
                   text ?? '',
-                  style: TextStyles.buttonText.copyWith(
-                    fontSize: AppUtils.scale(18),
-                  ),
+                  style: textStyle ??
+                      TextStyles.buttonText.copyWith(
+                        fontSize: AppUtils.scale(18),
+                      ),
                 ),
       ),
     );

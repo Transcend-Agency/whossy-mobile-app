@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/home/tabs/chat/model/chat_room_data.dart';
+import 'package:whossy_app/feature/home/tabs/chat/view/chat_room/chat_room_blur.dart';
 import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../../common/styles/component_style.dart';
@@ -15,7 +17,6 @@ import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../../../constants/index.dart';
-import '../../model/current_chat.dart';
 import '../widgets/_.dart';
 import '../widgets/sheets/actions_sheet.dart';
 import '../widgets/sheets/photo_sheet.dart';
@@ -191,9 +192,12 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<ChatsNotifier, CurrentChat>(
-      selector: (_, chats) => chats.currentChat!,
-      builder: (_, currentChat, __) {
+    return Selector<ChatsNotifier, ChatRoomData>(
+      selector: (_, chats) => ChatRoomData(
+        currentChat: chats.currentChat!,
+        hasViewPermission: chats.viewPermission,
+      ),
+      builder: (_, data, __) {
         return AppScaffold(
           resizeToAvoidBottomInset: true,
           appBar: CustomAppBar(
@@ -201,7 +205,7 @@ class _ChatRoomState extends State<ChatRoom> {
             titleWidget: Row(
               children: [
                 CircleAppAvatar(
-                  imageUrl: currentChat.profilePicUrl,
+                  imageUrl: data.currentChat.profilePicUrl,
                   radius: isTab ? 20 : 22.r,
                 ),
                 addWidth(isTab ? 10 : 16),
@@ -210,11 +214,11 @@ class _ChatRoomState extends State<ChatRoom> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        currentChat.username,
+                        data.currentChat.username,
                         style: TextStyles.profileHead,
                       ),
                       addHeight(1),
-                      OnlineStatus(oppUserId: currentChat.uidUser2),
+                      OnlineStatus(oppUserId: data.currentChat.uidUser2),
                     ],
                   ),
                 ),
@@ -224,124 +228,130 @@ class _ChatRoomState extends State<ChatRoom> {
             action: Padding(
               padding: EdgeInsets.only(right: 10.w),
               child: AppIconButton(
-                onTap: () => showActionsSheet(context, currentChat.username),
+                onTap: () =>
+                    showActionsSheet(context, data.currentChat.username),
                 icon: Icons.more_horiz_rounded,
               ),
             ),
           ),
           body: Stack(
             children: [
-              Column(
-                children: [
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        MessageStream(
-                          scrollController: scrollController,
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: ChatScrollButton(
-                            showIcon: showIcon,
-                            onPressed: _scrollToBottom,
+              if (data.hasViewPermission)
+                Column(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          MessageStream(
+                            scrollController: scrollController,
                           ),
-                        )
-                      ],
+                          Positioned(
+                            bottom: 10,
+                            right: 10,
+                            child: ChatScrollButton(
+                              showIcon: showIcon,
+                              onPressed: _scrollToBottom,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  Selector<EditProfileNotifier, List<String>>(
-                    selector: (_, edit) => edit.coreProfile?.blockedIds ?? [],
-                    builder: (_, blockedIds, __) {
-                      return blockedIds.contains(currentChat.uidUser2)
-                          ? Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              height: 50.r,
-                              width: double.infinity,
-                              color: AppColors.inputBackGround.withOpacity(0.9),
-                              child: Center(
-                                child: Text(
-                                  'UNBLOCK',
-                                  style: TextStyles.chatText.copyWith(
-                                    fontSize: AppUtils.scale(11.5.sp) ?? 13.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.primaryColor,
+                    Selector<EditProfileNotifier, List<String>>(
+                      selector: (_, edit) => edit.coreProfile?.blockedIds ?? [],
+                      builder: (_, blockedIds, __) {
+                        return blockedIds.contains(data.currentChat.uidUser2)
+                            ? Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                height: 50.r,
+                                width: double.infinity,
+                                color:
+                                    AppColors.inputBackGround.withOpacity(0.9),
+                                child: Center(
+                                  child: Text(
+                                    'UNBLOCK',
+                                    style: TextStyles.chatText.copyWith(
+                                      fontSize:
+                                          AppUtils.scale(11.5.sp) ?? 13.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.primaryColor,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                          : Padding(
-                              padding: chatFieldPadding,
-                              child: Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: onAddPhoto,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(4.r)
-                                          .copyWith(right: 10),
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.black,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Icon(
-                                            Icons.add,
-                                            color: Colors.white,
-                                            size: 22.r,
+                              )
+                            : Padding(
+                                padding: chatFieldPadding,
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: onAddPhoto,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(4.r)
+                                            .copyWith(right: 10),
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.black,
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        ConstrainedBox(
-                                          constraints: const BoxConstraints(
-                                            maxHeight: 5 * 16 * 1.4,
-                                          ),
-                                          child: SingleChildScrollView(
-                                            scrollDirection: Axis.vertical,
-                                            reverse: true,
-                                            child: MessageTextField(
-                                              node: messagesFocusNode,
-                                              controller: messagesController,
-                                              onPrefixIconTap: onAddPhoto,
-                                              isReplying: false,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 22.r,
                                             ),
                                           ),
-                                        ), //
-                                      ],
-                                    ),
-                                  ),
-
-                                  addWidth(6),
-
-                                  // Record audio / Send message button
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: typing ? sendMessage : null,
-                                        child: CircleAvatar(
-                                          radius: 21,
-                                          backgroundColor: Colors.white,
-                                          child:
-                                              typing ? sendIcon() : voiceIcon(),
                                         ),
                                       ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            );
-                    },
-                  ),
-                ],
-              )
+                                    ),
+
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          ConstrainedBox(
+                                            constraints: const BoxConstraints(
+                                              maxHeight: 5 * 16 * 1.4,
+                                            ),
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.vertical,
+                                              reverse: true,
+                                              child: MessageTextField(
+                                                node: messagesFocusNode,
+                                                controller: messagesController,
+                                                onPrefixIconTap: onAddPhoto,
+                                                isReplying: false,
+                                              ),
+                                            ),
+                                          ), //
+                                        ],
+                                      ),
+                                    ),
+
+                                    addWidth(6),
+
+                                    // Record audio / Send message button
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: typing ? sendMessage : null,
+                                          child: CircleAvatar(
+                                            radius: 21,
+                                            backgroundColor: Colors.white,
+                                            child: typing
+                                                ? sendIcon()
+                                                : voiceIcon(),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              );
+                      },
+                    ),
+                  ], //
+                ),
+              const ChatRoomBlur(),
             ],
           ),
         );

@@ -122,25 +122,29 @@ class TimestampWrapper {
 
   TimestampWrapper(this.timestamp);
 
-  // Method to check and convert to Timestamp
   Timestamp? toTimestamp() {
     if (timestamp is Timestamp) {
-      return timestamp as Timestamp; // It's already a Timestamp
+      return timestamp as Timestamp;
     } else if (timestamp is Map<String, int> &&
         timestamp.containsKey('seconds') &&
         timestamp.containsKey('nanoseconds')) {
       final seconds = timestamp['seconds']!;
       final nanoseconds = timestamp['nanoseconds']!;
-      return Timestamp(seconds, nanoseconds); // Convert Map to Timestamp
+      return Timestamp(seconds, nanoseconds);
     }
-    return null; // Return null if it's neither a Timestamp nor a valid Map
+    return null;
   }
 
-  // Custom fromJson function for timestamp
   static TimestampWrapper? timestampFromJson(dynamic json) =>
       TimestampWrapper(json);
 
-  // Custom toJson function for timestamp
   static dynamic timestampToJson(TimestampWrapper? timestamp) =>
       timestamp?.timestamp;
+
+  // Method to check if the timestamp is in the past
+  bool isInThePast() {
+    final timestampObj = toTimestamp();
+    if (timestampObj == null) return true;
+    return timestampObj.toDate().isBefore(DateTime.now());
+  }
 }

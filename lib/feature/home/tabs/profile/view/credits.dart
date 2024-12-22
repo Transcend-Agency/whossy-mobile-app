@@ -1,7 +1,9 @@
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart'; // Import flutter_hooks package
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pay_with_paystack/pay_with_paystack.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
@@ -105,22 +107,21 @@ class Credits extends HookWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: 8.r),
+              padding: const EdgeInsets.only(bottom: 16),
               child: DialogButton(
-                text: "Continue",
-                color: AppColors.buttonColor,
-                textColor: Colors.white,
-                onPressed: creditEnum.value == null
-                    ? null
-                    : () async =>
-                        await _addCredits(context, creditEnum.value!.quantity),
-              ),
+                  text: "Continue",
+                  color: AppColors.buttonColor,
+                  textColor: Colors.white,
+                  onPressed: creditEnum.value == null
+                      ? null
+                      : () async => await pay(context)),
             ),
           ],
         ),
       ),
     );
   }
+  // _addCredits(context, creditEnum.value!.quantity),
 
   Future<void> _addCredits(BuildContext context, int credit) async {
     final editNotifier = context.read<EditProfileNotifier>();
@@ -140,6 +141,29 @@ class Credits extends HookWidget {
 
       return;
     }
+
+    if (context.mounted) Navigator.pop(context);
+  }
+
+  Future<void> pay(BuildContext context) async {
+    final editNotifier = context.read<EditProfileNotifier>();
+
+    final uniqueTransRef = PayWithPayStack().generateUuidV4();
+
+    PayWithPayStack().now(
+        context: context,
+        secretKey: "sk_test_b9688554e5b6a393c6d74c2b8e30d5ba36e7fafe",
+        customerEmail: editNotifier.coreProfile!.email!,
+        reference: uniqueTransRef,
+        currency: "NGN",
+        amount: 1000,
+        callbackUrl: "https://google.com",
+        transactionCompleted: () {
+          debugPrint("==> Transaction Successful");
+        },
+        transactionNotCompleted: (reason) {
+          debugPrint("==> Transaction failed reason $reason");
+        });
   }
 
   showSnackbar(String message) {

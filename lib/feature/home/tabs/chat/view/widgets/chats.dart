@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/feature/home/tabs/chat/model/chat_with_user.dart';
 import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../../common/components/index.dart';
@@ -13,6 +12,7 @@ import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
+import '../../model/chat_with_user.dart';
 import 'chat_tile.dart';
 
 class Chats extends StatefulWidget {
