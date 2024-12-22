@@ -127,7 +127,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (bio != null)
+              if (bio != null && bio!.isNotEmpty)
                 ProfileDetailsCard(
                   title: 'Bio',
                   titleImage: AppAssets.bio,

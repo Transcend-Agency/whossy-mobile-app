@@ -138,6 +138,9 @@ class AppStrings {
   static const String addCreditsFailure =
       'Failed to add credits, Please try again';
 
+  static const String deductCreditsFailure =
+      'Failed to deduct credits, Please try again';
+
   static const String unUploadedPhotos = 'Some photos could not be uploaded';
 
   // Login User Errors
@@ -191,6 +194,9 @@ class AppStrings {
   static String blockUser(String name) =>
       "Are you sure you want to block $name? They won't know they've been blocked. "
       "You can unblock them later under Settings -> Blocked Contacts.";
+
+  static String unlockChat(String name) =>
+      "Unlock this chat with $name for 1 credit?";
 
   static const String permissionDeniedPhoneCheck =
       'Unable to check for phone number uniqueness due to insufficient permissions.';

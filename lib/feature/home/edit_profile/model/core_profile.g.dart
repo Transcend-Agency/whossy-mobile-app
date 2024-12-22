@@ -37,6 +37,7 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
           ? null
           : UserSettings.fromJson(
               json['user_settings'] as Map<String, dynamic>),
+      amountPaid: (json['amount_paid_in_total'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
@@ -70,6 +71,7 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
   writeNotNull('location', AppUtils.geoPointToJson(instance.location));
   writeNotNull('geohash', instance.geohash);
   writeNotNull('credit_balance', instance.creditBalance);
+  writeNotNull('amount_paid_in_total', instance.amountPaid);
   writeNotNull('user_settings', instance.userSettings);
   return val;
 }

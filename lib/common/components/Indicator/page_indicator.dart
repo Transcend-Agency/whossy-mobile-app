@@ -24,13 +24,13 @@ class PageIndicator extends StatelessWidget {
     return FractionallySizedBox(
       widthFactor: 1,
       child: Row(
-        children: List.generate(pageNo, (_) {
+        children: List.generate(pageNo, (page) {
           return Expanded(
             child: Container(
               height: height,
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
-                color: _ <= activePage
+                color: page <= activePage
                     ? activeColor ?? AppColors.primaryColor
                     : inActiveColor ?? AppColors.outlinedColor,
                 borderRadius: BorderRadius.circular(8.r),

@@ -79,6 +79,9 @@ class CoreProfile implements ProfileDataFooter {
   @JsonKey(name: "credit_balance")
   int? creditBalance;
 
+  @JsonKey(name: "amount_paid_in_total")
+  double? amountPaid;
+
   @JsonKey(name: 'user_settings')
   final UserSettings? userSettings;
 
@@ -105,6 +108,7 @@ class CoreProfile implements ProfileDataFooter {
     this.isBanned,
     this.creditBalance,
     this.userSettings,
+    this.amountPaid,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -140,6 +144,7 @@ class CoreProfile implements ProfileDataFooter {
         '  geohash: $geohash,\n'
         '  creditBalance: $creditBalance,\n'
         '  userSettings: $userSettings\n'
+        '  amountPaid: $amountPaid\n'
         ')';
   }
 
@@ -186,23 +191,45 @@ class CoreProfile implements ProfileDataFooter {
         other.phoneNumber == phoneNumber &&
         listEquals(other.profilePics, profilePics) &&
         other.bio == bio &&
+        AppUtils.areListsEqual(other.interests, interests) &&
         other.weight == weight &&
         other.height == height &&
-        AppUtils.areListsEqual(other.interests, interests);
+        other.isPremium == isPremium &&
+        other.isApproved == isApproved &&
+        other.isBanned == isBanned &&
+        AppUtils.areListsEqual(other.blockedIds, blockedIds) &&
+        other.latitude == latitude &&
+        other.longitude == longitude &&
+        other.location == location &&
+        other.geohash == geohash &&
+        other.creditBalance == creditBalance &&
+        other.amountPaid == amountPaid &&
+        other.userSettings == userSettings;
   }
 
   @override
   int get hashCode {
-    return firstName.hashCode ^
-        lastName.hashCode ^
-        dateOfBirth.hashCode ^
-        gender.hashCode ^
-        email.hashCode ^
-        phoneNumber.hashCode ^
-        profilePics.hashCode ^
-        bio.hashCode ^
-        weight.hashCode ^
-        height.hashCode ^
-        interests.hashCode;
+    return Object.hash(
+      firstName,
+      lastName,
+      dateOfBirth,
+      gender,
+      email,
+      phoneNumber,
+      bio,
+      weight,
+      height,
+      isPremium,
+      isApproved,
+      isBanned,
+      location,
+      geohash,
+      creditBalance,
+      amountPaid,
+      userSettings,
+      Object.hashAll(profilePics ?? []),
+      Object.hashAll(interests ?? []),
+      Object.hashAll(blockedIds ?? []),
+    );
   }
 }

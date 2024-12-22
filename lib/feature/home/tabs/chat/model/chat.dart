@@ -27,6 +27,20 @@ class Chat {
   )
   final TimestampWrapper? lastMessageTimestamp;
 
+  @JsonKey(
+    name: 'unlock_time',
+    fromJson: TimestampWrapper.timestampFromJson,
+    toJson: TimestampWrapper.timestampToJson,
+  )
+  final TimestampWrapper? unlockTime;
+
+  @JsonKey(
+    name: 'expiration_time',
+    fromJson: TimestampWrapper.timestampFromJson,
+    toJson: TimestampWrapper.timestampToJson,
+  )
+  final TimestampWrapper? expirationTime;
+
   @JsonKey(name: 'status')
   final MessageStatus? lastMessageStatus;
 
@@ -47,6 +61,8 @@ class Chat {
     this.lastMessageStatus = MessageStatus.undelivered,
     this.lastMessageId,
     this.isSeenByReceiver,
+    this.unlockTime,
+    this.expirationTime,
   })  : lastSenderUserId = FirebaseAuth.instance.currentUser!.uid,
         isSeenByInitiator = true;
 

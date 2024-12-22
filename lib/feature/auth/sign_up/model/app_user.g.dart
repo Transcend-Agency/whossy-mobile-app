@@ -26,7 +26,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           (json['tokens'] as List<dynamic>?)?.map((e) => e as String).toList(),
       isApproved: json['is_approved'] as bool? ?? false,
       isBanned: json['is_banned'] as bool? ?? false,
-      createdAt: AppUtils.timestampFromJson(json['created_at']),
+      createdAt: TimestampWrapper.timestampFromJson(json['created_at']),
       status: json['status'] == null
           ? null
           : UserStatus.fromJson(json['status'] as Map<String, dynamic>),
@@ -40,6 +40,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       location: AppUtils.geoPointFromJson(json['location']),
       geohash: json['geohash'] as String?,
       creditBalance: (json['credit_balance'] as num?)?.toInt() ?? 0,
+      amountPaid: (json['amount_paid_in_total'] as num?)?.toDouble() ?? 0,
       blockedIds: (json['blockedIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -69,7 +70,8 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   writeNotNull('tokens', instance.tokens);
   val['is_approved'] = instance.isApproved;
   val['is_banned'] = instance.isBanned;
-  writeNotNull('created_at', AppUtils.timestampToJson(instance.createdAt));
+  writeNotNull(
+      'created_at', TimestampWrapper.timestampToJson(instance.createdAt));
   writeNotNull('user_settings', instance.userSettings);
   writeNotNull('is_premium', instance.isPremium);
   writeNotNull('blockedIds', instance.blockedIds);
@@ -78,6 +80,7 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   writeNotNull('location', AppUtils.geoPointToJson(instance.location));
   writeNotNull('geohash', instance.geohash);
   writeNotNull('credit_balance', instance.creditBalance);
+  writeNotNull('amount_paid_in_total', instance.amountPaid);
   return val;
 }
 
