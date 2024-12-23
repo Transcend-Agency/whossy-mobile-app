@@ -106,11 +106,24 @@ class AppUtils {
     return Size(width, calculatedHeight);
   }
 
-  static bool shouldExcludeProfile(
+  static bool excludeProfile(
     UserProfile profile,
     String currentUserId,
-    List<String> blockedIds,
-  ) {
+    List<String> blockedIds, {
+    bool exclude = false,
+  }) {
+    // If exclude is true, apply additional checks
+    if (exclude) {
+      // Exclude profiles that don't meet the specific conditions
+      if (!profile.user.hasCompletedOnboarding ||
+          profile.user.isBanned ||
+          !profile.user.isApproved) {
+        return true; // Exclude the profile if it doesn't meet the conditions
+      }
+    }
+
+    // Exclude if it's the current user,
+    // or if the profile is in blocked list or has blocked the current user
     return profile.user.uid == currentUserId ||
         blockedIds.contains(profile.user.uid) ||
         (profile.user.blockedIds?.contains(currentUserId) ?? false);

@@ -22,6 +22,7 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       unlockTime: TimestampWrapper.timestampFromJson(json['unlock_time']),
       expirationTime:
           TimestampWrapper.timestampFromJson(json['expiration_time']),
+      isUnlocked: json['is_unlocked'] as bool?,
     );
 
 Map<String, dynamic> _$ChatToJson(Chat instance) {
@@ -45,6 +46,7 @@ Map<String, dynamic> _$ChatToJson(Chat instance) {
   writeNotNull('status', _$MessageStatusEnumMap[instance.lastMessageStatus]);
   writeNotNull('last_message_id', instance.lastMessageId);
   writeNotNull('is_seen_by_receiver', instance.isSeenByReceiver);
+  writeNotNull('is_unlocked', instance.isUnlocked);
   return val;
 }
 

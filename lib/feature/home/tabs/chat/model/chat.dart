@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../../common/utils/index.dart';
+import 'current_chat.dart';
 import 'message.dart';
 
 part 'chat.g.dart';
@@ -53,6 +54,9 @@ class Chat {
   @JsonKey(name: 'is_seen_by_receiver')
   final bool? isSeenByReceiver;
 
+  @JsonKey(name: 'is_unlocked')
+  final bool? isUnlocked;
+
   Chat({
     this.id,
     required this.participants,
@@ -63,6 +67,7 @@ class Chat {
     this.isSeenByReceiver,
     this.unlockTime,
     this.expirationTime,
+    this.isUnlocked,
   })  : lastSenderUserId = FirebaseAuth.instance.currentUser!.uid,
         isSeenByInitiator = true;
 
@@ -70,12 +75,13 @@ class Chat {
 
   Map<String, dynamic> toJson() => _$ChatToJson(this);
 
-  // Static method to generate the update map
-  static Map<String, dynamic> updateChatData(
-    Message message,
-    bool isConnected,
-  ) {
+  static Map<String, dynamic> updateChatData({
+    required Message message,
+    required bool isConnected,
+    required CurrentChat currentChat,
+  }) {
     return {
+      'participants': [currentChat.uidUser1, currentChat.uidUser2],
       'last_message': message.message,
       'last_message_id': message.id,
       'last_sender_id': message.senderId,

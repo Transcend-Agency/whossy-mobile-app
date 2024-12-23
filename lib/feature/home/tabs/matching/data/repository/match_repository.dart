@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
@@ -11,82 +9,52 @@ class MatchRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
   final _geo = GeoFlutterFire();
 
-  Future<Map<String, dynamic>> fetchProfiles({
+  Stream<List<UserProfile>> fetchProfilesStream({
     int limit = 10,
     double radiusInKm = 300,
-    DocumentSnapshot? lastDoc,
     double? longitude,
     double? latitude,
     required List<String> blockedIds,
-  }) async {
+  }) async* {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
-    log("Fetching profiles...");
-    log("Current User ID: $uid");
-
-    log("Latitude: $latitude, Longitude: $longitude");
-
-    // Check if latitude or longitude is null
     if (latitude == null || longitude == null) {
-      log("Latitude or longitude is null. Returning empty list.");
-      return {
-        'profiles': <UserProfile>[],
-        'lastDoc': lastDoc,
-      };
+      yield [];
+      return;
     }
 
-    // location
-    final center = _geo.point(latitude: 6.5404938, longitude: 3.3554442);
-    log("GeoPoint created: ${center.data}");
+    final center = _geo.point(latitude: latitude, longitude: longitude);
 
     var query = _geo
-        .collection(
-          collectionRef: _profiles,
-        )
-        .within(
-          center: center,
-          radius: radiusInKm,
-          field: 'location',
-          strictMode: true,
-        );
+        .collection(collectionRef: _profiles)
+        .within(center: center, radius: radiusInKm, field: 'geography');
 
-    log("Query initialized. Fetching documents...");
+    await for (var documentSnapshots in query) {
+      final List<UserProfile> userProfiles = [];
 
-    final List<UserProfile> userProfiles = [];
+      if (documentSnapshots.isEmpty) {
+        yield userProfiles;
+        continue;
+      }
 
-    try {
-      // Using a for loop instead of forEach
-      await for (var documentSnapshots in query) {
-        if (documentSnapshots.isEmpty) {
-          return {
-            'profiles': userProfiles,
-            'lastDoc': lastDoc,
-          };
+      for (var doc in documentSnapshots) {
+        if (doc.data() == null) {
+          continue;
         }
 
-        // Log raw data for debugging
-        log("Raw data from Firestore: ${documentSnapshots.map((doc) => doc.data()).toList()}");
+        final profile =
+            UserProfile.fromJson(doc.data() as Map<String, dynamic>);
 
-        for (var doc in documentSnapshots) {
-          // Log the data for the current document
-          log("Processing document: ${doc.id}");
-          log("Document data: ${doc.data()}");
+        if (!AppUtils.excludeProfile(profile, uid, blockedIds, exclude: true)) {
+          userProfiles.add(profile);
 
-          final profile =
-              UserProfile.fromJson(doc.data() as Map<String, dynamic>);
-
-          if (!AppUtils.shouldExcludeProfile(profile, uid, blockedIds)) {
-            userProfiles.add(profile);
+          if (userProfiles.length >= limit) {
+            break;
           }
         }
       }
-    } catch (e) {
-      log("Error fetching profiles: $e");
-    }
 
-    return {
-      'profiles': userProfiles,
-      'lastDoc': lastDoc,
-    };
+      yield userProfiles;
+    }
   }
 }

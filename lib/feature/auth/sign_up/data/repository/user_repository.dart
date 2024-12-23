@@ -140,9 +140,11 @@ class UserRepository {
           },
         ).toList();
 
+        // Don't filter for the blocked screen
         if (!showBlocked) {
-          batchProfiles.removeWhere((profile) =>
-              AppUtils.shouldExcludeProfile(profile, userId, blockedIds));
+          batchProfiles.removeWhere((profile) => AppUtils.excludeProfile(
+              profile, userId, blockedIds,
+              exclude: true));
         }
 
         profiles.addAll(batchProfiles);

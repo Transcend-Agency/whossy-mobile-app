@@ -192,7 +192,7 @@ class AppStrings {
   }
 
   static String blockUser(String name) =>
-      "Are you sure you want to block $name? They won't know they've been blocked. "
+      "Are you sure you want to block $name? "
       "You can unblock them later under Settings -> Blocked Contacts.";
 
   static String unlockChat(String name) =>

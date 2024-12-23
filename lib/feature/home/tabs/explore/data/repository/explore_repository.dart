@@ -36,7 +36,7 @@ class ExploreRepository {
 
       // Apply local filtering using the helper method
       profiles.removeWhere(
-          (profile) => AppUtils.shouldExcludeProfile(profile, uid, blockedIds));
+          (profile) => AppUtils.excludeProfile(profile, uid, blockedIds));
 
       return profiles;
     });

@@ -46,7 +46,7 @@ class _MatchState extends State<Match> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       matchNotifier = context.read<SwipeAndMatchNotifier>();
 
-      matchNotifier.fetchInitialProfiles();
+      matchNotifier.fetchProfiles();
     });
   }
 
@@ -102,20 +102,11 @@ class _MatchState extends State<Match> {
       _onPageChange(0);
     }
 
-    if (direction == CardSwiperDirection.right) {
-      like();
-    }
+    if (direction == CardSwiperDirection.right) like();
 
-    if (direction == CardSwiperDirection.left) {
-      dislike();
-    }
+    if (direction == CardSwiperDirection.left) dislike();
 
-    // Pagination trigger when near the end
-    if (index >= matchNotifier.profiles.length - 2 &&
-        matchNotifier.hasMoreProfiles) {
-      await matchNotifier.fetchMoreProfiles();
-    }
-    return true; // Proceed with swipe
+    return true;
   }
 
   void handleSwipeDirectionChange(
@@ -132,105 +123,136 @@ class _MatchState extends State<Match> {
 
   @override
   Widget build(BuildContext context) {
+    return Selector<SwipeAndMatchNotifier, Stream<List<UserProfile>>>(
+      selector: (_, notifier) => notifier.profileStream,
+      builder: (_, stream, __) {
+        return StreamBuilder<List<UserProfile>>(
+          stream: stream,
+          builder: (context, snapshot) {
+            return AppAnimatedSwitcher(
+              child: _buildContentBasedOnSnapshot(context, snapshot),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildContentBasedOnSnapshot(
+    BuildContext context,
+    AsyncSnapshot<List<UserProfile>> snapshot,
+  ) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return buildLoadingIndicator();
+    } else if (snapshot.hasError) {
+      return buildErrorWidget(snapshot.error);
+    } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+      return buildEmptyData();
+    } else if (snapshot.hasData) {
+      return buildCardSwiper(snapshot.data!);
+    } else {
+      return const Text('No data found');
+    }
+  }
+
+  Widget buildLoadingIndicator() {
+    return const Center(
+      key: ValueKey('loading'),
+      child: AppLoader(color: AppColors.primaryColor, size: 24),
+    );
+  }
+
+  Widget buildErrorWidget(Object? error) {
+    return Center(
+      child: Text('Error: $error'),
+    );
+  }
+
+  Widget buildEmptyData() {
+    return const Center(
+      key: ValueKey('empty'),
+      child: Text('No profiles available'),
+    );
+  }
+
+  Widget buildCardSwiper(List<UserProfile> profiles) {
     return Stack(
+      key: const ValueKey('data'),
       children: [
         Column(
           children: [
-            Selector<SwipeAndMatchNotifier, bool>(
-              selector: (_, matchNotifier) => matchNotifier.isLoading,
-              builder: (context, isLoading, child) {
-                if (isLoading) {
-                  return const Flexible(
-                    child: Center(
-                      child: AppLoader(color: AppColors.primaryColor),
-                    ),
-                  );
-                } else {
-                  return child!;
-                }
-              },
-              child: Selector<SwipeAndMatchNotifier, List<UserProfile>>(
-                selector: (_, matchNotifier) => matchNotifier.profiles,
-                builder: (context, profiles, _) {
-                  if (profiles.isEmpty) {
-                    return const SizedBox.shrink();
-                  } else {
-                    return Flexible(
-                      child: Hero(
-                        tag: "preview",
-                        child: CardSwiper(
-                          controller: controller,
-                          padding: const EdgeInsets.only(top: 32, bottom: 20),
-                          cardsCount: profiles.length,
-                          numberOfCardsDisplayed: 3,
-                          threshold: 100,
-                          onSwipe: handleSwipe,
-                          onSwipeDirectionChange: handleSwipeDirectionChange,
-                          cardBuilder: (
-                            context,
-                            index,
-                            percentThresholdX,
-                            percentThresholdY,
-                          ) {
-                            updateThresholds(percentThresholdX.toDouble());
+            Flexible(
+              child: Hero(
+                tag: "preview",
+                child: CardSwiper(
+                  controller: controller,
+                  padding: const EdgeInsets.only(top: 32, bottom: 20),
+                  cardsCount: profiles.length,
+                  numberOfCardsDisplayed:
+                      profiles.length < 3 ? profiles.length : 3,
+                  threshold: 100,
+                  onSwipe: handleSwipe,
+                  onSwipeDirectionChange: handleSwipeDirectionChange,
+                  cardBuilder: (
+                    context,
+                    index,
+                    percentThresholdX,
+                    percentThresholdY,
+                  ) {
+                    updateThresholds(percentThresholdX.toDouble());
 
-                            final profileData = profiles[index];
+                    final profileData = profiles[index];
 
-                            currentProfile.value = profileData;
+                    currentProfile.value = profileData;
 
-                            return ProfileCard(
-                              color: Colors.white,
-                              child: Stack(
-                                children: [
-                                  PageView.builder(
-                                    key: const PageStorageKey("my_pageView"),
-                                    controller: _pageController,
-                                    onPageChanged: _onPageChange,
-                                    itemCount: profileData
-                                        .preferences.profilePics?.length,
-                                    itemBuilder: (_, index) {
-                                      return SizedBox.expand(
-                                        child: Preview(
-                                          image: profileData.preferences
-                                                  .profilePics?[index] ??
-                                              '',
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  ProfileShade(
-                                    heightFactor: 0.35,
-                                    gradient: AppColors.profileShade,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: ProfileFooterScaffold(
-                                      data: profileData,
-                                      onTap: (context, index) => Nav.push(
-                                        context,
-                                        MatchingProfilePreview(
-                                          index: index,
-                                          userProfile: profileData,
-                                          useDefaultTag: true,
-                                        ),
-                                      ),
-                                      activePage: _activePage,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          backCardOffset: Offset(0, 41.r),
-                          allowedSwipeDirection:
-                              const AllowedSwipeDirection.symmetric(
-                            horizontal: true,
+                    return ProfileCard(
+                      color: Colors.white,
+                      child: Stack(
+                        children: [
+                          PageView.builder(
+                            key: const PageStorageKey("my_pageView"),
+                            controller: _pageController,
+                            onPageChanged: _onPageChange,
+                            itemCount:
+                                profileData.preferences.profilePics?.length,
+                            itemBuilder: (_, index) {
+                              return SizedBox.expand(
+                                child: Preview(
+                                  image: profileData
+                                          .preferences.profilePics?[index] ??
+                                      '',
+                                ),
+                              );
+                            },
                           ),
-                        ),
+                          ProfileShade(
+                            heightFactor: 0.35,
+                            gradient: AppColors.profileShade,
+                          ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: ProfileFooterScaffold(
+                              data: profileData,
+                              onTap: (context, index) => Nav.push(
+                                context,
+                                MatchingProfilePreview(
+                                  index: index,
+                                  userProfile: profileData,
+                                  useDefaultTag: true,
+                                ),
+                              ),
+                              activePage: _activePage,
+                            ),
+                          ),
+                        ],
                       ),
                     );
-                  }
-                },
+                  },
+                  backCardOffset: Offset(0, 41.r),
+                  allowedSwipeDirection: const AllowedSwipeDirection.symmetric(
+                    horizontal: true,
+                  ),
+                ),
               ),
             ),
           ],
