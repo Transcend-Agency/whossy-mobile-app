@@ -163,29 +163,13 @@ class ChatsNotifier extends ChangeNotifier {
   Future<void> sendMessage(String content, {List<XFile>? pictures}) async {
     if (currentChat == null) return;
 
-    String messageId = '';
-    final exists = await _chatRepository.doesChatExist(
-      currentChat!.uidUser1,
-      currentChat!.uidUser2,
+    String messageId = await _chatRepository.sendMessage(
+      content,
+      chatId: currentChat!.chatId!,
+      pictures: pictures,
+      isConnected: _isUserConnected,
+      currentChat: currentChat!,
     );
-
-    if (exists) {
-      messageId = await _chatRepository.sendMessage(
-        content,
-        chatId: currentChat!.chatId!,
-        pictures: pictures,
-        isConnected: _isUserConnected,
-      );
-    } else {
-      messageId = await _chatRepository.createNewChat(
-        content,
-        pictures: pictures,
-        currentChat: currentChat!,
-        isConnected: _isUserConnected,
-        userName: _profileData!.firstName!,
-        picUrl: _profileData!.profilePics![0],
-      );
-    }
 
     // If there are pictures to upload
     if (pictures != null && pictures.isNotEmpty) {

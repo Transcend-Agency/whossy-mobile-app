@@ -31,25 +31,20 @@ class ChatRepository {
         return null;
       });
 
-  Future<bool> doesChatExist(String userId1, String userId2) async {
-    // final querySnapshot = await _chats
-    //     .where('participants', arrayContains: userId1)
-    //     .where('participants', arrayContains: userId2)
-    //     .get();
-
-    return true;
-  }
-
-  void updateChatData(
-    Message message,
-    String chatId,
-    WriteBatch batch,
-    bool isConnected,
-  ) {
-    batch.update(
-      _chats.doc(chatId),
-      Chat.updateChatData(message, isConnected),
+  void updateChatData({
+    required Message message,
+    required String chatId,
+    required WriteBatch batch,
+    required bool isConnected,
+    required CurrentChat currentChat,
+  }) {
+    final updateData = Chat.updateChatData(
+      message: message,
+      isConnected: isConnected,
+      currentChat: currentChat,
     );
+
+    batch.update(_chats.doc(chatId), updateData);
   }
 
   Future<void> updatePhotosData({
@@ -92,6 +87,7 @@ class ChatRepository {
 
     await _chats.doc(chatId).set(
       {
+        'is_unlocked': true,
         'unlock_time': FieldValue.serverTimestamp(),
         'expiration_time': Timestamp.fromDate(
           DateTime.now().add(
@@ -103,44 +99,12 @@ class ChatRepository {
     );
   }
 
-  Future<String> createNewChat(
-    String content, {
-    required CurrentChat currentChat,
-    required String userName,
-    required String picUrl,
-    List<XFile>? pictures,
-    required bool isConnected,
-  }) async
-  // lb
-  {
-    final chat = Chat(
-      participants: [currentChat.uidUser1, currentChat.uidUser2],
-      lastMessage: content,
-      lastMessageId: '',
-      lastMessageStatus: MessageStatus.sent,
-    );
-
-    await _chats.doc(currentChat.chatId).set(
-      {
-        ...chat.toJson(),
-        'last_message_timestamp': FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
-
-    return await sendMessage(
-      content,
-      chatId: currentChat.chatId!,
-      pictures: pictures,
-      isConnected: isConnected,
-    );
-  }
-
   Future<String> sendMessage(
     String content, {
     required String chatId,
     List<XFile>? pictures,
     required bool isConnected,
+    required CurrentChat currentChat,
   }) async
   // lb
   {
@@ -165,7 +129,13 @@ class ChatRepository {
       message: getMessageContent(content, pictures),
     );
 
-    updateChatData(updatedMessage, chatId, batch, isConnected);
+    updateChatData(
+      message: updatedMessage,
+      chatId: chatId,
+      batch: batch,
+      isConnected: isConnected,
+      currentChat: currentChat,
+    );
 
     await batch.commit();
 

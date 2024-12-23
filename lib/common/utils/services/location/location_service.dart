@@ -1,12 +1,11 @@
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:json_annotation/json_annotation.dart';
 
-import '../index.dart';
+import '../../index.dart';
 
 class LocationService {
   final _firestore = FirebaseFirestore.instance;
@@ -52,15 +51,8 @@ class LocationService {
       }
     }
 
-    // If none of the permission statuses match, request permission again
-    permission = await Geolocator.requestPermission();
-
-    if (permission == LocationPermission.denied) {
-      throw LocationPermissionDeniedException();
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      throw LocationPermissionDeniedForeverException();
+    if (prevDenied) {
+      return null;
     }
 
     try {
@@ -88,35 +80,11 @@ class LocationService {
         'latitude': lat,
         'longitude': lon,
         'geohash': geohash,
+        'geography': geoPoint.data,
       });
 
-      log('User location updated successfully!');
     } catch (e) {
       throw LocationServiceException('Error updating location');
     }
-  }
-}
-
-class GeoPointConverter
-    implements JsonConverter<GeoPoint?, Map<String, double>?> {
-  const GeoPointConverter();
-
-  @override
-  GeoPoint? fromJson(Map<String, double>? json) {
-    if (json == null) {
-      return null;
-    }
-    return GeoPoint(json['latitude']!, json['longitude']!);
-  }
-
-  @override
-  Map<String, double>? toJson(GeoPoint? object) {
-    if (object == null) {
-      return null;
-    }
-    return {
-      'latitude': object.latitude,
-      'longitude': object.longitude,
-    };
   }
 }

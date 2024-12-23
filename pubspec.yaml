@@ -69,10 +69,10 @@ dependencies:
       url: https://github.com/Transcend-Agency/GeoFlutterFire.git
       ref: 917f7d4d0ae3ad63134f7c945208d7c983c07301
 
-  flutter_paystack:
-    git:
-      url: https://github.com/Transcend-Agency/flutter_paystack.git
-      ref: d8f9546acc1797129646a72f62410ebf601115ac
+#  flutter_paystack:
+#    git:
+#      url: https://github.com/Transcend-Agency/flutter_paystack.git
+#      ref: d8f9546acc1797129646a72f62410ebf601115ac
 
 # Development Dependencies
 dev_dependencies:

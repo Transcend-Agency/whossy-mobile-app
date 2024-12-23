@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -14,6 +15,7 @@ import '../../constants/index.dart';
 import 'edit_profile/data/state/edit_profile_notifier.dart';
 import 'tabs/_.dart';
 import 'tabs/chat/data/state/chats_notifier.dart';
+import 'tabs/matching/data/state/location_permission_stream.dart';
 
 @RoutePage()
 class HomeWrapper extends StatefulWidget {
@@ -24,13 +26,17 @@ class HomeWrapper extends StatefulWidget {
 }
 
 class _HomeWrapperState extends State<HomeWrapper> {
+  late Stream<LocationPermission> locationPermissionStream;
   late EditProfileNotifier _editProfileNotifier;
   late SwipeAndMatchNotifier _swipeAndMatchNotifier;
   late List<Widget> _pages;
+  final locationService = LocationService();
   int selectedIndex = 0;
 
   @override
   void initState() {
+    super.initState();
+
     _pages = [
       const Matching(),
       const Explore(),
@@ -44,16 +50,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _editProfileNotifier.getUserData(showSnackbar: showSnackbar);
-
       _editProfileNotifier.checkOpenedState();
-
-      // Check if the chat messages screen has been opened
       context.read<ChatsNotifier>().checkOpenedState();
     });
 
     _requestLocationPermission();
-
-    super.initState();
   }
 
   Future<void> _requestLocationPermission() async {
@@ -64,7 +65,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
       );
 
       if (position != null) {
-        await LocationService().updateUserLocation(position);
+        await locationService.updateUserLocation(position);
       }
     } catch (e) {
       if (e is LocationPermissionDeniedException) {
@@ -105,20 +106,24 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      applyTop: false,
-      body: SizedBox(
-        child: _pages.elementAt(selectedIndex),
-      ),
-      bottomNavBar: CustomBottomAppBar(
-        onTabSelected: _selectedTab,
-        items: const [
-          AppAssets.fire,
-          AppAssets.globalSearch,
-          AppAssets.heart,
-          AppAssets.chat,
-          AppAssets.user,
-        ],
+    return StreamProvider<LocationPermission>(
+      create: (_) => createLifecycleAwarePermissionStream(),
+      initialData: LocationPermission.denied,
+      child: AppScaffold(
+        applyTop: false,
+        body: SizedBox(
+          child: _pages.elementAt(selectedIndex),
+        ),
+        bottomNavBar: CustomBottomAppBar(
+          onTabSelected: _selectedTab,
+          items: const [
+            AppAssets.fire,
+            AppAssets.globalSearch,
+            AppAssets.heart,
+            AppAssets.chat,
+            AppAssets.user,
+          ],
+        ),
       ),
     );
   }
