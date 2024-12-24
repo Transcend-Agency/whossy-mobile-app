@@ -35,8 +35,17 @@ class ExploreRepository {
           .toList();
 
       // Apply local filtering using the helper method
-      profiles.removeWhere(
-          (profile) => AppUtils.excludeProfile(profile, uid, blockedIds));
+      profiles.removeWhere((profile) => AppUtils.excludeProfile(
+            profile,
+            uid,
+            blockedIds,
+            settings: const ExcludeSettings(
+              excludeIncompleteOnboarding: true,
+              excludeBannedUsers: true,
+              excludeUnapprovedUsers: true,
+              excludeBlockedAndSelf: true,
+            ),
+          ));
 
       return profiles;
     });

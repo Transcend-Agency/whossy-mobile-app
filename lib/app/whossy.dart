@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_app/common/utils/services/user_service.dart';
+import 'package:whossy_app/common/utils/services/user_presence/user_presence_service.dart';
 import 'package:whossy_app/constants/strings.dart';
 
 import '../common/utils/index.dart';
@@ -13,14 +13,14 @@ class Whossy extends StatefulWidget {
 }
 
 class _WhossyState extends State<Whossy> with WidgetsBindingObserver {
-  late UserService _userService;
+  late UserPresenceService _userService;
   bool _isInBackground = false;
 
   @override
   void initState() {
     super.initState();
 
-    _userService = UserService();
+    _userService = UserPresenceService();
     _userService.trackUserPresence();
 
     WidgetsBinding.instance.addObserver(this);

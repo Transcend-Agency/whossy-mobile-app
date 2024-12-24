@@ -9,10 +9,10 @@ import 'package:whossy_app/constants/index.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/repository/chat_repository.dart';
 
-import '../../../feature/auth/sign_up/data/repository/user_repository.dart';
-import '../enum/enums.dart';
-import '../exceptions/failed_upload.dart';
-import 'services.dart';
+import '../../../../feature/auth/sign_up/data/repository/user_repository.dart';
+import '../../enum/enums.dart';
+import '../../exceptions/failed_upload.dart';
+import '../services.dart';
 
 typedef AddPicFn = Future<bool> Function({Picture? pic});
 typedef AddIndexFn = Future<bool> Function({int? index});

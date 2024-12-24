@@ -21,7 +21,9 @@ class OtherPreferences {
 
   List<String>? interests;
   double? distance;
+
   bool? outreach;
+
   String? country;
   String? city;
 
@@ -61,18 +63,15 @@ class OtherPreferences {
     int? minWeight,
     int? maxWeight,
   }) {
-    if (meet != null) this.meet = meet;
-    if (similarInterest != null) this.similarInterest = similarInterest;
-    if (hasBio != null) this.hasBio = hasBio;
+    this.meet = meet ?? this.meet;
+    this.similarInterest = similarInterest ?? this.similarInterest;
+    this.hasBio = hasBio ?? this.hasBio;
 
     if (minAge != null || maxAge != null) {
       ageRange ??= {};
       if (minAge != null) ageRange!['min'] = minAge;
       if (maxAge != null) ageRange!['max'] = maxAge;
     }
-
-    if (distance != null) this.distance = distance;
-    if (outreach != null) this.outreach = outreach;
 
     if (minHeight != null || maxHeight != null) {
       heightRange ??= {};
@@ -86,9 +85,11 @@ class OtherPreferences {
       if (maxWeight != null) weightRange!['max'] = maxWeight;
     }
 
-    if (interests != null) this.interests = interests;
-    if (country != null) this.country = country;
-    if (city != null) this.city = city;
+    this.distance = distance ?? this.distance;
+    this.interests = interests ?? this.interests;
+    this.country = country ?? this.country;
+    this.city = city ?? this.city;
+    this.outreach = outreach ?? this.outreach;
   }
 
   RangeValues? toAgeRange() => ageRange?.toRangeValues();
@@ -137,16 +138,18 @@ class OtherPreferences {
 
   @override
   int get hashCode {
-    return meet.hashCode ^
-        similarInterest.hashCode ^
-        hasBio.hashCode ^
-        ageRange.hashCode ^
-        interests.hashCode ^
-        distance.hashCode ^
-        outreach.hashCode ^
-        country.hashCode ^
-        city.hashCode ^
-        heightRange.hashCode ^
-        weightRange.hashCode;
+    return Object.hash(
+      meet,
+      similarInterest,
+      hasBio,
+      ageRange,
+      interests,
+      distance,
+      outreach,
+      country,
+      city,
+      heightRange,
+      weightRange,
+    );
   }
 }

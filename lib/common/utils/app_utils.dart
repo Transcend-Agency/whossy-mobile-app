@@ -110,24 +110,44 @@ class AppUtils {
     UserProfile profile,
     String currentUserId,
     List<String> blockedIds, {
-    bool exclude = false,
+    ExcludeSettings? settings,
   }) {
-    // If exclude is true, apply additional checks
-    if (exclude) {
-      // Exclude profiles that don't meet the specific conditions
-      if (!profile.user.hasCompletedOnboarding ||
-          profile.user.isBanned ||
-          !profile.user.isApproved) {
-        return true; // Exclude the profile if it doesn't meet the conditions
-      }
+    settings ??= const ExcludeSettings();
+
+    // Apply exclusion settings
+    if (settings.excludeIncompleteOnboarding &&
+        !profile.user.hasCompletedOnboarding) {
+      return true;
+    }
+    if (settings.excludeBannedUsers && profile.user.isBanned) {
+      return true;
+    }
+    if (settings.excludeUnapprovedUsers && !profile.user.isApproved) {
+      return true;
+    }
+    if (settings.excludeBlockedAndSelf &&
+        (profile.user.uid == currentUserId ||
+            blockedIds.contains(profile.user.uid) ||
+            (profile.user.blockedIds?.contains(currentUserId) ?? false))) {
+      return true;
     }
 
-    // Exclude if it's the current user,
-    // or if the profile is in blocked list or has blocked the current user
-    return profile.user.uid == currentUserId ||
-        blockedIds.contains(profile.user.uid) ||
-        (profile.user.blockedIds?.contains(currentUserId) ?? false);
+    return false;
   }
+}
+
+class ExcludeSettings {
+  final bool excludeIncompleteOnboarding;
+  final bool excludeBannedUsers;
+  final bool excludeUnapprovedUsers;
+  final bool excludeBlockedAndSelf;
+
+  const ExcludeSettings({
+    this.excludeIncompleteOnboarding = false,
+    this.excludeBannedUsers = false,
+    this.excludeUnapprovedUsers = false,
+    this.excludeBlockedAndSelf = false,
+  });
 }
 
 class TimestampWrapper {

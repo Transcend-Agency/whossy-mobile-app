@@ -86,7 +86,7 @@ class CorePreferences implements ProfileData {
 
   // Future Planning
   @JsonKey(
-    name: "family_plans",
+    name: "family_goal",
     toJson: enumToIndex,
     fromJson: indexToFutureFamilyPlans,
   )
@@ -184,6 +184,7 @@ class CorePreferences implements ProfileData {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
+
     return other is CorePreferences &&
         other.relationshipPreference == relationshipPreference &&
         other.education == education &&
@@ -201,19 +202,19 @@ class CorePreferences implements ProfileData {
   }
 
   @override
-  int get hashCode {
-    return relationshipPreference.hashCode ^
-        maritalStatus.hashCode ^
-        education.hashCode ^
-        loveLanguage.hashCode ^
-        zodiac.hashCode ^
-        futureFamilyPlans.hashCode ^
-        communicationStyle.hashCode ^
-        smoker.hashCode ^
-        drinking.hashCode ^
-        workout.hashCode ^
-        petOwner.hashCode ^
-        religion.hashCode ^
-        dietary.hashCode;
-  }
+  int get hashCode => Object.hash(
+        relationshipPreference,
+        maritalStatus,
+        education,
+        loveLanguage,
+        zodiac,
+        futureFamilyPlans,
+        communicationStyle,
+        smoker,
+        drinking,
+        workout,
+        petOwner,
+        religion,
+        dietary,
+      );
 }

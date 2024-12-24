@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class UserService {
+class UserPresenceService {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
 
   late DatabaseReference connectedRef;
 
-  UserService() {
+  UserPresenceService() {
     // Initialize connectedRef in the constructor
     connectedRef = _database.ref('.info/connected');
   }

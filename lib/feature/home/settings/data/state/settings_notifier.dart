@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 
-import '../../../../../common/utils/enum/enums.dart';
+import '../../../../../common/utils/index.dart';
 import '../../../../../common/utils/services/services.dart';
 import '../../../../../constants/index.dart';
 import '../../../tabs/matching/model/user_profile.dart';
@@ -9,8 +9,7 @@ import '../../model/user_settings.dart';
 
 class SettingsNotifier extends ChangeNotifier {
   final _settings = UserSettings();
-  final _authService = AuthenticationService();
-  final _userService = UserService();
+  final _userService = UserPresenceService();
   final _userRepository = UserRepository();
 
   UserSettings get settings => _settings;
@@ -23,7 +22,12 @@ class SettingsNotifier extends ChangeNotifier {
     return _userRepository.getUserProfilesInBatches(
       userIds: userIds,
       blockedIds: [],
-      showBlocked: true,
+      settings: const ExcludeSettings(
+        excludeIncompleteOnboarding: true,
+        excludeBannedUsers: true,
+        excludeUnapprovedUsers: false,
+        excludeBlockedAndSelf: false,
+      ),
     );
   }
 
@@ -37,7 +41,7 @@ class SettingsNotifier extends ChangeNotifier {
     try {
       await _userService.updateUserStatus(false);
 
-      await _authService.signOut();
+      await _userRepository.signOut();
     } catch (e) {
       showSnackbar(AppStrings.signOutFailure);
     }

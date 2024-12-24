@@ -40,7 +40,8 @@ abstract class SearchPreferencesNotifier {
   bool get hasChanges;
 
   // Abstract method to fetch filters
-  Future<void> getFilters({required void Function(String) showSnackbar});
+  Future<void> getMatchingPreferences(
+      {required void Function(String) showSnackbar});
 
   // Abstract method to save filters
   Future<void> saveFilters({required void Function(String) showSnackbar});

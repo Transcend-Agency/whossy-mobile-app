@@ -7,6 +7,7 @@ import 'package:whossy_app/feature/home/preferences/data/state/search_preference
 
 import '../../../../../constants/index.dart';
 import '../../model/core_preferences.dart';
+import '../../model/filters.dart';
 import '../../model/generic_enum.dart';
 import '../../model/other_preferences.dart';
 import '../repository/filters_repository.dart';
@@ -52,27 +53,38 @@ class PreferencesNotifier extends ChangeNotifier
     return corePrefs || otherPrefs;
   }
 
+  // void _initializeDefaultValues() {
+  //   _dynCorePrefs = CorePreferences();
+  //   _statCorePrefs = CorePreferences();
+  //   _dynOtherPrefs = OtherPreferences();
+  //   _statOtherPrefs = OtherPreferences();
+  // }
+
+  void resetToStatic() {
+    _dynCorePrefs = CorePreferences.fromJson(_statCorePrefs!.toJson());
+    _dynOtherPrefs = OtherPreferences.fromJson(_statOtherPrefs!.toJson());
+
+    notifyListeners();
+  }
+
   @override
-  Future<void> getFilters({
+  Future<void> getMatchingPreferences({
     required void Function(String) showSnackbar,
   }) async {
     try {
       final data = await _prefsRepo.fetchFilters();
 
-      _dynCorePrefs = data?.corePreferences ?? CorePreferences();
-      _dynOtherPrefs = data?.otherPreferences ?? OtherPreferences();
+      //_initializeDefaultValues();
 
-      _statCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
-
-      _statOtherPrefs = OtherPreferences.fromJson(_dynOtherPrefs!.toJson());
+      if (data != null) _updatePrefs(data);
     } on FirebaseException catch (e) {
       handleFirebaseError(e, showSnackbar);
     } catch (e) {
       showSnackbar(AppStrings.errorUnknown);
       log(e.toString());
-    } finally {}
-
-    notifyListeners();
+    } finally {
+      notifyListeners();
+    }
   }
 
   @override
@@ -97,9 +109,19 @@ class PreferencesNotifier extends ChangeNotifier
     } catch (e) {
       showSnackbar(AppStrings.errorUnknown);
       log(e.toString());
-    } finally {}
+    } finally {
+      notifyListeners();
+    }
+  }
 
-    notifyListeners();
+  void _updatePrefs(Filters filter) {
+    _dynCorePrefs = CorePreferences.fromJson(filter.corePreferences.toJson());
+    _statCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
+
+    _dynOtherPrefs =
+        OtherPreferences.fromJson(filter.otherPreferences.toJson());
+
+    _statOtherPrefs = OtherPreferences.fromJson(_dynOtherPrefs!.toJson());
   }
 
   @override

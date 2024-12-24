@@ -25,7 +25,10 @@ class Preferences implements ProfileData {
 
   // Core preferences (with JSON serialization)
   @JsonKey(
-      name: 'date_of_birth', fromJson: dateTimeFromJson, toJson: dateTimeToJson)
+    name: 'date_of_birth',
+    fromJson: dateTimeFromJson,
+    toJson: dateTimeToJson,
+  )
   DateTime? dateOfBirth;
 
   @JsonKey(name: 'interests')
@@ -47,12 +50,13 @@ class Preferences implements ProfileData {
   int? religion;
   int? dietary;
 
-  @JsonKey(name: "family_plans")
+  @JsonKey(name: "family_goal")
   int? futureFamilyPlans;
 
   @JsonKey(name: 'workout')
   int? workOut;
 
+  // Todo: Refactor to pets
   @JsonKey(name: "pet")
   int? petOwner;
 

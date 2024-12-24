@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/component_style.dart';
@@ -37,18 +38,6 @@ class _InterestsTileState extends State<InterestsTile> {
 
     _interests = _editNotifier.coreProfile?.interests;
     super.initState();
-  }
-
-  String getSelectionStatus(List<String>? items) {
-    if (items == null) {
-      return "Choose";
-    }
-    int length = items.length;
-     if (length < 11) {
-      return "$length Selected";
-    } else {
-      return "10+ Selected";
-    }
   }
 
   @override
@@ -93,7 +82,7 @@ class _InterestsTileState extends State<InterestsTile> {
                       selector: (_, edit) => edit.coreProfile?.interests,
                       builder: (_, data, __) {
                         return Text(
-                          getSelectionStatus(data),
+                          data.getSelectionStatus(),
                           style: (TextStyles.prefText).copyWith(
                             color: AppColors.hintTextColor,
                           ),

@@ -19,72 +19,6 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
   Widget build(BuildContext context) {
     final notifier = context.watch<T>();
 
-    // State variables using hooks
-    final distance = useState<double>(50);
-    final show = useState<bool>(true);
-    final ageRange = useState<RangeValues>(const RangeValues(25, 35));
-
-    final hasUpdatedDistance = useState(false);
-    final hasUpdatedAgeRange = useState(false);
-    final hasUpdatedShow = useState(false);
-
-    final debouncedDistance = useDebounced(
-      distance.value,
-      const Duration(milliseconds: 500),
-    );
-
-    final debouncedAgeRange = useDebounced(
-      ageRange.value,
-      const Duration(milliseconds: 500),
-    );
-
-    useEffect(() {
-      final prefs = notifier.otherPreferences;
-      if (prefs != null) {
-        if (!hasUpdatedDistance.value) {
-          distance.value = prefs.distance ?? 50;
-          hasUpdatedDistance.value = true;
-        }
-
-        if (!hasUpdatedAgeRange.value) {
-          ageRange.value = prefs.toAgeRange() ?? const RangeValues(25, 35);
-          hasUpdatedAgeRange.value = true;
-        }
-
-        if (!hasUpdatedShow.value) {
-          show.value = prefs.outreach ?? true;
-          hasUpdatedShow.value = true;
-        }
-      }
-      return null;
-    }, [notifier.otherPreferences]);
-
-    void updateSwitch(bool newValue) {
-      show.value = newValue;
-      notifier.updatePreferences(outreach: newValue);
-    }
-
-    // Callbacks for updating preferences
-    useEffect(() {
-      if (debouncedDistance != null) {
-        notifier.updatePreferences(distance: debouncedDistance);
-      }
-      return null;
-    }, [debouncedDistance]);
-
-    useEffect(() {
-      if (debouncedAgeRange != null) {
-        // Todo: Check this out
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          notifier.updatePreferences(
-            minAge: debouncedAgeRange.start.toInt(),
-            maxAge: debouncedAgeRange.end.toInt(),
-          );
-        });
-      }
-      return null;
-    }, [debouncedAgeRange]);
-
     final isAndroid = Platform.isAndroid;
 
     return Column(
@@ -109,8 +43,8 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                         AppAnimatedSwitcher(
                           child: prefs == null
                               ? ShimmerWidget.rectangular(
-                                  height: 25.h,
-                                  width: 48.w,
+                                  height: 24.h,
+                                  width: 46.w,
                                   border: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(6.r),
                                   ),
@@ -118,7 +52,7 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                                 )
                               : AppChip(
                                   key: const ValueKey('data'),
-                                  data: '${distance.value.toInt()} mi',
+                                  data: '${(prefs.distance ?? 50).toInt()} mi',
                                   isSelected: false,
                                   outlined: false,
                                 ),
@@ -143,11 +77,9 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                           : AppSlider(
                               key: const ValueKey('data'),
                               useSliderTheme: true,
-                              value: distance.value,
-                              onChanged: (newValue) {
-                                distance.value =
-                                    newValue; // Update the local state
-                              },
+                              value: prefs.distance ?? 50,
+                              onChanged: (newValue) => notifier
+                                  .updatePreferences(distance: newValue),
                             ),
                     ),
                   ),
@@ -169,22 +101,18 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                         AppAnimatedSwitcher(
                           child: prefs == null
                               ? Padding(
-                                  padding: EdgeInsets.all(11.r),
-                                  child: ShimmerWidget.rectangular(
-                                    height: 24.h,
-                                    width: 37.w,
-                                    border: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12.r),
-                                    ),
-                                    key: const ValueKey(false),
-                                  ),
+                                  key: const ValueKey(false),
+                                  padding: EdgeInsets.symmetric(vertical: 13.r)
+                                      .copyWith(right: 11.r),
+                                  child: const ShimmerSwitch(),
                                 )
                               : Transform.scale(
                                   key: const ValueKey("data"),
                                   scale: 0.7,
                                   child: Switch.adaptive(
-                                    value: show.value,
-                                    onChanged: updateSwitch,
+                                    value: prefs.outreach ?? true,
+                                    onChanged: (value) => notifier
+                                        .updatePreferences(outreach: value),
                                   ),
                                 ),
                         )
@@ -215,7 +143,7 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                               : AppChip(
                                   key: const ValueKey('data'),
                                   data:
-                                      '${ageRange.value.start.round()} - ${ageRange.value.end.round()}',
+                                      '${prefs.toAgeRange()?.start.round() ?? 25} - ${prefs.toAgeRange()?.end.round() ?? 35}',
                                   isSelected: false,
                                   outlined: false,
                                 ),
@@ -238,9 +166,13 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                           : AppRangeSlider(
                               key: const ValueKey('data'),
                               onChanged: (values) {
-                                ageRange.value = values; // Update local state
+                                notifier.updatePreferences(
+                                  minAge: values.start.toInt(),
+                                  maxAge: values.end.toInt(),
+                                );
                               },
-                              values: ageRange.value,
+                              values: prefs.toAgeRange() ??
+                                  const RangeValues(25, 35),
                               range: const RangeValues(18, 70),
                             ),
                     ),

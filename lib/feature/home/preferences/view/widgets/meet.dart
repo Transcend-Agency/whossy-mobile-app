@@ -18,14 +18,7 @@ class MeetComponent<T extends SearchPreferencesNotifier> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final notifier = context.read<T>();
-    final meet = useState<Meet?>(null);
-    final hasUpdatedMeet = useState(false);
-
-    void onChanged(Meet? newValue) {
-      meet.value = newValue;
-      notifier.updatePreferences(meet: newValue?.index);
-    }
+    final notifier = context.watch<T>();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -45,10 +38,6 @@ class MeetComponent<T extends SearchPreferencesNotifier> extends HookWidget {
               Selector<T, OtherPreferences?>(
                 selector: (_, notifier) => notifier.otherPreferences,
                 builder: (_, prefs, __) {
-                  if (prefs != null && !hasUpdatedMeet.value) {
-                    meet.value = Meet.values[prefs.meet ?? 2];
-                    hasUpdatedMeet.value = true;
-                  }
                   return AppAnimatedSwitcher(
                     child: prefs == null
                         ? Wrap(
@@ -72,7 +61,11 @@ class MeetComponent<T extends SearchPreferencesNotifier> extends HookWidget {
                             children: meetData
                                 .map(
                                   (data) => _buildGenderChip(
-                                      data, onChanged, meet.value),
+                                    data,
+                                    (value) => notifier.updatePreferences(
+                                        meet: value?.index),
+                                    Meet.values[prefs.meet ?? 2],
+                                  ),
                                 )
                                 .toList(),
                           ),

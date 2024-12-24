@@ -299,7 +299,7 @@ class Interests extends HookWidget {
         builder: (_, interests, __) {
           // Determine which interests to show based on the state
           final displayedInterests =
-              showAll.value ? this.interests : this.interests.take(6).toList();
+              showAll.value ? this.interests : this.interests.take(5).toList();
 
           return Column(
             children: [

@@ -15,7 +15,7 @@ CorePreferences _$CorePreferencesFromJson(Map<String, dynamic> json) =>
           indexToLoveLanguage((json['love_language'] as num?)?.toInt()),
       zodiac: indexToZodiac((json['zodiac'] as num?)?.toInt()),
       futureFamilyPlans:
-          indexToFutureFamilyPlans((json['family_plans'] as num?)?.toInt()),
+          indexToFutureFamilyPlans((json['family_goal'] as num?)?.toInt()),
       communicationStyle: indexToCommunicationStyle(
           (json['communication_style'] as num?)?.toInt()),
       smoker: indexToSmoke((json['smoke'] as num?)?.toInt()),
@@ -48,7 +48,7 @@ Map<String, dynamic> _$CorePreferencesToJson(CorePreferences instance) {
   writeNotNull('pet', enumToIndex(instance.petOwner));
   writeNotNull('religion', enumToIndex(instance.religion));
   writeNotNull('dietary', enumToIndex(instance.dietary));
-  writeNotNull('family_plans', enumToIndex(instance.futureFamilyPlans));
+  writeNotNull('family_goal', enumToIndex(instance.futureFamilyPlans));
   writeNotNull('communication_style', enumToIndex(instance.communicationStyle));
   return val;
 }

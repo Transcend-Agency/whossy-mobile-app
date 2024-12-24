@@ -44,7 +44,7 @@ class ChatRepository {
       currentChat: currentChat,
     );
 
-    batch.update(_chats.doc(chatId), updateData);
+    batch.set(_chats.doc(chatId), updateData, SetOptions(merge: true));
   }
 
   Future<void> updatePhotosData({

@@ -13,7 +13,7 @@ class HeaderBar extends StatelessWidget {
     this.onIcon2Tap,
     this.child,
     this.icon2,
-    this.topPadding = 4, //8
+    this.topPadding = 8, //8
     this.iconSize = 18,
     this.customWidget,
   });
