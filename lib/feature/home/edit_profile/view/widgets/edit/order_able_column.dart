@@ -8,7 +8,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
-import 'package:whossy_app/common/utils/services/file_service.dart';
+import 'package:whossy_app/common/utils/services/file/file_service.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';

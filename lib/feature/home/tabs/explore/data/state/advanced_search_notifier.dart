@@ -48,7 +48,7 @@ class AdvancedSearchNotifier extends ChangeNotifier
   GenericEnum? getSelected(Type type) => _dynCorePrefs?.getValue(type);
 
   @override
-  Future<void> getFilters({
+  Future<void> getMatchingPreferences({
     required void Function(String) showSnackbar,
   }) async {
     // Simulate a delay of 3 seconds

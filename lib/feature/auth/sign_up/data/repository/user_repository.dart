@@ -9,8 +9,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:whossy_app/common/utils/app_utils.dart';
 import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
-import 'package:whossy_app/common/utils/services/notification_service.dart';
 
+import '../../../../../common/utils/services/services.dart';
 import '../../../../../constants/index.dart';
 import '../../../../home/tabs/matching/model/user_profile.dart';
 import '../../model/app_user.dart';
@@ -119,7 +119,7 @@ class UserRepository {
   Future<List<UserProfile>> getUserProfilesInBatches({
     required List<String> userIds,
     required List<String> blockedIds,
-    bool showBlocked = false,
+    ExcludeSettings? settings,
   }) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
@@ -141,11 +141,14 @@ class UserRepository {
         ).toList();
 
         // Don't filter for the blocked screen
-        if (!showBlocked) {
-          batchProfiles.removeWhere((profile) => AppUtils.excludeProfile(
-              profile, userId, blockedIds,
-              exclude: true));
-        }
+        batchProfiles.removeWhere(
+          (profile) => AppUtils.excludeProfile(
+            profile,
+            userId,
+            blockedIds,
+            settings: settings,
+          ),
+        );
 
         profiles.addAll(batchProfiles);
       } catch (e) {
@@ -228,6 +231,17 @@ class UserRepository {
       if (showEmailSnackbar != null && userCred != null) {
         showEmailSnackbar(userCred);
       }
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      // Handle sign-out error
+      log('Error signing out: $e');
+
+      rethrow;
     }
   }
 }

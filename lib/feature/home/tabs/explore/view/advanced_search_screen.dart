@@ -29,7 +29,7 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
     _notifier = context.read<_Notifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _notifier.getFilters(showSnackbar: showSnackbar);
+      _notifier.getMatchingPreferences(showSnackbar: showSnackbar);
     });
 
     super.initState();

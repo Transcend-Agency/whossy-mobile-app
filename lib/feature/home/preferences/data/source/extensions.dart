@@ -22,7 +22,7 @@ extension CorePreferencesExtension on CorePreferences {
       updatedFields['zodiac'] = enumToIndex(zodiac);
     }
     if (futureFamilyPlans != other.futureFamilyPlans) {
-      updatedFields['family_plans'] = enumToIndex(futureFamilyPlans);
+      updatedFields['family_goal'] = enumToIndex(futureFamilyPlans);
     }
     if (communicationStyle != other.communicationStyle) {
       updatedFields['communication_style'] = enumToIndex(communicationStyle);
@@ -37,7 +37,7 @@ extension CorePreferencesExtension on CorePreferences {
       updatedFields['workout'] = enumToIndex(workout);
     }
     if (petOwner != other.petOwner) {
-      updatedFields['pet'] = enumToIndex(petOwner);
+      updatedFields['pets'] = enumToIndex(petOwner);
     }
     if (religion != other.religion) {
       updatedFields['religion'] = enumToIndex(religion);
@@ -187,6 +187,20 @@ extension RangeValuesExtension2 on RangeValues {
       return '${minValue}kg ($minWeightLbs) - ${maxValue}kg ($maxWeightLbs)';
     } else {
       return 'Invalid type';
+    }
+  }
+}
+
+extension SelectionStatus on List<String>? {
+  String getSelectionStatus() {
+    if (this == null) {
+      return "Choose";
+    }
+    int length = this!.length;
+    if (length < 11) {
+      return "$length Selected";
+    } else {
+      return "10+ Selected";
     }
   }
 }

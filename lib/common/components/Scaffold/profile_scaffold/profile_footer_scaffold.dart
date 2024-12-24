@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -125,15 +126,9 @@ class ProfileFooterScaffold extends StatelessWidget {
                             fontSize: AppUtils.scale(19.sp) ?? 21.sp,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
-                          ), //
+                          ),
                         ),
                       ],
-                      addWidth(10),
-                      if (data.isUserVerified)
-                        SvgPicture.asset(
-                          AppAssets.tick,
-                          width: 23,
-                        ),
                     ],
                   ),
                   if (showLess)
@@ -243,60 +238,92 @@ class ProfileFooterScaffold extends StatelessWidget {
   }
 }
 
-class Interests extends StatelessWidget {
-  const Interests(
-      {super.key, required this.interests, required this.isSameUser});
+class Interests extends HookWidget {
+  const Interests({
+    super.key,
+    required this.interests,
+    required this.isSameUser,
+  });
 
   final List<String> interests;
   final bool isSameUser;
 
   @override
   Widget build(BuildContext context) {
+    final showAll = useState(false);
+
     return Padding(
       padding: EdgeInsets.only(top: 3.h),
       child: Selector<EditProfileNotifier, List<String>?>(
         selector: (_, editProfile) => editProfile.coreProfile?.interests,
         builder: (_, interests, __) {
+          // Determine which interests to show based on the state
+          final displayedInterests =
+              showAll.value ? this.interests : this.interests.take(5).toList();
+
           return Wrap(
             spacing: 8.w,
             runSpacing: 8.h,
-            children: this.interests.take(6).map((item) {
-              return Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
+            children: [
+              ...displayedInterests.map((item) {
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        color: const Color(0xFF101010),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 6.r,
+                        horizontal: 8.r,
+                      ),
+                      child: Text(
+                        item,
+                        style: TextStyles.hintText.copyWith(
+                          fontSize: AppUtils.scale(10.sp),
+                          color: AppColors.hintTextColor,
+                        ),
+                      ),
+                    ),
+
+                    // Show star if item exists in interests
+                    if (!isSameUser &&
+                        interests != null &&
+                        interests.contains(item))
+                      Positioned(
+                        top: -2,
+                        right: -6,
+                        child: SvgPicture.asset(
+                          AppAssets.star,
+                          width: 14,
+                        ),
+                      ),
+                  ],
+                );
+              }),
+              if (this.interests.length > 6)
+                GestureDetector(
+                  onTap: () => showAll.value = !showAll.value,
+                  child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.r),
-                      color: const Color(0xFF101010),
+                      color: Colors.transparent,
                     ),
                     padding: EdgeInsets.symmetric(
                       vertical: 6.r,
-                      horizontal: 8.r,
+                      horizontal: 2.r,
                     ),
                     child: Text(
-                      item,
+                      showAll.value ? 'see less' : 'see all',
                       style: TextStyles.hintText.copyWith(
                         fontSize: AppUtils.scale(10.sp),
-                        color: AppColors.hintTextColor,
+                        color: Colors.grey,
                       ),
                     ),
                   ),
-
-                  // Show star if item exists in interests
-                  if (!isSameUser &&
-                      interests != null &&
-                      interests.contains(item))
-                    Positioned(
-                      top: -2,
-                      right: -6,
-                      child: SvgPicture.asset(
-                        AppAssets.star,
-                        width: 14,
-                      ),
-                    ),
-                ],
-              );
-            }).toList(),
+                ),
+            ],
           );
         },
       ),

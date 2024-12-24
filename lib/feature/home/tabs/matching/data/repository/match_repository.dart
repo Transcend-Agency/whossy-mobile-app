@@ -45,7 +45,17 @@ class MatchRepository {
         final profile =
             UserProfile.fromJson(doc.data() as Map<String, dynamic>);
 
-        if (!AppUtils.excludeProfile(profile, uid, blockedIds, exclude: true)) {
+        if (!AppUtils.excludeProfile(
+          profile,
+          uid,
+          blockedIds,
+          settings: const ExcludeSettings(
+            excludeIncompleteOnboarding: true,
+            excludeBannedUsers: true,
+            excludeUnapprovedUsers: true,
+            excludeBlockedAndSelf: true,
+          ),
+        )) {
           userProfiles.add(profile);
 
           if (userProfiles.length >= limit) {

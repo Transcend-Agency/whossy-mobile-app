@@ -7,14 +7,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
-import 'package:whossy_app/feature/home/tabs/matching/data/state/swipe_and_match_notifier.dart';
 
 import '../../common/utils/index.dart';
 import '../../common/utils/services/services.dart';
 import '../../constants/index.dart';
-import 'edit_profile/data/state/edit_profile_notifier.dart';
+import '../../provider/providers.dart';
 import 'tabs/_.dart';
-import 'tabs/chat/data/state/chats_notifier.dart';
 import 'tabs/matching/data/state/location_permission_stream.dart';
 
 @RoutePage()
@@ -29,6 +27,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
   late Stream<LocationPermission> locationPermissionStream;
   late EditProfileNotifier _editProfileNotifier;
   late SwipeAndMatchNotifier _swipeAndMatchNotifier;
+  late PreferencesNotifier _prefsNotifier;
   late List<Widget> _pages;
   final locationService = LocationService();
   int selectedIndex = 0;
@@ -47,10 +46,12 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
     _editProfileNotifier = context.read<EditProfileNotifier>();
     _swipeAndMatchNotifier = context.read<SwipeAndMatchNotifier>();
+    _prefsNotifier = context.read<PreferencesNotifier>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _editProfileNotifier.getUserData(showSnackbar: showSnackbar);
       _editProfileNotifier.checkOpenedState();
+      _prefsNotifier.getMatchingPreferences(showSnackbar: showSnackbar);
       context.read<ChatsNotifier>().checkOpenedState();
     });
 

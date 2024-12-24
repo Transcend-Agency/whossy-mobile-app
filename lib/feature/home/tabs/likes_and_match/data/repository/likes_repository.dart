@@ -74,6 +74,7 @@ class LikesRepository {
   }) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
+    // Don't forget to add the exclude settings while testing
     if (testLikerIds != null) {
       return Stream.value(testLikerIds).asyncMap((likerIds) async {
         return await _userRepository.getUserProfilesInBatches(
@@ -97,6 +98,12 @@ class LikesRepository {
       return await _userRepository.getUserProfilesInBatches(
         userIds: likerIds,
         blockedIds: blockedIds,
+        settings: const ExcludeSettings(
+          excludeIncompleteOnboarding: true,
+          excludeBannedUsers: true,
+          excludeUnapprovedUsers: false,
+          excludeBlockedAndSelf: true,
+        ),
       );
     });
   }

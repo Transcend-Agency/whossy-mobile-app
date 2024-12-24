@@ -22,7 +22,7 @@ Preferences _$PreferencesFromJson(Map<String, dynamic> json) => Preferences(
       zodiac: (json['zodiac'] as num?)?.toInt(),
       religion: (json['religion'] as num?)?.toInt(),
       dietary: (json['dietary'] as num?)?.toInt(),
-      futureFamilyPlans: (json['family_plans'] as num?)?.toInt(),
+      futureFamilyPlans: (json['family_goal'] as num?)?.toInt(),
       workOut: (json['workout'] as num?)?.toInt(),
       petOwner: (json['pet'] as num?)?.toInt(),
       bio: json['bio'] as String?,
@@ -55,7 +55,7 @@ Map<String, dynamic> _$PreferencesToJson(Preferences instance) {
   writeNotNull('zodiac', instance.zodiac);
   writeNotNull('religion', instance.religion);
   writeNotNull('dietary', instance.dietary);
-  writeNotNull('family_plans', instance.futureFamilyPlans);
+  writeNotNull('family_goal', instance.futureFamilyPlans);
   writeNotNull('workout', instance.workOut);
   writeNotNull('pet', instance.petOwner);
   writeNotNull('marital_status', instance.maritalStatus);

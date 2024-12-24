@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
+import '../../../../../../common/utils/index.dart';
+
 class MatchesRepository {
   final _matches = FirebaseFirestore.instance.collection('matches');
   final _userRepository = UserRepository();
@@ -22,6 +24,7 @@ class MatchesRepository {
   }) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
+    // Don't forget to add the exclude settings while testing
     if (testLikerIds != null) {
       // For testing: directly use the provided liker IDs
       return Stream.value(testLikerIds).asyncMap((likerIds) async {
@@ -49,6 +52,12 @@ class MatchesRepository {
       return await _userRepository.getUserProfilesInBatches(
         userIds: otherUserIds,
         blockedIds: blockedIds,
+        settings: const ExcludeSettings(
+          excludeIncompleteOnboarding: true,
+          excludeBannedUsers: true,
+          excludeUnapprovedUsers: false,
+          excludeBlockedAndSelf: true,
+        ),
       );
     });
   }
