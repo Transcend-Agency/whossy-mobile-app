@@ -37,7 +37,7 @@ class _ChatsState extends State<Chats> {
             builder: (context, snapshot) {
               return Column(
                 children: [
-                  _buildHeader(),
+                  //_buildHeader(),
                   Expanded(
                     child: AppAnimatedSwitcher(
                       child: _buildStreamContent(snapshot, context),
@@ -130,6 +130,7 @@ class _ChatsState extends State<Chats> {
   }
 
   // Build the header for the messages page
+  // ignore: unused_element
   Widget _buildHeader() {
     return Padding(
       padding: EdgeInsets.only(top: 8.h),

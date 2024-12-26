@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +13,7 @@ import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/providers.dart';
 import '../../../../edit_profile/view/widgets/edit/image_view.dart';
+import '../../../../tutorial.dart';
 
 class Match extends StatefulWidget {
   const Match({super.key});
@@ -25,6 +28,7 @@ class _MatchState extends State<Match> {
   late SwipeAndMatchNotifier matchNotifier;
 
   final currentProfile = ValueNotifier<UserProfile?>(null);
+  final fetchedProfiles = ValueNotifier<List<UserProfile>>([]);
 
   double thresholdX = 0.0;
   int _activePage = 0;
@@ -65,19 +69,19 @@ class _MatchState extends State<Match> {
     }
   }
 
-  void like() {
+  void like({String? id}) {
     if (currentProfile.value != null) {
       matchNotifier.addLike(
-        currentProfile.value!.user.uid!,
+        id ?? currentProfile.value!.user.uid!,
         showSnackbar: showSnackbar,
       );
     }
   }
 
-  void dislike() {
+  void dislike({String? id}) {
     if (currentProfile.value != null) {
       matchNotifier.addDislike(
-        currentProfile.value!.user.uid!,
+        id ?? currentProfile.value!.user.uid!,
         showSnackbar: showSnackbar,
       );
     }
@@ -92,6 +96,7 @@ class _MatchState extends State<Match> {
     int? previousIndex,
     CardSwiperDirection direction,
   ) async {
+    log('Index: $index and previous index  $previousIndex');
     if (direction == CardSwiperDirection.right ||
         direction == CardSwiperDirection.left ||
         direction == CardSwiperDirection.none) {
@@ -102,9 +107,13 @@ class _MatchState extends State<Match> {
       _onPageChange(0);
     }
 
-    if (direction == CardSwiperDirection.right) like();
+    if (direction == CardSwiperDirection.right) {
+      like(id: fetchedProfiles.value[index].user.uid);
+    }
 
-    if (direction == CardSwiperDirection.left) dislike();
+    if (direction == CardSwiperDirection.left) {
+      dislike(id: fetchedProfiles.value[index].user.uid);
+    }
 
     return true;
   }
@@ -169,13 +178,17 @@ class _MatchState extends State<Match> {
   }
 
   Widget buildEmptyData() {
-    return const Center(
+    return const EmptyDataBox(
       key: ValueKey('empty'),
-      child: Text('No profiles available'),
+      imageSize: 100,
+      spacing: 10,
+      image: AppAssets.noLikes,
+      text: 'All out of profiles! Try again soon',
     );
   }
 
   Widget buildCardSwiper(List<UserProfile> profiles) {
+    fetchedProfiles.value = profiles;
     return Stack(
       key: const ValueKey('data'),
       children: [
@@ -270,6 +283,7 @@ class _MatchState extends State<Match> {
           opacity: !_isSwiping ? 1 : 0,
           duration: const Duration(milliseconds: 300),
           child: MatchIconButton(
+            key: GlobalKeys.undoButtonKey,
             size: 24,
             padding: 8,
             onTap: () {
@@ -285,6 +299,7 @@ class _MatchState extends State<Match> {
           opacity: (!_isSwiping || thresholdX < 0) ? 1 : 0,
           duration: const Duration(milliseconds: 300),
           child: MatchIconButton(
+            key: GlobalKeys.dislikeButtonKey,
             onTap: () {
               controller.swipe(CardSwiperDirection.left);
               dislike();
@@ -297,6 +312,7 @@ class _MatchState extends State<Match> {
           opacity: (!_isSwiping || thresholdX > 0) ? 1 : 0,
           duration: const Duration(milliseconds: 300),
           child: MatchIconButton(
+            key: GlobalKeys.likeButtonKey,
             onTap: () {
               controller.swipe(CardSwiperDirection.right);
               like();

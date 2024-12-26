@@ -63,7 +63,7 @@ class _EditProfileState extends State<EditProfile>
     _meetsPicCount = context.watch<EditProfileNotifier>().picCount >= 3;
   }
 
-  onSaveChanges({bool popAfterSave = true}) async {
+  onSaveChanges() async {
     if (!_meetsPicCount) {
       return await onValidateSave();
     }
@@ -83,12 +83,7 @@ class _EditProfileState extends State<EditProfile>
 
     if (!mounted) return;
 
-    if (popAfterSave) {
-      Navigator.of(context).pop(); // Pop the loading sheet
-
-      // Navigate to the HomeWrapper after the loading sheet is dismissed
-      Nav.popUntil(context, HomeWrapper.name);
-    }
+    Navigator.of(context).pop();
   }
 
   showSnackbar(String message, {bool pop = false}) {
@@ -116,6 +111,8 @@ class _EditProfileState extends State<EditProfile>
         await wait();
 
         await onSaveChanges();
+
+        if (mounted) Navigator.of(context).pop();
       }
 
       if (result && mounted) {
@@ -171,7 +168,7 @@ class _EditProfileState extends State<EditProfile>
                   ? Padding(
                       padding: EdgeInsets.only(right: 10.w),
                       child: TextButton(
-                        onPressed: () => onSaveChanges(popAfterSave: false),
+                        onPressed: () => onSaveChanges(),
                         child: Text(
                           'Save',
                           style: TextStyles.boldPrefText.copyWith(

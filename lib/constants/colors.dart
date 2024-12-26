@@ -24,7 +24,7 @@ class AppColors {
   static const Color selectedTabIconColor = sbErrorBorderColor;
   static const Color unSelectedTabIconColor = hintTextColor;
 
-  static const Color sbErrorFillColor = Color(0xFFFAFBFC);
+  static const Color sbFillColor = Color(0xFFFAFBFC);
   static const Color faceBookColor = Color(0xFF1877f2);
   static const Color saveColor = Color(0xFF485fe6);
 

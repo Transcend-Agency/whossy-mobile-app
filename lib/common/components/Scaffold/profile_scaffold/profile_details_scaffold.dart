@@ -32,6 +32,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
     this.tagId,
     this.pageName,
     this.blockUser,
+    this.reportUser,
   });
 
   final Widget bottomWidget;
@@ -47,6 +48,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
   final String? pageName;
   final double addedHeight;
   final VoidCallback? blockUser;
+  final VoidCallback? reportUser;
 
   final bool isSameUser;
 
@@ -250,7 +252,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
                 addHeight(14),
                 AppButton(
                   color: AppColors.listTileColor,
-                  onPress: () {},
+                  onPress: reportUser,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

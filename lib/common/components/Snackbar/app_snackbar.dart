@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import '../../../constants/index.dart';
 import '../../styles/component_style.dart';
 import '../../styles/text_style.dart';
 import '../../utils/index.dart';
@@ -14,12 +15,14 @@ class AppSnackbar extends StatelessWidget {
     this.label,
     this.onLabelTapped,
     this.onClosed,
+    this.snackbarType = SnackbarType.error,
   });
 
   final String text;
   final String? label;
   final VoidCallback? onLabelTapped;
   final VoidCallback? onClosed;
+  final SnackbarType snackbarType;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,14 @@ class AppSnackbar extends StatelessWidget {
         Container(
           clipBehavior: Clip.hardEdge,
           padding: EdgeInsets.symmetric(vertical: label != null ? 8 : 10),
-          decoration: snackbarDecoration,
+          decoration: BoxDecoration(
+            color: AppColors.sbFillColor,
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(
+              width: 1,
+              color: snackbarType.color,
+            ),
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -43,7 +53,11 @@ class AppSnackbar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    alert(),
+                    Icon(
+                      snackbarType.icon,
+                      color: snackbarType.color,
+                      size: 24,
+                    ),
                     addWidth(10),
                     SizedBox(
                       width: label == null ? width * 0.73 : width * 0.58,
@@ -51,7 +65,8 @@ class AppSnackbar extends StatelessWidget {
                         text,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
-                        style: TextStyles.snackBarText,
+                        style: TextStyles.snackBarText
+                            .copyWith(color: snackbarType.color),
                       ),
                     ),
                     const SizedBox.shrink(),
@@ -68,6 +83,7 @@ class AppSnackbar extends StatelessWidget {
                         maxLines: 2,
                         style: TextStyles.snackBarText.copyWith(
                           fontWeight: FontWeight.w500,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -92,4 +108,15 @@ showSnackbar(String message, BuildContext context) {
       onLabelTapped: openAppSettings,
     ),
   );
+}
+
+enum SnackbarType {
+  error(AppColors.sbErrorBorderColor, Icons.error_outline_outlined),
+  warning(Colors.orange, Icons.warning_amber_rounded),
+  success(Colors.green, Icons.check_circle_outline);
+
+  const SnackbarType(this.color, this.icon);
+
+  final Color color;
+  final IconData icon;
 }

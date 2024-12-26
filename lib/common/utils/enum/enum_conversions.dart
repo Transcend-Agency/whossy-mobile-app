@@ -50,7 +50,7 @@ Drink? indexToDrink(int? index) =>
 WorkOut? indexToWorkOut(int? index) =>
     index != null && index >= 0 && index < WorkOut.values.length
         ? WorkOut.values[index]
-        : null;
+        : WorkOut.no;
 
 PetOwner? indexToPetOwner(int? index) =>
     index != null && index >= 0 && index < PetOwner.values.length

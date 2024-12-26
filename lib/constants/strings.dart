@@ -195,9 +195,44 @@ class AppStrings {
       "Are you sure you want to block $name? "
       "You can unblock them later under Settings -> Blocked Contacts.";
 
+  static String reportUser =
+      "Our team will review your report to ensure community guidelines are upheld.";
+
   static String unlockChat(String name) =>
       "Unlock this chat with $name for 1 credit?";
 
   static const String permissionDeniedPhoneCheck =
       'Unable to check for phone number uniqueness due to insufficient permissions.';
+
+  // Tutorial for the 'Like' button
+  static const String likeButtonTutorial =
+      'Tap the button to show interest in a profile. If both you and the other person like each other, it\'s a match!';
+
+// Tutorial for the 'Dislike' button
+  static const String dislikeButtonTutorial =
+      'Tap the button to skip a profile you\'re not interested in. You\'ll never see it again!';
+
+// Tutorial for the 'Undo' button
+  static const String undoButtonTutorial =
+      'Made a mistake? Tap the button to revert your last action, whether it was a like or a dislike.';
+
+// Tutorial for the 'Swipe and Match' tab (FireTab)
+  static const String fireTabTutorial =
+      'Swipe through profiles to show interest. If you both swipe right, it\'s a match!';
+
+// Tutorial for the 'Explore' tab (GlobalSearchTab)
+  static const String globalSearchTabTutorial =
+      'Browse through profiles freely, no need to swipe. Just explore and discover!';
+
+// Tutorial for the 'Likes and Matches' tab (HeartTab)
+  static const String heartTabTutorial =
+      'See people who have liked you, and view your matches here!';
+
+// Tutorial for the 'Chats' tab (ChatTab)
+  static const String chatTabTutorial =
+      'You can send messages and images to your matches. Chat away!';
+
+// Tutorial for the 'Profile' tab (UserTab)
+  static const String userTabTutorial =
+      'Manage your profile, edit your information, and access your settings here.';
 }

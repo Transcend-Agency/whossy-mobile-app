@@ -50,7 +50,7 @@ class EditProfileNotifier extends ChangeNotifier {
     }
   }
 
-  checkOpenedState() async {
+  checkSafetyGuideOpenedState() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
     hasSafetyGuideOpened =
@@ -146,11 +146,12 @@ class EditProfileNotifier extends ChangeNotifier {
 
   Future<bool> saveUserProfile({
     required void Function(String) showSnackbar,
-    bool returnResult = false,
   }) async {
     try {
       final corePrefsDiff = _dynCorePrefs?.diff(_staticCorePrefs!) ?? {};
       final coreProfileDiff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
+
+      bool hasPicUploads = false;
 
       // Iterate through keysToTransfer and transfer matching key-value pairs
       for (final key in CoreProfileUtils.transferKeys) {
@@ -169,7 +170,9 @@ class EditProfileNotifier extends ChangeNotifier {
               await FileService().processPhotos(photos, showSnackbar);
 
           // Replace the photos list with the updated list
-          corePrefsDiff["photos"] = updatedPhotos;
+          corePrefsDiff["photos"] = updatedPhotos.photos;
+
+          hasPicUploads = updatedPhotos.hasUploads;
         }
       }
 
@@ -178,6 +181,7 @@ class EditProfileNotifier extends ChangeNotifier {
         corePrefData: {...corePrefsDiff},
         coreProfileData: {...coreProfileDiff},
         updateUserDeletePic: _didUserDeletePic,
+        hasPicUploads: hasPicUploads,
       );
 
       // Once saved, update the static preferences to match the dynamic ones

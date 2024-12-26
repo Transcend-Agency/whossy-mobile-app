@@ -102,7 +102,6 @@ Future<void> showLoadingSheet(
     enableDrag: false,
     isScrollControlled: true,
     clipBehavior: Clip.hardEdge,
-    isDismissible: false,
     context: ctx,
     shape: roundedTop,
     builder: (_) => PopScope(

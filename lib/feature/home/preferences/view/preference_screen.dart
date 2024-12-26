@@ -122,10 +122,10 @@ class PreferenceScreen extends HookWidget {
               padding: EdgeInsets.only(bottom: 8.h),
               child: const InterestBioComponent<_Notifier>(),
             ),
-            // Padding(
-            //   padding: EdgeInsets.only(bottom: 8.h),
-            //   child: const ExtrasComponent<_Notifier>(),
-            // ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 8.h),
+              child: const ExtrasComponent<_Notifier>(),
+            ),
           ],
         ),
       ),

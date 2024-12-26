@@ -132,7 +132,6 @@ class Credits extends HookWidget {
 
     bool success = await editNotifier.saveUserProfile(
       showSnackbar: showSnackbar,
-      returnResult: true,
     );
 
     if (!success) {

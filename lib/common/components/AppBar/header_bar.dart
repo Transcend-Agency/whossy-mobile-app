@@ -16,6 +16,7 @@ class HeaderBar extends StatelessWidget {
     this.topPadding = 8, //8
     this.iconSize = 18,
     this.customWidget,
+    this.showFilters = true,
   });
 
   final String? icon;
@@ -27,6 +28,7 @@ class HeaderBar extends StatelessWidget {
   final Widget? customWidget;
 
   final Widget? child;
+  final bool showFilters;
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +60,13 @@ class HeaderBar extends StatelessWidget {
                   ),
                   addWidth(2),
                 ],
-                AppIconButton(
-                  path: icon2 ?? AppAssets.tune,
-                  size: 24,
-                  onTap: onIcon2Tap ??
-                      () => Nav.push(context, const PreferenceRoute()),
-                ),
+                if (showFilters)
+                  AppIconButton(
+                    path: icon2 ?? AppAssets.tune,
+                    size: 24,
+                    onTap: onIcon2Tap ??
+                        () => Nav.push(context, const PreferenceRoute()),
+                  ),
               ],
             )
           ],

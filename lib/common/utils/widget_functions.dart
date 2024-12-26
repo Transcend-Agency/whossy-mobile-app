@@ -35,14 +35,6 @@ Widget svgIcon(String path, {double? size, Color? color}) {
   );
 }
 
-Icon alert() {
-  return const Icon(
-    Icons.warning_rounded,
-    color: AppColors.sbErrorBorderColor,
-    size: 24,
-  );
-}
-
 Widget sendIcon() {
   return Icon(
     IconlyBold.send,

@@ -80,15 +80,6 @@ final editMediaDecoration = BoxDecoration(
   borderRadius: BorderRadius.circular(10.r),
 );
 
-final snackbarDecoration = BoxDecoration(
-  color: AppColors.sbErrorFillColor,
-  borderRadius: BorderRadius.circular(8.r),
-  border: Border.all(
-    width: 1,
-    color: AppColors.sbErrorBorderColor,
-  ),
-);
-
 final focusedBorder = inputBorder.copyWith(
   borderSide: const BorderSide(
     color: AppColors.selectedFieldColor,

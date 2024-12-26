@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whossy_app/feature/home/home_wrapper.dart';
 
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../../../constants/index.dart';
@@ -17,6 +18,9 @@ class SwipeAndMatchNotifier with ChangeNotifier {
   StreamSubscription? _profileSubscription;
   List<UserProfile> _profiles = [];
 
+  // Maintain a set of excluded IDs
+  final Set<String> _excludedIds = {};
+
   Stream<List<UserProfile>> get profileStream => _profileController.stream;
 
   final _matchRepository = MatchRepository();
@@ -26,6 +30,7 @@ class SwipeAndMatchNotifier with ChangeNotifier {
   List<Map<String, dynamic>> actionList = [];
 
   bool _hasDeniedLocationPermission = false;
+  bool _hasTakenTutoral = false;
 
   CoreProfile? _profileData;
 
@@ -46,6 +51,8 @@ class SwipeAndMatchNotifier with ChangeNotifier {
 
   bool get hasDeniedLocationPermission => _hasDeniedLocationPermission;
 
+  bool get hasTakenTutorial => _hasTakenTutoral;
+
   set hasDeniedLocationPermission(bool value) {
     if (_hasDeniedLocationPermission != value) {
       _hasDeniedLocationPermission = value;
@@ -53,10 +60,24 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     }
   }
 
+  set hasTakenTutorial(bool value) {
+    if (_hasTakenTutoral != value) {
+      _hasTakenTutoral = value;
+      notifyListeners();
+    }
+  }
+
   checkLocationPermissionState() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     hasDeniedLocationPermission =
-        !await _sharedPrefs.isFirstTimeOpened(Matching.name, uid);
+        !await _sharedPrefs.isFirstTimeOpened(Matching.locationPermission, uid);
+  }
+
+  checkTutorialTakenState() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
+    hasTakenTutorial =
+        !await _sharedPrefs.isFirstTimeOpened(HomeWrapper.tutorial, uid);
   }
 
   // Fetch profiles using Stream
@@ -76,9 +97,16 @@ class SwipeAndMatchNotifier with ChangeNotifier {
         latitude: _profileData?.latitude,
       )
           .listen((fetchedProfiles) {
-        if (fetchedProfiles.isNotEmpty) {
-          _profiles = fetchedProfiles;
+        // Filter out excluded profiles (liked/disliked)
+        final filteredProfiles = fetchedProfiles
+            .where((profile) => !_excludedIds.contains(profile.user.uid))
+            .toList();
+
+        if (filteredProfiles.isNotEmpty) {
+          _profiles = filteredProfiles;
           _profileController.add(_profiles);
+        } else {
+          _profileController.add([]);
         }
         notifyListeners();
       }, onError: (error) {
@@ -104,12 +132,18 @@ class SwipeAndMatchNotifier with ChangeNotifier {
         likerId: FirebaseAuth.instance.currentUser!.uid,
       );
 
+      // Add to excluded IDs
+      _excludedIds.add(likedId);
+
       if (addAction) {
         actionList.add({
           'uid': uid,
           'collection': 'likes',
         });
       }
+
+      // Refresh profiles after action
+      fetchProfiles();
     } on FirebaseException catch (e) {
       handleFirebaseError(e, showSnackbar);
     } catch (e) {
@@ -118,7 +152,6 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     }
   }
 
-  // Add a dislike
   Future<void> addDislike(
     String dislikedId, {
     bool addAction = true,
@@ -130,12 +163,18 @@ class SwipeAndMatchNotifier with ChangeNotifier {
         dislikerId: FirebaseAuth.instance.currentUser!.uid,
       );
 
+      // Add to excluded IDs
+      _excludedIds.add(dislikedId);
+
       if (addAction) {
         actionList.add({
           'uid': uid,
           'collection': 'dislikes',
         });
       }
+
+      // Refresh profiles after action
+      fetchProfiles();
     } on FirebaseException catch (e) {
       handleFirebaseError(e, showSnackbar);
     } catch (e) {
@@ -151,6 +190,12 @@ class SwipeAndMatchNotifier with ChangeNotifier {
       if (actionList.isNotEmpty) {
         var lastAction = actionList.removeLast();
         _likesRepository.undoAction(action: lastAction);
+
+        // Remove from excluded IDs
+        _excludedIds.remove(lastAction['uid']);
+
+        // Refresh profiles after undo
+        fetchProfiles();
       } else {
         log("No actions to undo.");
       }
