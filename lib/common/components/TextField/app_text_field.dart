@@ -26,6 +26,10 @@ class AppTextField extends StatelessWidget {
     this.keyboardType,
     this.padding = 15,
     this.curvierEdges = false,
+    this.hintStyle,
+    this.fillColor,
+    this.customEnabledBorder,
+    this.customFocusedBorder,
   });
 
   final FocusNode focusNode;
@@ -48,6 +52,10 @@ class AppTextField extends StatelessWidget {
   final double padding;
   final bool curvierEdges;
   final TextInputType? keyboardType;
+  final TextStyle? hintStyle;
+  final Color? fillColor;
+  final InputBorder? customEnabledBorder;
+  final InputBorder? customFocusedBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -74,11 +82,14 @@ class AppTextField extends StatelessWidget {
         LengthLimitingTextInputFormatter(maxLength ?? lengthLimit),
       ],
       decoration: InputDecoration(
-        enabledBorder:
-            curvierEdges ? inputBorder.copyWith(borderRadius: curvySide) : null,
-        focusedBorder: curvierEdges
-            ? focusedBorder.copyWith(borderRadius: curvySide)
-            : null,
+        enabledBorder: customEnabledBorder ??
+            (curvierEdges
+                ? inputBorder.copyWith(borderRadius: curvySide)
+                : null),
+        focusedBorder: customFocusedBorder ??
+            (curvierEdges
+                ? focusedBorder.copyWith(borderRadius: curvySide)
+                : null),
         errorBorder:
             curvierEdges ? errorBorder.copyWith(borderRadius: curvySide) : null,
         focusedErrorBorder: curvierEdges
@@ -89,8 +100,9 @@ class AppTextField extends StatelessWidget {
         border:
             curvierEdges ? inputBorder.copyWith(borderRadius: curvySide) : null,
         isDense: true,
-        fillColor: AppColors.inputBackGround.withOpacity(0.9),
+        fillColor: fillColor ?? AppColors.inputBackGround.withOpacity(0.9),
         hintText: hintText,
+        hintStyle: hintStyle,
         contentPadding: EdgeInsets.all(padding),
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,

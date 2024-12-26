@@ -195,6 +195,7 @@ class _ChatRoomState extends State<ChatRoom> {
     return Selector<ChatsNotifier, ChatRoomData>(
       selector: (_, chats) => ChatRoomData(
         currentChat: chats.currentChat!,
+        currentUserName: chats.userData?.firstName ?? '',
         hasViewPermission: chats.viewPermission,
       ),
       builder: (_, data, __) {
@@ -228,8 +229,7 @@ class _ChatRoomState extends State<ChatRoom> {
             action: Padding(
               padding: EdgeInsets.only(right: 10.w),
               child: AppIconButton(
-                onTap: () =>
-                    showActionsSheet(context, data.currentChat.username),
+                onTap: () => showActionsSheet(context, data: data),
                 icon: Icons.more_horiz_rounded,
               ),
             ),

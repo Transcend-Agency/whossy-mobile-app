@@ -230,7 +230,7 @@ Widget _buildUserDetails(UserProfile item, int columnCount) {
           type: MaterialType.transparency,
           child: RichText(
             text: TextSpan(
-              text: item.name, // Name text
+              text: '${item.name}, ', // Name text
               style: TextStyles.profileHead.copyWith(
                 fontSize: AppUtils.scale(14.sp),
                 color: Colors.white,
@@ -238,7 +238,7 @@ Widget _buildUserDetails(UserProfile item, int columnCount) {
               children: [
                 if (item.preferences.dateOfBirth != null)
                   TextSpan(
-                    text: ', ${item.preferences.dateOfBirth!.age}', // Age text
+                    text: '${item.preferences.dateOfBirth!.age}', // Age text
                     style: TextStyles.profileHead.copyWith(
                       fontSize: AppUtils.scale(12.sp) ?? 16.sp,
                       fontWeight: FontWeight.w400,

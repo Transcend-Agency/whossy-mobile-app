@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../constants/index.dart';
+import '../../../feature/home/tutorial.dart';
 
 class CustomBottomAppBar extends StatefulWidget {
   const CustomBottomAppBar({
@@ -61,6 +62,26 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
         ? AppColors.selectedTabIconColor
         : AppColors.unSelectedTabIconColor;
 
+    // Assign the correct global key based on index
+    GlobalKey? currentKey;
+    switch (index) {
+      case 0:
+        currentKey = GlobalKeys.fireTabKey;
+        break;
+      case 1:
+        currentKey = GlobalKeys.globalSearchTabKey;
+        break;
+      case 2:
+        currentKey = GlobalKeys.heartTabKey;
+        break;
+      case 3:
+        currentKey = GlobalKeys.chatTabKey;
+        break;
+      case 4:
+        currentKey = GlobalKeys.userTabKey;
+        break;
+    }
+
     return Expanded(
       child: SizedBox(
         child: Material(
@@ -70,6 +91,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
             child: Padding(
               padding: EdgeInsets.all(12.r),
               child: SvgPicture.asset(
+                key: currentKey,
                 item,
                 height: 25,
                 colorFilter: ColorFilter.mode(color, BlendMode.srcIn),

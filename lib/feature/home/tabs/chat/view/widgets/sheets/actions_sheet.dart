@@ -1,5 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -10,16 +10,23 @@ import '../../../../../../../common/styles/text_style.dart';
 import '../../../../../../../common/utils/index.dart';
 import '../../../../../../../constants/index.dart';
 import '../../../../../../../provider/providers.dart';
+import '../../../../profile/model/report.dart';
+import '../../../../profile/view/report_dialog.dart';
+import '../../../model/chat_room_data.dart';
 
-class ActionsSheet extends HookWidget {
-  final String name;
+class ActionsSheet extends StatefulWidget {
+  final ChatRoomData chatRoomData;
 
-  const ActionsSheet({super.key, required this.name});
+  const ActionsSheet({super.key, required this.chatRoomData});
 
   @override
+  State<ActionsSheet> createState() => _ActionsSheetState();
+}
+
+class _ActionsSheetState extends State<ActionsSheet> {
+  @override
   Widget build(BuildContext context) {
-    final uidOppUser =
-        useContext().read<ChatsNotifier>().currentChat?.uidUser2 ?? '';
+    final chat = widget.chatRoomData.currentChat;
     return AppSheetScaffold(
       title: 'Actions',
       topPadding: 16,
@@ -38,7 +45,7 @@ class ActionsSheet extends HookWidget {
                   Image.asset(AppAssets.unMatch, height: 22),
                   addWidth(10),
                   Text(
-                    "Unmatch $name",
+                    "Unmatch ${chat.username}",
                     style: TextStyles.buttonText.copyWith(
                       fontSize: AppUtils.scale(17),
                       color: Colors.black,
@@ -54,8 +61,7 @@ class ActionsSheet extends HookWidget {
               color: AppColors.listTileColor,
               onPress: () async {
                 await _blockUser(
-                  name: name,
-                  uid: uidOppUser,
+                  chatRoomData: widget.chatRoomData,
                   context: context,
                 );
               },
@@ -65,7 +71,7 @@ class ActionsSheet extends HookWidget {
                   svgIcon(AppAssets.blockUser, color: Colors.black, size: 21.r),
                   addWidth(10),
                   Text(
-                    "Block $name",
+                    "Block ${chat.username}",
                     style: TextStyles.buttonText.copyWith(
                       fontSize: AppUtils.scale(17),
                       color: Colors.black,
@@ -79,14 +85,19 @@ class ActionsSheet extends HookWidget {
             padding: pagePadding,
             child: AppButton(
               color: AppColors.listTileColor,
-              onPress: () {},
+              onPress: () {
+                _showReportDialog(
+                  chatRoomData: widget.chatRoomData,
+                  context: context,
+                );
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(AppAssets.report, height: 26),
                   addWidth(10),
                   Text(
-                    "Report $name",
+                    "Report ${chat.username}",
                     style: TextStyles.buttonText.copyWith(
                       fontSize: AppUtils.scale(17),
                       color: AppColors.buttonColor,
@@ -102,14 +113,15 @@ class ActionsSheet extends HookWidget {
   }
 
   Future<void> _blockUser({
-    required String name,
-    required String uid,
+    required ChatRoomData chatRoomData,
     required BuildContext context,
   }) async {
+    final chat = chatRoomData.currentChat;
+
     bool? result = await showConfirmationDialog(
       context,
       title: 'Block ',
-      content: contentText(AppStrings.blockUser(name)),
+      content: contentText(AppStrings.blockUser(chat.username)),
       yes: 'Yes',
       no: 'Cancel',
     );
@@ -121,8 +133,8 @@ class ActionsSheet extends HookWidget {
     var blockedIds = editNotifier.coreProfile?.blockedIds ?? [];
 
     // Check if the user is already blocked
-    if (blockedIds.contains(uid)) {
-      showSnackbar('$name is already blocked');
+    if (blockedIds.contains(chat.uidUser2)) {
+      showSnackbar('${chat.username} is already blocked');
       return;
     }
 
@@ -130,12 +142,11 @@ class ActionsSheet extends HookWidget {
     if (context.mounted) Navigator.pop(context);
 
     // Temporarily update the blocked IDs
-    var newBlockedIds = [...blockedIds, uid];
+    var newBlockedIds = [...blockedIds, chat.uidUser2];
     editNotifier.updateProfile(blockedIds: newBlockedIds);
 
     bool success = await editNotifier.saveUserProfile(
       showSnackbar: (msg) => showSnackbar(msg),
-      returnResult: true,
     );
 
     if (!success) {
@@ -145,18 +156,73 @@ class ActionsSheet extends HookWidget {
     }
   }
 
-  showSnackbar(String message) {
-    if (useContext().mounted) {
-      showTopSnackBar(Overlay.of(useContext()), AppSnackbar(text: message));
+  void _showReportDialog({
+    required ChatRoomData chatRoomData,
+    required BuildContext context,
+  }) {
+    final chat = chatRoomData.currentChat;
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return ReportDialog(
+          name: chat.username,
+          onSubmit: (reason, customMessage) {
+            final reportNotifier = context.read<ReportNotifier>();
+
+            final uid = FirebaseAuth.instance.currentUser?.uid;
+
+            String extra = '';
+
+            if (customMessage != null) {
+              extra = ': $customMessage';
+            }
+
+            final report = Report(
+              id: chat.chatId,
+              message: '$reason $extra'.trim(),
+              reportedId: chat.uidUser2,
+              reportedName: chat.username,
+              reporterId: uid,
+              reporterName: chatRoomData.currentUserName,
+            );
+
+            // Navigate back on success
+            if (context.mounted) Navigator.pop(context);
+
+            reportNotifier.reportUser(report, showSnackbar: showSnackbar);
+
+            showSnackbar(
+              AppStrings.reportUser,
+              snackBarType: SnackbarType.success,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  showSnackbar(
+    String message, {
+    SnackbarType snackBarType = SnackbarType.error,
+  }) {
+    if (mounted) {
+      showTopSnackBar(
+        Overlay.of(context),
+        AppSnackbar(
+          text: message,
+          snackbarType: snackBarType,
+        ),
+      );
     }
   }
 }
 
-void showActionsSheet(BuildContext context, String name) {
+void showActionsSheet(BuildContext context, {required ChatRoomData data}) {
   showModalBottomSheet<void>(
     clipBehavior: Clip.hardEdge,
     context: context,
     shape: roundedTop,
-    builder: (_) => ActionsSheet(name: name),
+    builder: (_) => ActionsSheet(chatRoomData: data),
   );
 }

@@ -9,6 +9,13 @@ class MatchRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
   final _geo = GeoFlutterFire();
 
+  final _matchFilterSettings = const ExcludeSettings(
+    excludeIncompleteOnboarding: true,
+    excludeBannedUsers: true,
+    excludeUnapprovedUsers: true,
+    excludeBlockedAndSelf: true,
+  );
+
   Stream<List<UserProfile>> fetchProfilesStream({
     int limit = 10,
     double radiusInKm = 300,
@@ -25,6 +32,33 @@ class MatchRepository {
 
     final center = _geo.point(latitude: latitude, longitude: longitude);
 
+    // Real-time listeners for likes and dislikes
+    final likesStream = FirebaseFirestore.instance
+        .collection('likes')
+        .where('liker_id', isEqualTo: uid)
+        .snapshots();
+
+    final dislikesStream = FirebaseFirestore.instance
+        .collection('dislikes')
+        .where('disliker_id', isEqualTo: uid)
+        .snapshots();
+
+    // Combine liked and disliked IDs into a set
+    final blacklist = <String>{};
+
+    likesStream.listen((snapshot) {
+      for (var doc in snapshot.docs) {
+        blacklist.add(doc['liked_id']);
+      }
+    });
+
+    dislikesStream.listen((snapshot) {
+      for (var doc in snapshot.docs) {
+        blacklist.add(doc['disliked_id']);
+      }
+    });
+
+    // Main profiles query
     var query = _geo
         .collection(collectionRef: _profiles)
         .within(center: center, radius: radiusInKm, field: 'geography');
@@ -45,19 +79,10 @@ class MatchRepository {
         final profile =
             UserProfile.fromJson(doc.data() as Map<String, dynamic>);
 
-        if (!AppUtils.excludeProfile(
-          profile,
-          uid,
-          blockedIds,
-          settings: const ExcludeSettings(
-            excludeIncompleteOnboarding: true,
-            excludeBannedUsers: true,
-            excludeUnapprovedUsers: true,
-            excludeBlockedAndSelf: true,
-          ),
-        )) {
+        if (!AppUtils.excludeProfile(profile, uid, blockedIds,
+                settings: _matchFilterSettings) &&
+            !blacklist.contains(profile.user.uid)) {
           userProfiles.add(profile);
-
           if (userProfiles.length >= limit) {
             break;
           }

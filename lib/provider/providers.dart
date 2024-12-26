@@ -13,3 +13,4 @@ export 'package:whossy_app/feature/home/tabs/explore/data/state/explore_notifier
 export 'package:whossy_app/feature/home/tabs/likes_and_match/data/state/likes_notifier.dart';
 export 'package:whossy_app/feature/home/tabs/likes_and_match/data/state/matches_notifier.dart';
 export 'package:whossy_app/feature/home/tabs/matching/data/state/swipe_and_match_notifier.dart';
+export 'package:whossy_app/feature/home/tabs/profile/data/state/report_notifier.dart';

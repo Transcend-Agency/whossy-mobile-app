@@ -142,33 +142,35 @@ class LikesGridView extends StatelessWidget {
   // Build user details with name, age, and verified status
   Widget _buildUserDetails(UserProfile profile) {
     return Material(
-      type: MaterialType.transparency,
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 4,
-        runSpacing: 2,
-        children: [
-          Text(
-            '${profile.user.firstName}, ',
+        type: MaterialType.transparency,
+        child: RichText(
+          text: TextSpan(
+            text: '${profile.user.firstName}, ',
             style: TextStyles.profileHead.copyWith(
               fontSize: AppUtils.scale(14.sp),
               color: Colors.white,
             ),
+            children: [
+              if (profile.preferences.dateOfBirth != null)
+                TextSpan(
+                  text: profile.preferences.dateOfBirth!.age.toString(),
+                  style: TextStyles.profileHead.copyWith(
+                    fontSize: AppUtils.scale(12.sp) ?? 16.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
+                ),
+              if (profile.user.isApproved)
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: SvgPicture.asset(AppAssets.tick, width: 18),
+                  ),
+                ),
+            ],
           ),
-          Text(
-            profile.preferences.dateOfBirth!.age.toString(),
-            style: TextStyles.profileHead.copyWith(
-              fontSize: AppUtils.scale(12.sp) ?? 16.sp,
-              fontWeight: FontWeight.w400,
-              color: Colors.white,
-            ),
-          ),
-          addWidth(6),
-          if (profile.user.isApproved)
-            SvgPicture.asset(AppAssets.tick, width: 18),
-        ],
-      ),
-    );
+        ));
   }
 }
 

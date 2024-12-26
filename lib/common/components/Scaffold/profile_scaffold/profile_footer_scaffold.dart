@@ -112,16 +112,16 @@ class ProfileFooterScaffold extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        data.name,
+                        '${data.name}, ',
                         style: TextStyles.profileHead.copyWith(
                           fontSize: AppUtils.scale(23.sp) ?? 25.sp,
                           color: Colors.white,
                         ),
                       ),
                       if (data.userAge != 0) ...[
-                        addWidth(4),
+                        addWidth(4), //
                         Text(
-                          ", ${data.userAge}",
+                          "${data.userAge}",
                           style: TextStyles.profileHead.copyWith(
                             fontSize: AppUtils.scale(19.sp) ?? 21.sp,
                             fontWeight: FontWeight.w400,

@@ -170,7 +170,7 @@ class FileService {
     return File(croppedImage.path);
   }
 
-  Future<List<String>> processPhotos(
+  Future<UploadResults> processPhotos(
     List<dynamic> photos,
     void Function(String) showSnackbar,
   ) async
@@ -179,11 +179,18 @@ class FileService {
     final localFilePaths = <String, int>{};
     final updatedPhotos = List<String>.from(photos);
 
+    bool hasUploads = false;
+
     // Identify local file paths and keep track of their indexes
     for (int i = 0; i < photos.length; i++) {
       final photo = photos[i];
       if (photo is String && !photo.isUrl) {
         localFilePaths[photo] = i;
+
+        // Used for changing is approved to false
+        if (!hasUploads) {
+          hasUploads = true;
+        }
       }
     }
 
@@ -215,6 +222,16 @@ class FileService {
       }
     }
 
-    return updatedPhotos;
+    return UploadResults(photos: updatedPhotos, hasUploads: hasUploads);
   }
+}
+
+class UploadResults {
+  final List<String> photos;
+  final bool hasUploads;
+
+  UploadResults({
+    required this.photos,
+    required this.hasUploads,
+  });
 }

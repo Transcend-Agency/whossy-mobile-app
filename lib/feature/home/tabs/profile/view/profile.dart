@@ -40,6 +40,7 @@ class Profile extends StatelessWidget {
                         icon: AppAssets.settings,
                         iconSize: 22,
                         onIconTap: () => Nav.push(context, const Settings()),
+                        showFilters: false,
                         child: const Logo(),
                       ),
                       addHeight(4),

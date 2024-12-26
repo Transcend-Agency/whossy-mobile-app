@@ -21,7 +21,7 @@ class ExtrasComponent<T extends SearchPreferencesNotifier>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-         const AppDivider(),
+        const AppDivider(),
         Container(
           decoration: const BoxDecoration(color: AppColors.inputBackGround),
           padding: EdgeInsets.symmetric(horizontal: 14.r),
@@ -61,8 +61,8 @@ class ExtrasComponent<T extends SearchPreferencesNotifier>
                     text: 'Country of Residence',
                     onTap: () => showPicker(
                       showCode: false,
-                      onSelect: (_) =>
-                          notifier.updatePreferences(country: _.name),
+                      onSelect: (country) =>
+                          notifier.updatePreferences(country: country.name),
                       context: context,
                     ),
                     trailing: notifier.otherPreferences?.country ??
@@ -156,7 +156,7 @@ class ExtrasComponent<T extends SearchPreferencesNotifier>
             },
           ),
         ),
-         const AppDivider(),
+        const AppDivider(),
       ],
     );
   }

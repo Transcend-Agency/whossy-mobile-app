@@ -1,5 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
@@ -10,50 +11,31 @@ import '../../../auth/onboarding/data/state/notifier_set.dart';
 import '../../../auth/onboarding/model/alphabet.dart';
 
 @RoutePage()
-class InterestScreen extends StatefulWidget {
+class InterestScreen extends HookWidget {
   const InterestScreen({super.key, this.initialValues});
 
   final List<String>? initialValues;
-  @override
-  State<InterestScreen> createState() => _InterestScreenState();
-}
-
-class _InterestScreenState extends State<InterestScreen> {
-  late NotifierSet<String> _selectedTicks;
-
-  final formKey1 = GlobalKey<FormState>();
-  final searchController = TextEditingController();
-  final searchFocusNode = FocusNode();
-
-  List<Map<String, dynamic>> _filteredAlphabet = [];
 
   @override
-  void initState() {
-    super.initState();
-    _selectedTicks = NotifierSet<String>();
-    _selectedTicks.addAll(widget.initialValues ?? []);
+  Widget build(BuildContext context) {
+    final selectedTicks =
+        useState(NotifierSet<String>()..addAll(initialValues ?? []));
+    final filteredAlphabet = useState(List.from(alphabet));
+    final searchController = useTextEditingController();
+    final searchFocusNode = useFocusNode();
 
-    // Initialize filtered list
-    _filteredAlphabet = List.from(alphabet);
-
-    // Add listener for search functionality
-    searchController.addListener(_filterSearchResults);
-  }
-
-  void _filterSearchResults() {
-    final query = searchController.text.toLowerCase();
-    setState(() {
-      _filteredAlphabet = alphabet
+    void filterSearchResults() {
+      final query = searchController.text.toLowerCase();
+      filteredAlphabet.value = alphabet
           .map((item) {
             final letter = item['letter'] as String;
             final options = item['options'] as List<String>;
 
-            // Filter the options list based on the query
+            // Filter options based on the query
             final filteredOptions = options
                 .where((option) => option.toLowerCase().contains(query))
                 .toList();
 
-            // Return the letter and its filtered options if any match the query
             return {
               'letter': letter,
               'options': filteredOptions,
@@ -61,19 +43,15 @@ class _InterestScreenState extends State<InterestScreen> {
           })
           .where((item) => (item['options'] as List<String>).isNotEmpty)
           .toList();
-    });
-  }
+    }
 
-  @override
-  void dispose() {
-    _selectedTicks.dispose();
-    searchController.removeListener(_filterSearchResults);
-    searchController.dispose();
-    super.dispose();
-  }
+    useEffect(() {
+      searchController.addListener(filterSearchResults);
+      return () {
+        searchController.removeListener(filterSearchResults);
+      };
+    }, [searchController]);
 
-  @override
-  Widget build(BuildContext context) {
     return AppScaffold(
       padding: pagePadding,
       appBar: const CustomAppBar(
@@ -89,7 +67,6 @@ class _InterestScreenState extends State<InterestScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 16.h),
                 child: Form(
-                  key: formKey1,
                   child: AppTextField(
                     focusNode: searchFocusNode,
                     textController: searchController,
@@ -102,21 +79,12 @@ class _InterestScreenState extends State<InterestScreen> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: _filteredAlphabet.length,
+                  itemCount: filteredAlphabet.value.length,
                   itemBuilder: (context, index) {
-                    // if (index >= _filteredAlphabet.length) {
-                    //   // Return an empty container to avoid range errors
-                    //   return const SizedBox.shrink();
-                    // }
-
-                    final letter = _filteredAlphabet[index]['letter'] as String;
-                    final options =
-                        _filteredAlphabet[index]['options'] as List<String>;
-
-                    // if (options.isEmpty) {
-                    //   // Skip if no options are available
-                    //   return const SizedBox.shrink();
-                    // }
+                    final letter =
+                        filteredAlphabet.value[index]['letter'] as String;
+                    final options = filteredAlphabet.value[index]['options']
+                        as List<String>;
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,11 +100,11 @@ class _InterestScreenState extends State<InterestScreen> {
                           spacing: 8.0,
                           runSpacing: 8.0,
                           children: options
-                              .map((item) => _buildAppChip(item))
+                              .map((item) => _buildAppChip(item, selectedTicks))
                               .toList(),
                         ),
                         addHeight(16),
-                        if (index != _filteredAlphabet.length - 1)
+                        if (index != filteredAlphabet.value.length - 1)
                           Column(
                             children: [
                               const AppDivider(),
@@ -163,7 +131,7 @@ class _InterestScreenState extends State<InterestScreen> {
                     child: AppButton(
                       onPress: () => Navigator.pop<List<String>>(
                         context,
-                        _selectedTicks.items,
+                        selectedTicks.value.items,
                       ),
                       text: 'Save',
                     ),
@@ -177,19 +145,23 @@ class _InterestScreenState extends State<InterestScreen> {
     );
   }
 
-  Widget _buildAppChip(String data) {
-    final isSelected = _selectedTicks.contains(data);
+  Widget _buildAppChip(
+    String data,
+    ValueNotifier<NotifierSet<String>> selectedTicks,
+  ) {
+    final isSelected = selectedTicks.value.contains(data);
     return AppChip(
       data: data,
       isSelected: isSelected,
       onTap: () {
-        setState(() {
-          if (_selectedTicks.contains(data)) {
-            _selectedTicks.remove(data);
-          } else {
-            _selectedTicks.add(data);
-          }
-        });
+        final updatedSet = NotifierSet<String>()
+          ..addAll(selectedTicks.value.items);
+        if (updatedSet.contains(data)) {
+          updatedSet.remove(data);
+        } else {
+          updatedSet.add(data);
+        }
+        selectedTicks.value = updatedSet;
       },
     );
   }

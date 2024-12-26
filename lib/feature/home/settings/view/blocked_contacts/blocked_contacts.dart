@@ -23,7 +23,7 @@ class BlockedContacts extends StatefulWidget {
 
 class _BlockedContactsState extends State<BlockedContacts> {
   final _listKey = GlobalKey<AnimatedListState>();
-  late EditProfileNotifier _editProfileNotifier;
+  late EditProfileNotifier _editNotifier;
   late ValueNotifier<List<String>> _uidsNotifier;
 
   @override
@@ -32,7 +32,7 @@ class _BlockedContactsState extends State<BlockedContacts> {
 
     _uidsNotifier = ValueNotifier(List.from(widget.uids));
 
-    _editProfileNotifier = context.read<EditProfileNotifier>();
+    _editNotifier = context.read<EditProfileNotifier>();
   }
 
   void handleUnblock(String uid, int index, UserProfile profile) async {
@@ -53,17 +53,16 @@ class _BlockedContactsState extends State<BlockedContacts> {
 
     _uidsNotifier.value = List.from(_uidsNotifier.value)..removeAt(index);
 
-    _editProfileNotifier.updateProfile(blockedIds: _uidsNotifier.value);
+    _editNotifier.updateProfile(blockedIds: _uidsNotifier.value);
 
-    bool success = await _editProfileNotifier.saveUserProfile(
+    bool success = await _editNotifier.saveUserProfile(
       showSnackbar: (msg) => showSnackbar(msg),
-      returnResult: true,
     );
 
     if (!success) {
       // If saveUserProfile fails, rollback state
       _uidsNotifier.value = previousUids;
-      _editProfileNotifier.updateProfile(blockedIds: previousUids);
+      _editNotifier.updateProfile(blockedIds: previousUids);
       showSnackbar(AppStrings.unblockFailure);
     }
   }

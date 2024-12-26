@@ -68,6 +68,7 @@ class _LikesAndMatchState extends State<LikesAndMatch>
           Padding(
             padding: pagePadding,
             child: HeaderBar(
+              showFilters: false,
               customWidget: NotificationBell(
                 onTap: () => Nav.push(context, const NotificationRoute()),
                 rightSpacing: 2,

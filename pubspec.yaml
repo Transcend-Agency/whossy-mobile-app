@@ -68,6 +68,7 @@ dependencies:
     git:
       url: https://github.com/Transcend-Agency/GeoFlutterFire.git
       ref: 917f7d4d0ae3ad63134f7c945208d7c983c07301
+  tutorial_coach_mark: ^1.2.12
 
 #  flutter_paystack:
 #    git:

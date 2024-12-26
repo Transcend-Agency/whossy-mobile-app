@@ -63,6 +63,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => MatchesNotifier()),
         ChangeNotifierProvider(create: (_) => ExploreNotifier()),
         ChangeNotifierProvider(create: (_) => NotificationNotifier()),
+        ChangeNotifierProvider(create: (_) => ReportNotifier()),
       ],
       child: const Whossy(),
     ),

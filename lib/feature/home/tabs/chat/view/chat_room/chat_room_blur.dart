@@ -38,9 +38,9 @@ class ChatRoomBlur extends HookWidget {
             : data.hasChatExpired
                 ? Positioned.fill(
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                      filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                       child: Container(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withOpacity(0.25),
                         padding: pagePadding,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +135,6 @@ class ChatRoomBlur extends HookWidget {
 
     bool success = await editNotifier.saveUserProfile(
       showSnackbar: showSnackbar,
-      returnResult: true,
     );
 
     if (success) {

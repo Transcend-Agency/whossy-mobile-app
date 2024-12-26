@@ -16,7 +16,7 @@ import '../../../notifications/view/widgets/notification_bell.dart';
 class Matching extends StatelessWidget {
   const Matching({super.key});
 
-  static String name = 'Matching';
+  static String locationPermission = 'Location Permission';
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,10 @@ class Matching extends StatelessWidget {
                 builder: (_, permission, __) {
                   if (permission == LocationPermission.always ||
                       permission == LocationPermission.whileInUse) {
-                    return const Match();
+                    return const Padding(
+                      padding: EdgeInsets.only(bottom: 3),
+                      child: Match(),
+                    );
                   } else {
                     return Center(
                       child: Padding(

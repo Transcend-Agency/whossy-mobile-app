@@ -33,7 +33,9 @@ class _SplashState extends State<Splash> {
 
   void _checkLocationPermissionState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SwipeAndMatchNotifier>().checkLocationPermissionState();
+      context.read<SwipeAndMatchNotifier>()
+        ..checkLocationPermissionState()
+        ..checkTutorialTakenState();
     });
   }
 
