@@ -6,9 +6,6 @@ part 'user_settings.g.dart';
 
 @JsonSerializable()
 class UserSettings {
-  @JsonKey(name: 'incoming_messages')
-  bool? incomingMessages;
-
   @JsonKey(name: 'online_status')
   bool? onlineStatus;
 
@@ -19,10 +16,9 @@ class UserSettings {
   bool? readReceipts;
 
   UserSettings({
-    this.incomingMessages = true,
-    this.onlineStatus = false,
-    this.publicSearch = false,
-    this.readReceipts = false,
+    this.onlineStatus = true,
+    this.publicSearch = true,
+    this.readReceipts = true,
   });
 
   factory UserSettings.fromJson(Map<String, dynamic> json) =>
@@ -32,7 +28,6 @@ class UserSettings {
 
   bool? getValue(CoreSettings setting) {
     final selectedValues = <CoreSettings, bool?>{
-      CoreSettings.incomingMessages: incomingMessages,
       CoreSettings.readReceipts: readReceipts,
       CoreSettings.publicSearch: publicSearch,
       CoreSettings.onlineStatus: onlineStatus,
@@ -43,9 +38,6 @@ class UserSettings {
 
   void updateSwitch(CoreSettings setting, bool newValue) {
     switch (setting) {
-      case CoreSettings.incomingMessages:
-        incomingMessages = newValue;
-        break;
       case CoreSettings.publicSearch:
         publicSearch = newValue;
         break;

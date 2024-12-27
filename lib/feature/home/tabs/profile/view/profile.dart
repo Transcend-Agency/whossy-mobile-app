@@ -131,6 +131,7 @@ class Profile extends StatelessWidget {
                             onTap: () => showSnackbar(
                               'This feature is coming soon',
                               context,
+                              snackBarType: SnackbarType.warning,
                             ),
                             imagePath: AppAssets.boost,
                             title: 'Profile Boost',
@@ -142,7 +143,7 @@ class Profile extends StatelessWidget {
                           CustomButton(
                             onTap: () => Nav.push(context, const Credits()),
                             imagePath: AppAssets.credit,
-                            title: '10 Credits',
+                            title: '${data.creditBalance ?? 0} Credits',
                             subTitle: 'Get Now',
                             containerColor: AppColors.yellowContainer,
                             textColor: AppColors.yellowText,
@@ -195,10 +196,17 @@ class Profile extends StatelessWidget {
     );
   }
 
-  showSnackbar(String message, BuildContext context) {
+  showSnackbar(
+    String message,
+    BuildContext context, {
+    SnackbarType snackBarType = SnackbarType.error,
+  }) {
     showTopSnackBar(
       Overlay.of(context),
-      AppSnackbar(text: message),
+      AppSnackbar(
+        text: message,
+        snackbarType: snackBarType,
+      ),
     );
   }
 }

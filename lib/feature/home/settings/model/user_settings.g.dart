@@ -7,10 +7,9 @@ part of 'user_settings.dart';
 // **************************************************************************
 
 UserSettings _$UserSettingsFromJson(Map<String, dynamic> json) => UserSettings(
-      incomingMessages: json['incoming_messages'] as bool? ?? true,
-      onlineStatus: json['online_status'] as bool? ?? false,
-      publicSearch: json['public_search'] as bool? ?? false,
-      readReceipts: json['read_receipts'] as bool? ?? false,
+      onlineStatus: json['online_status'] as bool? ?? true,
+      publicSearch: json['public_search'] as bool? ?? true,
+      readReceipts: json['read_receipts'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$UserSettingsToJson(UserSettings instance) {
@@ -22,7 +21,6 @@ Map<String, dynamic> _$UserSettingsToJson(UserSettings instance) {
     }
   }
 
-  writeNotNull('incoming_messages', instance.incomingMessages);
   writeNotNull('online_status', instance.onlineStatus);
   writeNotNull('public_search', instance.publicSearch);
   writeNotNull('read_receipts', instance.readReceipts);
