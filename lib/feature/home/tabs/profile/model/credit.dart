@@ -1,11 +1,51 @@
-enum Credit {
-  fifty(quantity: 50, price: 12.99),
-  hundred(quantity: 100, price: 12.99),
-  twoHundred(quantity: 200, price: 12.99),
-  thousand(quantity: 1000, price: 12.99);
+// ignore: constant_identifier_names
+enum Currency { USD, NGN, KSH }
 
-  const Credit({required this.quantity, required this.price});
-
+class Credit {
   final int quantity;
-  final double price;
+  final Map<Currency, double> prices;
+
+  Credit({
+    required this.quantity,
+    required this.prices,
+  });
+
+  double getPrice(Currency currency) {
+    return prices[currency] ?? 0.0;
+  }
 }
+
+final credits = [
+  Credit(
+    quantity: 50,
+    prices: {
+      Currency.USD: 12.99,
+      Currency.NGN: 9500.00,
+      Currency.KSH: 1650.00,
+    },
+  ),
+  Credit(
+    quantity: 100,
+    prices: {
+      Currency.USD: 24.99,
+      Currency.NGN: 18500.00,
+      Currency.KSH: 3250.00,
+    },
+  ),
+  Credit(
+    quantity: 200,
+    prices: {
+      Currency.USD: 44.99,
+      Currency.NGN: 36000.00,
+      Currency.KSH: 6500.00,
+    },
+  ),
+  Credit(
+    quantity: 1000,
+    prices: {
+      Currency.USD: 199.99,
+      Currency.NGN: 165000.00,
+      Currency.KSH: 28500.00,
+    },
+  ),
+];

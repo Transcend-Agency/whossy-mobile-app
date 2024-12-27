@@ -3,24 +3,18 @@ import 'package:flutter/material.dart';
 import '../../../feature/home/preferences/model/generic_enum.dart';
 
 enum CoreSettings implements GenericEnum {
-  incomingMessages(
-    'Incoming messages',
-    'This will allow only verified users to message you.',
-  ),
-  publicSearch(
-    'Public search',
-    'Other users will be able to find your profile online when they search the internet.',
-  ),
-  onlineStatus(
-    'Online status',
-    'Users won’t be able to see when you’re online.',
-  ),
-
-  readReceipts(
-    'Read receipts',
-    'Matches won’t be able to see when you have read and their messages and you won’t be able to see theirs.',
-  );
-
+publicSearch(
+  'Public Search',
+  'Your profile will be visible to others for swiping and matching.'
+),
+onlineStatus(
+  'Online Status',
+  'Your online activity won’t be visible to others.'
+),
+readReceipts(
+  'Read Receipts',
+  'Switch off to hide when you read messages and stop seeing others’ read receipts.'
+);
   const CoreSettings(this.name, this.subtitle);
 
   @override

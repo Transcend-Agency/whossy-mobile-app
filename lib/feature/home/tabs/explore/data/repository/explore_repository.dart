@@ -9,6 +9,13 @@ import '../../model/filter_configuration.dart';
 class ExploreRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
 
+  final excludeSettings = const ExcludeSettings(
+    excludeIncompleteOnboarding: true,
+    excludeBannedUsers: true,
+    excludeUnapprovedUsers: true,
+    excludeBlockedAndSelf: true,
+  );
+
   Stream<List<UserProfile>> streamFilteredProfiles({
     required ExploreFilters filters,
     required List<String> blockedIds,
@@ -35,17 +42,14 @@ class ExploreRepository {
           .toList();
 
       // Apply local filtering using the helper method
-      profiles.removeWhere((profile) => AppUtils.excludeProfile(
-            profile,
-            uid,
-            blockedIds,
-            settings: const ExcludeSettings(
-              excludeIncompleteOnboarding: true,
-              excludeBannedUsers: true,
-              excludeUnapprovedUsers: true,
-              excludeBlockedAndSelf: true,
-            ),
-          ));
+      profiles.removeWhere(
+        (profile) => AppUtils.excludeProfile(
+          profile,
+          uid,
+          blockedIds,
+          settings: excludeSettings,
+        ),
+      );
 
       return profiles;
     });
