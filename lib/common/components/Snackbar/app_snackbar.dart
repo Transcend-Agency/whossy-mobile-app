@@ -98,16 +98,25 @@ class AppSnackbar extends StatelessWidget {
   }
 }
 
-showSnackbar(String message, BuildContext context) {
-  showTopSnackBar(
-    Overlay.of(context),
-    displayDuration: const Duration(seconds: 5),
-    AppSnackbar(
-      text: message,
-      label: 'Settings',
-      onLabelTapped: openAppSettings,
-    ),
-  );
+showSnackbar(
+  String message,
+  BuildContext context, {
+  SnackbarType snackBarType = SnackbarType.error,
+  String? label,
+  int durationInSec = 3,
+}) {
+  if (context.mounted) {
+    showTopSnackBar(
+      Overlay.of(context),
+      displayDuration: Duration(seconds: durationInSec),
+      AppSnackbar(
+        text: message,
+        label: label,
+        onLabelTapped: label != null ? openAppSettings : null,
+        snackbarType: snackBarType,
+      ),
+    );
+  }
 }
 
 enum SnackbarType {

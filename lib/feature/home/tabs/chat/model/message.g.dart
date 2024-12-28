@@ -15,6 +15,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       localPhoto: json['local_photo'] as String?,
       status: $enumDecodeNullable(_$MessageStatusEnumMap, json['status']) ??
           MessageStatus.undelivered,
+      isSenderBlocked: json['sender_id_blocked'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$MessageToJson(Message instance) {
@@ -35,6 +36,7 @@ Map<String, dynamic> _$MessageToJson(Message instance) {
   writeNotNull('local_photo', instance.localPhoto);
   writeNotNull('photo', instance.photo);
   writeNotNull('status', _$MessageStatusEnumMap[instance.status]);
+  val['sender_id_blocked'] = instance.isSenderBlocked;
   return val;
 }
 

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whossy_app/feature/home/home_wrapper.dart';
+import 'package:whossy_app/feature/home/preferences/model/other_preferences.dart';
 
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../../../constants/index.dart';
@@ -30,14 +31,28 @@ class SwipeAndMatchNotifier with ChangeNotifier {
   List<Map<String, dynamic>> actionList = [];
 
   bool _hasDeniedLocationPermission = false;
-  bool _hasTakenTutoral = false;
+  bool _hasTakenTutorial = false;
 
   CoreProfile? _profileData;
+
+  // Used in filtering
+  OtherPreferences? _otherPreferences;
 
   bool _hasFetchedProfiles = false;
   List<UserProfile> get profiles => _profiles;
 
+  void saveFilters(OtherPreferences? otherPrefs) {
+    if (_otherPreferences == otherPrefs) return;
+    _otherPreferences = otherPrefs;
+    notifyListeners();
+
+    log('Other Preferences \n ${otherPrefs.toString()}');
+
+    fetchProfiles();
+  }
+
   void saveProfile(CoreProfile? data) {
+    if (_profileData == data) return;
     _profileData = data;
     notifyListeners();
 
@@ -51,7 +66,7 @@ class SwipeAndMatchNotifier with ChangeNotifier {
 
   bool get hasDeniedLocationPermission => _hasDeniedLocationPermission;
 
-  bool get hasTakenTutorial => _hasTakenTutoral;
+  bool get hasTakenTutorial => _hasTakenTutorial;
 
   set hasDeniedLocationPermission(bool value) {
     if (_hasDeniedLocationPermission != value) {
@@ -61,8 +76,8 @@ class SwipeAndMatchNotifier with ChangeNotifier {
   }
 
   set hasTakenTutorial(bool value) {
-    if (_hasTakenTutoral != value) {
-      _hasTakenTutoral = value;
+    if (_hasTakenTutorial != value) {
+      _hasTakenTutorial = value;
       notifyListeners();
     }
   }
@@ -95,6 +110,7 @@ class SwipeAndMatchNotifier with ChangeNotifier {
         blockedIds: _profileData?.blockedIds ?? [],
         longitude: _profileData?.longitude,
         latitude: _profileData?.latitude,
+        preferences: _otherPreferences,
       )
           .listen((fetchedProfiles) {
         // Filter out excluded profiles (liked/disliked)

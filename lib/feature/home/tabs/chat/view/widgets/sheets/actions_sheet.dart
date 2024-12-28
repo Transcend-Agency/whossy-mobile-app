@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../../../../../common/components/index.dart';
 import '../../../../../../../common/styles/component_style.dart';
@@ -24,6 +23,8 @@ class ActionsSheet extends StatefulWidget {
 }
 
 class _ActionsSheetState extends State<ActionsSheet> {
+  BuildContext? get $thisContext => mounted ? context : null;
+
   @override
   Widget build(BuildContext context) {
     final chat = widget.chatRoomData.currentChat;
@@ -35,7 +36,7 @@ class _ActionsSheetState extends State<ActionsSheet> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: pagePadding,
+            padding: pagePadding.copyWith(bottom: 12.r),
             child: AppButton(
               color: AppColors.listTileColor,
               onPress: () {},
@@ -55,31 +56,40 @@ class _ActionsSheetState extends State<ActionsSheet> {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.r),
-            child: AppButton(
-              color: AppColors.listTileColor,
-              onPress: () async {
-                await _blockUser(
-                  chatRoomData: widget.chatRoomData,
-                  context: context,
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  svgIcon(AppAssets.blockUser, color: Colors.black, size: 21.r),
-                  addWidth(10),
-                  Text(
-                    "Block ${chat.username}",
-                    style: TextStyles.buttonText.copyWith(
-                      fontSize: AppUtils.scale(17),
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          Selector<EditProfileNotifier, bool>(
+            selector: (_, edit) =>
+                (edit.coreProfile?.blockedIds ?? []).contains(chat.uidUser2),
+            builder: (_, isBlocked, __) {
+              return isBlocked
+                  ? const SizedBox.shrink()
+                  : Padding(
+                      padding: EdgeInsets.fromLTRB(14.r, 0, 14.r, 12.r),
+                      child: AppButton(
+                        color: AppColors.listTileColor,
+                        onPress: () async {
+                          await _blockUser(
+                            chatRoomData: widget.chatRoomData,
+                            context: context,
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            svgIcon(AppAssets.blockUser,
+                                color: Colors.black, size: 21.r),
+                            addWidth(10),
+                            Text(
+                              "Block ${chat.username}",
+                              style: TextStyles.buttonText.copyWith(
+                                fontSize: AppUtils.scale(17),
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+            },
           ),
           Padding(
             padding: pagePadding,
@@ -134,7 +144,7 @@ class _ActionsSheetState extends State<ActionsSheet> {
 
     // Check if the user is already blocked
     if (blockedIds.contains(chat.uidUser2)) {
-      showSnackbar('${chat.username} is already blocked');
+      showSnackbar('${chat.username} is already blocked', $thisContext!);
       return;
     }
 
@@ -146,12 +156,14 @@ class _ActionsSheetState extends State<ActionsSheet> {
     editNotifier.updateProfile(blockedIds: newBlockedIds);
 
     bool success = await editNotifier.saveUserProfile(
-      showSnackbar: (msg) => showSnackbar(msg),
+      showSnackbar: (msg) => showSnackbar(msg, this.context),
     );
 
     if (!success) {
       editNotifier.updateProfile(blockedIds: blockedIds);
-      showSnackbar(AppStrings.blockFailure);
+
+      showSnackbar(AppStrings.blockFailure, $thisContext!);
+
       return;
     }
   }
@@ -190,31 +202,18 @@ class _ActionsSheetState extends State<ActionsSheet> {
             // Navigate back on success
             if (context.mounted) Navigator.pop(context);
 
-            reportNotifier.reportUser(report, showSnackbar: showSnackbar);
+            reportNotifier.reportUser(report,
+                showSnackbar: (msg) => showSnackbar(msg, this.context));
 
             showSnackbar(
               AppStrings.reportUser,
+              this.context,
               snackBarType: SnackbarType.success,
             );
           },
         );
       },
     );
-  }
-
-  showSnackbar(
-    String message, {
-    SnackbarType snackBarType = SnackbarType.error,
-  }) {
-    if (mounted) {
-      showTopSnackBar(
-        Overlay.of(context),
-        AppSnackbar(
-          text: message,
-          snackbarType: snackBarType,
-        ),
-      );
-    }
   }
 }
 

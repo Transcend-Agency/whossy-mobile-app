@@ -3,8 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
-import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
-import 'package:whossy_app/feature/home/tabs/matching/model/profile_data_footer.dart';
 
 import '../../../../common/utils/index.dart';
 import '../../settings/model/user_settings.dart';
@@ -13,7 +11,7 @@ part 'core_profile.g.dart';
 part 'core_profile_utils.dart';
 
 @JsonSerializable()
-class CoreProfile implements ProfileDataFooter {
+class CoreProfile {
   @JsonKey(name: 'first_name')
   String? firstName;
 
@@ -116,6 +114,8 @@ class CoreProfile implements ProfileDataFooter {
 
   Map<String, dynamic> toJson() => _$CoreProfileToJson(this);
 
+  bool get premiumUser => isPremium ?? false;
+
   @override
   String toString() {
     return 'CoreProfile(\n'
@@ -147,36 +147,6 @@ class CoreProfile implements ProfileDataFooter {
         '  amountPaid: $amountPaid\n'
         ')';
   }
-
-  @override
-  bool get isOnline => true;
-
-  @override
-  bool? get newUser => null;
-
-  @override
-  String get name => firstName ?? " ";
-
-  @override
-  int get userAge => dateOfBirth?.age ?? 0;
-
-  @override
-  String? get userBio => bio;
-
-  @override
-  List<String> get pictures => profilePics ?? [];
-
-  @override
-  double? get distance => null;
-
-  @override
-  List<String> get userInterests => interests ?? [];
-
-  @override
-  bool get premiumUser => isPremium ?? false;
-
-  @override
-  bool get isUserVerified => isApproved ?? false;
 
   @override
   bool operator ==(Object other) {

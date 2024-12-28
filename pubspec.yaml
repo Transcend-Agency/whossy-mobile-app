@@ -72,7 +72,7 @@ dependencies:
   pay_with_paystack:
     git:
       url: https://github.com/Transcend-Agency/pay_with_paystack.git
-      ref: 5b47b3a1bc3536cfc3e468c0823809bde3ef0cc9
+      ref: b8aac26314716426e25252c673ae599b95f7b717
 
 
 #  flutter_paystack:

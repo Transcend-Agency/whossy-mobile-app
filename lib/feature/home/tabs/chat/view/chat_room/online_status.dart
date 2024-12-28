@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,9 +56,23 @@ class OnlineStatus extends HookWidget {
 
     final status = userProfile!.user.status!;
 
+    final otherUserBlockedIds = userProfile.user.blockedIds ?? [];
+    final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+
     return Selector<EditProfileNotifier, List<String>>(
       selector: (_, edit) => edit.coreProfile?.blockedIds ?? [],
       builder: (_, blockedIds, __) {
+        if (otherUserBlockedIds.contains(currentUserUid)) {
+          return Text(
+            'last seen a long time ago',
+            style: TextStyles.hintThemeText.copyWith(
+              fontSize: AppUtils.scale(10.5.sp) ?? 13.sp,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          );
+        }
+
         return blockedIds.contains(oppUserId)
             ? Text(
                 'last seen recently',

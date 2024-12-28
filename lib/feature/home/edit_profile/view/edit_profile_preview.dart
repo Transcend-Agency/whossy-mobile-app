@@ -36,10 +36,7 @@ class EditProfilePreview extends HookWidget {
       body: SingleChildScrollView(
         controller: scrollController,
         child: Selector<EditProfileNotifier, EditProfileData>(
-          selector: (_, editProfile) => EditProfileData(
-            editProfile.coreProfile!,
-            editProfile.corePrefs!,
-          ),
+          selector: (_, editProfile) => editProfile.profileData,
           builder: (_, data, __) {
             final profile = data.profile;
             final preferences = data.preferences;
@@ -50,11 +47,11 @@ class EditProfilePreview extends HookWidget {
               gender: profile.gender,
               country: profile.countryOfOrigin,
               bio: profile.bio,
-              name: profile.name,
+              name: data.name,
               image: profile.profilePics![index],
               bottomWidget: ProfileFooterScaffold(
                 showLess: true,
-                data: profile,
+                data: data,
               ),
               options: null,
             );

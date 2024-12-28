@@ -31,6 +31,9 @@ class Message {
   @JsonKey(name: 'status')
   final MessageStatus? status;
 
+  @JsonKey(name: 'sender_id_blocked')
+  final bool isSenderBlocked;
+
   Message({
     String? id,
     String? senderId,
@@ -39,6 +42,7 @@ class Message {
     this.photo,
     this.localPhoto,
     this.status = MessageStatus.undelivered,
+    this.isSenderBlocked = false,
   })  : id = id ?? const Uuid().v4(),
         senderId = senderId ?? FirebaseAuth.instance.currentUser!.uid;
 

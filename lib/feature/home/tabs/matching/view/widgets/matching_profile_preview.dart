@@ -214,7 +214,7 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
           onSubmit: (reason, customMessage) {
             final reportNotifier = context.read<ReportNotifier>();
             final reporterName =
-                context.read<EditProfileNotifier>().coreProfile?.name;
+                context.read<EditProfileNotifier>().profileData.name;
 
             final uid = FirebaseAuth.instance.currentUser?.uid;
 

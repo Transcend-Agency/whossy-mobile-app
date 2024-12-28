@@ -105,6 +105,7 @@ class ChatRepository {
     List<XFile>? pictures,
     required bool isConnected,
     required CurrentChat currentChat,
+    required bool isSenderBlocked,
   }) async
   // lb
   {
@@ -115,6 +116,7 @@ class ChatRepository {
       localPhoto:
           (pictures != null && pictures.isNotEmpty) ? pictures[0].path : null,
       status: isConnected ? MessageStatus.sent : MessageStatus.undelivered,
+      isSenderBlocked: isSenderBlocked,
     );
 
     batch.set(
@@ -229,13 +231,21 @@ class ChatRepository {
     required int limit,
     required String chatId,
   }) {
+    final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+
     return _msgFirestore(chatId)
         .orderBy('timestamp', descending: true)
         .limit(limit)
         .snapshots()
         .map(
-          (snapshot) =>
-              snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList(),
+          (snapshot) => snapshot.docs
+              .map((doc) => Message.fromJson(doc.data()))
+              .where(
+                (message) =>
+                    message.senderId == currentUserUid ||
+                    !message.isSenderBlocked,
+              )
+              .toList(),
         );
   }
 }

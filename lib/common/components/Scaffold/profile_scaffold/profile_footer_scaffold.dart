@@ -35,6 +35,10 @@ class ProfileFooterScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool hasBio = data.userBio != null && data.userBio!.isNotEmpty;
+    bool hasInterests = data.userInterests.isNotEmpty;
+    bool hasRelationshipPreference = data.relationshipPreference != null;
+
     return FractionallySizedBox(
       widthFactor: 1,
       child: Container(
@@ -104,7 +108,7 @@ class ProfileFooterScaffold extends StatelessWidget {
                   ),
                 ],
               ),
-              addHeight(2),
+              addHeight(2), //
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -119,7 +123,7 @@ class ProfileFooterScaffold extends StatelessWidget {
                         ),
                       ),
                       if (data.userAge != 0) ...[
-                        addWidth(4), //
+                        addWidth(4),
                         Text(
                           "${data.userAge}",
                           style: TextStyles.profileHead.copyWith(
@@ -131,6 +135,31 @@ class ProfileFooterScaffold extends StatelessWidget {
                       ],
                     ],
                   ),
+                  if (!showLess &&
+                      !hasBio &&
+                      !hasInterests &&
+                      !hasRelationshipPreference)
+                    GestureDetector(
+                      onTap: () {
+                        if (onTap != null && activePage != null) {
+                          onTap!(context, activePage!);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Transform.rotate(
+                          angle: 0,
+                          child: SvgPicture.asset(
+                            AppAssets.down,
+                            width: 21,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   if (showLess)
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
@@ -151,26 +180,54 @@ class ProfileFooterScaffold extends StatelessWidget {
                     ),
                 ],
               ),
-              if (!showLess && data.userBio != null && data.userBio!.isNotEmpty)
+              if (!showLess && hasBio)
                 Padding(
-                  padding: EdgeInsets.only(bottom: 8.r),
-                  child: ReadMoreText(
-                    data.userBio!,
-                    trimLines: 2,
-                    trimMode: TrimMode.Line,
-                    textAlign: TextAlign.left,
-                    style: TextStyles.prefText.copyWith(
-                      color: Colors.white,
-                    ),
-                    moreStyle: TextStyles.prefText.copyWith(
-                      color: Colors.grey,
-                    ),
-                    lessStyle: TextStyles.prefText.copyWith(
-                      color: Colors.grey,
-                    ),
+                  padding: EdgeInsets.only(bottom: 0.r),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ReadMoreText(
+                          data.userBio!,
+                          trimLines: 2,
+                          trimMode: TrimMode.Line,
+                          textAlign: TextAlign.left,
+                          style: TextStyles.prefText.copyWith(
+                            color: Colors.white,
+                          ),
+                          moreStyle: TextStyles.prefText.copyWith(
+                            color: Colors.grey,
+                          ),
+                          lessStyle: TextStyles.prefText.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      if (!hasInterests && !hasRelationshipPreference)
+                        GestureDetector(
+                          onTap: () {
+                            if (onTap != null && activePage != null) {
+                              onTap!(context, activePage!);
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Transform.rotate(
+                              angle: 0,
+                              child: SvgPicture.asset(
+                                AppAssets.down,
+                                width: 21,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-              if (!showLess)
+              if (!showLess && (hasInterests || hasRelationshipPreference))
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -185,10 +242,12 @@ class ProfileFooterScaffold extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: data.userInterests.isNotEmpty
+                      child: data.userInterests.isNotEmpty ||
+                              hasRelationshipPreference
                           ? Interests(
                               interests: data.userInterests,
                               isSameUser: isSameUser,
+                              relPreference: data.relationshipPreference ?? 4,
                             )
                           : Container(color: Colors.transparent),
                     ),
@@ -243,10 +302,14 @@ class Interests extends HookWidget {
     super.key,
     required this.interests,
     required this.isSameUser,
+    required this.relPreference,
+    this.limit = 4,
   });
 
   final List<String> interests;
   final bool isSameUser;
+  final int relPreference;
+  final int limit;
 
   @override
   Widget build(BuildContext context) {
@@ -258,13 +321,46 @@ class Interests extends HookWidget {
         selector: (_, editProfile) => editProfile.coreProfile?.interests,
         builder: (_, interests, __) {
           // Determine which interests to show based on the state
-          final displayedInterests =
-              showAll.value ? this.interests : this.interests.take(5).toList();
+          final displayedInterests = showAll.value
+              ? this.interests
+              : this.interests.take(limit).toList();
 
           return Wrap(
             spacing: 8.w,
             runSpacing: 8.h,
             children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: const Color(0xFF101010),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 8.r),
+                      child: Image.asset(
+                        'assets/icons/i${relPreference + 1}.png',
+                        height: 28.r,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 6.r,
+                        horizontal: 8.r,
+                      ),
+                      child: Text(
+                        'Looking to date',
+                        style: TextStyles.hintText.copyWith(
+                          fontSize: AppUtils.scale(10.sp),
+                          color: AppColors.hintTextColor,
+                        ),
+                      ),
+                    ),
+                    addWidth(3),
+                  ],
+                ),
+              ),
               ...displayedInterests.map((item) {
                 return Stack(
                   clipBehavior: Clip.none,
@@ -302,7 +398,7 @@ class Interests extends HookWidget {
                   ],
                 );
               }),
-              if (this.interests.length > 6)
+              if (this.interests.length > limit)
                 GestureDetector(
                   onTap: () => showAll.value = !showAll.value,
                   child: Container(

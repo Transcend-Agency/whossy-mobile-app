@@ -66,7 +66,7 @@ class Profile extends StatelessWidget {
                             ),
                           ),
                           addWidth(6),
-                          if (data!.isUserVerified)
+                          if (data?.isApproved ?? false)
                             SvgPicture.asset(
                               AppAssets.tick,
                               width: 18,
@@ -143,7 +143,7 @@ class Profile extends StatelessWidget {
                           CustomButton(
                             onTap: () => Nav.push(context, const Credits()),
                             imagePath: AppAssets.credit,
-                            title: '${data.creditBalance ?? 0} Credits',
+                            title: '${data?.creditBalance ?? 0} Credits',
                             subTitle: 'Get Now',
                             containerColor: AppColors.yellowContainer,
                             textColor: AppColors.yellowText,

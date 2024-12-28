@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pay_with_paystack/pay_with_paystack.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:uuid/uuid.dart';
 import 'package:whossy_app/common/components/index.dart';
 
 import '../../../../../common/styles/text_style.dart';
@@ -161,17 +162,13 @@ class Credits extends HookWidget {
     required String currency,
     required double amount,
   }) async {
-    log('The currency is $currency and amount $amount');
-
     final editNotifier = context.read<EditProfileNotifier>();
-
-    final uniqueTransRef = PayWithPayStack().generateUuidV4();
 
     PayWithPayStack().now(
       context: context,
       secretKey: "sk_test_b9688554e5b6a393c6d74c2b8e30d5ba36e7fafe",
       customerEmail: editNotifier.coreProfile!.email!,
-      reference: uniqueTransRef,
+      reference: const Uuid().v4(),
       currency: currency,
       amount: amount,
       callbackUrl: "https://google.com",
