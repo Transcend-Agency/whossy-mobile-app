@@ -28,6 +28,8 @@ class PreferencesNotifier extends ChangeNotifier
   @override
   OtherPreferences? get otherPreferences => _dynOtherPrefs;
 
+  OtherPreferences? get staticOtherPreferences => _statOtherPrefs;
+
   @override
   void setValue(GenericEnum value) {
     _dynCorePrefs?.setValue(value);

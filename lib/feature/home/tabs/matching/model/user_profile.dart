@@ -54,4 +54,7 @@ class UserProfile implements ProfileDataFooter {
 
   @override
   bool get isUserVerified => user.isApproved;
+
+  @override
+  int? get relationshipPreference => preferences.relationshipPref;
 }

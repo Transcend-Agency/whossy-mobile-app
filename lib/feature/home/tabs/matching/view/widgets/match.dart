@@ -5,7 +5,6 @@ import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
@@ -14,6 +13,7 @@ import '../../../../../../constants/index.dart';
 import '../../../../../../provider/providers.dart';
 import '../../../../edit_profile/view/widgets/edit/image_view.dart';
 import '../../../../tutorial.dart';
+import '../../model/user_profile.dart';
 
 class Match extends StatefulWidget {
   const Match({super.key});

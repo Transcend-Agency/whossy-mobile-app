@@ -37,6 +37,7 @@ class ChatsNotifier extends ChangeNotifier {
   TimestampWrapper? chatExpTime;
   bool _hasChatRoomOpened = true;
 
+  List<String>? _blockedIds; // Variable to store blocked IDs
   bool _isUserConnected = false;
   Timer? _uploadTimeout;
 
@@ -102,8 +103,18 @@ class ChatsNotifier extends ChangeNotifier {
   // Chat stream getter
   Stream<List<ChatWithUser>> get chatStream => _chatRepository.getChatsStream();
 
-  Stream<UserProfile?> chatterDataStream(String id) =>
-      _chatRepository.getChatterDataStream(id);
+  Stream<UserProfile?> chatterDataStream(String id) {
+    return _chatRepository.getChatterDataStream(id).map((userProfile) {
+      final newBlockedIds = userProfile?.user.blockedIds;
+
+      // Update the local `_blockedIds` if they are different
+      if (newBlockedIds != _blockedIds) {
+        _blockedIds = newBlockedIds;
+      }
+
+      return userProfile; // Pass the original userProfile downstream
+    });
+  }
 
   // Manage the opened chat room state
   bool get hasChatOpened => _hasChatRoomOpened;
@@ -116,12 +127,15 @@ class ChatsNotifier extends ChangeNotifier {
   }
 
   void saveProfile(CoreProfile? data) {
-    _profileData = data;
+    if (_profileData == data) return;
 
+    _profileData = data;
     notifyListeners();
   }
 
   void updateConnectivity(bool isConnected) {
+    if (_isUserConnected == isConnected) return;
+
     _isUserConnected = isConnected;
   }
 
@@ -163,12 +177,17 @@ class ChatsNotifier extends ChangeNotifier {
   Future<void> sendMessage(String content, {List<XFile>? pictures}) async {
     if (currentChat == null) return;
 
+    // Check if the sender is blocked
+    final isSenderBlocked =
+        _blockedIds?.contains(currentChat!.uidUser1) ?? false;
+
     String messageId = await _chatRepository.sendMessage(
       content,
       chatId: currentChat!.chatId!,
       pictures: pictures,
       isConnected: _isUserConnected,
       currentChat: currentChat!,
+      isSenderBlocked: isSenderBlocked,
     );
 
     // If there are pictures to upload

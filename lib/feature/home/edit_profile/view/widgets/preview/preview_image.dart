@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
-import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
+import 'package:whossy_app/feature/home/edit_profile/model/edit_profile_data.dart';
 import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/image_view.dart';
 import 'package:whossy_app/provider/providers.dart';
 
@@ -43,10 +43,10 @@ class _PreviewImageState extends State<PreviewImage> {
             padding: EdgeInsets.fromLTRB(16.r, 12.r, 16.r, 0),
             child: const ProfileCard(color: Color(0xFFE7E7E7)),
           ),
-          Selector<EditProfileNotifier, CoreProfile>(
-            selector: (_, editProfile) => editProfile.coreProfile!,
-            builder: (_, profile, __) {
-              final images = profile.profilePics;
+          Selector<EditProfileNotifier, EditProfileData>(
+            selector: (_, editProfile) => editProfile.profileData,
+            builder: (_, data, __) {
+              final images = data.profile.profilePics;
               return ProfileCard(
                 color: Colors.white,
                 child: Stack(
@@ -55,7 +55,7 @@ class _PreviewImageState extends State<PreviewImage> {
                       key: const PageStorageKey("my_pageView"),
                       controller: _pageController,
                       onPageChanged: _onPageChange,
-                      itemCount: profile.profilePics?.length,
+                      itemCount: data.profile.profilePics?.length,
                       itemBuilder: (_, index) {
                         return SizedBox.expand(
                           child: Preview(
@@ -71,7 +71,7 @@ class _PreviewImageState extends State<PreviewImage> {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: ProfileFooterScaffold(
-                        data: profile,
+                        data: data,
                         isSameUser: true,
                         activePage: _activePage,
                         onTap: (context, index) => Nav.push(

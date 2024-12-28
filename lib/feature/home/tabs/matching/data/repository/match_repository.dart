@@ -1,12 +1,18 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
 import '../../../../../../common/utils/index.dart';
+import '../../../../preferences/model/other_preferences.dart';
+import 'query_helper.dart';
 
 class MatchRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
+  final _likes = FirebaseFirestore.instance.collection('likes');
+  final _dislikes = FirebaseFirestore.instance.collection('dislikes');
   final _geo = GeoFlutterFire();
 
   final _matchFilterSettings = const ExcludeSettings(
@@ -17,11 +23,12 @@ class MatchRepository {
   );
 
   Stream<List<UserProfile>> fetchProfilesStream({
-    int limit = 10,
+    int limit = 20,
     double radiusInKm = 300,
     double? longitude,
     double? latitude,
     required List<String> blockedIds,
+    OtherPreferences? preferences,
   }) async* {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -33,59 +40,63 @@ class MatchRepository {
     final center = _geo.point(latitude: latitude, longitude: longitude);
 
     // Real-time listeners for likes and dislikes
-    final likesStream = FirebaseFirestore.instance
-        .collection('likes')
-        .where('liker_id', isEqualTo: uid)
-        .snapshots();
-
-    final dislikesStream = FirebaseFirestore.instance
-        .collection('dislikes')
-        .where('disliker_id', isEqualTo: uid)
-        .snapshots();
-
-    // Combine liked and disliked IDs into a set
     final blacklist = <String>{};
 
-    likesStream.listen((snapshot) {
-      for (var doc in snapshot.docs) {
-        blacklist.add(doc['liked_id']);
-      }
-    });
+    _likes.where('liker_id', isEqualTo: uid).snapshots().listen(
+      (snapshot) {
+        blacklist.addAll(
+          snapshot.docs.map((doc) => doc['liked_id'] as String),
+        );
+      },
+    );
 
-    dislikesStream.listen((snapshot) {
-      for (var doc in snapshot.docs) {
-        blacklist.add(doc['disliked_id']);
-      }
-    });
+    _dislikes.where('disliker_id', isEqualTo: uid).snapshots().listen(
+      (snapshot) {
+        blacklist
+            .addAll(snapshot.docs.map((doc) => doc['disliked_id'] as String));
+      },
+    );
 
-    // Main profiles query
-    var query = _geo
+    // Geolocation query
+    var geoQuery = _geo
         .collection(collectionRef: _profiles)
         .within(center: center, radius: radiusInKm, field: 'geography');
 
-    await for (var documentSnapshots in query) {
-      final List<UserProfile> userProfiles = [];
+    await for (var geoSnapshots in geoQuery) {
+      List<UserProfile> userProfiles = [];
 
-      if (documentSnapshots.isEmpty) {
+      if (geoSnapshots.isEmpty) {
         yield userProfiles;
         continue;
       }
 
-      for (var doc in documentSnapshots) {
-        if (doc.data() == null) {
-          continue;
-        }
+      // Apply additional filters if provided
+      Query profilesQuery = _profiles;
+      if (preferences != null) {
+        final filters = QueryHelper.buildFilters(preferences);
+        log('The filters are $filters');
+        profilesQuery = QueryHelper.applyFilters(filters, profilesQuery);
+      }
+
+      // Match geolocation results with filtered profiles
+      final filteredSnapshots = await profilesQuery.get();
+      final filteredIds = filteredSnapshots.docs.map((doc) => doc.id).toSet();
+
+      for (var doc in geoSnapshots) {
+        if (doc.data() == null) continue;
 
         final profile =
             UserProfile.fromJson(doc.data() as Map<String, dynamic>);
-
-        if (!AppUtils.excludeProfile(profile, uid, blockedIds,
-                settings: _matchFilterSettings) &&
-            !blacklist.contains(profile.user.uid)) {
+        if (!AppUtils.excludeProfile(
+              profile,
+              uid,
+              blockedIds,
+              settings: _matchFilterSettings,
+            ) &&
+            !blacklist.contains(profile.user.uid) &&
+            filteredIds.contains(doc.id)) {
           userProfiles.add(profile);
-          if (userProfiles.length >= limit) {
-            break;
-          }
+          if (userProfiles.length >= limit) break;
         }
       }
 

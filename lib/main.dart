@@ -46,17 +46,19 @@ void main() async {
             ChatsNotifier>(
           create: (_) => ChatsNotifier(),
           update: (_, profileData, networkStatus, chatNotifier) {
-            chatNotifier!.saveProfile(profileData.staticProfile);
-            chatNotifier.updateConnectivity(networkStatus.isConnected);
-            return chatNotifier;
+            return chatNotifier!
+              ..saveProfile(profileData.staticProfile)
+              ..updateConnectivity(networkStatus.isConnected);
           },
         ),
         ChangeNotifierProvider(create: (_) => AdvancedSearchNotifier()),
-        ChangeNotifierProxyProvider<EditProfileNotifier, SwipeAndMatchNotifier>(
+        ChangeNotifierProxyProvider2<EditProfileNotifier, PreferencesNotifier,
+            SwipeAndMatchNotifier>(
           create: (_) => SwipeAndMatchNotifier(),
-          update: (_, profileData, swipeAndMatch) {
-            swipeAndMatch!.saveProfile(profileData.staticProfile);
-            return swipeAndMatch;
+          update: (_, profileData, preferences, swipeAndMatch) {
+            return swipeAndMatch!
+              ..saveProfile(profileData.staticProfile)
+              ..saveFilters(preferences.staticOtherPreferences);
           },
         ),
         ChangeNotifierProvider(create: (_) => LikesNotifier()),

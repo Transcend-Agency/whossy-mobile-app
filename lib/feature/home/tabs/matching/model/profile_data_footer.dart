@@ -9,4 +9,5 @@ abstract class ProfileDataFooter {
   List<String> get userInterests;
   bool get premiumUser;
   bool get isUserVerified;
+  int? get relationshipPreference;
 }

@@ -62,7 +62,12 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
     return await FileService.handlePermissions(
       context: context,
       showDialog: showSettingsDialog,
-      showSnackbar: (message) => showSnackbar(message, context),
+      showSnackbar: (message) => showSnackbar(
+        message,
+        context,
+        label: 'Settings',
+        durationInSec: 5,
+      ),
       index: index,
       onAddPhoto: _addPhoto,
     );

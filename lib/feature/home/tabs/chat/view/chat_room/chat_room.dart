@@ -260,20 +260,23 @@ class _ChatRoomState extends State<ChatRoom> {
                       selector: (_, edit) => edit.coreProfile?.blockedIds ?? [],
                       builder: (_, blockedIds, __) {
                         return blockedIds.contains(data.currentChat.uidUser2)
-                            ? Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                height: 50.r,
-                                width: double.infinity,
-                                color:
-                                    AppColors.inputBackGround.withOpacity(0.9),
-                                child: Center(
-                                  child: Text(
-                                    'UNBLOCK',
-                                    style: TextStyles.chatText.copyWith(
-                                      fontSize:
-                                          AppUtils.scale(11.5.sp) ?? 13.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.primaryColor,
+                            ? GestureDetector(
+                                onTap: unblockUser,
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  height: 50.r,
+                                  width: double.infinity,
+                                  color: AppColors.inputBackGround
+                                      .withOpacity(0.9),
+                                  child: Center(
+                                    child: Text(
+                                      'UNBLOCK',
+                                      style: TextStyles.chatText.copyWith(
+                                        fontSize:
+                                            AppUtils.scale(11.5.sp) ?? 13.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.primaryColor,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -357,5 +360,22 @@ class _ChatRoomState extends State<ChatRoom> {
         );
       },
     );
+  }
+
+  Future<void> unblockUser() async {
+    final editNotifier = context.read<EditProfileNotifier>();
+    var blockedIds = editNotifier.coreProfile?.blockedIds ?? [];
+    var originalBlockedIds = List<String>.from(blockedIds);
+
+    blockedIds.remove(_chatsNotifier.currentChat!.uidUser2);
+    editNotifier.updateProfile(blockedIds: blockedIds);
+
+    bool success = await editNotifier.saveUserProfile(
+      showSnackbar: (msg) => showSnackbar(msg, context),
+    );
+
+    if (!success) {
+      editNotifier.updateProfile(blockedIds: originalBlockedIds);
+    }
   }
 }
