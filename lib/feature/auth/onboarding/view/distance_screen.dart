@@ -66,7 +66,7 @@ class _DistanceScreenState extends State<DistanceScreen>
           title: "Distance search radius",
           subtitle: AppStrings.distanceSubHeader,
         ),
-        const Spacer(),
+        const Spacer(flex: 4),
         Stack(
           alignment: Alignment.center,
           children: [
@@ -90,7 +90,7 @@ class _DistanceScreenState extends State<DistanceScreen>
             ),
           ],
         ),
-        const Spacer(),
+        const Spacer(flex: 6),
         Padding(
           padding: EdgeInsets.fromLTRB(12.w, 0, 12.w, 90.h),
           child: AppSlider(

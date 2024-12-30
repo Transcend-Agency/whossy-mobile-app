@@ -67,21 +67,30 @@ class _ChatsState extends State<Chats> {
         );
       }
 
-      return AppListBuilder(
-        key: const ValueKey('data'),
-        padding: pagePadding,
-        itemCount: tileData.length,
-        itemBuilder: (_, index) {
-          final tile = tileData[index];
-          final oppIndex =
-              tile.chat.participants.indexOf(currentUser) == 0 ? 1 : 0;
+      return Selector<EditProfileNotifier, List<String>>(
+        selector: (_, edit) => edit.coreProfile?.blockedIds ?? [],
+        builder: (_, blockedIds, __) {
+          return AppListBuilder(
+            key: const ValueKey('data'),
+            padding: pagePadding,
+            itemCount: tileData.length,
+            itemBuilder: (_, index) {
+              final tile = tileData[index];
+              final oppIndex =
+                  tile.chat.participants.indexOf(currentUser) == 0 ? 1 : 0;
 
-          return ChatTile(
-            data: tile.chat,
-            images: tile.userProfile?.pictures,
-            name: tile.userProfile?.user.firstName,
-            oppIndex: oppIndex,
-            onTileTap: () => onTileTap(context, tile, oppIndex),
+              final isUserBlocked =
+                  blockedIds.contains(tile.chat.participants[oppIndex]);
+
+              return ChatTile(
+                data: tile.chat,
+                isUserBlocked: isUserBlocked,
+                images: tile.userProfile?.pictures,
+                name: tile.userProfile?.user.firstName,
+                oppIndex: oppIndex,
+                onTileTap: () => onTileTap(context, tile, oppIndex),
+              );
+            },
           );
         },
       );

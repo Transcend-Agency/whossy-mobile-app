@@ -69,7 +69,7 @@ class _PetsScreenState extends State<PetsScreen>
                     onChanged: (value) {
                       if (_pet != value) {
                         setState(() => _pet = value);
-                        onboarding.updateUserProfile(pet: value?.index);
+                        onboarding.updateUserProfile(pets: value?.index);
                         _checkCompletion();
                       }
                     },

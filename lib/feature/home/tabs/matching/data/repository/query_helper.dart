@@ -43,6 +43,11 @@ class QueryHelper {
           'drink': corePreferences.drinking!,
         if (corePreferences.workout != null)
           'workout': corePreferences.workout!,
+        if (corePreferences.petOwner != null) 'pets': corePreferences.petOwner!,
+        if (corePreferences.religion != null)
+          'religion': corePreferences.religion!,
+        if (corePreferences.dietary != null)
+          'dietary': corePreferences.dietary!,
       }
     };
 
@@ -51,7 +56,6 @@ class QueryHelper {
   }
 
   static Query applyFilters(Map<String, dynamic> filters, Query query) {
-    // Define a map of filter functions
     final filterFunctions = {
       // Other filters
       'meet': _applyMeetFilter,
@@ -69,6 +73,11 @@ class QueryHelper {
       'smoke': _applySmokeFilter,
       'drink': _applyDrinkFilter,
       'workout': _applyWorkOutFilter,
+      'pets': _applyPetOwnerFilter,
+      'religion': _applyReligionFilter,
+      'dietary': _applyDietaryFilter,
+      'family_goal': _applyFutureFamilyPlansFilter,
+      'communication_style': _applyCommunicationStyleFilter,
     };
 
     // Apply filters dynamically
@@ -82,7 +91,6 @@ class QueryHelper {
     return query;
   }
 
-  // Filter function for 'meet' (gender preference)
   static Query _applyMeetFilter(Query query, dynamic value) {
     int meetValue = value is int ? value : 2; // Default to no restriction
     if (meetValue == 0) {
@@ -119,15 +127,8 @@ class QueryHelper {
 
   static Query _applyHasBioFilter(Query query, dynamic value) {
     if (value is bool && value) {
-      query = query
-          .where(
-            'bio',
-            isNotEqualTo: null,
-          )
-          .where(
-            'bio',
-            isNotEqualTo: '',
-          );
+      query =
+          query.where('bio', isNotEqualTo: null).where('bio', isNotEqualTo: '');
     }
     // If hasBio is false, do not apply any filter
     return query;
@@ -140,7 +141,6 @@ class QueryHelper {
     return query;
   }
 
-  // Add filter functions for each CorePreferences property
   static Query _applyRelationshipPreferenceFilter(Query query, dynamic value) {
     if (value is Preference) {
       query = query.where('preference', isEqualTo: value.index);
@@ -193,6 +193,41 @@ class QueryHelper {
   static Query _applyWorkOutFilter(Query query, dynamic value) {
     if (value is WorkOut) {
       query = query.where('workout', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyPetOwnerFilter(Query query, dynamic value) {
+    if (value is PetOwner) {
+      query = query.where('pets', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyReligionFilter(Query query, dynamic value) {
+    if (value is Religion) {
+      query = query.where('religion', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyDietaryFilter(Query query, dynamic value) {
+    if (value is Dietary) {
+      query = query.where('dietary', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyFutureFamilyPlansFilter(Query query, dynamic value) {
+    if (value is FutureFamilyPlans) {
+      query = query.where('family_goal', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyCommunicationStyleFilter(Query query, dynamic value) {
+    if (value is CommunicationStyle) {
+      query = query.where('communication_style', isEqualTo: value.index);
     }
     return query;
   }

@@ -173,6 +173,7 @@ class _MatchState extends State<Match> {
 
   Widget buildErrorWidget(Object? error) {
     return Center(
+      key: const ValueKey('error'),
       child: Text('Error: $error'),
     );
   }
@@ -270,12 +271,12 @@ class _MatchState extends State<Match> {
             ),
           ],
         ),
-        _buildBottomIcons(),
+        _buildTopIcons(),
       ],
     );
   }
 
-  Widget _buildBottomIcons() {
+  Widget _buildTopIcons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

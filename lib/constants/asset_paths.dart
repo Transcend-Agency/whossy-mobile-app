@@ -3,7 +3,10 @@ class AppAssets {
   static const chatLoveIcon = "assets/icons/chatLove.png";
   static const googleLogo = 'assets/icons/google.svg';
   static const appleLogo = 'assets/icons/apple.svg';
-  static const exclamation = 'assets/icons/exclamation.svg';
+  static const exclamation = 'assets/icons/exclamation.png';
+  static const real = 'assets/icons/real.png';
+  static const shake = 'assets/icons/shake.png';
+  static const anger = 'assets/icons/anger.png';
 
   static const i1 = 'assets/icons/i1.png';
   static const i2 = 'assets/icons/i2.png';

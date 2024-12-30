@@ -28,8 +28,8 @@ class WelcomeScreen extends StatelessWidget {
             Row(
               children: [
                 ShaderMask(
-                  shaderCallback: (_) =>
-                      AppColors.splashVariation.createShader(_),
+                  shaderCallback: (rect) =>
+                      AppColors.splashVariation.createShader(rect),
                   blendMode: BlendMode.srcIn,
                   child: Text(
                     'Welcome to Whossy!',
@@ -38,7 +38,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  ' 🎉',
+                  '  🎉',
                   style: TextStyle(fontSize: 20.sp),
                 ),
               ],
@@ -59,8 +59,6 @@ class WelcomeScreen extends StatelessWidget {
                   leading: AppStrings.leadingEmojis[index],
                   title: AppStrings.titles[index],
                   subTitle: AppStrings.subtitles[index],
-                  useSvg: (index == 1),
-                  svgPath: (index == 1) ? AppAssets.exclamation : null,
                 );
               }),
             ),

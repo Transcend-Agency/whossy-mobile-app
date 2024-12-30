@@ -33,6 +33,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
   // Setup the location permission stream and service
   late Stream<LocationPermission> locationPermissionStream;
   final locationService = LocationService();
+  late UserPresenceService _userService;
 
   // Set up the notifiers
   late EditProfileNotifier _editProfileNotifier;
@@ -58,17 +59,19 @@ class _HomeWrapperState extends State<HomeWrapper> {
     _editProfileNotifier = context.read<EditProfileNotifier>();
     _swipeAndMatchNotifier = context.read<SwipeAndMatchNotifier>();
     _prefsNotifier = context.read<PreferencesNotifier>();
+    _userService = UserPresenceService();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _editProfileNotifier.getUserData(showSnackbar: showSnackbar);
       _editProfileNotifier.checkSafetyGuideOpenedState();
       _prefsNotifier.getMatchingPreferences(showSnackbar: showSnackbar);
       context.read<ChatsNotifier>().checkOpenedState();
+      _userService.updateUserStatus(true);
     });
 
     _requestLocationPermission();
 
-    startTutorial();
+    // startTutorial();
   }
 
   Future<void> _requestLocationPermission() async {

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/index.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/state/chats_notifier.dart';
@@ -124,6 +125,42 @@ class _MessageStreamState extends State<MessageStream> {
           final isNextSameSender =
               (idx > 0) && messages[idx - 1].senderId == message.senderId;
 
+          // Determine if a date separator is needed
+          final currentMessageDate =
+              message.timestamp?.toDateTime()?.toLocal() ?? DateTime.now();
+          DateTime? previousMessageDate;
+
+          if (idx < messages.length - 1) {
+            previousMessageDate =
+                messages[idx + 1].timestamp?.toDateTime()?.toLocal();
+          }
+
+          // Check if the current message needs a date separator
+          bool showDateSeparator = false;
+          String dateLabel = "";
+
+          if (previousMessageDate == null ||
+              currentMessageDate.day != previousMessageDate.day ||
+              currentMessageDate.month != previousMessageDate.month ||
+              currentMessageDate.year != previousMessageDate.year) {
+            showDateSeparator = true;
+            final now = DateTime.now();
+            final yesterday = now.subtract(const Duration(days: 1));
+
+            if (currentMessageDate.year == now.year &&
+                currentMessageDate.month == now.month &&
+                currentMessageDate.day == now.day) {
+              dateLabel = "Today";
+            } else if (currentMessageDate.year == yesterday.year &&
+                currentMessageDate.month == yesterday.month &&
+                currentMessageDate.day == yesterday.day) {
+              dateLabel = "Yesterday";
+            } else {
+              dateLabel =
+                  "${currentMessageDate.monthName} ${currentMessageDate.day}${_getOrdinal(currentMessageDate.day)}";
+            }
+          }
+
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -134,6 +171,25 @@ class _MessageStreamState extends State<MessageStream> {
                   style: TextStyles.chatText,
                 ),
                 addHeight(14),
+              ],
+              if (showDateSeparator && !isFirstMessage) ...[
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 6.r),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 6.r,
+                    horizontal: 8.r,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.listTileColor,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Text(
+                    dateLabel,
+                    style: TextStyles.chatText.copyWith(
+                      fontSize: AppUtils.scale(9.sp) ?? 11.5.sp,
+                    ),
+                  ),
+                ),
               ],
               MessageBubble(
                 key: ValueKey(message.id),
@@ -150,5 +206,21 @@ class _MessageStreamState extends State<MessageStream> {
     }
 
     return const Center(child: Text('No data available'));
+  }
+}
+
+String _getOrdinal(int day) {
+  if (day >= 11 && day <= 13) {
+    return "th";
+  }
+  switch (day % 10) {
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
   }
 }

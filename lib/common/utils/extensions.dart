@@ -230,4 +230,23 @@ extension DateTimeFormatting on DateTime {
     // Append the suffix to the day
     return formattedDate.replaceFirst(RegExp(r'\d+'), '$day$suffix');
   }
+
+ String get monthName {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+    return months[month - 1];
+  }
+
 }

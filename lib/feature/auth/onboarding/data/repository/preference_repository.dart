@@ -29,6 +29,13 @@ class PreferenceRepository {
         final filtersData = {
           'meet': data['meet'],
           'distance': data['distance'],
+          'outreach': true,
+          'has_bio': false,
+          'age_range': {
+            "max": 40,
+            "min": 20,
+          },
+          'similar_interest': false,
         };
 
         // Update the 'filters' collection
