@@ -17,8 +17,10 @@ class ChatTile extends StatelessWidget {
     this.onTileTap,
     this.images,
     this.name,
+    required this.isUserBlocked,
   });
 
+  final bool isUserBlocked;
   final Chat data;
   final int oppIndex;
   final List<String>? images;
@@ -48,9 +50,10 @@ class ChatTile extends StatelessWidget {
         children: [
           addHeight(3),
           Text(
-            data.lastMessage,
+            isUserBlocked ? 'User blocked' : data.lastMessage,
             style: TextStyles.hintThemeText.copyWith(
               fontSize: AppUtils.scale(10.sp) ?? 13.5.sp,
+              fontStyle: isUserBlocked ? FontStyle.italic : null,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -58,38 +61,41 @@ class ChatTile extends StatelessWidget {
           addHeight(2),
         ],
       ),
-      trailing: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          addHeight(4),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(6.r)),
-              color: AppColors.listTileColor,
+      trailing: isUserBlocked
+          ? null
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                addHeight(4),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(6.r)),
+                    color: AppColors.listTileColor,
+                  ),
+                  child: data.lastMessageTimestamp?.toTimestamp()?.toDate() !=
+                          null
+                      ? Text(
+                          data.lastMessageTimestamp!.toTimestamp()!.toTime(),
+                          style: TextStyles.hintThemeText.copyWith(
+                            color: AppColors.black,
+                            fontSize: AppUtils.scale(9.sp) ?? 12.5.sp,
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (data.lastSenderUserId ==
+                        FirebaseAuth.instance.currentUser!.uid)
+                      messageStatus(data.lastMessageStatus!),
+                    addWidth(4),
+                  ],
+                ),
+              ],
             ),
-            child: data.lastMessageTimestamp?.toTimestamp()?.toDate() != null
-                ? Text(
-                    data.lastMessageTimestamp!.toTimestamp()!.toTime(),
-                    style: TextStyles.hintThemeText.copyWith(
-                      color: AppColors.black,
-                      fontSize: AppUtils.scale(9.sp) ?? 12.5.sp,
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
-          const Spacer(),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (data.lastSenderUserId ==
-                  FirebaseAuth.instance.currentUser!.uid)
-                messageStatus(data.lastMessageStatus!),
-              addWidth(4),
-            ],
-          ),
-        ],
-      ),
       onTap: onTileTap,
     );
   }

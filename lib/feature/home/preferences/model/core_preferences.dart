@@ -65,7 +65,7 @@ class CorePreferences implements ProfileData {
   WorkOut? workout;
 
   @JsonKey(
-    name: "pet",
+    name: "pets",
     toJson: enumToIndex,
     fromJson: indexToPetOwner,
   )

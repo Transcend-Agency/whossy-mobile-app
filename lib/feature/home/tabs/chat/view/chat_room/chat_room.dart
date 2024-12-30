@@ -20,6 +20,7 @@ import '../../../../../../constants/index.dart';
 import '../widgets/_.dart';
 import '../widgets/sheets/actions_sheet.dart';
 import '../widgets/sheets/photo_sheet.dart';
+import 'message/message_image_view.dart';
 
 part 'chat_room_helpers.dart';
 
@@ -205,9 +206,20 @@ class _ChatRoomState extends State<ChatRoom> {
             addBarHeight: 4,
             titleWidget: Row(
               children: [
-                CircleAppAvatar(
-                  imageUrl: data.currentChat.profilePicUrl,
-                  radius: isTab ? 20 : 22.r,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      TransparentRoute(
+                        builder: (context) => MessageImageView(
+                            imageUrl: data.currentChat.profilePicUrl),
+                      ),
+                    );
+                  },
+                  child: CircleAppAvatar(
+                    imageUrl: data.currentChat.profilePicUrl,
+                    radius: isTab ? 20 : 22.r,
+                  ),
                 ),
                 addWidth(isTab ? 10 : 16),
                 Expanded(

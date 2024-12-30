@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
+import 'package:whossy_app/feature/home/tabs/chat/view/chat_room/message/message_image_view.dart';
 
 import '../../../../../../../common/components/index.dart';
 import '../../../../../../../common/utils/index.dart';
@@ -114,12 +115,22 @@ class NetworkImage extends StatelessWidget {
         child: CachedNetworkImage(
           imageUrl: url,
           imageBuilder: (_, imageProvider) {
-            return Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  TransparentRoute(
+                    builder: (context) => MessageImageView(imageUrl: url),
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             );

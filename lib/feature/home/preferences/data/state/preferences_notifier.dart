@@ -57,12 +57,12 @@ class PreferencesNotifier extends ChangeNotifier
     return corePrefs || otherPrefs;
   }
 
-  // void _initializeDefaultValues() {
-  //   _dynCorePrefs = CorePreferences();
-  //   _statCorePrefs = CorePreferences();
-  //   _dynOtherPrefs = OtherPreferences();
-  //   _statOtherPrefs = OtherPreferences();
-  // }
+  void _initializeDefaultValues() {
+    _dynCorePrefs = CorePreferences();
+    _statCorePrefs = CorePreferences();
+    _dynOtherPrefs = OtherPreferences();
+    _statOtherPrefs = OtherPreferences();
+  }
 
   void resetToStatic() {
     _dynCorePrefs = CorePreferences.fromJson(_statCorePrefs!.toJson());
@@ -78,9 +78,13 @@ class PreferencesNotifier extends ChangeNotifier
     try {
       final data = await _prefsRepo.fetchFilters();
 
-      //_initializeDefaultValues();
+      if (data != null) {
+        _updatePrefs(data);
 
-      if (data != null) _updatePrefs(data);
+        return;
+      }
+
+      _initializeDefaultValues();
     } on FirebaseException catch (e) {
       handleFirebaseError(e, showSnackbar);
     } catch (e) {

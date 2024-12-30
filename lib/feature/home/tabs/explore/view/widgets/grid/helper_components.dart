@@ -133,7 +133,7 @@ Widget buildDataGrid(BuildContext context, List<UserProfile> tileData) {
                     return offline(size: 24);
                   },
                 ),
-                //Image.asset(item.imageUrl, fit: BoxFit.cover),
+
                 ProfileShade(
                   heightFactor: 0.35,
                   gradient: AppColors.likesAndMatchShade,

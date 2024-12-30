@@ -10,5 +10,6 @@ export 'exceptions/unregistered_email.dart';
 export 'extensions.dart';
 export 'input_formatter.dart';
 export 'router/router.dart';
+export 'router/transparent_route.dart';
 export 'theme/theme.dart';
 export 'widget_functions.dart';

@@ -1,3 +1,5 @@
+import 'package:whossy_app/constants/asset_paths.dart';
+
 class AppStrings {
   // General
   static const String appName = 'Whossy';
@@ -81,10 +83,10 @@ class AppStrings {
 
   // Guidelines
   static const List<String> leadingEmojis = [
-    '🎉',
-    '',
-    '🤝',
-    '😡',
+    AppAssets.real,
+    AppAssets.exclamation,
+    AppAssets.shake,
+    AppAssets.anger,
   ];
 
   static const List<String> titles = [

@@ -57,7 +57,7 @@ class Preferences implements ProfileData {
   int? workOut;
 
   // Todo: Refactor to pets
-  @JsonKey(name: "pet")
+  @JsonKey(name: "pets")
   int? petOwner;
 
   @JsonKey(name: "marital_status")

@@ -186,4 +186,10 @@ class TimestampWrapper {
     if (timestampObj == null) return true;
     return timestampObj.toDate().isBefore(DateTime.now());
   }
+
+  // Method to convert the timestamp to DateTime, or return current time if null
+  DateTime? toDateTime() {
+    final timestampObj = toTimestamp();
+    return timestampObj?.toDate();
+  }
 }
