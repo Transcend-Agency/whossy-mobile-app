@@ -14,7 +14,7 @@ OtherPreferences _$OtherPreferencesFromJson(Map<String, dynamic> json) =>
       ageRange: (json['age_range'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, (e as num).toInt()),
       ),
-      distance: (json['distance'] as num?)?.toDouble(),
+      distance: (json['distance'] as num?)?.toInt(),
       interests: (json['interests'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),

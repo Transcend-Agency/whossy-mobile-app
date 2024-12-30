@@ -1,12 +1,12 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
-import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../../../../../common/utils/index.dart';
+import '../../../../preferences/model/core_preferences.dart';
 import '../../../../preferences/model/other_preferences.dart';
+import '../../model/user_profile.dart';
 import 'query_helper.dart';
 
 class MatchRepository {
@@ -14,6 +14,7 @@ class MatchRepository {
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
   final _geo = GeoFlutterFire();
+  final double radiusInKm = 50; // Default radius in kilometers
 
   final _matchFilterSettings = const ExcludeSettings(
     excludeIncompleteOnboarding: true,
@@ -24,17 +25,28 @@ class MatchRepository {
 
   Stream<List<UserProfile>> fetchProfilesStream({
     int limit = 20,
-    double radiusInKm = 300,
     double? longitude,
     double? latitude,
     required List<String> blockedIds,
     OtherPreferences? preferences,
+    CorePreferences? corePreferences,
+    required List<String> interests,
   }) async* {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
     if (latitude == null || longitude == null) {
       yield [];
       return;
+    }
+
+    // Adjust radius based on distance preference (convert miles to km)
+    double radius = radiusInKm;
+    if (preferences?.distance != null) {
+      radius = preferences!.distance!.toDouble();
+    }
+
+    if (preferences?.outreach != null) {
+      if (preferences!.outreach ?? false) radius = 300;
     }
 
     final center = _geo.point(latitude: latitude, longitude: longitude);
@@ -57,10 +69,10 @@ class MatchRepository {
       },
     );
 
-    // Geolocation query
+    // Geolocation query with buffer radius
     var geoQuery = _geo
         .collection(collectionRef: _profiles)
-        .within(center: center, radius: radiusInKm, field: 'geography');
+        .within(center: center, radius: radius, field: 'geography');
 
     await for (var geoSnapshots in geoQuery) {
       List<UserProfile> userProfiles = [];
@@ -70,12 +82,19 @@ class MatchRepository {
         continue;
       }
 
-      // Apply additional filters if provided
       Query profilesQuery = _profiles;
-      if (preferences != null) {
-        final filters = QueryHelper.buildFilters(preferences);
-        log('The filters are $filters');
-        profilesQuery = QueryHelper.applyFilters(filters, profilesQuery);
+      if (preferences != null || corePreferences != null) {
+        profilesQuery = QueryHelper.applyFilters(
+          QueryHelper.buildFilters(
+            preferences,
+            corePreferences,
+            userInterests: [
+              ...interests,
+              ...(preferences?.interests ?? []),
+            ],
+          ),
+          profilesQuery,
+        );
       }
 
       // Match geolocation results with filtered profiles
@@ -87,6 +106,18 @@ class MatchRepository {
 
         final profile =
             UserProfile.fromJson(doc.data() as Map<String, dynamic>);
+        final data = doc.data() as Map<String, dynamic>;
+
+        // Extract geopoint from the geography field
+        final geopoint =
+            (data['geography'] as Map<String, dynamic>)['geopoint'] as GeoPoint;
+
+        // Calculate the exact distance
+        final distance = (Geolocator.distanceBetween(latitude, longitude,
+                    geopoint.latitude, geopoint.longitude) /
+                1000)
+            .floor();
+
         if (!AppUtils.excludeProfile(
               profile,
               uid,
@@ -94,7 +125,8 @@ class MatchRepository {
               settings: _matchFilterSettings,
             ) &&
             !blacklist.contains(profile.user.uid) &&
-            filteredIds.contains(doc.id)) {
+            filteredIds.contains(doc.id) &&
+            radius.toInt() >= distance) {
           userProfiles.add(profile);
           if (userProfiles.length >= limit) break;
         }

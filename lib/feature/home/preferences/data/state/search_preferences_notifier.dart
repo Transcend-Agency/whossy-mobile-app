@@ -16,7 +16,7 @@ abstract class SearchPreferencesNotifier {
     bool? hasBio,
     int? minAge,
     int? maxAge,
-    double? distance,
+    int? distance,
     bool? outreach,
     List<String>? interests,
     String? country,

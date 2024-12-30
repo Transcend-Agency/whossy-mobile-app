@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/feature/home/settings/model/user_settings.dart';
 
 import '../../../../common/utils/index.dart';
+import 'geography.dart';
 import 'user_status.dart';
 
 part 'app_user.g.dart';
@@ -60,6 +61,13 @@ class AppUser {
   @JsonKey(name: 'user_settings')
   final UserSettings? userSettings;
 
+  @JsonKey(
+    name: 'geography',
+    toJson: AppUtils.geographyToJson,
+    fromJson: AppUtils.geographyFromJson,
+  )
+  final Geography? geography;
+
   @JsonKey(name: "is_premium")
   final bool? isPremium;
 
@@ -112,6 +120,7 @@ class AppUser {
     this.longitude,
     this.location,
     this.geohash,
+    this.geography,
     this.creditBalance = 0,
     this.amountPaid = 0,
     List<String>? blockedIds,

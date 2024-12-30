@@ -20,7 +20,7 @@ class OtherPreferences {
   Map<String, int>? ageRange;
 
   List<String>? interests;
-  double? distance;
+  int? distance;
 
   bool? outreach;
 
@@ -53,7 +53,7 @@ class OtherPreferences {
     bool? hasBio,
     int? minAge,
     int? maxAge,
-    double? distance,
+    int? distance,
     List<String>? interests,
     String? country,
     String? city,

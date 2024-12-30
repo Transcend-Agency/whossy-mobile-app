@@ -25,6 +25,8 @@ class PreferencesNotifier extends ChangeNotifier
   @override
   CorePreferences? get selectedItems => _dynCorePrefs;
 
+  CorePreferences? get staticCorePreferences => _statCorePrefs;
+
   @override
   OtherPreferences? get otherPreferences => _dynOtherPrefs;
 
@@ -133,7 +135,7 @@ class PreferencesNotifier extends ChangeNotifier
     bool? hasBio,
     int? minAge,
     int? maxAge,
-    double? distance,
+    int? distance,
     bool? outreach,
     List<String>? interests,
     String? country,

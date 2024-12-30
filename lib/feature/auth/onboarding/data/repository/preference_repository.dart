@@ -8,6 +8,8 @@ import '../../model/preferences.dart';
 
 class PreferenceRepository {
   final _prefFirestore = FirebaseFirestore.instance.collection('users');
+  final _filtersFirestore = FirebaseFirestore.instance.collection('filters');
+
   final _deletePicQueue =
       FirebaseFirestore.instance.collection('deletePicQueue');
 
@@ -15,11 +17,30 @@ class PreferenceRepository {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
     try {
+      // Update the 'users' collection
       await _prefFirestore.doc(uid).set(data, SetOptions(merge: true)).timeout(
             const Duration(seconds: 5),
             onTimeout: () =>
                 throw TimeoutException('The upload operation timed out'),
           );
+
+      // Check if the map contains 'meet' and 'distance' keys
+      if (data.containsKey('meet') && data.containsKey('distance')) {
+        final filtersData = {
+          'meet': data['meet'],
+          'distance': data['distance'],
+        };
+
+        // Update the 'filters' collection
+        await _filtersFirestore
+            .doc(uid)
+            .set(filtersData, SetOptions(merge: true))
+            .timeout(
+              const Duration(seconds: 5),
+              onTimeout: () => throw TimeoutException(
+                  'The filters update operation timed out'),
+            );
+      }
     } on TimeoutException catch (e) {
       log("Timeout: ${e.message}");
     } catch (e) {

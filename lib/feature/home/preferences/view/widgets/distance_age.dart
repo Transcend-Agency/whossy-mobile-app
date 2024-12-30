@@ -77,9 +77,11 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                           : AppSlider(
                               key: const ValueKey('data'),
                               useSliderTheme: true,
-                              value: prefs.distance ?? 50,
-                              onChanged: (newValue) => notifier
-                                  .updatePreferences(distance: newValue),
+                              value: (prefs.distance ?? 50).toDouble(),
+                              onChanged: (newValue) =>
+                                  notifier.updatePreferences(
+                                distance: newValue.toInt(),
+                              ),
                             ),
                     ),
                   ),

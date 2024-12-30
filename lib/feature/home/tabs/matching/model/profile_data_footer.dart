@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 abstract class ProfileDataFooter {
   bool get isOnline; // was isOnline
   bool? get newUser; // was isNewUser
@@ -10,4 +12,5 @@ abstract class ProfileDataFooter {
   bool get premiumUser;
   bool get isUserVerified;
   int? get relationshipPreference;
+  GeoPoint? get location;
 }

@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
 
 import '../../../../common/utils/index.dart';
+import '../../../auth/sign_up/model/geography.dart';
 import '../../settings/model/user_settings.dart';
 
 part 'core_profile.g.dart';
@@ -74,6 +75,13 @@ class CoreProfile {
   @JsonKey(name: "geohash")
   String? geohash;
 
+  @JsonKey(
+    name: 'geography',
+    toJson: AppUtils.geographyToJson,
+    fromJson: AppUtils.geographyFromJson,
+  )
+  final Geography? geography;
+
   @JsonKey(name: "credit_balance")
   int? creditBalance;
 
@@ -107,6 +115,7 @@ class CoreProfile {
     this.creditBalance,
     this.userSettings,
     this.amountPaid,
+    this.geography,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -131,7 +140,7 @@ class CoreProfile {
         '  weight: $weight,\n'
         '  height: $height,\n'
         '  countryOfOrigin: $countryOfOrigin,\n'
-        '  isPremium: $isPremium,\n'
+        '  is_premium: $isPremium,\n'
         '  isApproved: $isApproved,\n'
         '  isBanned: $isBanned,\n'
         '  blockedIds: ${blockedIds?.join(", ") ?? "null"},\n'
@@ -143,8 +152,15 @@ class CoreProfile {
         '  },\n'
         '  geohash: $geohash,\n'
         '  creditBalance: $creditBalance,\n'
-        '  userSettings: $userSettings\n'
-        '  amountPaid: $amountPaid\n'
+        '  userSettings: $userSettings,\n'
+        '  amountPaid: $amountPaid,\n'
+        '  geography: {\n'
+        '    geohash: ${geography?.geohash ?? "null"},\n'
+        '    geopoint: {\n'
+        '      latitude: ${geography?.geopoint?.latitude ?? "null"},\n'
+        '      longitude: ${geography?.geopoint?.longitude ?? "null"}\n'
+        '    }\n'
+        '  }\n'
         ')';
   }
 
