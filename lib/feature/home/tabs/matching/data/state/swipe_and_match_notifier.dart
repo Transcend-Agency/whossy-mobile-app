@@ -9,6 +9,7 @@ import 'package:whossy_app/feature/home/preferences/model/other_preferences.dart
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../edit_profile/model/core_profile.dart';
+import '../../../../preferences/model/core_preferences.dart';
 import '../../../_.dart';
 import '../../../likes_and_match/data/repository/likes_repository.dart';
 import '../../model/user_profile.dart';
@@ -36,14 +37,19 @@ class SwipeAndMatchNotifier with ChangeNotifier {
   CoreProfile? _profileData;
 
   // Used in filtering
+  CorePreferences? _corePreferences;
   OtherPreferences? _otherPreferences;
 
   bool _hasFetchedProfiles = false;
   List<UserProfile> get profiles => _profiles;
 
-  void saveFilters(OtherPreferences? otherPrefs) {
-    if (_otherPreferences == otherPrefs) return;
+  void saveFilters(CorePreferences? corePrefs, OtherPreferences? otherPrefs) {
+    if (_otherPreferences == otherPrefs && _corePreferences == corePrefs) {
+      return;
+    }
+
     _otherPreferences = otherPrefs;
+    _corePreferences = corePrefs;
     notifyListeners();
 
     log('Other Preferences \n ${otherPrefs.toString()}');
@@ -111,6 +117,8 @@ class SwipeAndMatchNotifier with ChangeNotifier {
         longitude: _profileData?.longitude,
         latitude: _profileData?.latitude,
         preferences: _otherPreferences,
+        corePreferences: _corePreferences,
+        interests: _profileData?.interests ?? [],
       )
           .listen((fetchedProfiles) {
         // Filter out excluded profiles (liked/disliked)

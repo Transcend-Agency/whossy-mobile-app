@@ -1,28 +1,74 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../../../../common/utils/index.dart';
+import '../../../../preferences/model/core_preferences.dart';
 import '../../../../preferences/model/other_preferences.dart';
 
 class QueryHelper {
-  static Map<String, dynamic> buildFilters(OtherPreferences preferences) {
+  static Map<String, dynamic> buildFilters(
+    OtherPreferences? preferences,
+    CorePreferences? corePreferences, {
+    required List<String> userInterests,
+  }) {
     final filters = <String, dynamic>{
-      if (preferences.meet != null) 'meet': preferences.meet!,
-      if (preferences.ageRange != null) ...{
-        'age_min': preferences.ageRange!['min'],
-        'age_max': preferences.ageRange!['max'],
+      // OtherPreferences Filters
+      if (preferences != null) ...{
+        if (preferences.meet != null) 'meet': preferences.meet!,
+        if (preferences.ageRange != null) ...{
+          'age_min': preferences.ageRange!['min'],
+          'age_max': preferences.ageRange!['max'],
+        },
+        if (preferences.hasBio != null) 'hasBio': preferences.hasBio!,
+        if (preferences.similarInterest != null &&
+            preferences.similarInterest! &&
+            userInterests.isNotEmpty)
+          'similar_interests': userInterests,
       },
-      if (preferences.hasBio != null) 'hasBio': preferences.hasBio!,
+
+      // CorePreferences Filters
+      if (corePreferences != null) ...{
+        if (corePreferences.relationshipPreference != null)
+          'preference': corePreferences.relationshipPreference!,
+        if (corePreferences.maritalStatus != null)
+          'marital_status': corePreferences.maritalStatus!,
+        if (corePreferences.education != null)
+          'education': corePreferences.education!,
+        if (corePreferences.loveLanguage != null)
+          'love_language': corePreferences.loveLanguage!,
+        if (corePreferences.zodiac != null) 'zodiac': corePreferences.zodiac!,
+        if (corePreferences.smoker != null) 'smoke': corePreferences.smoker!,
+        if (corePreferences.drinking != null)
+          'drink': corePreferences.drinking!,
+        if (corePreferences.workout != null)
+          'workout': corePreferences.workout!,
+      }
     };
+
+    log('The filters are $filters');
     return filters;
   }
 
   static Query applyFilters(Map<String, dynamic> filters, Query query) {
     // Define a map of filter functions
     final filterFunctions = {
+      // Other filters
       'meet': _applyMeetFilter,
       'age_min': _applyAgeMinFilter,
       'age_max': _applyAgeMaxFilter,
       'hasBio': _applyHasBioFilter,
-      // Add other filters here as needed, e.g., 'height', 'weight', 'interests', etc.
+      'similar_interests': _applyInterestsFilter,
+
+      // Core filters
+      'preference': _applyRelationshipPreferenceFilter,
+      'marital_status': _applyMaritalStatusFilter,
+      'education': _applyEducationFilter,
+      'love_language': _applyLoveLanguageFilter,
+      'zodiac': _applyZodiacFilter,
+      'smoke': _applySmokeFilter,
+      'drink': _applyDrinkFilter,
+      'workout': _applyWorkOutFilter,
     };
 
     // Apply filters dynamically
@@ -47,7 +93,6 @@ class QueryHelper {
     return query;
   }
 
-  // Filter function for 'age_min' (minimum age)
   static Query _applyAgeMinFilter(Query query, dynamic value) {
     if (value is int) {
       DateTime now = DateTime.now();
@@ -60,7 +105,6 @@ class QueryHelper {
     return query;
   }
 
-  // Filter function for 'age_max' (maximum age)
   static Query _applyAgeMaxFilter(Query query, dynamic value) {
     if (value is int) {
       DateTime now = DateTime.now();
@@ -73,7 +117,6 @@ class QueryHelper {
     return query;
   }
 
-  // Filter function for 'hasBio'
   static Query _applyHasBioFilter(Query query, dynamic value) {
     if (value is bool && value) {
       query = query
@@ -90,5 +133,67 @@ class QueryHelper {
     return query;
   }
 
-// Add more filter functions as needed for other filters (e.g., height, weight, interests)
+  static Query _applyInterestsFilter(Query query, dynamic value) {
+    if (value is List<String> && value.isNotEmpty) {
+      query = query.where('interests', arrayContainsAny: value);
+    }
+    return query;
+  }
+
+  // Add filter functions for each CorePreferences property
+  static Query _applyRelationshipPreferenceFilter(Query query, dynamic value) {
+    if (value is Preference) {
+      query = query.where('preference', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyMaritalStatusFilter(Query query, dynamic value) {
+    if (value is MaritalStatus) {
+      query = query.where('marital_status', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyEducationFilter(Query query, dynamic value) {
+    if (value is School) {
+      query = query.where('education', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyLoveLanguageFilter(Query query, dynamic value) {
+    if (value is LoveLanguage) {
+      query = query.where('love_language', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyZodiacFilter(Query query, dynamic value) {
+    if (value is Zodiac) {
+      query = query.where('zodiac', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applySmokeFilter(Query query, dynamic value) {
+    if (value is Smoke) {
+      query = query.where('smoke', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyDrinkFilter(Query query, dynamic value) {
+    if (value is Drink) {
+      query = query.where('drink', isEqualTo: value.index);
+    }
+    return query;
+  }
+
+  static Query _applyWorkOutFilter(Query query, dynamic value) {
+    if (value is WorkOut) {
+      query = query.where('workout', isEqualTo: value.index);
+    }
+    return query;
+  }
 }

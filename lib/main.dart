@@ -58,7 +58,10 @@ void main() async {
           update: (_, profileData, preferences, swipeAndMatch) {
             return swipeAndMatch!
               ..saveProfile(profileData.staticProfile)
-              ..saveFilters(preferences.staticOtherPreferences);
+              ..saveFilters(
+                preferences.staticCorePreferences,
+                preferences.staticOtherPreferences,
+              );
           },
         ),
         ChangeNotifierProvider(create: (_) => LikesNotifier()),

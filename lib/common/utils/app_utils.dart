@@ -3,9 +3,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../feature/auth/sign_up/model/geography.dart';
 import '../../feature/home/tabs/matching/model/user_profile.dart';
 
 class AppUtils {
+  static Map<String, dynamic>? geographyToJson(Geography? geography) =>
+      geography?.toJson();
+
+  static Geography? geographyFromJson(Map<String, dynamic>? json) =>
+      json != null ? Geography.fromJson(json) : null;
+
   static Timestamp? timestampFromJson(dynamic json) => json as Timestamp?;
   static dynamic timestampToJson(Timestamp? timestamp) => timestamp;
 

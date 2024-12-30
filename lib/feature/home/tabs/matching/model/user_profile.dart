@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 
 import '../../../../auth/onboarding/model/preferences.dart';
@@ -57,4 +58,7 @@ class UserProfile implements ProfileDataFooter {
 
   @override
   int? get relationshipPreference => preferences.relationshipPref;
+
+  @override
+  GeoPoint? get location => user.geography?.geopoint;
 }

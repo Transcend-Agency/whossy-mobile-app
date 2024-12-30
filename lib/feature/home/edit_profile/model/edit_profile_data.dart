@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 
 import '../../preferences/model/core_preferences.dart';
@@ -42,4 +43,7 @@ class EditProfileData extends ProfileDataFooter {
 
   @override
   int? get relationshipPreference => preferences.relationshipPreference?.index;
+
+  @override
+  GeoPoint? get location => profile.geography?.geopoint;
 }

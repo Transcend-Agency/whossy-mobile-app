@@ -1,9 +1,11 @@
-import 'dart:math' as math;
+;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:whossy_app/feature/home/tabs/matching/model/profile_data_footer.dart';
@@ -99,16 +101,33 @@ class ProfileFooterScaffold extends StatelessWidget {
                         ],
                       ),
                     ),
-                  Text(
-                    "  ~ 22 mi away",
-                    style: TextStyles.prefText.copyWith(
-                      color: Colors.white,
-                      fontSize: AppUtils.scale(9.5.sp) ?? 12.sp,
-                    ),
-                  ),
+                  if (data.location != null)
+                    Selector<EditProfileNotifier, GeoPoint?>(
+                      selector: (_, edit) =>
+                          edit.staticProfile?.geography?.geopoint,
+                      builder: (_, location, __) {
+                        if (location == null) return const SizedBox.shrink();
+
+                        final distance = (Geolocator.distanceBetween(
+                                  location.latitude,
+                                  location.longitude,
+                                  data.location!.latitude,
+                                  data.location!.longitude,
+                                ) /
+                                1000)
+                            .floor();
+                        return Text(
+                          "  ~ $distance mi away",
+                          style: TextStyles.prefText.copyWith(
+                            color: Colors.white,
+                            fontSize: AppUtils.scale(9.5.sp) ?? 12.sp,
+                          ),
+                        );
+                      },
+                    )
                 ],
               ),
-              addHeight(2), //
+              addHeight(2),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
