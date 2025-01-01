@@ -34,6 +34,10 @@ class AdvancedSearchScreen extends HookWidget {
       Navigator.of(context).pop();
     }
 
+    // void onTap() {
+    //   showSaveSearchSheet(context: context);
+    // }
+
     Future<void> onPopInvoked(bool didPop) async {
       if (!didPop && hasSave.value) {
         bool? result = await showConfirmationDialog(
