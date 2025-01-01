@@ -6,6 +6,7 @@ extension CoreProfileUtils on CoreProfile {
     profilePics = prefs.profilePics ?? profilePics;
     bio = prefs.bio ?? bio;
     interests = prefs.ticks ?? interests;
+    meet = prefs.meet ?? meet;
   }
 
   static List<String> transferKeys = ['photos', 'bio', 'interests'];

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../../../../common/utils/index.dart';
 import '../../../../preferences/model/core_preferences.dart';
@@ -31,108 +31,92 @@ class MatchRepository {
     OtherPreferences? preferences,
     CorePreferences? corePreferences,
     required List<String> interests,
-  }) async* {
+  }) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
     if (latitude == null || longitude == null) {
-      yield [];
-      return;
+      return Stream.value([]);
     }
 
-    // Adjust radius based on distance preference (convert miles to km)
-    double radius = radiusInKm;
-    if (preferences?.distance != null) {
-      radius = preferences!.distance!.toDouble();
-    }
-
-    if (preferences?.outreach != null) {
-      if (preferences!.outreach ?? false) radius = 300;
+    double radius = preferences?.distance?.toDouble() ?? radiusInKm;
+    if (preferences?.outreach == true) {
+      radius = 300;
     }
 
     final center = _geo.point(latitude: latitude, longitude: longitude);
 
-    // Real-time listeners for likes and dislikes
-    final blacklist = <String>{};
-
-    _likes.where('liker_id', isEqualTo: uid).snapshots().listen(
-      (snapshot) {
-        blacklist.addAll(
-          snapshot.docs.map((doc) => doc['liked_id'] as String),
-        );
-      },
+    // Create a blacklist stream combining likes and dislikes
+    Stream<Set<String>> blacklistStream = Rx.combineLatest2(
+      _likes.where('liker_id', isEqualTo: uid).snapshots().map(
+            (snapshot) =>
+                snapshot.docs.map((doc) => doc['liked_id'] as String).toSet(),
+          ),
+      _dislikes.where('disliker_id', isEqualTo: uid).snapshots().map(
+            (snapshot) => snapshot.docs
+                .map((doc) => doc['disliked_id'] as String)
+                .toSet(),
+          ),
+      (likes, dislikes) => likes.union(dislikes),
     );
 
-    _dislikes.where('disliker_id', isEqualTo: uid).snapshots().listen(
-      (snapshot) {
-        blacklist
-            .addAll(snapshot.docs.map((doc) => doc['disliked_id'] as String));
-      },
-    );
-
-    // Geolocation query with buffer radius
-    var geoQuery = _geo
+    // Geolocation query stream
+    Stream<List<DocumentSnapshot>> geoQueryStream = _geo
         .collection(collectionRef: _profiles)
         .within(center: center, radius: radius, field: 'geography');
 
-    await for (var geoSnapshots in geoQuery) {
-      List<UserProfile> userProfiles = [];
+    // Combine geoQueryStream with blacklistStream
+    return Rx.combineLatest2(
+      geoQueryStream,
+      blacklistStream,
+      (List<DocumentSnapshot> geoSnapshots, Set<String> blacklist) {
+        if (geoSnapshots.isEmpty) return Stream.value([]);
 
-      if (geoSnapshots.isEmpty) {
-        yield userProfiles;
-        continue;
-      }
-
-      Query profilesQuery = _profiles;
-      if (preferences != null || corePreferences != null) {
-        profilesQuery = QueryHelper.applyFilters(
-          QueryHelper.buildFilters(
-            preferences,
-            corePreferences,
-            userInterests: [
-              ...interests,
-              ...(preferences?.interests ?? []),
-            ],
-          ),
-          profilesQuery,
-        );
-      }
-
-      // Match geolocation results with filtered profiles
-      final filteredSnapshots = await profilesQuery.get();
-      final filteredIds = filteredSnapshots.docs.map((doc) => doc.id).toSet();
-
-      for (var doc in geoSnapshots) {
-        if (doc.data() == null) continue;
-
-        final profile =
-            UserProfile.fromJson(doc.data() as Map<String, dynamic>);
-        final data = doc.data() as Map<String, dynamic>;
-
-        // Extract geopoint from the geography field
-        final geopoint =
-            (data['geography'] as Map<String, dynamic>)['geopoint'] as GeoPoint;
-
-        // Calculate the exact distance
-        final distance = (Geolocator.distanceBetween(latitude, longitude,
-                    geopoint.latitude, geopoint.longitude) /
-                1000)
-            .floor();
-
-        if (!AppUtils.excludeProfile(
-              profile,
-              uid,
-              blockedIds,
-              settings: _matchFilterSettings,
-            ) &&
-            !blacklist.contains(profile.user.uid) &&
-            filteredIds.contains(doc.id) &&
-            radius.toInt() >= distance) {
-          userProfiles.add(profile);
-          if (userProfiles.length >= limit) break;
+        // Reactive profiles query based on preferences
+        Query profilesQuery = _profiles;
+        if (preferences != null || corePreferences != null) {
+          profilesQuery = QueryHelper.applyFilters(
+            QueryHelper.buildFilters(
+              preferences,
+              corePreferences,
+              userInterests: [
+                ...interests,
+                ...(preferences?.interests ?? []),
+              ],
+            ),
+            profilesQuery,
+          );
         }
-      }
 
-      yield userProfiles;
-    }
+        // Transform geoSnapshots and profilesQuery into a stream of List<UserProfile>
+        return profilesQuery.snapshots().map(
+          (querySnapshot) {
+            final filteredIds = querySnapshot.docs.map((doc) => doc.id).toSet();
+
+            final userProfiles = geoSnapshots
+                .where((doc) {
+                  final profile =
+                      UserProfile.fromJson(doc.data() as Map<String, dynamic>);
+
+                  return !AppUtils.excludeProfile(
+                        profile,
+                        uid,
+                        blockedIds,
+                        settings: _matchFilterSettings,
+                      ) &&
+                      !blacklist.contains(profile.user.uid) &&
+                      filteredIds.contains(doc.id);
+                })
+                .map((doc) {
+                  return UserProfile.fromJson(
+                      doc.data() as Map<String, dynamic>);
+                })
+                .take(limit)
+                .toList();
+
+            return userProfiles;
+          },
+        );
+      },
+    ).switchMap((stream) => stream.cast<List<UserProfile>>());
   }
 }

@@ -20,6 +20,7 @@ class ExploreRepository {
     excludeBannedUsers: true,
     excludeUnapprovedUsers: true,
     excludeBlockedAndSelf: true,
+    excludePublicSearch: true,
   );
 
   Stream<List<UserProfile>> streamFilteredProfiles({
@@ -28,6 +29,7 @@ class ExploreRepository {
     required OtherPreferences? preferences,
     required CorePreferences? corePreferences,
     required List<String> interests,
+    required int gender,
   }) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -69,6 +71,12 @@ class ExploreRepository {
           baseQuery,
         );
       }
+    } else {
+      if (gender == 0) {
+        baseQuery = baseQuery.where('gender', isEqualTo: 'Male');
+      } else if (gender == 1) {
+        baseQuery = baseQuery.where('gender', isEqualTo: 'Female');
+      }
     }
 
     baseQuery = baseQuery.limit(20);
@@ -77,7 +85,7 @@ class ExploreRepository {
     return Rx.combineLatest2(
       baseQuery.snapshots(),
       blacklistStream,
-      (QuerySnapshot querySnapshot, Set<String> blacklist) {
+      (querySnapshot, blacklist) {
         final profiles = querySnapshot.docs
             .map((doc) =>
                 UserProfile.fromJson(doc.data() as Map<String, dynamic>))

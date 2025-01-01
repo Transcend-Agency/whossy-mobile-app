@@ -23,6 +23,19 @@ class ExploreFiltersComponent extends HookWidget {
       () => useContext().read<EditProfileNotifier>().coreProfile,
     );
 
+    useEffect(() {
+      // Delay the filter selection until after the first frame has been rendered.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (explore.getFilter(Filters.discover) == null) {
+          explore.addFilter(
+            Filters.discover,
+            _getFilterValue(Filters.discover, profileData),
+          );
+        }
+      });
+      return null; // no cleanup needed
+    }, []);
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -75,7 +88,6 @@ class ExploreFiltersComponent extends HookWidget {
     );
   }
 
-  /// Determine the value for each filter dynamically (e.g., from user input or defaults)
   dynamic _getFilterValue(Filters filter, CoreProfile? profileData) {
     switch (filter) {
       case Filters.similarInterest:
@@ -92,6 +104,9 @@ class ExploreFiltersComponent extends HookWidget {
         return Preference.lookingToDate.index;
       case Filters.advancedSearch:
         return ''; // Nothing is needed here
+      case Filters.discover:
+        return ''; // Nothing is needed here
+
       default:
         return null;
     }

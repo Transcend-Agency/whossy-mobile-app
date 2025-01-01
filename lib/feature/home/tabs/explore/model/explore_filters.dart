@@ -23,6 +23,7 @@ class ExploreFilters {
 }
 
 enum Filters {
+  discover('Discover'),
   similarInterest('Similar Interest'),
   online('Online'),
   newMembers('New members'),

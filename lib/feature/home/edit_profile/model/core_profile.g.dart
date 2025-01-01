@@ -16,6 +16,7 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       profilePics:
           (json['photos'] as List<dynamic>?)?.map((e) => e as String).toList(),
       bio: json['bio'] as String?,
+      meet: (json['meet'] as num?)?.toInt(),
       interests: (json['interests'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -61,6 +62,7 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
   writeNotNull('phone_number', instance.phoneNumber);
   writeNotNull('photos', instance.profilePics);
   writeNotNull('bio', instance.bio);
+  writeNotNull('meet', instance.meet);
   writeNotNull('interests', instance.interests);
   writeNotNull('country_of_origin', instance.countryOfOrigin);
   writeNotNull('is_premium', instance.isPremium);

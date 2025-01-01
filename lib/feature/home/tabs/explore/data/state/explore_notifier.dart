@@ -39,6 +39,7 @@ class ExploreNotifier extends ChangeNotifier {
       preferences: _otherPreferences,
       corePreferences: _corePreferences,
       interests: _profileData?.interests ?? [],
+      gender: _profileData?.meet ?? 2,
     );
   }
 

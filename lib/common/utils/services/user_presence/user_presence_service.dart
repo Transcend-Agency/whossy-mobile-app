@@ -45,17 +45,14 @@ Future<void> updateUserStatus(bool online) async {
   final user = FirebaseAuth.instance.currentUser;
 
   if (user == null) {
-    log('No user is currently signed in. Skipping updateUserStatus.');
     return;
   }
 
   try {
-    log('Attempting to update online status for user: ${user.uid}...');
     await _userRef(user.uid).update({
       'online': online,
       'lastSeen': ServerValue.timestamp,
     });
-    log('Online status successfully updated for user: ${user.uid}. Online: $online');
   } catch (e) {
     log('Online state update failed for user: ${user.uid}. Error: $e');
   }

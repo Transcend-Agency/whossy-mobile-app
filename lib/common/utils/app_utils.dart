@@ -145,6 +145,12 @@ class AppUtils {
     if (settings.excludeUnapprovedUsers && !profile.user.isApproved) {
       return true;
     }
+
+    if (settings.excludePublicSearch &&
+        !(profile.user.userSettings.publicSearch ?? true)) {
+      return true;
+    }
+
     if (settings.excludeBlockedAndSelf &&
         (profile.user.uid == currentUserId ||
             blockedIds.contains(profile.user.uid) ||
@@ -161,12 +167,14 @@ class ExcludeSettings {
   final bool excludeBannedUsers;
   final bool excludeUnapprovedUsers;
   final bool excludeBlockedAndSelf;
+  final bool excludePublicSearch;
 
   const ExcludeSettings({
     this.excludeIncompleteOnboarding = false,
     this.excludeBannedUsers = false,
     this.excludeUnapprovedUsers = false,
     this.excludeBlockedAndSelf = false,
+    this.excludePublicSearch = false,
   });
 }
 

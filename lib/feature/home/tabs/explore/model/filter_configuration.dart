@@ -11,6 +11,10 @@ class FilterConfig {
 
 // Define filter configurations for each filter
 final Map<Filters, FilterConfig> filterConfigs = {
+  Filters.discover: FilterConfig(
+    'uid',
+    (query, value) => query,
+  ),
   Filters.similarInterest: FilterConfig(
     'interests',
     (query, value) => query.where('interests', arrayContainsAny: value as List),

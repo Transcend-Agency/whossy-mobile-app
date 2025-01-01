@@ -43,6 +43,8 @@ class CoreProfile {
 
   String? bio;
 
+  int? meet;
+
   List<String>? interests;
 
   @JsonKey(name: 'country_of_origin')
@@ -109,6 +111,7 @@ class CoreProfile {
     this.phoneNumber,
     this.profilePics,
     this.bio,
+    this.meet,
     this.interests,
     this.weight,
     this.height,
@@ -145,6 +148,7 @@ class CoreProfile {
         '  phoneNumber: $phoneNumber,\n'
         '  profilePics: ${profilePics?.join(", ") ?? "null"},\n'
         '  bio: $bio,\n'
+        '  meet: $meet,\n'
         '  interests: ${interests?.join(", ") ?? "null"},\n'
         '  weight: $weight,\n'
         '  height: $height,\n'
@@ -186,6 +190,7 @@ class CoreProfile {
         other.phoneNumber == phoneNumber &&
         listEquals(other.profilePics, profilePics) &&
         other.bio == bio &&
+        other.meet == meet &&
         AppUtils.areListsEqual(other.interests, interests) &&
         other.weight == weight &&
         other.height == height &&
@@ -196,7 +201,7 @@ class CoreProfile {
         other.latitude == latitude &&
         other.longitude == longitude &&
         other.location == location &&
-        other.geohash == geohash &&
+        // other.geohash == geohash &&
         other.creditBalance == creditBalance &&
         other.amountPaid == amountPaid &&
         other.userSettings == userSettings;
@@ -204,6 +209,7 @@ class CoreProfile {
 
   @override
   int get hashCode {
+    // Removed geohash
     return Object.hash(
       firstName,
       lastName,
@@ -212,13 +218,13 @@ class CoreProfile {
       email,
       phoneNumber,
       bio,
+      meet,
       weight,
       height,
       isPremium,
       isApproved,
       isBanned,
       location,
-      geohash,
       creditBalance,
       amountPaid,
       userSettings,
