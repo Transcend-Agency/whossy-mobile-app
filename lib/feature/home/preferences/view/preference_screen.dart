@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/provider/providers.dart';
 
@@ -23,24 +22,17 @@ class PreferenceScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final notifier = context.read<_Notifier>();
+    final notifier = useMemoized(() => context.read<_Notifier>());
     final hasSave = useState<bool>(false);
 
-    showSnackbar(String message, {bool pop = false}) {
-      if (context.mounted) {
-        if (pop) Navigator.of(context).pop();
-        showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
-      }
-    }
-
-    onSaveChanges({bool popAfterSave = true}) async {
+    onSaveChanges() async {
       await notifier.saveFilters(
-        showSnackbar: (msg) => showSnackbar(msg, pop: true),
+        showSnackbar: (msg) => showSnackbar(msg, context),
       );
 
       if (!context.mounted) return;
 
-      if (popAfterSave) Navigator.of(context).pop();
+      Navigator.of(context).pop();
     }
 
     Future<void> onPopInvoked(bool didPop) async {
@@ -71,7 +63,9 @@ class PreferenceScreen extends HookWidget {
       }
     }
 
-    void onSaveTap() => notifier.saveFilters(showSnackbar: showSnackbar);
+    void onSaveTap() => notifier.saveFilters(
+          showSnackbar: (msg) => showSnackbar(msg, context),
+        );
 
     return PopScope(
       canPop: !hasSave.value,

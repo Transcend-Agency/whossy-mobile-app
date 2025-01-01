@@ -83,7 +83,7 @@ class AppSnackbar extends StatelessWidget {
                         maxLines: 2,
                         style: TextStyles.snackBarText.copyWith(
                           fontWeight: FontWeight.w500,
-                          color: Colors.white,
+                          color: snackbarType.color,
                         ),
                       ),
                     ),

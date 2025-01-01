@@ -166,26 +166,35 @@ class UserRepository {
     return result.docs.isNotEmpty;
   }
 
-  Future<List<String>> uploadProfilePictures(List<File> files) async {
-    try {
-      final uid = FirebaseAuth.instance.currentUser?.uid;
+Future<List<String>> uploadProfilePictures(List<File> files) async {
+  try {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
 
-      // Create a list of Future tasks for uploading each file
-      final uploadFutures = files.map((file) async {
-        final fileName = p.basenameWithoutExtension(file.path);
-        final storageRef =
-            _storage.ref().child(AppStrings.profilePicsPath(uid, fileName));
-        final uploadTask = await storageRef.putFile(file);
-        return uploadTask.ref.getDownloadURL();
-      }).toList();
+    // Create a list of Future tasks for uploading each file
+    final uploadFutures = files.map((file) async {
+      final fileName = p.basenameWithoutExtension(file.path);
+      final storageRef =
+          _storage.ref().child(AppStrings.profilePicsPath(uid, fileName));
+      final uploadTask = await storageRef.putFile(file);
+      return uploadTask.ref.getDownloadURL();
+    }).toList();
 
-      // Wait for all upload tasks to complete and get their download URLs
-      return await Future.wait(uploadFutures);
-    } catch (e) {
-      log(e.toString());
-      throw FailedUploadException(AppStrings.deviceOffline);
+    // Wait for all upload tasks to complete with a 45-second timeout
+    return await Future.wait(uploadFutures).timeout(
+      const Duration(seconds: 45),
+      onTimeout: () {
+        throw FailedUploadException(AppStrings.uploadTimeout);
+      },
+    );
+  } catch (e) {
+    log(e.toString());
+    if (e is FailedUploadException) {
+      rethrow; 
     }
+    throw FailedUploadException(AppStrings.deviceOffline);
   }
+}
+
 
   Future<void> accountCheck({
     User? user,

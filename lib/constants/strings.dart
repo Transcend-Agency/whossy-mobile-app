@@ -170,6 +170,9 @@ class AppStrings {
   static const String noProfilePic =
       'You need to add at least one photo to preview your profile.';
 
+  static const String uploadTimeout =
+  "Failed to upload profile pictures. Please check your network and try again.";
+
   static const String minPicsRequired =
       'You need at least 3 photos to save your profile.';
 

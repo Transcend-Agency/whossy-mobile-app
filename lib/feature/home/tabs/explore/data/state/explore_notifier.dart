@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../edit_profile/model/core_profile.dart';
+import '../../../../preferences/model/core_preferences.dart';
+import '../../../../preferences/model/other_preferences.dart';
 import '../../../matching/model/user_profile.dart';
 import '../../model/explore_filters.dart';
 import '../repository/explore_repository.dart';
@@ -7,10 +10,35 @@ import '../repository/explore_repository.dart';
 class ExploreNotifier extends ChangeNotifier {
   final _exploreRepository = ExploreRepository();
 
-  Stream<List<UserProfile>> profileStream(List<String>? blockedIds) {
+  CoreProfile? _profileData;
+
+  // Used in filtering
+  CorePreferences? _corePreferences;
+  OtherPreferences? _otherPreferences;
+
+  void saveFilters(CorePreferences? corePrefs, OtherPreferences? otherPrefs) {
+    if (_otherPreferences == otherPrefs && _corePreferences == corePrefs) {
+      return;
+    }
+
+    _otherPreferences = otherPrefs;
+    _corePreferences = corePrefs;
+    notifyListeners();
+  }
+
+  void saveProfile(CoreProfile? data) {
+    if (_profileData == data) return;
+    _profileData = data;
+    notifyListeners();
+  }
+
+  Stream<List<UserProfile>> profileStream() {
     return _exploreRepository.streamFilteredProfiles(
       filters: _filters,
-      blockedIds: blockedIds ?? [],
+      blockedIds: _profileData?.blockedIds ?? [],
+      preferences: _otherPreferences,
+      corePreferences: _corePreferences,
+      interests: _profileData?.interests ?? [],
     );
   }
 

@@ -1,7 +1,10 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/common/utils/services/services.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/repository/edit_profile_repository.dart';
@@ -144,6 +147,38 @@ class EditProfileNotifier extends ChangeNotifier {
     } catch (e) {
       showSnackbar(AppStrings.errorUnknown);
       log(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  // This function is used to handle the initial update of a user's location
+  // when they first access the swipe and match page.
+  //
+  // It ensures that the location data is updated locally after user data is fetched,
+  // addressing the issue of location not being available on the client side initially.
+  void saveUserLocationLocally(
+    Position position, {
+    required void Function(String) showSnackbar,
+  }) {
+    try {
+      final geo = GeoFlutterFire();
+
+      final geoPoint =
+          geo.point(latitude: position.latitude, longitude: position.longitude);
+
+      _dynCoreProfile?.updateLocation(
+        latitude: position.latitude,
+        longitude: position.longitude,
+        location: GeoPoint(position.latitude, position.longitude),
+        geohash: geoPoint.hash,
+        geography: geoPoint.data,
+      );
+
+      _staticCoreProfile = CoreProfile.fromJson(_dynCoreProfile!.toJson());
+    } catch (e) {
+      log('Error updating user location: $e');
+      throw LocationServiceException('Error updating location');
     } finally {
       notifyListeners();
     }

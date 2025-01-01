@@ -6,6 +6,7 @@ import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
 
 import '../../../../common/utils/index.dart';
 import '../../../auth/sign_up/model/geography.dart';
+import '../../../auth/sign_up/model/payment.dart';
 import '../../settings/model/user_settings.dart';
 
 part 'core_profile.g.dart';
@@ -80,16 +81,24 @@ class CoreProfile {
     toJson: AppUtils.geographyToJson,
     fromJson: AppUtils.geographyFromJson,
   )
-  final Geography? geography;
+  Geography? geography;
 
   @JsonKey(name: "credit_balance")
   int? creditBalance;
 
-  @JsonKey(name: "amount_paid_in_total")
-  double? amountPaid;
+  @JsonKey(
+    name: "amount_paid_in_total",
+    toJson: AppUtils.paymentToJson,
+    fromJson: AppUtils.paymentFromJson,
+  )
+  final Payment? amountPaid;
 
-  @JsonKey(name: 'user_settings')
-  final UserSettings? userSettings;
+  @JsonKey(
+    name: 'user_settings',
+    fromJson: AppUtils.userSettingsFromJson,
+    toJson: AppUtils.userSettingsToJson,
+  )
+  UserSettings? userSettings;
 
   CoreProfile({
     this.firstName,
@@ -152,8 +161,8 @@ class CoreProfile {
         '  },\n'
         '  geohash: $geohash,\n'
         '  creditBalance: $creditBalance,\n'
-        '  userSettings: $userSettings,\n'
-        '  amountPaid: $amountPaid,\n'
+        '  userSettings: ${userSettings.toString()},\n'
+        '  amountPaid: ${amountPaid.toString()},\n'
         '  geography: {\n'
         '    geohash: ${geography?.geohash ?? "null"},\n'
         '    geopoint: {\n'

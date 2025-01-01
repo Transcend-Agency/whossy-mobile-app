@@ -232,10 +232,17 @@ class EditProfilePreviewArgs {
 
 /// generated route for
 /// [_i7.HomeWrapper]
-class HomeWrapper extends _i32.PageRouteInfo<void> {
-  const HomeWrapper({List<_i32.PageRouteInfo>? children})
-      : super(
+class HomeWrapper extends _i32.PageRouteInfo<HomeWrapperArgs> {
+  HomeWrapper({
+    _i33.Key? key,
+    bool fromOnboarding = false,
+    List<_i32.PageRouteInfo>? children,
+  }) : super(
           HomeWrapper.name,
+          args: HomeWrapperArgs(
+            key: key,
+            fromOnboarding: fromOnboarding,
+          ),
           initialChildren: children,
         );
 
@@ -244,9 +251,30 @@ class HomeWrapper extends _i32.PageRouteInfo<void> {
   static _i32.PageInfo page = _i32.PageInfo(
     name,
     builder: (data) {
-      return const _i7.HomeWrapper();
+      final args =
+          data.argsAs<HomeWrapperArgs>(orElse: () => const HomeWrapperArgs());
+      return _i7.HomeWrapper(
+        key: args.key,
+        fromOnboarding: args.fromOnboarding,
+      );
     },
   );
+}
+
+class HomeWrapperArgs {
+  const HomeWrapperArgs({
+    this.key,
+    this.fromOnboarding = false,
+  });
+
+  final _i33.Key? key;
+
+  final bool fromOnboarding;
+
+  @override
+  String toString() {
+    return 'HomeWrapperArgs{key: $key, fromOnboarding: $fromOnboarding}';
+  }
 }
 
 /// generated route for

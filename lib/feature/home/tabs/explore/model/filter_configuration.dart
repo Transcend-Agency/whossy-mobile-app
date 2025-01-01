@@ -31,8 +31,17 @@ final Map<Filters, FilterConfig> filterConfigs = {
     (query, value) =>
         query.where('country_of_origin', isNotEqualTo: value as String),
   ),
+  Filters.popularInMyArea: FilterConfig(
+    'country_of_origin',
+    (query, value) =>
+        query.where('country_of_origin', isEqualTo: value as String),
+  ),
   Filters.lookingToDate: FilterConfig(
     'preference',
     (query, value) => query.where('preference', isEqualTo: value as int),
+  ),
+  Filters.advancedSearch: FilterConfig(
+    'uid',
+    (query, value) => query,
   ),
 };

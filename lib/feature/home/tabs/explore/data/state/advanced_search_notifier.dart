@@ -1,14 +1,20 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
+import 'package:whossy_app/feature/home/tabs/explore/data/repository/advanced_search_repository.dart';
 import 'package:whossy_app/provider/providers.dart';
 
+import '../../../../../../constants/index.dart';
 import '../../../../preferences/model/core_preferences.dart';
+import '../../../../preferences/model/filters.dart';
 import '../../../../preferences/model/generic_enum.dart';
 import '../../../../preferences/model/other_preferences.dart';
 
 class AdvancedSearchNotifier extends ChangeNotifier
     implements SearchPreferencesNotifier {
-  // Placeholder dynamic preferences for AdvancedSearch
+  final _advancedSearchRepo = AdvancedSearchRepository();
   CorePreferences? _dynCorePrefs;
   OtherPreferences? _dynOtherPrefs;
 
@@ -18,8 +24,12 @@ class AdvancedSearchNotifier extends ChangeNotifier
   @override
   CorePreferences? get selectedItems => _dynCorePrefs;
 
+  CorePreferences? get staticCorePreferences => _statCorePrefs;
+
   @override
   OtherPreferences? get otherPreferences => _dynOtherPrefs;
+
+  OtherPreferences? get staticOtherPreferences => _statOtherPrefs;
 
   @override
   bool get hasChanges {
@@ -47,47 +57,79 @@ class AdvancedSearchNotifier extends ChangeNotifier
   @override
   GenericEnum? getSelected(Type type) => _dynCorePrefs?.getValue(type);
 
-  @override
-  Future<void> getMatchingPreferences({
-    required void Function(String) showSnackbar,
-  }) async {
-    // Simulate a delay of 3 seconds
-    await Future.delayed(const Duration(seconds: 3));
-
-    // Placeholder logic, simulate fetchFilters functionality for now
+  void _initializeDefaultValues() {
     _dynCorePrefs = CorePreferences();
+    _statCorePrefs = CorePreferences();
     _dynOtherPrefs = OtherPreferences();
+    _statOtherPrefs = OtherPreferences();
+  }
 
-    _statCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
-
-    _statOtherPrefs = OtherPreferences.fromJson(_dynOtherPrefs!.toJson());
+  void resetToStatic() {
+    _dynCorePrefs = CorePreferences.fromJson(_statCorePrefs!.toJson());
+    _dynOtherPrefs = OtherPreferences.fromJson(_statOtherPrefs!.toJson());
 
     notifyListeners();
   }
 
-  void clear() {
-    _dynCorePrefs = null;
-    _dynOtherPrefs = null;
+  @override
+  Future<void> getMatchingPreferences({
+    required void Function(String) showSnackbar,
+  }) async {
+    try {
+      final data = await _advancedSearchRepo.fetchFilters();
+
+      if (data != null) {
+        _updatePrefs(data);
+
+        return;
+      }
+
+      _initializeDefaultValues();
+    } on FirebaseException catch (e) {
+      handleFirebaseError(e, showSnackbar);
+    } catch (e) {
+      showSnackbar(AppStrings.errorUnknown);
+      log(e.toString());
+    } finally {
+      notifyListeners();
+    }
   }
 
   @override
   Future<void> saveFilters({
     required void Function(String) showSnackbar,
   }) async {
-    // Placeholder logic, simulate saveFilters functionality for now
-    // Add actual logic for saving filters later
+    try {
+      final coreDiff = _dynCorePrefs?.diff(_statCorePrefs!) ?? {};
+      final otherDiff = _dynOtherPrefs?.diff(_statOtherPrefs!) ?? {};
 
-    final coreDiff = _dynCorePrefs?.diff(_statCorePrefs!) ?? {};
-    final otherDiff = _dynOtherPrefs?.diff(_statOtherPrefs!) ?? {};
+      if (coreDiff.isEmpty && otherDiff.isEmpty) {
+        return;
+      }
 
-    if (coreDiff.isEmpty && otherDiff.isEmpty) {
-      return;
+      await _advancedSearchRepo.updateFilters({...coreDiff, ...otherDiff});
+
+      // Once saved, update the static preferences to match the dynamic ones
+      _statCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
+      _statOtherPrefs = OtherPreferences.fromJson(_dynOtherPrefs!.toJson());
+    } on FirebaseException catch (e) {
+      handleFirebaseError(e, showSnackbar);
+    } catch (e) {
+      showSnackbar(AppStrings.errorUnknown);
+      log(e.toString());
+    } finally {
+      notifyListeners();
     }
+  }
 
+  void _updatePrefs(Filters filter) {
+    _dynCorePrefs = CorePreferences.fromJson(filter.corePreferences.toJson());
     _statCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
-    _statOtherPrefs = OtherPreferences.fromJson(_dynOtherPrefs!.toJson());
 
-    notifyListeners();
+    _dynOtherPrefs =
+        OtherPreferences.fromJson(filter.otherPreferences.toJson());
+
+    _statOtherPrefs = OtherPreferences.fromJson(_dynOtherPrefs!.toJson());
   }
 
   @override
@@ -126,6 +168,4 @@ class AdvancedSearchNotifier extends ChangeNotifier
 
     notifyListeners();
   }
-
-// Optionally add more functions that are relevant to AdvancedSearchNotifier
 }

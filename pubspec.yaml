@@ -58,6 +58,7 @@ dependencies:
   visibility_detector: ^0.4.0+2
   # pay_with_paystack: ^1.0.11
   tutorial_coach_mark: ^1.2.12
+  rxdart: ^0.27.7
   # Git Dependencies
   country_picker:
     git:

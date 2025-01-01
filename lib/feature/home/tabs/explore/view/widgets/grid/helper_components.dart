@@ -113,27 +113,29 @@ Widget buildDataGrid(BuildContext context, List<UserProfile> tileData) {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                CachedNetworkImage(
-                  imageUrl: item.preferences.profilePics![0],
-                  imageBuilder: (_, imageProvider) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                        ),
+                (item.preferences.profilePics?.isEmpty ?? true)
+                    ? offline(size: 24)
+                    : CachedNetworkImage(
+                        imageUrl: item.preferences.profilePics![0],
+                        imageBuilder: (_, imageProvider) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        },
+                        placeholder: (_, __) =>
+                            const ShimmerWidget.rectangular(),
+                        errorWidget: (context, url, error) {
+                          log('Error loading image: ${error.toString()}');
+
+                          return offline(size: 24);
+                        },
                       ),
-                    );
-                  },
-                  placeholder: (_, __) => const ShimmerWidget.rectangular(),
-                  errorWidget: (context, url, error) {
-                    log('Error loading image: ${error.toString()}');
-
-                    return offline(size: 24);
-                  },
-                ),
-
                 ProfileShade(
                   heightFactor: 0.35,
                   gradient: AppColors.likesAndMatchShade,

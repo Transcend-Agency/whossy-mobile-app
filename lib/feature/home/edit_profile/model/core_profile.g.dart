@@ -33,11 +33,10 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       geohash: json['geohash'] as String?,
       isBanned: json['is_banned'] as bool?,
       creditBalance: (json['credit_balance'] as num?)?.toInt(),
-      userSettings: json['user_settings'] == null
-          ? null
-          : UserSettings.fromJson(
-              json['user_settings'] as Map<String, dynamic>),
-      amountPaid: (json['amount_paid_in_total'] as num?)?.toDouble(),
+      userSettings: AppUtils.userSettingsFromJson(
+          json['user_settings'] as Map<String, dynamic>?),
+      amountPaid: AppUtils.paymentFromJson(
+          json['amount_paid_in_total'] as Map<String, dynamic>?),
       geography: AppUtils.geographyFromJson(
           json['geography'] as Map<String, dynamic>?),
     );
@@ -74,7 +73,9 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
   writeNotNull('geohash', instance.geohash);
   writeNotNull('geography', AppUtils.geographyToJson(instance.geography));
   writeNotNull('credit_balance', instance.creditBalance);
-  writeNotNull('amount_paid_in_total', instance.amountPaid);
-  writeNotNull('user_settings', instance.userSettings);
+  writeNotNull(
+      'amount_paid_in_total', AppUtils.paymentToJson(instance.amountPaid));
+  writeNotNull(
+      'user_settings', AppUtils.userSettingsToJson(instance.userSettings));
   return val;
 }

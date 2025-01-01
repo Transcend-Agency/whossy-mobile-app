@@ -26,4 +26,18 @@ class Geography {
       _$GeographyFromJson(json);
 
   Map<String, dynamic> toJson() => _$GeographyToJson(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Geography &&
+        other.geohash == geohash &&
+        other.geopoint == geopoint;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(geohash, geopoint);
+  }
 }

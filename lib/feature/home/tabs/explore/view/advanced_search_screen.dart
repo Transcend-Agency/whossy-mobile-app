@@ -1,12 +1,14 @@
+import 'dart:developer';
+
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
-import 'package:whossy_app/feature/home/tabs/explore/view/widgets/save_search_sheet.dart';
 
 import '../../../../../common/styles/text_style.dart';
+import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import '../../../../../provider/providers.dart';
 import '../../../preferences/view/widgets/_.dart';
@@ -14,50 +16,73 @@ import '../../../preferences/view/widgets/_.dart';
 typedef _Notifier = AdvancedSearchNotifier;
 
 @RoutePage()
-class AdvancedSearchScreen extends StatefulWidget {
+class AdvancedSearchScreen extends HookWidget {
   const AdvancedSearchScreen({super.key});
 
   @override
-  State<AdvancedSearchScreen> createState() => _AdvancedSearchScreenState();
-}
-
-class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
-  late _Notifier _notifier;
-
-  @override
-  void initState() {
-    _notifier = context.read<_Notifier>();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _notifier.getMatchingPreferences(showSnackbar: showSnackbar);
-    });
-
-    super.initState();
-  }
-
-  void onSaveTap() {
-    showSaveSearchSheet(context: context);
-    //_notifier.saveFilters(showSnackbar: showSnackbar);
-  }
-
-  showSnackbar(String message) {
-    if (mounted) {
-      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final notifier = useMemoized(() => context.read<_Notifier>());
+    final hasSave = useState<bool>(false);
+
+    onSaveChanges() async {
+      await notifier.saveFilters(
+        showSnackbar: (msg) => showSnackbar(msg, context),
+      );
+
+      if (!context.mounted) return;
+
+      Navigator.of(context).pop();
+    }
+
+    Future<void> onPopInvoked(bool didPop) async {
+      if (!didPop && hasSave.value) {
+        bool? result = await showConfirmationDialog(
+          yes: 'Continue',
+          no: 'Save',
+          headerImage: Image.asset(AppAssets.caution, height: 100),
+          context,
+          title: 'Caution',
+          content: contentText(
+              "You have unsaved changes. Are you sure you want to exit without saving?"),
+        );
+
+        if (result == null || !context.mounted) {
+          log('The result was null');
+          return;
+        }
+
+        if (!result) {
+          await onSaveChanges();
+        }
+
+        if (context.mounted && result) {
+          notifier.resetToStatic();
+          Navigator.of(context).pop();
+        }
+      }
+    }
+
+    void onSaveTap() => notifier.saveFilters(
+          showSnackbar: (msg) => showSnackbar(msg, context),
+        );
+
     return PopScope(
-      onPopInvoked: (_) => _notifier.clear(),
+      canPop: !hasSave.value,
+      onPopInvoked: onPopInvoked,
       child: AppScaffold(
         useScrollView: true,
         appBar: CustomAppBar(
           addBarHeight: 4,
           title: 'Advanced search',
+          onPop: hasSave.value ? () async => await onPopInvoked(false) : null,
           action: Selector<_Notifier, bool>(
             selector: (_, pref) => pref.hasChanges,
             builder: (_, save, __) {
+              if (hasSave.value != save) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  hasSave.value = save;
+                });
+              }
               return save
                   ? Padding(
                       padding: EdgeInsets.only(right: 10.w),

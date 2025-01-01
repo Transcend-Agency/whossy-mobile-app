@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:whossy_app/feature/auth/sign_up/model/payment.dart';
 import 'package:whossy_app/feature/home/settings/model/user_settings.dart';
 
 import '../../../../common/utils/index.dart';
@@ -58,8 +59,12 @@ class AppUser {
   @JsonKey(name: 'status', includeToJson: false)
   final UserStatus? status;
 
-  @JsonKey(name: 'user_settings')
-  final UserSettings? userSettings;
+  @JsonKey(
+    name: 'user_settings',
+    fromJson: AppUtils.userSettingsFromJson,
+    toJson: AppUtils.userSettingsToJson,
+  )
+  final UserSettings userSettings;
 
   @JsonKey(
     name: 'geography',
@@ -93,8 +98,12 @@ class AppUser {
   @JsonKey(name: "credit_balance")
   final int? creditBalance;
 
-  @JsonKey(name: "amount_paid_in_total")
-  final double? amountPaid;
+  @JsonKey(
+    name: "amount_paid_in_total",
+    toJson: AppUtils.paymentToJson,
+    fromJson: AppUtils.paymentFromJson,
+  )
+  final Payment? amountPaid;
 
   AppUser({
     this.uid,
@@ -114,7 +123,7 @@ class AppUser {
     this.isBanned = false,
     this.createdAt,
     this.status,
-    this.userSettings,
+    UserSettings? userSettings,
     this.isPremium = false,
     this.latitude,
     this.longitude,
@@ -122,9 +131,11 @@ class AppUser {
     this.geohash,
     this.geography,
     this.creditBalance = 0,
-    this.amountPaid = 0,
+    Payment? payment,
     List<String>? blockedIds,
-  }) : blockedIds = blockedIds ?? [];
+  })  : userSettings = userSettings ?? UserSettings(),
+        amountPaid = payment ?? Payment(),
+        blockedIds = blockedIds ?? [];
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>
       _$AppUserFromJson(json);

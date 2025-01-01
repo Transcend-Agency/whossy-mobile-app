@@ -16,8 +16,12 @@ class ExploreFiltersComponent extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final explore = useContext().watch<ExploreNotifier>();
-    final profileData = useContext().read<EditProfileNotifier>().coreProfile;
+    final explore = useMemoized(
+      () => useContext().watch<ExploreNotifier>(),
+    );
+    final profileData = useMemoized(
+      () => useContext().read<EditProfileNotifier>().coreProfile,
+    );
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -78,12 +82,16 @@ class ExploreFiltersComponent extends HookWidget {
         return profileData?.interests ?? [];
       case Filters.outsideMyCountry:
         return profileData?.countryOfOrigin;
+      case Filters.popularInMyArea:
+        return profileData?.countryOfOrigin;
       case Filters.newMembers:
         return DateTime.now().subtract(const Duration(days: 7));
       case Filters.online:
         return true;
       case Filters.lookingToDate:
         return Preference.lookingToDate.index;
+      case Filters.advancedSearch:
+        return ''; // Nothing is needed here
       default:
         return null;
     }

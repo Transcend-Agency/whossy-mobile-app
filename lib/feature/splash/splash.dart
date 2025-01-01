@@ -73,7 +73,7 @@ class _SplashState extends State<Splash> {
 
   onAuthenticate() {
     if (mounted) {
-      return Nav.replace(context, const HomeWrapper());
+      return Nav.replace(context, HomeWrapper());
     }
   }
 

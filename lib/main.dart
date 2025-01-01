@@ -66,7 +66,18 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (_) => LikesNotifier()),
         ChangeNotifierProvider(create: (_) => MatchesNotifier()),
-        ChangeNotifierProvider(create: (_) => ExploreNotifier()),
+        ChangeNotifierProxyProvider2<EditProfileNotifier,
+            AdvancedSearchNotifier, ExploreNotifier>(
+          create: (_) => ExploreNotifier(),
+          update: (_, profileData, advancedSearchPrefs, explore) {
+            return explore!
+              ..saveProfile(profileData.staticProfile)
+              ..saveFilters(
+                advancedSearchPrefs.staticCorePreferences,
+                advancedSearchPrefs.staticOtherPreferences,
+              );
+          },
+        ),
         ChangeNotifierProvider(create: (_) => NotificationNotifier()),
         ChangeNotifierProvider(create: (_) => ReportNotifier()),
       ],

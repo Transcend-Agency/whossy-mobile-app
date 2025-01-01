@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 
@@ -37,15 +39,35 @@ class SettingsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> signOut(void Function(String) showSnackbar) async {
-    try {
-      await _userService.updateUserStatus(false);
+  
 
-      await _userRepository.signOut();
-    } catch (e) {
-      showSnackbar(AppStrings.signOutFailure);
-    }
+  // Future<void> signOut(void Function(String) showSnackbar) async {
+  //   try {
+  //     await _userService.updateUserStatus(false);
+
+  //     await _userRepository.signOut();
+  //   } catch (e) {
+  //     showSnackbar(AppStrings.signOutFailure);
+  //   }
+
+  //   notifyListeners();
+  // }
+
+  Future<void> signOut(void Function(String) showSnackbar) async {
+  try {
+    log('Attempting to update user status to offline...');
+    await _userService.updateUserStatus(false);
+    log('User status successfully updated.');
+
+    log('Attempting to sign out the user...');
+    await _userRepository.signOut();
+    log('User successfully signed out.');
+  } catch (e) {
+    log('Error during sign-out process: $e');
+    showSnackbar(AppStrings.signOutFailure);
+  }
 
     notifyListeners();
-  }
+}
+
 }

@@ -49,4 +49,28 @@ class UserSettings {
         break;
     }
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is UserSettings &&
+        other.onlineStatus == onlineStatus &&
+        other.publicSearch == publicSearch &&
+        other.readReceipts == readReceipts;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(onlineStatus, publicSearch, readReceipts);
+  }
+
+  @override
+  String toString() {
+    return 'UserSettings(\n'
+        '    onlineStatus: ${onlineStatus ?? "default (true)"},\n'
+        '    publicSearch: ${publicSearch ?? "default (true)"},\n'
+        '    readReceipts: ${readReceipts ?? "default (true)"},\n'
+        '  )';
+  }
 }

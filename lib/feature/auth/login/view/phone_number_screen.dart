@@ -117,7 +117,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   toOnboarding() =>
       Nav.pushAndPopUntil(context, const Wrapper(), LoginRoute.name);
 
-  onLoginAuthenticate() => Nav.replaceAll(context, [const HomeWrapper()]);
+  onLoginAuthenticate() => Nav.replaceAll(context, [HomeWrapper()]);
 
   toCreateAccount() =>
       Nav.pushAndPopUntil(context, const SignUpNameRoute(), LoginRoute.name);

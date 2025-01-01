@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  onAuthenticate() => Nav.replaceAll(context, [const HomeWrapper()]);
+  onAuthenticate() => Nav.replaceAll(context, [HomeWrapper()]);
 
   toCreateAccount() => Nav.push(context, const SignUpNameRoute());
 

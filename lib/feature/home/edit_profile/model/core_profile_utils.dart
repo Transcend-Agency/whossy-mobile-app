@@ -60,6 +60,20 @@ extension CoreProfileUtils on CoreProfile {
     if (blockedIds != null) this.blockedIds = blockedIds;
   }
 
+  void updateLocation({
+    double? latitude,
+    double? longitude,
+    GeoPoint? location,
+    String? geohash,
+    Geography? geography,
+  }) {
+    if (latitude != null) this.latitude = latitude;
+    if (longitude != null) this.longitude = longitude;
+    if (location != null) this.location = location;
+    if (geohash != null) this.geohash = geohash;
+    if (geography != null) this.geography = geography;
+  }
+
   bool get hasFullName => firstName != null && lastName != null;
 
   static const List<String> validKeys = [
