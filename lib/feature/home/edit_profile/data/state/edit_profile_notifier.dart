@@ -15,6 +15,7 @@ import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/onboarding/model/preferences.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
+import '../../../../auth/sign_up/model/payment.dart';
 import '../../../preferences/model/core_preferences.dart';
 import '../../../preferences/model/generic_enum.dart';
 import '../../model/core_profile.dart';
@@ -252,6 +253,7 @@ class EditProfileNotifier extends ChangeNotifier {
     double? weight,
     double? height,
     int? creditBalance,
+    Payment? amountPaid,
     List<String>? interests,
     List<String>? profilePics,
     List<String>? blockedIds,
@@ -267,6 +269,7 @@ class EditProfileNotifier extends ChangeNotifier {
       profilePics: profilePics,
       blockedIds: blockedIds,
       creditBalance: creditBalance,
+      amountPaid: amountPaid,
     );
     notifyListeners();
   }

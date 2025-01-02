@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:whossy_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
@@ -42,14 +44,21 @@ class PremiumPlan extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(bottom: 16.r),
-          child: DialogButton(
-            text: "Subscribe",
-            color: AppColors.premiumContainer,
-            textColor: Colors.white,
-            onPressed: () {},
-          ),
+        Selector<EditProfileNotifier, bool>(
+          selector: (_, edit) => edit.coreProfile?.isPremium ?? false,
+          builder: (_, isPremium, __) {
+            return isPremium
+                ? const SizedBox.shrink()
+                : Padding(
+                    padding: EdgeInsets.only(bottom: 16.r),
+                    child: DialogButton(
+                      text: "Subscribe",
+                      color: AppColors.premiumContainer,
+                      textColor: Colors.white,
+                      onPressed: () {},
+                    ),
+                  );
+          },
         ),
       ],
     );

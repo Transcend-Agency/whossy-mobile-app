@@ -48,6 +48,7 @@ extension CoreProfileUtils on CoreProfile {
     List<String>? interests,
     List<String>? profilePics,
     List<String>? blockedIds,
+    Payment? amountPaid,
   }) {
     if (bio != null) this.bio = bio;
     if (gender != null) this.gender = gender;
@@ -59,6 +60,7 @@ extension CoreProfileUtils on CoreProfile {
     if (interests != null) this.interests = interests;
     if (profilePics != null) this.profilePics = profilePics;
     if (blockedIds != null) this.blockedIds = blockedIds;
+    if (amountPaid != null) this.amountPaid = amountPaid;
   }
 
   void updateLocation({

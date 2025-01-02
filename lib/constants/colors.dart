@@ -41,10 +41,10 @@ class AppColors {
   static const Color purpleContainer = Color(0xFFf3f3ff);
   static const Color purpleText = Color(0xFF8785ff);
 
-  static const Color freeContainer = Color(0xFFff5c00);
-  static const Color freeContainerShade = Color(0xffffe2d2);
-  static const Color premiumContainer = Color(0xFFAAAAAA);
-  static const Color premiumContainerShade = Color(0xFFf0f0f0);
+  static const Color freeContainer = Color(0xFFAAAAAA);
+  static const Color freeContainerShade = Color(0xFFf0f0f0);
+  static const Color premiumContainer = Color(0xFFff5c00);
+  static const Color premiumContainerShade = Color(0xffffe2d2);
 
   static const splashGradient = LinearGradient(
     colors: [warmYellow, primaryColor],
@@ -53,7 +53,7 @@ class AppColors {
   );
 
   static const splash = LinearGradient(
-    colors: [AppColors.freeContainer, AppColors.sbErrorBorderColor],
+    colors: [AppColors.premiumContainer, AppColors.sbErrorBorderColor],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
@@ -61,7 +61,7 @@ class AppColors {
   static const upgradeButtonGradient = LinearGradient(
     colors: [
       Color(0xffFDDE00),
-      AppColors.freeContainer,
+      AppColors.premiumContainer,
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

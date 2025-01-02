@@ -15,10 +15,32 @@ class Payment {
     this.ngn = 0,
   });
 
+  /// Factory method for JSON serialization.
   factory Payment.fromJson(Map<String, dynamic> json) =>
       _$PaymentFromJson(json);
 
+  /// Method for JSON deserialization.
   Map<String, dynamic> toJson() => _$PaymentToJson(this);
+
+  /// Update method to increment or set values.
+  void updatePayment({
+    double? kshIncrement,
+    double? kshOverride,
+    double? ngnIncrement,
+    double? ngnOverride,
+  }) {
+    if (kshOverride != null) {
+      ksh = kshOverride; // Direct override
+    } else if (kshIncrement != null) {
+      ksh += kshIncrement; // Increment by the specified amount
+    }
+
+    if (ngnOverride != null) {
+      ngn = ngnOverride; // Direct override
+    } else if (ngnIncrement != null) {
+      ngn += ngnIncrement; // Increment by the specified amount
+    }
+  }
 
   @override
   bool operator ==(Object other) {

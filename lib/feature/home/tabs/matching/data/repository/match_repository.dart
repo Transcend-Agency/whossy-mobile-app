@@ -21,6 +21,7 @@ class MatchRepository {
     excludeBannedUsers: true,
     excludeUnapprovedUsers: true,
     excludeBlockedAndSelf: true,
+    excludePublicSearch: true,
   );
 
   Stream<List<UserProfile>> fetchProfilesStream({

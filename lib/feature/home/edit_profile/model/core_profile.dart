@@ -93,7 +93,7 @@ class CoreProfile {
     toJson: AppUtils.paymentToJson,
     fromJson: AppUtils.paymentFromJson,
   )
-  final Payment? amountPaid;
+  Payment? amountPaid;
 
   @JsonKey(
     name: 'user_settings',

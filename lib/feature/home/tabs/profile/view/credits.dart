@@ -1,6 +1,3 @@
-import 'dart:convert' as convert;
-import 'dart:developer';
-
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -8,12 +5,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pay_with_paystack/pay_with_paystack.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:whossy_app/common/components/index.dart';
 
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/services/services.dart';
 import '../../../../../constants/index.dart';
 import '../../../../../provider/providers.dart';
 import '../model/credit.dart';
@@ -96,22 +93,22 @@ class Credits extends HookWidget {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: credits.map((data) {
+                  children: credits.map((quantity) {
                     return GenericTile(
                       borderColor: AppColors.outlinedColor,
                       tileColor: Colors.white,
                       bottom: 14.r,
-                      value: data,
+                      value: quantity,
                       groupValue: creditValue.value,
                       onChanged: (newEnum) => creditValue.value = newEnum,
-                      title: '${data.quantity} Credits',
+                      title: '${quantity.quantity} Credits',
                       subtitle: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           addHeight(3),
                           Text(
-                            '${data.getPrice(userCurrency.value)} ${userCurrency.value.toString().split('.').last}',
+                            '${quantity.getPrice(userCurrency.value)} ${userCurrency.value.toString().split('.').last}',
                             style: TextStyles.profileHead.copyWith(
                               fontSize: AppUtils.scale(12.sp) ?? 15,
                               color: Colors.black87,
@@ -137,6 +134,7 @@ class Credits extends HookWidget {
                         ? null
                         : isConnected
                             ? () async => await pay(
+                                  quantity: creditValue.value!.quantity,
                                   context: context,
                                   currency: userCurrency.value
                                       .toString()
@@ -161,10 +159,21 @@ class Credits extends HookWidget {
     required BuildContext context,
     required String currency,
     required double amount,
+    required int quantity,
   }) async {
-    final editNotifier = context.read<EditProfileNotifier>();
+    if (currency != 'NGN') {
+      showSnackbar(
+        '$currency Payment is coming soon',
+        context,
+        snackBarType: SnackbarType.warning,
+      );
+      return;
+    }
 
-    PayWithPayStack().now(
+    final editNotifier = context.read<EditProfileNotifier>();
+    final paymentService = PaymentService(editNotifier);
+
+    await PayWithPayStack().now(
       context: context,
       secretKey: "sk_test_b9688554e5b6a393c6d74c2b8e30d5ba36e7fafe",
       customerEmail: editNotifier.coreProfile!.email!,
@@ -172,31 +181,15 @@ class Credits extends HookWidget {
       currency: currency,
       amount: amount,
       callbackUrl: "https://google.com",
-      transactionCompleted: (response) {
-        log("==> Transaction Successful");
-
-        final formattedJson =
-            const convert.JsonEncoder.withIndent('  ').convert(response);
-        log("Formatted Response:\n$formattedJson");
-      },
-      transactionNotCompleted: (errType, reason) {
-        showSnackbar(errType.message, context);
-        debugPrint("==> Transaction failed reason $reason");
-      },
-    );
-  }
-
-  showSnackbar(
-    String message,
-    BuildContext context, {
-    SnackbarType snackBarType = SnackbarType.error,
-  }) {
-    showTopSnackBar(
-      Overlay.of(context),
-      AppSnackbar(
-        text: message,
-        snackbarType: snackBarType,
+      transactionCompleted: (response) => paymentService.onPaymentSuccess(
+        context,
+        credit: quantity,
+        response: response,
+        currency: currency,
+        amount: amount,
       ),
+      transactionNotCompleted: (errType, reason) =>
+          paymentService.handlePaymentFailure(context, errType.message, reason),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 
@@ -163,18 +162,6 @@ class Profile extends StatelessWidget {
                   children: [
                     addWidth(14),
                     PlanCard(
-                      containerColor: AppColors.freeContainer,
-                      containerShade: AppColors.freeContainerShade,
-                      title: 'Whossy Free Plan',
-                      amount: '0',
-                      benefits: AppStrings.freePricing,
-                      onSeeAllFeatures: () => Nav.push(
-                        context,
-                        SubscriptionPlans(initialPage: 0),
-                      ),
-                    ),
-                    addWidth(12),
-                    PlanCard(
                       containerColor: AppColors.premiumContainer,
                       containerShade: AppColors.premiumContainerShade,
                       title: 'Premium Plan',
@@ -186,26 +173,24 @@ class Profile extends StatelessWidget {
                       ),
                     ),
                     addWidth(12),
+                    PlanCard(
+                      containerColor: AppColors.freeContainer,
+                      containerShade: AppColors.freeContainerShade,
+                      title: 'Whossy Free Plan',
+                      amount: '0',
+                      benefits: AppStrings.freePricing,
+                      onSeeAllFeatures: () => Nav.push(
+                        context,
+                        SubscriptionPlans(initialPage: 0),
+                      ),
+                    ),
+                    addWidth(12),
                   ],
                 ),
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  showSnackbar(
-    String message,
-    BuildContext context, {
-    SnackbarType snackBarType = SnackbarType.error,
-  }) {
-    showTopSnackBar(
-      Overlay.of(context),
-      AppSnackbar(
-        text: message,
-        snackbarType: snackBarType,
       ),
     );
   }

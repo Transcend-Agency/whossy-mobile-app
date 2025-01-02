@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -231,7 +233,7 @@ extension DateTimeFormatting on DateTime {
     return formattedDate.replaceFirst(RegExp(r'\d+'), '$day$suffix');
   }
 
- String get monthName {
+  String get monthName {
     const months = [
       "January",
       "February",
@@ -248,5 +250,10 @@ extension DateTimeFormatting on DateTime {
     ];
     return months[month - 1];
   }
+}
 
+extension PrettyPrintJson on Map<String, dynamic> {
+  String formatJson() {
+    return const JsonEncoder.withIndent('  ').convert(this);
+  }
 }
