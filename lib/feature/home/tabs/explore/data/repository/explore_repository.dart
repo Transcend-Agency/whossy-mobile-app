@@ -15,7 +15,6 @@ class ExploreRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
-  final _matches = FirebaseFirestore.instance.collection('matches');
 
   final excludeSettings = const ExcludeSettings(
     excludeIncompleteOnboarding: true,
