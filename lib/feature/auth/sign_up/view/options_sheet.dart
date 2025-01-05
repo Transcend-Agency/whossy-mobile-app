@@ -65,26 +65,26 @@ class SignupOptions extends StatelessWidget {
                 ),
                 const AppDivider(),
                 addHeight(14),
-                Padding(
-                  padding: pagePadding,
-                  child: OutlinedAppButton(
-                    onPress: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        fbIcon(),
-                        addWidth(6),
-                        Text(
-                          "Sign up with Facebook",
-                          style: TextStyles.buttonText.copyWith(
-                            color: AppColors.hintTextColor,
-                            fontSize: AppUtils.scale(17),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: pagePadding,
+                //   child: OutlinedAppButton(
+                //     onPress: () {},
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       children: [
+                //         fbIcon(),
+                //         addWidth(6),
+                //         Text(
+                //           "Sign up with Facebook",
+                //           style: TextStyles.buttonText.copyWith(
+                //             color: AppColors.hintTextColor,
+                //             fontSize: AppUtils.scale(17),
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding:
                       EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.w),

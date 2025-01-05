@@ -29,7 +29,7 @@ class Matching extends StatelessWidget {
             HeaderBar(
               customWidget: NotificationBell(
                 onTap: () => Nav.push(context, const NotificationRoute()),
-                rightSpacing: 2,
+                rightSpacing: 0,
               ),
               child: const Logo(),
             ),

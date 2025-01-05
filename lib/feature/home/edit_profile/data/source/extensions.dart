@@ -22,6 +22,9 @@ extension CoreProfileExtension on CoreProfile {
     if (phoneNumber != other.phoneNumber) {
       updatedFields['phone_number'] = phoneNumber;
     }
+    if (premiumUser != other.premiumUser) {
+      updatedFields['is_premium'] = premiumUser;
+    }
     if (creditBalance != other.creditBalance) {
       updatedFields['credit_balance'] = creditBalance;
     }

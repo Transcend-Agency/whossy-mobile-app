@@ -13,6 +13,7 @@ class MatchRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
+  final _matches = FirebaseFirestore.instance.collection('matches');
   final _geo = GeoFlutterFire();
   final double radiusInKm = 50; // Default radius in kilometers
 
@@ -32,7 +33,9 @@ class MatchRepository {
     OtherPreferences? preferences,
     CorePreferences? corePreferences,
     required List<String> interests,
-  }) {
+  }) 
+  
+  {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
     if (latitude == null || longitude == null) {
@@ -46,7 +49,6 @@ class MatchRepository {
 
     final center = _geo.point(latitude: latitude, longitude: longitude);
 
-    // Create a blacklist stream combining likes and dislikes
     Stream<Set<String>> blacklistStream = Rx.combineLatest2(
       _likes.where('liker_id', isEqualTo: uid).snapshots().map(
             (snapshot) =>
@@ -60,8 +62,7 @@ class MatchRepository {
       (likes, dislikes) => likes.union(dislikes),
     );
 
-    // Geolocation query stream
-    Stream<List<DocumentSnapshot>> geoQueryStream = _geo
+    var geoQueryStream = _geo
         .collection(collectionRef: _profiles)
         .within(center: center, radius: radius, field: 'geography');
 
@@ -98,6 +99,16 @@ class MatchRepository {
                   final profile =
                       UserProfile.fromJson(doc.data() as Map<String, dynamic>);
 
+                  // final distance = (Geolocator.distanceBetween(
+                  //             latitude,
+                  //             longitude,
+                  //             profile.user.geography!.geopoint!.latitude,
+                  //             profile.user.geography!.geopoint!.longitude) /
+                  //         1000)
+                  //     .floor();
+
+                  // log('${profile.name} and distance is $distance -- Search radius $radius');
+
                   return !AppUtils.excludeProfile(
                         profile,
                         uid,
@@ -106,6 +117,7 @@ class MatchRepository {
                       ) &&
                       !blacklist.contains(profile.user.uid) &&
                       filteredIds.contains(doc.id);
+                     // && radius.toInt() >= distance;
                 })
                 .map((doc) {
                   return UserProfile.fromJson(

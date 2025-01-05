@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/tabs/profile/view/widgets/sub_container.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
-import '../../../../../../provider/providers.dart';
 import '../../data/source/subscription_plan_data.dart';
 
 class FreePlan extends StatelessWidget {
@@ -44,22 +41,22 @@ class FreePlan extends StatelessWidget {
             ),
           ),
         ),
-        Selector<EditProfileNotifier, bool>(
-          selector: (_, edit) => edit.coreProfile?.isPremium ?? false,
-          builder: (_, isPremium, __) {
-            return !isPremium
-                ? const SizedBox.shrink()
-                : Padding(
-                    padding: EdgeInsets.only(bottom: 16.r),
-                    child: DialogButton(
-                      text: "Subscribe",
-                      color: AppColors.freeContainer,
-                      textColor: Colors.white,
-                      onPressed: () {},
-                    ),
-                  );
-          },
-        ),
+        // Selector<EditProfileNotifier, bool>(
+        //   selector: (_, edit) => edit.coreProfile?.isPremium ?? false,
+        //   builder: (_, isPremium, __) {
+        //     return !isPremium
+        //         ? const SizedBox.shrink()
+        //         : Padding(
+        //             padding: EdgeInsets.only(bottom: 16.r),
+        //             child: DialogButton(
+        //               text: "Subscribe",
+        //               color: AppColors.freeContainer,
+        //               textColor: Colors.white,
+        //               onPressed: () {},
+        //             ),
+        //           );
+        //   },
+        // ),
       ],
     );
   }

@@ -47,7 +47,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   // Other UI code
   late List<Widget> _pages;
-  int selectedIndex = 0;
+  int selectedIndex = 1;
 
   @override
   void initState() {
@@ -80,7 +80,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
     _requestLocationPermission();
 
-    // startTutorial();
+    startTutorial();
   }
 
   Future<void> _requestLocationPermission() async {
@@ -93,13 +93,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
       if (position != null) {
         await locationService.updateUserLocation(position);
 
-        // Todo: Test for new users
-        if (widget.fromOnboarding) {
-          _editProfileNotifier.saveUserLocationLocally(
-            position,
-            showSnackbar: showAppSnackbar,
-          );
-        }
+        _editProfileNotifier.saveUserLocationLocally(
+          position,
+          showSnackbar: showAppSnackbar,
+        );
       }
     } catch (e) {
       if (e is LocationPermissionDeniedException) {

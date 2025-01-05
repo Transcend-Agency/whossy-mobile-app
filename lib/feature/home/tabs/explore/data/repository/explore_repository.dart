@@ -9,11 +9,13 @@ import '../../../matching/data/repository/query_helper.dart';
 import '../../../matching/model/user_profile.dart';
 import '../../model/explore_filters.dart';
 import '../../model/filter_configuration.dart';
+import '../../model/liked_user_profile.dart';
 
 class ExploreRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
+  final _matches = FirebaseFirestore.instance.collection('matches');
 
   final excludeSettings = const ExcludeSettings(
     excludeIncompleteOnboarding: true,
@@ -23,7 +25,7 @@ class ExploreRepository {
     excludePublicSearch: true,
   );
 
-  Stream<List<UserProfile>> streamFilteredProfiles({
+  Stream<List<LikedUserProfile>> streamFilteredProfiles({
     required ExploreFilters filters,
     required List<String> blockedIds,
     required OtherPreferences? preferences,
@@ -34,18 +36,13 @@ class ExploreRepository {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
     // Combine likes and dislikes into a single blacklist stream
-    Stream<Set<String>> blacklistStream = Rx.combineLatest2(
-      _likes.where('liker_id', isEqualTo: uid).snapshots().map(
-            (snapshot) =>
-                snapshot.docs.map((doc) => doc['liked_id'] as String).toSet(),
-          ),
-      _dislikes.where('disliker_id', isEqualTo: uid).snapshots().map(
-            (snapshot) => snapshot.docs
-                .map((doc) => doc['disliked_id'] as String)
-                .toSet(),
-          ),
-      (Set<String> likes, Set<String> dislikes) => likes.union(dislikes),
-    );
+    Stream<Set<String>> blacklistStream = _dislikes
+        .where('disliker_id', isEqualTo: uid)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => doc['disliked_id'] as String).toSet(),
+        );
 
     // Build the base query using filters
     Query baseQuery = _profiles;
@@ -82,10 +79,14 @@ class ExploreRepository {
     baseQuery = baseQuery.limit(20);
 
     // Combine profile snapshots with blacklist stream
-    return Rx.combineLatest2(
+    return Rx.combineLatest3(
       baseQuery.snapshots(),
       blacklistStream,
-      (querySnapshot, blacklist) {
+      _likes.where('liker_id', isEqualTo: uid).snapshots().map(
+            (snapshot) =>
+                snapshot.docs.map((doc) => doc['liked_id'] as String).toSet(),
+          ),
+      (querySnapshot, blacklist, likedIds,) {
         final profiles = querySnapshot.docs
             .map((doc) =>
                 UserProfile.fromJson(doc.data() as Map<String, dynamic>))
@@ -101,7 +102,11 @@ class ExploreRepository {
             ) ||
             blacklist.contains(profile.user.uid));
 
-        return profiles;
+        // Map profiles to LikedUserProfile, checking if the profile has been liked
+        return profiles.map((profile) {
+          final isLiked = likedIds.contains(profile.user.uid);
+          return LikedUserProfile(profile: profile, isLiked: isLiked);
+        }).toList();
       },
     );
   }

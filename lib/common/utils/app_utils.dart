@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -213,5 +215,27 @@ class TimestampWrapper {
   DateTime? toDateTime() {
     final timestampObj = toTimestamp();
     return timestampObj?.toDate();
+  }
+}
+
+class ListQueue<T> {
+  final _queue = Queue<T>();
+
+  void add(T item) {
+    if (_queue.length == 2) {
+      _queue.removeLast();
+    }
+    _queue.addFirst(item);
+  }
+
+  List<T> getQueue() {
+    return List.unmodifiable(_queue);
+  }
+
+  T? getBottom() {
+    if (_queue.isEmpty) {
+      return null; // Return null if the queue is empty
+    }
+    return _queue.last; // Get the last item in the queue
   }
 }

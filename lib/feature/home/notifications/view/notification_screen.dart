@@ -75,7 +75,7 @@ class NotificationScreen extends StatelessWidget {
         },
       );
     } else if (snapshot.hasError) {
-      log('Error fetching chat tiles: ${snapshot.error}');
+      log('Error fetching notifications: ${snapshot.error}');
       return const Text(
         'Sorry, try again later',
         key: ValueKey('error'),

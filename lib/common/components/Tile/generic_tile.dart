@@ -12,9 +12,11 @@ class GenericTile<T> extends StatelessWidget {
   final ValueChanged<T?> onChanged;
   final String title;
   final double? bottom;
-  final Color? borderColor;
+  final Color? unselectedBorderColor;
+  final Color? selectedBorderColor;
   final Color? tileColor;
   final Widget? subtitle;
+  final bool addTrailingColor;
 
   const GenericTile({
     super.key,
@@ -25,8 +27,10 @@ class GenericTile<T> extends StatelessWidget {
     this.bottom,
     this.leadingWidget,
     this.tileColor,
-    this.borderColor,
+    this.unselectedBorderColor,
+    this.selectedBorderColor,
     this.subtitle,
+    this.addTrailingColor = false,
   });
 
   @override
@@ -43,8 +47,8 @@ class GenericTile<T> extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.r),
             border: Border.all(
               color: isSelected
-                  ? AppColors.primaryColor
-                  : borderColor ?? Colors.transparent,
+                  ? selectedBorderColor ?? AppColors.primaryColor
+                  : unselectedBorderColor ?? Colors.transparent,
               width: 1.5,
             ),
           ),
@@ -59,7 +63,11 @@ class GenericTile<T> extends StatelessWidget {
               width: 16.r,
               height: 16.r,
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.whiteShade200 : Colors.white,
+                color: isSelected
+                    ? addTrailingColor
+                        ? selectedBorderColor
+                        : AppColors.whiteShade200
+                    : Colors.white,
                 shape: BoxShape.circle,
                 border: Border.all(
                   color:

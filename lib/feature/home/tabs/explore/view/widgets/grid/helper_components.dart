@@ -13,10 +13,11 @@ import '../../../../../../../common/components/index.dart';
 import '../../../../../../../common/utils/index.dart';
 import '../../../../../../../constants/index.dart';
 import '../../../../matching/model/user_profile.dart';
+import '../../../model/liked_user_profile.dart';
 
 Widget buildContentBasedOnSnapshot(
   BuildContext context,
-  AsyncSnapshot<List<UserProfile>> snapshot,
+  AsyncSnapshot<List<LikedUserProfile>> snapshot,
 ) {
   if (snapshot.connectionState == ConnectionState.waiting) {
     return buildLoadingGrid(context);
@@ -74,7 +75,7 @@ Widget buildErrorWidget(Object? error) {
   );
 }
 
-Widget buildDataGrid(BuildContext context, List<UserProfile> tileData) {
+Widget buildDataGrid(BuildContext context, List<LikedUserProfile> tileData) {
   const pageName = 'Explore';
 
   int columns = (MediaQuery.sizeOf(context).width ~/ 160.r).toInt();
@@ -93,15 +94,15 @@ Widget buildDataGrid(BuildContext context, List<UserProfile> tileData) {
       final height = predefinedHeights[index % predefinedHeights.length];
 
       return Hero(
-        tag: '${item.user.uid!}$pageName',
+        tag: '${item.profile.user.uid!}$pageName',
         child: GestureDetector(
           onTap: () => Nav.push(
             context,
             MatchingProfilePreview(
               index: 0,
-              userProfile: item,
-              showMessaging: true,
+              userProfile: item.profile,
               pageName: pageName,
+              isLiked: item.isLiked,
             ),
           ),
           child: Container(
@@ -113,10 +114,10 @@ Widget buildDataGrid(BuildContext context, List<UserProfile> tileData) {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                (item.preferences.profilePics?.isEmpty ?? true)
+                (item.profile.preferences.profilePics?.isEmpty ?? true)
                     ? offline(size: 24)
                     : CachedNetworkImage(
-                        imageUrl: item.preferences.profilePics![0],
+                        imageUrl: item.profile.preferences.profilePics![0],
                         imageBuilder: (_, imageProvider) {
                           return Container(
                             decoration: BoxDecoration(
@@ -140,8 +141,9 @@ Widget buildDataGrid(BuildContext context, List<UserProfile> tileData) {
                   heightFactor: 0.35,
                   gradient: AppColors.likesAndMatchShade,
                 ),
-                _buildUserTags(item),
-                _buildUserDetails(item, columns)
+                _buildUserTags(item.profile),
+                if (item.isLiked) _buildLike(),
+                _buildUserDetails(item.profile, columns)
               ],
             ),
           ),
@@ -149,6 +151,19 @@ Widget buildDataGrid(BuildContext context, List<UserProfile> tileData) {
       );
     },
     itemCount: tileData.length,
+  );
+}
+
+Widget _buildLike() {
+  return Align(
+    alignment: Alignment.topRight,
+    child: Padding(
+      padding: const EdgeInsets.only(top: 8, right: 10),
+      child: Image.asset(
+        AppAssets.like,
+        width: 22.r,
+      ),
+    ),
   );
 }
 

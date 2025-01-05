@@ -15,6 +15,7 @@ import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/onboarding/model/preferences.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
+import '../../../../auth/sign_up/model/geography.dart';
 import '../../../../auth/sign_up/model/payment.dart';
 import '../../../preferences/model/core_preferences.dart';
 import '../../../preferences/model/generic_enum.dart';
@@ -150,7 +151,7 @@ class EditProfileNotifier extends ChangeNotifier {
       log(e.toString());
     } finally {
       notifyListeners();
-    }
+    } //
   }
 
   // This function is used to handle the initial update of a user's location
@@ -165,15 +166,19 @@ class EditProfileNotifier extends ChangeNotifier {
     try {
       final geo = GeoFlutterFire();
 
-      final geoPoint =
+      final geoFirePoint =
           geo.point(latitude: position.latitude, longitude: position.longitude);
+
+      final geoPoint = GeoPoint(position.latitude, position.longitude);
+
+      if (_staticCoreProfile?.geohash == geoFirePoint.hash) return;
 
       _dynCoreProfile?.updateLocation(
         latitude: position.latitude,
         longitude: position.longitude,
-        location: GeoPoint(position.latitude, position.longitude),
-        geohash: geoPoint.hash,
-        geography: geoPoint.data,
+        location: geoPoint,
+        geohash: geoFirePoint.hash,
+        geography: Geography.fromJson(geoFirePoint.data),
       );
 
       _staticCoreProfile = CoreProfile.fromJson(_dynCoreProfile!.toJson());
@@ -253,6 +258,7 @@ class EditProfileNotifier extends ChangeNotifier {
     double? weight,
     double? height,
     int? creditBalance,
+    bool? isPremium,
     Payment? amountPaid,
     List<String>? interests,
     List<String>? profilePics,
@@ -267,6 +273,7 @@ class EditProfileNotifier extends ChangeNotifier {
       height: height,
       interests: interests,
       profilePics: profilePics,
+      isPremium: isPremium,
       blockedIds: blockedIds,
       creditBalance: creditBalance,
       amountPaid: amountPaid,

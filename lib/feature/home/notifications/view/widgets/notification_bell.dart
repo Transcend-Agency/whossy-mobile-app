@@ -35,7 +35,7 @@ class NotificationBell extends HookWidget {
           clipBehavior: Clip.none,
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               child: SvgPicture.asset(AppAssets.bell, width: 16.r),
             ),
             // Show the dot if count > 0

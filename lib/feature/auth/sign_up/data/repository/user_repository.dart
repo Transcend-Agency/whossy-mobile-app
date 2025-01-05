@@ -53,7 +53,7 @@ class UserRepository {
 
     try {
       await _users.doc(uid).set(data, SetOptions(merge: true)).timeout(
-            const Duration(seconds: 5),
+            const Duration(seconds: 10),
             onTimeout: () =>
                 throw TimeoutException('The upload operation timed out'),
           );
@@ -166,35 +166,34 @@ class UserRepository {
     return result.docs.isNotEmpty;
   }
 
-Future<List<String>> uploadProfilePictures(List<File> files) async {
-  try {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
+  Future<List<String>> uploadProfilePictures(List<File> files) async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
 
-    // Create a list of Future tasks for uploading each file
-    final uploadFutures = files.map((file) async {
-      final fileName = p.basenameWithoutExtension(file.path);
-      final storageRef =
-          _storage.ref().child(AppStrings.profilePicsPath(uid, fileName));
-      final uploadTask = await storageRef.putFile(file);
-      return uploadTask.ref.getDownloadURL();
-    }).toList();
+      // Create a list of Future tasks for uploading each file
+      final uploadFutures = files.map((file) async {
+        final fileName = p.basenameWithoutExtension(file.path);
+        final storageRef =
+            _storage.ref().child(AppStrings.profilePicsPath(uid, fileName));
+        final uploadTask = await storageRef.putFile(file);
+        return uploadTask.ref.getDownloadURL();
+      }).toList();
 
-    // Wait for all upload tasks to complete with a 45-second timeout
-    return await Future.wait(uploadFutures).timeout(
-      const Duration(seconds: 45),
-      onTimeout: () {
-        throw FailedUploadException(AppStrings.uploadTimeout);
-      },
-    );
-  } catch (e) {
-    log(e.toString());
-    if (e is FailedUploadException) {
-      rethrow; 
+      // Wait for all upload tasks to complete with a 45-second timeout
+      return await Future.wait(uploadFutures).timeout(
+        const Duration(minutes: 2),
+        onTimeout: () {
+          throw FailedUploadException(AppStrings.uploadTimeout);
+        },
+      );
+    } catch (e) {
+      log(e.toString());
+      if (e is FailedUploadException) {
+        rethrow;
+      }
+      throw FailedUploadException(AppStrings.deviceOffline);
     }
-    throw FailedUploadException(AppStrings.deviceOffline);
   }
-}
-
 
   Future<void> accountCheck({
     User? user,

@@ -182,6 +182,7 @@ class ChatRepository {
 
     return _chats
         .where('participants', arrayContains: uid)
+        .where('last_message_id', isNull: false)
         .orderBy('last_message_timestamp', descending: true)
         .snapshots()
         .asyncMap((snapshot) async {

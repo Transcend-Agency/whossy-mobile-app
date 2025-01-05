@@ -48,6 +48,7 @@ extension CoreProfileUtils on CoreProfile {
     List<String>? interests,
     List<String>? profilePics,
     List<String>? blockedIds,
+    bool? isPremium,
     Payment? amountPaid,
   }) {
     if (bio != null) this.bio = bio;
@@ -56,6 +57,7 @@ extension CoreProfileUtils on CoreProfile {
     if (lastName != null) this.lastName = lastName;
     if (height != null) this.height = height;
     if (weight != null) this.weight = weight;
+    if (isPremium != null) this.isPremium = isPremium;
     if (creditBalance != null) this.creditBalance = creditBalance;
     if (interests != null) this.interests = interests;
     if (profilePics != null) this.profilePics = profilePics;

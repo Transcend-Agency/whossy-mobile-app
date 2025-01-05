@@ -53,7 +53,6 @@ class LikesGridView extends StatelessWidget {
           MatchingProfilePreview(
             index: 0,
             userProfile: profile,
-            showMessaging: true,
             pageName: pageName,
           ),
         ),

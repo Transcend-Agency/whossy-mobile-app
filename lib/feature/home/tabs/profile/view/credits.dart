@@ -95,7 +95,7 @@ class Credits extends HookWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: credits.map((quantity) {
                     return GenericTile(
-                      borderColor: AppColors.outlinedColor,
+                      unselectedBorderColor: AppColors.outlinedColor,
                       tileColor: Colors.white,
                       bottom: 14.r,
                       value: quantity,
@@ -181,7 +181,7 @@ class Credits extends HookWidget {
       currency: currency,
       amount: amount,
       callbackUrl: "https://google.com",
-      transactionCompleted: (response) => paymentService.onPaymentSuccess(
+      transactionCompleted: (response) => paymentService.onCreditSuccess(
         context,
         credit: quantity,
         response: response,
@@ -189,7 +189,7 @@ class Credits extends HookWidget {
         amount: amount,
       ),
       transactionNotCompleted: (errType, reason) =>
-          paymentService.handlePaymentFailure(context, errType.message, reason),
+          paymentService.onCreditFailure(context, errType.message, reason),
     );
   }
 }

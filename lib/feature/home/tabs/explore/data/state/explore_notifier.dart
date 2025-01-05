@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../edit_profile/model/core_profile.dart';
 import '../../../../preferences/model/core_preferences.dart';
 import '../../../../preferences/model/other_preferences.dart';
-import '../../../matching/model/user_profile.dart';
 import '../../model/explore_filters.dart';
+import '../../model/liked_user_profile.dart';
 import '../repository/explore_repository.dart';
 
 class ExploreNotifier extends ChangeNotifier {
@@ -32,7 +32,7 @@ class ExploreNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Stream<List<UserProfile>> profileStream() {
+  Stream<List<LikedUserProfile>> profileStream() {
     return _exploreRepository.streamFilteredProfiles(
       filters: _filters,
       blockedIds: _profileData?.blockedIds ?? [],

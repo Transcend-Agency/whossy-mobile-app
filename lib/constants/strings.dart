@@ -140,6 +140,12 @@ class AppStrings {
   static const String addCreditsFailure =
       'Failed to add credits, Please try again';
 
+  static const String payPremiumFailure =
+      'Failed to make payment, Please try again';
+
+  static const String unsubscribePremiumFailure =
+      'Failed to unsubscribe from premium, Please try again';
+
   static const String deductCreditsFailure =
       'Failed to deduct credits, Please try again';
 
@@ -167,11 +173,14 @@ class AppStrings {
   static const String signOutFailure = 'Failed to sign out. Please try again.';
   static const String logout =
       'All your current sessions will be closed after logging out. Are you sure you want to log out?';
+  static const String cancelPlan =
+      'Are you sure you want to cancel your premium plan? You will lose access to premium features after your current billing cycle ends';
+
   static const String noProfilePic =
       'You need to add at least one photo to preview your profile.';
 
   static const String uploadTimeout =
-  "Failed to upload profile pictures. Please check your network and try again.";
+      "Failed to upload profile pictures. Please check your network and try again.";
 
   static const String minPicsRequired =
       'You need at least 3 photos to save your profile.';

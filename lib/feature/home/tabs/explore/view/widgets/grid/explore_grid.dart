@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:whossy_app/feature/home/tabs/explore/model/liked_user_profile.dart';
 
 import '../../../../../../../common/components/index.dart';
 import '../../../../../../../provider/providers.dart';
-import '../../../../matching/model/user_profile.dart';
 import 'helper_components.dart';
 
 class ExploreGrid extends StatelessWidget {
@@ -11,7 +11,7 @@ class ExploreGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<ExploreNotifier, Stream<List<UserProfile>>>(
+    return Selector<ExploreNotifier, Stream<List<LikedUserProfile>>>(
       selector: (_, explore) => explore.profileStream(),
       builder: (_, stream, __) {
         return StreamBuilder(
