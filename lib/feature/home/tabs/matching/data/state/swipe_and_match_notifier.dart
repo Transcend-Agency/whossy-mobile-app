@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whossy_app/common/components/Snackbar/app_snackbar.dart';
+import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/feature/home/home_wrapper.dart';
 import 'package:whossy_app/feature/home/preferences/model/other_preferences.dart';
 
@@ -18,18 +20,11 @@ import '../repository/match_repository.dart';
 class SwipeAndMatchNotifier with ChangeNotifier {
   final _profileController = StreamController<List<UserProfile>>.broadcast();
   StreamSubscription? _profileSubscription;
-  List<UserProfile> _profiles = [];
-
-  // Maintain a set of excluded IDs
-  final Set<String> _excludedIds = {};
-
   Stream<List<UserProfile>> get profileStream => _profileController.stream;
 
   final _matchRepository = MatchRepository();
   final _likesRepository = LikesRepository();
   final _sharedPrefs = SharedPrefsService();
-
-  List<Map<String, dynamic>> actionList = [];
 
   bool _hasDeniedLocationPermission = false;
   bool _hasTakenTutorial = false;
@@ -41,7 +36,6 @@ class SwipeAndMatchNotifier with ChangeNotifier {
   OtherPreferences? _otherPreferences;
 
   bool _hasFetchedProfiles = false;
-  List<UserProfile> get profiles => _profiles;
 
   void saveFilters(CorePreferences? corePrefs, OtherPreferences? otherPrefs) {
     if (_otherPreferences == otherPrefs && _corePreferences == corePrefs) {
@@ -121,17 +115,8 @@ class SwipeAndMatchNotifier with ChangeNotifier {
         interests: _profileData?.interests ?? [],
       )
           .listen((fetchedProfiles) {
-        // Filter out excluded profiles (liked/disliked)
-        final filteredProfiles = fetchedProfiles
-            .where((profile) => !_excludedIds.contains(profile.user.uid))
-            .toList();
+        _profileController.add(fetchedProfiles);
 
-        if (filteredProfiles.isNotEmpty) {
-          _profiles = filteredProfiles;
-          _profileController.add(_profiles);
-        } else {
-          _profileController.add([]);
-        }
         notifyListeners();
       }, onError: (error) {
         log('Error fetching profiles: $error');
@@ -146,24 +131,22 @@ class SwipeAndMatchNotifier with ChangeNotifier {
   }
 
   Future<void> addLike(
-    String likedId, {
+    String likedId,
+    String name, {
     bool addAction = true,
-    required void Function(String) showSnackbar,
+    required void Function(String, {SnackbarType type}) showSnackbar,
   }) async {
     try {
-      final uid = await _likesRepository.addLike(
+      String value = await _likesRepository.addLike(
         likedId: likedId,
         likerId: FirebaseAuth.instance.currentUser!.uid,
       );
 
-      // Add to excluded IDs
-      _excludedIds.add(likedId);
-
-      if (addAction) {
-        actionList.add({
-          'uid': uid,
-          'collection': 'likes',
-        });
+      if (value == "match") {
+        showSnackbar(
+          'You have matched with $name!',
+          type: SnackbarType.success,
+        );
       }
 
       // Refresh profiles after action
@@ -182,20 +165,10 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     required void Function(String) showSnackbar,
   }) async {
     try {
-      final uid = await _likesRepository.addDislike(
+      await _likesRepository.addDislike(
         dislikedId: dislikedId,
         dislikerId: FirebaseAuth.instance.currentUser!.uid,
       );
-
-      // Add to excluded IDs
-      _excludedIds.add(dislikedId);
-
-      if (addAction) {
-        actionList.add({
-          'uid': uid,
-          'collection': 'dislikes',
-        });
-      }
 
       // Refresh profiles after action
       fetchProfiles();
@@ -207,33 +180,9 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     }
   }
 
-  void undoLastAction({
-    required void Function(String) showSnackbar,
-  }) {
-    try {
-      if (actionList.isNotEmpty) {
-        var lastAction = actionList.removeLast();
-        _likesRepository.undoAction(action: lastAction);
-
-        // Remove from excluded IDs
-        _excludedIds.remove(lastAction['uid']);
-
-        // Refresh profiles after undo
-        fetchProfiles();
-      } else {
-        log("No actions to undo.");
-      }
-    } on FirebaseException catch (e) {
-      handleFirebaseError(e, showSnackbar);
-    } catch (e) {
-      log('An error occurred when trying to undo a last action');
-      showSnackbar(AppStrings.errorUnknown);
-    }
-  }
-
   @override
   void dispose() {
-    _profileSubscription?.cancel(); // Clean up subscription
+    _profileSubscription?.cancel();
     _profileController.close();
     super.dispose();
   }

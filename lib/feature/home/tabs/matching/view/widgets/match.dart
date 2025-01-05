@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
@@ -14,6 +11,7 @@ import '../../../../../../provider/providers.dart';
 import '../../../../edit_profile/view/widgets/edit/image_view.dart';
 import '../../../../tutorial.dart';
 import '../../model/user_profile.dart';
+import 'match_helper_components.dart';
 
 class Match extends StatefulWidget {
   const Match({super.key});
@@ -26,9 +24,7 @@ class _MatchState extends State<Match> {
   final CardSwiperController controller = CardSwiperController();
   final PageController _pageController = PageController();
   late SwipeAndMatchNotifier matchNotifier;
-
-  final currentProfile = ValueNotifier<UserProfile?>(null);
-  final fetchedProfiles = ValueNotifier<List<UserProfile>>([]);
+  final profileQueue = ListQueue<UserProfile?>();
 
   double thresholdX = 0.0;
   int _activePage = 0;
@@ -48,9 +44,7 @@ class _MatchState extends State<Match> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      matchNotifier = context.read<SwipeAndMatchNotifier>();
-
-      matchNotifier.fetchProfiles();
+      matchNotifier = context.read<SwipeAndMatchNotifier>()..fetchProfiles();
     });
   }
 
@@ -63,32 +57,25 @@ class _MatchState extends State<Match> {
 
   void _onPageChange(int page) => setState(() => _activePage = page);
 
-  showSnackbar(String message) {
-    if (mounted) {
-      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
-    }
-  }
-
-  void like({String? id}) {
-    if (currentProfile.value != null) {
+  void like() {
+    if (profileQueue.getBottom() != null) {
       matchNotifier.addLike(
-        id ?? currentProfile.value!.user.uid!,
-        showSnackbar: showSnackbar,
+        profileQueue.getBottom()!.user.uid!,
+        profileQueue.getBottom()!.name,
+        showSnackbar: (msg, {type = SnackbarType.error}) {
+          showSnackbar(msg, context, snackBarType: type);
+        },
       );
     }
   }
 
-  void dislike({String? id}) {
-    if (currentProfile.value != null) {
+  void dislike() {
+    if (profileQueue.getBottom() != null) {
       matchNotifier.addDislike(
-        id ?? currentProfile.value!.user.uid!,
-        showSnackbar: showSnackbar,
+        profileQueue.getBottom()!.user.uid!,
+        showSnackbar: (msg) => showSnackbar(msg, context),
       );
     }
-  }
-
-  void undo() {
-    matchNotifier.undoLastAction(showSnackbar: showSnackbar);
   }
 
   Future<bool> handleSwipe(
@@ -96,7 +83,6 @@ class _MatchState extends State<Match> {
     int? previousIndex,
     CardSwiperDirection direction,
   ) async {
-    log('Index: $index and previous index  $previousIndex');
     if (direction == CardSwiperDirection.right ||
         direction == CardSwiperDirection.left ||
         direction == CardSwiperDirection.none) {
@@ -108,11 +94,11 @@ class _MatchState extends State<Match> {
     }
 
     if (direction == CardSwiperDirection.right) {
-      like(id: fetchedProfiles.value[index].user.uid);
+      like();
     }
 
     if (direction == CardSwiperDirection.left) {
-      dislike(id: fetchedProfiles.value[index].user.uid);
+      dislike();
     }
 
     return true;
@@ -164,32 +150,7 @@ class _MatchState extends State<Match> {
     }
   }
 
-  Widget buildLoadingIndicator() {
-    return const Center(
-      key: ValueKey('loading'),
-      child: AppLoader(color: AppColors.primaryColor, size: 24),
-    );
-  }
-
-  Widget buildErrorWidget(Object? error) {
-    return Center(
-      key: const ValueKey('error'),
-      child: Text('Error: $error'),
-    );
-  }
-
-  Widget buildEmptyData() {
-    return const EmptyDataBox(
-      key: ValueKey('empty'),
-      imageSize: 100,
-      spacing: 10,
-      image: AppAssets.noLikes,
-      text: 'All out of profiles! Try again soon',
-    );
-  }
-
   Widget buildCardSwiper(List<UserProfile> profiles) {
-    fetchedProfiles.value = profiles;
     return Stack(
       key: const ValueKey('data'),
       children: [
@@ -215,9 +176,10 @@ class _MatchState extends State<Match> {
                   ) {
                     updateThresholds(percentThresholdX.toDouble());
 
-                    final profileData = profiles[index];
+                    final profileData =
+                        profiles.length == 1 ? profiles.first : profiles[index];
 
-                    currentProfile.value = profileData;
+                    profileQueue.add(profileData);
 
                     return ProfileCard(
                       color: Colors.white,
@@ -253,6 +215,7 @@ class _MatchState extends State<Match> {
                                   index: index,
                                   userProfile: profileData,
                                   useDefaultTag: true,
+                                  showCancel: true,
                                 ),
                               ),
                               activePage: _activePage,
@@ -280,22 +243,6 @@ class _MatchState extends State<Match> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        AnimatedOpacity(
-          opacity: !_isSwiping ? 1 : 0,
-          duration: const Duration(milliseconds: 300),
-          child: MatchIconButton(
-            key: GlobalKeys.undoButtonKey,
-            size: 24,
-            padding: 8,
-            onTap: () {
-              controller.undo();
-
-              undo();
-            },
-            assetPath: AppAssets.redo,
-          ),
-        ),
-        addWidth(16),
         AnimatedOpacity(
           opacity: (!_isSwiping || thresholdX < 0) ? 1 : 0,
           duration: const Duration(milliseconds: 300),

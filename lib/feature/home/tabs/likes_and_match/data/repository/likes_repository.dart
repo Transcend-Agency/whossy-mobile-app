@@ -7,53 +7,58 @@ import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 class LikesRepository {
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
+  final _matches = FirebaseFirestore.instance.collection('matches');
   final _userRepository = UserRepository();
 
   Future<String> addLike({
     required String likedId,
     required String likerId,
   }) async {
-    final uid = AppUtils.generateCombinedId(likerId, likedId);
+    final uid = '${likerId}_$likedId';
 
-    final dislikeDoc = await _dislikes.doc(uid).get();
+    await _setLike(uid, likerId, likedId);
 
-    if (dislikeDoc.exists) {
-      await _likes.doc(uid).delete();
+    final isMatch = await _checkForMatch(likedId, likerId);
+
+    if (isMatch) {
+      await _createMatch(uid, likerId, likedId);
+      return 'match';
     }
 
+    return 'like';
+  }
+
+  Future<bool> _checkForMatch(String likedId, String likerId) async {
+    final existingLikeDoc = await _likes
+        .where('uid', isEqualTo: '${likedId}_$likerId')
+        .limit(1)
+        .get();
+    return existingLikeDoc.docs.isNotEmpty;
+  }
+
+  Future<void> _createMatch(String uid, String likerId, String likedId) async {
+    final matchData = {
+      'user_ids': [likerId, likedId],
+      'timestamp': FieldValue.serverTimestamp(),
+    };
+    await _matches.doc(uid).set(matchData);
+  }
+
+  Future<void> _setLike(String uid, String likerId, String likedId) async {
     final likeData = {
       'liked_id': likedId,
       'liker_id': likerId,
       'timestamp': FieldValue.serverTimestamp(),
       'uid': uid,
     };
-
     await _likes.doc(uid).set(likeData);
-
-    return uid;
   }
 
-  Future<void> undoAction({
-    required Map<String, dynamic> action,
-  }) async {
-    String uid = action['uid'];
-    String collection = action['collection'];
-
-    // Delete the document from the appropriate collection
-    FirebaseFirestore.instance.collection(collection).doc(uid).delete();
-  }
-
-  Future<String> addDislike({
+  Future<void> addDislike({
     required String dislikedId,
     required String dislikerId,
   }) async {
-    final uid = AppUtils.generateCombinedId(dislikerId, dislikedId);
-
-    final likeDoc = await _likes.doc(uid).get();
-
-    if (likeDoc.exists) {
-      await _likes.doc(uid).delete();
-    }
+     final uid = '${dislikerId}_$dislikedId';
 
     // Add the dislike
     final dislikeData = {
@@ -64,8 +69,6 @@ class LikesRepository {
     };
 
     await _dislikes.doc(uid).set(dislikeData);
-
-    return uid;
   }
 
   Stream<List<UserProfile>> getLikersWithProfiles(

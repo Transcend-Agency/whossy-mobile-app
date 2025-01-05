@@ -38,7 +38,7 @@ class Profile extends StatelessWidget {
                     children: [
                       HeaderBar(
                         icon: AppAssets.settings,
-                        iconSize: 22,
+                        iconSize: 24,
                         onIconTap: () => Nav.push(context, const Settings()),
                         showFilters: false,
                         child: const Logo(),
@@ -163,18 +163,6 @@ class Profile extends StatelessWidget {
                   children: [
                     addWidth(14),
                     PlanCard(
-                      containerColor: AppColors.freeContainer,
-                      containerShade: AppColors.freeContainerShade,
-                      title: 'Whossy Free Plan',
-                      amount: '0',
-                      benefits: AppStrings.freePricing,
-                      onSeeAllFeatures: () => Nav.push(
-                        context,
-                        SubscriptionPlans(initialPage: 0),
-                      ),
-                    ),
-                    addWidth(12),
-                    PlanCard(
                       containerColor: AppColors.premiumContainer,
                       containerShade: AppColors.premiumContainerShade,
                       title: 'Premium Plan',
@@ -183,6 +171,18 @@ class Profile extends StatelessWidget {
                       onSeeAllFeatures: () => Nav.push(
                         context,
                         SubscriptionPlans(initialPage: 1),
+                      ),
+                    ),
+                    addWidth(12),
+                    PlanCard(
+                      containerColor: AppColors.freeContainer,
+                      containerShade: AppColors.freeContainerShade,
+                      title: 'Whossy Free Plan',
+                      amount: '0',
+                      benefits: AppStrings.freePricing,
+                      onSeeAllFeatures: () => Nav.push(
+                        context,
+                        SubscriptionPlans(initialPage: 0),
                       ),
                     ),
                     addWidth(12),

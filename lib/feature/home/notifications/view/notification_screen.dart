@@ -75,7 +75,7 @@ class NotificationScreen extends StatelessWidget {
         },
       );
     } else if (snapshot.hasError) {
-      log('Error fetching chat tiles: ${snapshot.error}');
+      log('Error fetching notifications: ${snapshot.error}');
       return const Text(
         'Sorry, try again later',
         key: ValueKey('error'),
@@ -88,26 +88,3 @@ class NotificationScreen extends StatelessWidget {
     }
   }
 }
-
-/*
-const Center(
-        child: EmptyDataBox(
-          key: ValueKey('empty'),
-          image: AppAssets.noNotifications,
-          text: 'No new notification',
-          imageSize: 100,
-          spacing: 10,
-        ),
-      ),
- */
-
-/*
-ListView.builder(
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          notifications.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-          return NotificationTile(notification: notifications[index]);
-        },
-      ),
- */

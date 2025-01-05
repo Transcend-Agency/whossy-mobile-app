@@ -16,8 +16,25 @@ class ExploreFiltersComponent extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final explore = useContext().watch<ExploreNotifier>();
-    final profileData = useContext().read<EditProfileNotifier>().coreProfile;
+    final explore = useMemoized(
+      () => useContext().watch<ExploreNotifier>(),
+    );
+    final profileData = useMemoized(
+      () => useContext().read<EditProfileNotifier>().coreProfile,
+    );
+
+    useEffect(() {
+      // Delay the filter selection until after the first frame has been rendered.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (explore.getFilter(Filters.discover) == null) {
+          explore.addFilter(
+            Filters.discover,
+            _getFilterValue(Filters.discover, profileData),
+          );
+        }
+      });
+      return null; // no cleanup needed
+    }, []);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -71,12 +88,13 @@ class ExploreFiltersComponent extends HookWidget {
     );
   }
 
-  /// Determine the value for each filter dynamically (e.g., from user input or defaults)
   dynamic _getFilterValue(Filters filter, CoreProfile? profileData) {
     switch (filter) {
       case Filters.similarInterest:
         return profileData?.interests ?? [];
       case Filters.outsideMyCountry:
+        return profileData?.countryOfOrigin;
+      case Filters.popularInMyArea:
         return profileData?.countryOfOrigin;
       case Filters.newMembers:
         return DateTime.now().subtract(const Duration(days: 7));
@@ -84,6 +102,11 @@ class ExploreFiltersComponent extends HookWidget {
         return true;
       case Filters.lookingToDate:
         return Preference.lookingToDate.index;
+      case Filters.advancedSearch:
+        return ''; // Nothing is needed here
+      case Filters.discover:
+        return ''; // Nothing is needed here
+
       default:
         return null;
     }

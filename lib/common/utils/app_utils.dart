@@ -1,9 +1,13 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../feature/auth/sign_up/model/geography.dart';
+import '../../feature/auth/sign_up/model/payment.dart';
+import '../../feature/home/settings/model/user_settings.dart';
 import '../../feature/home/tabs/matching/model/user_profile.dart';
 
 class AppUtils {
@@ -12,6 +16,18 @@ class AppUtils {
 
   static Geography? geographyFromJson(Map<String, dynamic>? json) =>
       json != null ? Geography.fromJson(json) : null;
+
+  static UserSettings userSettingsFromJson(Map<String, dynamic>? json) =>
+      json == null ? UserSettings() : UserSettings.fromJson(json);
+
+  static Map<String, dynamic>? userSettingsToJson(UserSettings? settings) =>
+      settings?.toJson();
+
+  static Payment paymentFromJson(Map<String, dynamic>? json) =>
+      json == null ? Payment() : Payment.fromJson(json);
+
+  static Map<String, dynamic>? paymentToJson(Payment? payment) =>
+      payment?.toJson();
 
   static Timestamp? timestampFromJson(dynamic json) => json as Timestamp?;
   static dynamic timestampToJson(Timestamp? timestamp) => timestamp;
@@ -131,6 +147,12 @@ class AppUtils {
     if (settings.excludeUnapprovedUsers && !profile.user.isApproved) {
       return true;
     }
+
+    if (settings.excludePublicSearch &&
+        !(profile.user.userSettings.publicSearch ?? true)) {
+      return true;
+    }
+
     if (settings.excludeBlockedAndSelf &&
         (profile.user.uid == currentUserId ||
             blockedIds.contains(profile.user.uid) ||
@@ -147,12 +169,14 @@ class ExcludeSettings {
   final bool excludeBannedUsers;
   final bool excludeUnapprovedUsers;
   final bool excludeBlockedAndSelf;
+  final bool excludePublicSearch;
 
   const ExcludeSettings({
     this.excludeIncompleteOnboarding = false,
     this.excludeBannedUsers = false,
     this.excludeUnapprovedUsers = false,
     this.excludeBlockedAndSelf = false,
+    this.excludePublicSearch = false,
   });
 }
 
@@ -191,5 +215,27 @@ class TimestampWrapper {
   DateTime? toDateTime() {
     final timestampObj = toTimestamp();
     return timestampObj?.toDate();
+  }
+}
+
+class ListQueue<T> {
+  final _queue = Queue<T>();
+
+  void add(T item) {
+    if (_queue.length == 2) {
+      _queue.removeLast();
+    }
+    _queue.addFirst(item);
+  }
+
+  List<T> getQueue() {
+    return List.unmodifiable(_queue);
+  }
+
+  T? getBottom() {
+    if (_queue.isEmpty) {
+      return null; // Return null if the queue is empty
+    }
+    return _queue.last; // Get the last item in the queue
   }
 }

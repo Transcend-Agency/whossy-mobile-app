@@ -6,6 +6,7 @@ import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
 
 import '../../../../common/utils/index.dart';
 import '../../../auth/sign_up/model/geography.dart';
+import '../../../auth/sign_up/model/payment.dart';
 import '../../settings/model/user_settings.dart';
 
 part 'core_profile.g.dart';
@@ -41,6 +42,8 @@ class CoreProfile {
   List<String>? profilePics;
 
   String? bio;
+
+  int? meet;
 
   List<String>? interests;
 
@@ -80,16 +83,24 @@ class CoreProfile {
     toJson: AppUtils.geographyToJson,
     fromJson: AppUtils.geographyFromJson,
   )
-  final Geography? geography;
+  Geography? geography;
 
   @JsonKey(name: "credit_balance")
   int? creditBalance;
 
-  @JsonKey(name: "amount_paid_in_total")
-  double? amountPaid;
+  @JsonKey(
+    name: "amount_paid_in_total",
+    toJson: AppUtils.paymentToJson,
+    fromJson: AppUtils.paymentFromJson,
+  )
+  Payment? amountPaid;
 
-  @JsonKey(name: 'user_settings')
-  final UserSettings? userSettings;
+  @JsonKey(
+    name: 'user_settings',
+    fromJson: AppUtils.userSettingsFromJson,
+    toJson: AppUtils.userSettingsToJson,
+  )
+  UserSettings? userSettings;
 
   CoreProfile({
     this.firstName,
@@ -100,6 +111,7 @@ class CoreProfile {
     this.phoneNumber,
     this.profilePics,
     this.bio,
+    this.meet,
     this.interests,
     this.weight,
     this.height,
@@ -136,6 +148,7 @@ class CoreProfile {
         '  phoneNumber: $phoneNumber,\n'
         '  profilePics: ${profilePics?.join(", ") ?? "null"},\n'
         '  bio: $bio,\n'
+        '  meet: $meet,\n'
         '  interests: ${interests?.join(", ") ?? "null"},\n'
         '  weight: $weight,\n'
         '  height: $height,\n'
@@ -152,8 +165,8 @@ class CoreProfile {
         '  },\n'
         '  geohash: $geohash,\n'
         '  creditBalance: $creditBalance,\n'
-        '  userSettings: $userSettings,\n'
-        '  amountPaid: $amountPaid,\n'
+        '  userSettings: ${userSettings.toString()},\n'
+        '  amountPaid: ${amountPaid.toString()},\n'
         '  geography: {\n'
         '    geohash: ${geography?.geohash ?? "null"},\n'
         '    geopoint: {\n'
@@ -177,6 +190,7 @@ class CoreProfile {
         other.phoneNumber == phoneNumber &&
         listEquals(other.profilePics, profilePics) &&
         other.bio == bio &&
+        other.meet == meet &&
         AppUtils.areListsEqual(other.interests, interests) &&
         other.weight == weight &&
         other.height == height &&
@@ -187,7 +201,7 @@ class CoreProfile {
         other.latitude == latitude &&
         other.longitude == longitude &&
         other.location == location &&
-        other.geohash == geohash &&
+        // other.geohash == geohash &&
         other.creditBalance == creditBalance &&
         other.amountPaid == amountPaid &&
         other.userSettings == userSettings;
@@ -195,6 +209,7 @@ class CoreProfile {
 
   @override
   int get hashCode {
+    // Removed geohash
     return Object.hash(
       firstName,
       lastName,
@@ -203,13 +218,13 @@ class CoreProfile {
       email,
       phoneNumber,
       bio,
+      meet,
       weight,
       height,
       isPremium,
       isApproved,
       isBanned,
       location,
-      geohash,
       creditBalance,
       amountPaid,
       userSettings,

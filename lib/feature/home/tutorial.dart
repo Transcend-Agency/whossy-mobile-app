@@ -25,107 +25,107 @@ class GlobalKeys {
 }
 
 final targets = [
-  // Tutorial for the 'Like' button
-  TargetFocus(
-    paddingFocus: 4,
-    identify: 'likeButton',
-    keyTarget: GlobalKeys.likeButtonKey,
-    contents: [
-      TargetContent(
-        align: ContentAlign.bottom,
-        builder: (context, controller) => Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Like',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
-                color: Colors.white,
-              ),
-            ),
-            addHeight(10),
-            Text(
-              AppStrings.likeButtonTutorial,
-              style: TextStyles.prefText.copyWith(
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ],
-  ),
-
-  // Tutorial for the 'Dislike' button
-  TargetFocus(
-    paddingFocus: 4,
-    identify: 'dislikeButton',
-    keyTarget: GlobalKeys.dislikeButtonKey,
-    contents: [
-      TargetContent(
-        align: ContentAlign.bottom,
-        builder: (context, controller) => Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Dislike',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
-                color: Colors.white,
-              ),
-            ),
-            addHeight(10),
-            Text(
-              AppStrings.dislikeButtonTutorial,
-              style: TextStyles.prefText.copyWith(
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ],
-  ),
-
-  // Tutorial for the 'Undo' button
-  TargetFocus(
-    paddingFocus: 4,
-    identify: 'undoButton',
-    keyTarget: GlobalKeys.undoButtonKey,
-    contents: [
-      TargetContent(
-        align: ContentAlign.bottom,
-        builder: (context, controller) => Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Undo',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
-                color: Colors.white,
-              ),
-            ),
-            addHeight(10),
-            Text(
-              AppStrings.undoButtonTutorial,
-              style: TextStyles.prefText.copyWith(
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ],
-  ),
+  // // Tutorial for the 'Like' button
+  // TargetFocus(
+  //   paddingFocus: 4,
+  //   identify: 'likeButton',
+  //   keyTarget: GlobalKeys.likeButtonKey,
+  //   contents: [
+  //     TargetContent(
+  //       align: ContentAlign.bottom,
+  //       builder: (context, controller) => Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text(
+  //             'Like',
+  //             style: TextStyles.boldPrefText.copyWith(
+  //               fontWeight: FontWeight.w600,
+  //               fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //           addHeight(10),
+  //           Text(
+  //             AppStrings.likeButtonTutorial,
+  //             style: TextStyles.prefText.copyWith(
+  //               fontWeight: FontWeight.w500,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   ],
+  // ),
+  //
+  // // Tutorial for the 'Dislike' button
+  // TargetFocus(
+  //   paddingFocus: 4,
+  //   identify: 'dislikeButton',
+  //   keyTarget: GlobalKeys.dislikeButtonKey,
+  //   contents: [
+  //     TargetContent(
+  //       align: ContentAlign.bottom,
+  //       builder: (context, controller) => Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text(
+  //             'Dislike',
+  //             style: TextStyles.boldPrefText.copyWith(
+  //               fontWeight: FontWeight.w600,
+  //               fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //           addHeight(10),
+  //           Text(
+  //             AppStrings.dislikeButtonTutorial,
+  //             style: TextStyles.prefText.copyWith(
+  //               fontWeight: FontWeight.w500,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   ],
+  // ),
+  //
+  // // Tutorial for the 'Undo' button
+  // TargetFocus(
+  //   paddingFocus: 4,
+  //   identify: 'undoButton',
+  //   keyTarget: GlobalKeys.undoButtonKey,
+  //   contents: [
+  //     TargetContent(
+  //       align: ContentAlign.bottom,
+  //       builder: (context, controller) => Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text(
+  //             'Undo',
+  //             style: TextStyles.boldPrefText.copyWith(
+  //               fontWeight: FontWeight.w600,
+  //               fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //           addHeight(10),
+  //           Text(
+  //             AppStrings.undoButtonTutorial,
+  //             style: TextStyles.prefText.copyWith(
+  //               fontWeight: FontWeight.w500,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   ],
+  // ),
 
   // Tutorial for the 'Swipe and Match' tab (FireTab)
   TargetFocus(

@@ -369,7 +369,7 @@ class Interests extends HookWidget {
                         horizontal: 8.r,
                       ),
                       child: Text(
-                        'Looking to date',
+                        Preference.values[relPreference].name,
                         style: TextStyles.hintText.copyWith(
                           fontSize: AppUtils.scale(10.sp),
                           color: AppColors.hintTextColor,

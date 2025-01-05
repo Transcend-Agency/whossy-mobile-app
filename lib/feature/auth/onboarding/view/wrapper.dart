@@ -112,7 +112,7 @@ class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
   }
 
   goToNext() {
-    Nav.replaceAll(context, [const HomeWrapper()]);
+    Nav.replaceAll(context, [HomeWrapper(fromOnboarding: true)]);
 
     _onboardingNotifier.reset();
   }

@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  onAuthenticate() => Nav.replaceAll(context, [const HomeWrapper()]);
+  onAuthenticate() => Nav.replaceAll(context, [HomeWrapper()]);
 
   toCreateAccount() => Nav.push(context, const SignUpNameRoute());
 
@@ -290,14 +290,14 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               addHeight(16),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  OutlinedAppButton(
-                    onPress: loginWithFacebook,
-                    child: Center(
-                      child: fbIcon(),
-                    ),
-                  ),
+                  // OutlinedAppButton(
+                  //   onPress: loginWithFacebook,
+                  //   child: Center(
+                  //     child: fbIcon(),
+                  //   ),
+                  // ),
                   OutlinedAppButton(
                     onPress: loginWithGoogle,
                     child: Center(

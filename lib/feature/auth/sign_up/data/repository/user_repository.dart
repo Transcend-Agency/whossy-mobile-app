@@ -53,7 +53,7 @@ class UserRepository {
 
     try {
       await _users.doc(uid).set(data, SetOptions(merge: true)).timeout(
-            const Duration(seconds: 5),
+            const Duration(seconds: 10),
             onTimeout: () =>
                 throw TimeoutException('The upload operation timed out'),
           );
@@ -179,10 +179,18 @@ class UserRepository {
         return uploadTask.ref.getDownloadURL();
       }).toList();
 
-      // Wait for all upload tasks to complete and get their download URLs
-      return await Future.wait(uploadFutures);
+      // Wait for all upload tasks to complete with a 45-second timeout
+      return await Future.wait(uploadFutures).timeout(
+        const Duration(minutes: 2),
+        onTimeout: () {
+          throw FailedUploadException(AppStrings.uploadTimeout);
+        },
+      );
     } catch (e) {
       log(e.toString());
+      if (e is FailedUploadException) {
+        rethrow;
+      }
       throw FailedUploadException(AppStrings.deviceOffline);
     }
   }

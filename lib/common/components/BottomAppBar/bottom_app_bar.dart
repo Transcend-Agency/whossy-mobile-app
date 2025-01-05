@@ -20,7 +20,7 @@ class CustomBottomAppBar extends StatefulWidget {
 }
 
 class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   // Update Index
   _updatedIndex(int index) {

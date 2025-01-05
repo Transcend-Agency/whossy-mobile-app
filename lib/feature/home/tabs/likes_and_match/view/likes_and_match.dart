@@ -71,7 +71,7 @@ class _LikesAndMatchState extends State<LikesAndMatch>
               showFilters: false,
               customWidget: NotificationBell(
                 onTap: () => Nav.push(context, const NotificationRoute()),
-                rightSpacing: 2,
+                rightSpacing: 6,
               ),
               child: Row(
                 children: [

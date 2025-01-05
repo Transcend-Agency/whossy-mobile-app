@@ -36,21 +36,19 @@ class MatchesRepository {
     }
 
     return _matches
-        .where('user1_id', isEqualTo: userId)
+        .where('user_ids', arrayContains: userId)
         .snapshots()
-        .asyncMap((user1MatchesSnapshot) async {
-      final user2Matches =
-          await _matches.where('user2_id', isEqualTo: userId).get();
+        .asyncMap((matchesSnapshot) async {
+      final otherUserIds = <String>{};
 
-      // Extract other user IDs
-      final otherUserIds = <String>{
-        ...user1MatchesSnapshot.docs.map((doc) => doc['user2_id'] as String),
-        ...user2Matches.docs.map((doc) => doc['user1_id'] as String),
-      }.toList();
+      for (final doc in matchesSnapshot.docs) {
+        final ids = List<String>.from(doc['user_ids']);
+        ids.remove(userId);
+        otherUserIds.addAll(ids);
+      }
 
-      // Use the helper function to fetch profiles in batches
       return await _userRepository.getUserProfilesInBatches(
-        userIds: otherUserIds,
+        userIds: otherUserIds.toList(),
         blockedIds: blockedIds,
         settings: const ExcludeSettings(
           excludeIncompleteOnboarding: true,

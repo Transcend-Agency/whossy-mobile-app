@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
@@ -23,13 +22,17 @@ class MatchingProfilePreview extends StatefulWidget {
     required this.index,
     required this.userProfile,
     this.pageName,
-    this.showMessaging = false,
+    this.isLiked = false,
+    this.showCancel = false,
+    this.showMessaging = true,
     this.useDefaultTag = false,
   });
 
   final int index;
   final String? pageName;
   final bool showMessaging;
+  final bool showCancel;
+  final bool isLiked;
   final bool useDefaultTag; // default is "preview"
   final UserProfile userProfile;
 
@@ -44,6 +47,21 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
   late bool isAtTop;
   late String name;
   late SwipeAndMatchNotifier swipeAndMatch;
+
+  bool _isLikeVisible = true;
+  bool _isDislikeVisible = true;
+
+  void _onLikeTapComplete() {
+    setState(() {
+      _isLikeVisible = false;
+    });
+  }
+
+  void _onDislikeTapComplete() {
+    setState(() {
+      _isDislikeVisible = false;
+    });
+  }
 
   @override
   void initState() {
@@ -109,34 +127,50 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MatchIconButton(
-                  onTap: () => swipeAndMatch.addDislike(
-                    widget.userProfile.user.uid!,
-                    addAction: false,
-                    showSnackbar: showSnackbar,
+                if (widget.showCancel && _isDislikeVisible) ...[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.h),
+                    child: MatchIconButton(
+                      animateOnTap: true,
+                      onTap: () => swipeAndMatch.addDislike(
+                        widget.userProfile.user.uid!,
+                        addAction: false,
+                        showSnackbar: (msg) => showSnackbar(msg, context),
+                      ),
+                      assetPath: AppAssets.cancel,
+                      onAnimationComplete: _onDislikeTapComplete,
+                    ),
                   ),
-                  assetPath: AppAssets.cancel,
-                ),
+                ],
                 if (widget.showMessaging) ...[
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30.h),
+                    padding: EdgeInsets.symmetric(horizontal: 15.h),
                     child: MatchIconButton(
                       size: 26,
                       padding: 14,
                       onTap: () => onMessageTap(context),
                       assetPath: AppAssets.message,
                     ),
-                  )
-                ] else
-                  addWidth(40),
-                MatchIconButton(
-                  onTap: () => swipeAndMatch.addLike(
-                    widget.userProfile.user.uid!,
-                    addAction: false,
-                    showSnackbar: showSnackbar,
                   ),
-                  assetPath: AppAssets.like,
-                ),
+                ],
+                if (!widget.isLiked && _isLikeVisible) ...[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.h),
+                    child: MatchIconButton(
+                      animateOnTap: true,
+                      onTap: () => swipeAndMatch.addLike(
+                        widget.userProfile.user.uid!,
+                        widget.userProfile.name,
+                        addAction: false,
+                        showSnackbar: (msg, {type = SnackbarType.error}) {
+                          showSnackbar(msg, context, snackBarType: type);
+                        },
+                      ),
+                      onAnimationComplete: _onLikeTapComplete,
+                      assetPath: AppAssets.like,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -179,8 +213,8 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
     var blockedIds = editNotifier.coreProfile?.blockedIds ?? [];
 
     // Check if the user is already blocked
-    if (blockedIds.contains(uid)) {
-      showSnackbar('$name is already blocked');
+    if (blockedIds.contains(uid) && mounted) {
+      showSnackbar('$name is already blocked', this.context);
       return;
     }
 
@@ -192,12 +226,13 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
     editNotifier.updateProfile(blockedIds: newBlockedIds);
 
     bool success = await editNotifier.saveUserProfile(
-      showSnackbar: showSnackbar,
+      showSnackbar: (msg) => showSnackbar(msg, this.context),
     );
 
-    if (!success) {
+    if (!success && mounted) {
       editNotifier.updateProfile(blockedIds: blockedIds);
-      showSnackbar(AppStrings.blockFailure);
+      showSnackbar(AppStrings.blockFailure, this.context);
+
       return;
     }
   }
@@ -235,10 +270,14 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
             // Navigate back on success
             if (context.mounted) Navigator.pop(context);
 
-            reportNotifier.reportUser(report, showSnackbar: showSnackbar);
+            reportNotifier.reportUser(
+              report,
+              showSnackbar: (msg) => showSnackbar(msg, this.context),
+            );
 
             showSnackbar(
               AppStrings.reportUser,
+              this.context,
               snackBarType: SnackbarType.success,
             );
           },
@@ -248,19 +287,4 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
   }
 
   void toChat(BuildContext context) => Nav.push(context, const ChatRoom());
-
-  showSnackbar(
-    String message, {
-    SnackbarType snackBarType = SnackbarType.error,
-  }) {
-    if (mounted) {
-      showTopSnackBar(
-        Overlay.of(context),
-        AppSnackbar(
-          text: message,
-          snackbarType: snackBarType,
-        ),
-      );
-    }
-  }
 }

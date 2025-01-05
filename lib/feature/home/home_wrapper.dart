@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/feature/home/tutorial.dart';
@@ -21,7 +20,12 @@ import 'tabs/matching/data/state/location_permission_stream.dart';
 
 @RoutePage()
 class HomeWrapper extends StatefulWidget {
-  const HomeWrapper({super.key});
+  const HomeWrapper({
+    super.key,
+    this.fromOnboarding = false,
+  });
+
+  final bool fromOnboarding;
 
   static String tutorial = 'Tutorial';
 
@@ -39,10 +43,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
   late EditProfileNotifier _editProfileNotifier;
   late SwipeAndMatchNotifier _swipeAndMatchNotifier;
   late PreferencesNotifier _prefsNotifier;
+  late AdvancedSearchNotifier _advancedSearchNotifier;
 
   // Other UI code
   late List<Widget> _pages;
-  int selectedIndex = 0;
+  int selectedIndex = 1;
 
   @override
   void initState() {
@@ -58,20 +63,24 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
     _editProfileNotifier = context.read<EditProfileNotifier>();
     _swipeAndMatchNotifier = context.read<SwipeAndMatchNotifier>();
+    _advancedSearchNotifier = context.read<AdvancedSearchNotifier>();
     _prefsNotifier = context.read<PreferencesNotifier>();
     _userService = UserPresenceService();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _editProfileNotifier.getUserData(showSnackbar: showSnackbar);
+      _editProfileNotifier.getUserData(showSnackbar: showAppSnackbar);
       _editProfileNotifier.checkSafetyGuideOpenedState();
-      _prefsNotifier.getMatchingPreferences(showSnackbar: showSnackbar);
+      _prefsNotifier.getMatchingPreferences(showSnackbar: showAppSnackbar);
+      _advancedSearchNotifier.getMatchingPreferences(
+        showSnackbar: showAppSnackbar,
+      );
       context.read<ChatsNotifier>().checkOpenedState();
       _userService.updateUserStatus(true);
     });
 
     _requestLocationPermission();
 
-    // startTutorial();
+    startTutorial();
   }
 
   Future<void> _requestLocationPermission() async {
@@ -83,6 +92,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
       if (position != null) {
         await locationService.updateUserLocation(position);
+
+        _editProfileNotifier.saveUserLocationLocally(
+          position,
+          showSnackbar: showAppSnackbar,
+        );
       }
     } catch (e) {
       if (e is LocationPermissionDeniedException) {
@@ -115,11 +129,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
     setState(() => selectedIndex = index);
   }
 
-  showSnackbar(String message) {
-    if (mounted) {
-      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
-    }
-  }
+  showAppSnackbar(String msg) => showSnackbar(msg, context);
 
   @override
   Widget build(BuildContext context) {

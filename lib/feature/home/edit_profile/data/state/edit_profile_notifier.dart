@@ -1,7 +1,10 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/common/utils/services/services.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/repository/edit_profile_repository.dart';
@@ -12,6 +15,8 @@ import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/onboarding/model/preferences.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
+import '../../../../auth/sign_up/model/geography.dart';
+import '../../../../auth/sign_up/model/payment.dart';
 import '../../../preferences/model/core_preferences.dart';
 import '../../../preferences/model/generic_enum.dart';
 import '../../model/core_profile.dart';
@@ -146,6 +151,42 @@ class EditProfileNotifier extends ChangeNotifier {
       log(e.toString());
     } finally {
       notifyListeners();
+    } //
+  }
+
+  // This function is used to handle the initial update of a user's location
+  // when they first access the swipe and match page.
+  //
+  // It ensures that the location data is updated locally after user data is fetched,
+  // addressing the issue of location not being available on the client side initially.
+  void saveUserLocationLocally(
+    Position position, {
+    required void Function(String) showSnackbar,
+  }) {
+    try {
+      final geo = GeoFlutterFire();
+
+      final geoFirePoint =
+          geo.point(latitude: position.latitude, longitude: position.longitude);
+
+      final geoPoint = GeoPoint(position.latitude, position.longitude);
+
+      if (_staticCoreProfile?.geohash == geoFirePoint.hash) return;
+
+      _dynCoreProfile?.updateLocation(
+        latitude: position.latitude,
+        longitude: position.longitude,
+        location: geoPoint,
+        geohash: geoFirePoint.hash,
+        geography: Geography.fromJson(geoFirePoint.data),
+      );
+
+      _staticCoreProfile = CoreProfile.fromJson(_dynCoreProfile!.toJson());
+    } catch (e) {
+      log('Error updating user location: $e');
+      throw LocationServiceException('Error updating location');
+    } finally {
+      notifyListeners();
     }
   }
 
@@ -217,6 +258,8 @@ class EditProfileNotifier extends ChangeNotifier {
     double? weight,
     double? height,
     int? creditBalance,
+    bool? isPremium,
+    Payment? amountPaid,
     List<String>? interests,
     List<String>? profilePics,
     List<String>? blockedIds,
@@ -230,8 +273,10 @@ class EditProfileNotifier extends ChangeNotifier {
       height: height,
       interests: interests,
       profilePics: profilePics,
+      isPremium: isPremium,
       blockedIds: blockedIds,
       creditBalance: creditBalance,
+      amountPaid: amountPaid,
     );
     notifyListeners();
   }

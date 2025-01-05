@@ -50,7 +50,7 @@ class HeaderBar extends StatelessWidget {
                   GestureDetector(
                     onTap: onIconTap,
                     child: Container(
-                      margin: const EdgeInsets.all(9),
+                      margin: const EdgeInsets.all(12),
                       child: svgIcon(
                         icon!,
                         color: Colors.black,
@@ -62,6 +62,7 @@ class HeaderBar extends StatelessWidget {
                 ],
                 if (showFilters)
                   AppIconButton(
+                    margin: 12,
                     path: icon2 ?? AppAssets.tune,
                     size: 24,
                     onTap: onIcon2Tap ??

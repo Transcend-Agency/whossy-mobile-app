@@ -123,7 +123,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
   toOnboarding() =>
       Nav.pushAndPopUntil(context, const Wrapper(), LoginRoute.name);
 
-  onLoginAuthenticate() => Nav.replaceAll(context, [const HomeWrapper()]);
+  onLoginAuthenticate() => Nav.replaceAll(context, [HomeWrapper()]);
 
   onSignUpAuthenticate() => Nav.pushAndPopUntil(
       context, const SignUpNameRoute(), SignUpCreateRoute.name);
