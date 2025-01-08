@@ -91,7 +91,7 @@ class ExploreFiltersComponent extends HookWidget {
   dynamic _getFilterValue(Filters filter, CoreProfile? profileData) {
     switch (filter) {
       case Filters.similarInterest:
-        return profileData?.interests ?? [];
+        return profileData?.interests ?? [""];
       case Filters.outsideMyCountry:
         return profileData?.countryOfOrigin;
       case Filters.popularInMyArea:
@@ -105,10 +105,6 @@ class ExploreFiltersComponent extends HookWidget {
       case Filters.advancedSearch:
         return ''; // Nothing is needed here
       case Filters.discover:
-        return ''; // Nothing is needed here
-
-      default:
-        return null;
-    }
+        return ''; }
   }
 }

@@ -14,7 +14,6 @@ import '../../model/liked_user_profile.dart';
 class ExploreRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
   final _likes = FirebaseFirestore.instance.collection('likes');
-  final _dislikes = FirebaseFirestore.instance.collection('dislikes');
 
   final excludeSettings = const ExcludeSettings(
     excludeIncompleteOnboarding: true,
@@ -33,15 +32,6 @@ class ExploreRepository {
     required int gender,
   }) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
-
-    // Combine likes and dislikes into a single blacklist stream
-    Stream<Set<String>> blacklistStream = _dislikes
-        .where('disliker_id', isEqualTo: uid)
-        .snapshots()
-        .map(
-          (snapshot) =>
-              snapshot.docs.map((doc) => doc['disliked_id'] as String).toSet(),
-        );
 
     // Build the base query using filters
     Query baseQuery = _profiles;
@@ -78,14 +68,13 @@ class ExploreRepository {
     baseQuery = baseQuery.limit(20);
 
     // Combine profile snapshots with blacklist stream
-    return Rx.combineLatest3(
+    return Rx.combineLatest2(
       baseQuery.snapshots(),
-      blacklistStream,
       _likes.where('liker_id', isEqualTo: uid).snapshots().map(
             (snapshot) =>
                 snapshot.docs.map((doc) => doc['liked_id'] as String).toSet(),
           ),
-      (querySnapshot, blacklist, likedIds,) {
+      (querySnapshot, likedIds) {
         final profiles = querySnapshot.docs
             .map((doc) =>
                 UserProfile.fromJson(doc.data() as Map<String, dynamic>))
@@ -98,8 +87,7 @@ class ExploreRepository {
               uid,
               blockedIds,
               settings: excludeSettings,
-            ) ||
-            blacklist.contains(profile.user.uid));
+            ));
 
         // Map profiles to LikedUserProfile, checking if the profile has been liked
         return profiles.map((profile) {

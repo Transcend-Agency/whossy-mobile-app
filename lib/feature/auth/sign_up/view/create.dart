@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -175,12 +173,11 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool useScroll = ScreenUtil().screenHeight < 850;
-    log(ScreenUtil().screenHeight.toString());
+    bool useScroll = ScreenUtil().screenHeight < 853;
     return AppScaffold(
       back: true,
       padding: pagePadding,
-      useScrollView: true, // useScroll,
+      useScrollView: useScroll, // useScroll,
       resizeToAvoidBottomInset: true, // False
       body: Selector<SignUpNotifier, bool>(
         selector: (_, auth) => auth.spinnerState,

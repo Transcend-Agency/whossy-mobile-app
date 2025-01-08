@@ -36,15 +36,18 @@ class AppRangeSlider extends StatelessWidget {
               max: range.end,
             ),
           )
-        : CupertinoRangeSlider(
-            activeColor: AppColors.black,
-            minValue: values.start,
-            maxValue: values.end,
-            min: range.start,
-            max: range.end,
-            onMinChanged: (_) => onChanged(RangeValues(_, values.end)),
-            onMaxChanged: (_) => onChanged(RangeValues(values.start, _)),
-            trackColor: CupertinoColors.systemGrey4,
-          );
+        : FractionallySizedBox(
+      widthFactor: 1,
+          child: CupertinoRangeSlider(
+              activeColor: AppColors.black,
+              minValue: values.start,
+              maxValue: values.end,
+              min: range.start,
+              max: range.end,
+              onMinChanged: (_) => onChanged(RangeValues(_, values.end)),
+              onMaxChanged: (_) => onChanged(RangeValues(values.start, _)),
+              trackColor: CupertinoColors.systemGrey4,
+            ),
+        );
   }
 }

@@ -38,7 +38,7 @@ class UserRepository {
   Future<void> addUserToken({List<String>? tokens}) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     String token = await NotificationService().getToken();
-
+    print(token);
     if (tokens != null && tokens.contains(token)) {
       return;
     }
@@ -231,7 +231,7 @@ class UserRepository {
         }
       }
 
-      await addUserToken(tokens: appUser?.tokens);
+      // await addUserToken(tokens: appUser?.tokens);
 
       onAuthenticate();
     } else {

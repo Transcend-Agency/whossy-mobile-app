@@ -16,6 +16,15 @@ class LikesRepository {
   }) async {
     final uid = '${likerId}_$likedId';
 
+    // Attempt to remove the dislike (ignores if it doesn't exist)
+    try {
+      await _dislikes.doc(uid).delete();
+    } on FirebaseException catch (e) {
+      if (e.code != 'not-found') {
+        rethrow;
+      }
+    }
+
     await _setLike(uid, likerId, likedId);
 
     final isMatch = await _checkForMatch(likedId, likerId);
