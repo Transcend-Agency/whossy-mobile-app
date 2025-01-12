@@ -26,6 +26,7 @@ class MatchingProfilePreview extends StatefulWidget {
     this.showCancel = false,
     this.showMessaging = true,
     this.useDefaultTag = false,
+    this.usePageView = false,
   });
 
   final int index;
@@ -35,6 +36,7 @@ class MatchingProfilePreview extends StatefulWidget {
   final bool isLiked;
   final bool useDefaultTag; // default is "preview"
   final UserProfile userProfile;
+  final bool usePageView;
 
   @override
   State<MatchingProfilePreview> createState() => _MatchingProfilePreviewState();
@@ -102,6 +104,7 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
       body: SingleChildScrollView(
         controller: scrollController,
         child: ProfileDetailsScaffold(
+          usePageView: widget.usePageView,
           addedHeight: 18,
           tagId: widget.useDefaultTag ? null : user.uid,
           preferences: preferences,
@@ -109,7 +112,7 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
           country: user.countryOfOrigin,
           gender: user.gender,
           bio: preferences.bio,
-          image: preferences.profilePics![widget.index],
+          images: preferences.profilePics,
           name: name,
           pageName: widget.pageName,
           blockUser: () async =>

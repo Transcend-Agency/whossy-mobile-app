@@ -55,7 +55,7 @@ class _PreviewImageState extends State<PreviewImage> {
                       key: const PageStorageKey("my_pageView"),
                       controller: _pageController,
                       onPageChanged: _onPageChange,
-                      itemCount: data.profile.profilePics?.length,
+                      itemCount: images?.length,
                       itemBuilder: (_, index) {
                         return SizedBox.expand(
                           child: Preview(

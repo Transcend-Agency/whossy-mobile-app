@@ -48,7 +48,7 @@ class EditProfilePreview extends HookWidget {
               country: profile.countryOfOrigin,
               bio: profile.bio,
               name: data.name,
-              image: profile.profilePics![index],
+              images: profile.profilePics,
               bottomWidget: ProfileFooterScaffold(
                 showLess: true,
                 data: data,

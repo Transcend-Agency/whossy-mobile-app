@@ -408,6 +408,7 @@ class MatchingProfilePreview
     bool showCancel = false,
     bool showMessaging = true,
     bool useDefaultTag = false,
+    bool usePageView = false,
     List<_i32.PageRouteInfo>? children,
   }) : super(
           MatchingProfilePreview.name,
@@ -420,6 +421,7 @@ class MatchingProfilePreview
             showCancel: showCancel,
             showMessaging: showMessaging,
             useDefaultTag: useDefaultTag,
+            usePageView: usePageView,
           ),
           initialChildren: children,
         );
@@ -439,6 +441,7 @@ class MatchingProfilePreview
         showCancel: args.showCancel,
         showMessaging: args.showMessaging,
         useDefaultTag: args.useDefaultTag,
+        usePageView: args.usePageView,
       );
     },
   );
@@ -454,6 +457,7 @@ class MatchingProfilePreviewArgs {
     this.showCancel = false,
     this.showMessaging = true,
     this.useDefaultTag = false,
+    this.usePageView = false,
   });
 
   final _i33.Key? key;
@@ -472,9 +476,11 @@ class MatchingProfilePreviewArgs {
 
   final bool useDefaultTag;
 
+  final bool usePageView;
+
   @override
   String toString() {
-    return 'MatchingProfilePreviewArgs{key: $key, index: $index, userProfile: $userProfile, pageName: $pageName, isLiked: $isLiked, showCancel: $showCancel, showMessaging: $showMessaging, useDefaultTag: $useDefaultTag}';
+    return 'MatchingProfilePreviewArgs{key: $key, index: $index, userProfile: $userProfile, pageName: $pageName, isLiked: $isLiked, showCancel: $showCancel, showMessaging: $showMessaging, useDefaultTag: $useDefaultTag, usePageView: $usePageView}';
   }
 }
 

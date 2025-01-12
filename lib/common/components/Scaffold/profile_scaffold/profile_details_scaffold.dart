@@ -15,7 +15,7 @@ import '../../../styles/text_style.dart';
 import '../../../utils/index.dart';
 import '../../index.dart';
 
-class ProfileDetailsScaffold extends StatelessWidget {
+class ProfileDetailsScaffold extends HookWidget {
   const ProfileDetailsScaffold({
     super.key,
     required this.preferences,
@@ -24,7 +24,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
     required this.gender,
     required this.bio,
     required this.bottomWidget,
-    required this.image,
+    required this.images,
     required this.options,
     this.isSameUser = false,
     this.addedHeight = 0,
@@ -32,6 +32,7 @@ class ProfileDetailsScaffold extends StatelessWidget {
     this.tagId,
     this.pageName,
     this.blockUser,
+    this.usePageView = false,
     this.reportUser,
   });
 
@@ -42,13 +43,14 @@ class ProfileDetailsScaffold extends StatelessWidget {
   final String? country;
   final String? gender;
   final String? bio;
-  final String image;
+  final List<String>? images;
   final String name;
   final String? tagId;
   final String? pageName;
   final double addedHeight;
   final VoidCallback? blockUser;
   final VoidCallback? reportUser;
+  final bool usePageView;
 
   final bool isSameUser;
 
@@ -57,6 +59,16 @@ class ProfileDetailsScaffold extends StatelessWidget {
     final tag = (tagId != null && pageName != null)
         ? '$tagId$pageName'
         : (tagId ?? 'preview');
+
+    // Use useState to manage the active page
+    final activePage = useState(0);
+
+    // Use usePageController to create and manage the PageController
+    final pageController = usePageController(initialPage: activePage.value);
+
+    void onPageChange(int page) {
+      activePage.value = page;
+    }
 
     return Column(
       children: [
@@ -79,17 +91,53 @@ class ProfileDetailsScaffold extends StatelessWidget {
                     bottomOnly: true,
                     child: Stack(
                       children: [
-                        SizedBox.expand(
-                          child: Preview(image: image),
-                        ),
-                        ProfileShade(
-                          heightFactor: 0.4,
-                          gradient: AppColors.profileShade2,
+                        usePageView
+                            ? PageView.builder(
+                                key: const PageStorageKey("my_pageView"),
+                                controller: pageController,
+                                onPageChanged: onPageChange,
+                                itemCount: images!.length,
+                                itemBuilder: (_, index) {
+                                  return SizedBox.expand(
+                                    child: Preview(
+                                      image: images![index],
+                                    ),
+                                  );
+                                },
+                              )
+                            : SizedBox.expand(
+                                child: Preview(image: images![0]),
+                              ),
+                        IgnorePointer(
+                          child: ProfileShade(
+                            heightFactor: 0.4,
+                            gradient: AppColors.profileShade2,
+                          ),
                         ),
                         Align(
                           alignment: Alignment.bottomCenter,
-                          child: bottomWidget,
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(bottom: usePageView ? 12.h : 0),
+                            child: bottomWidget,
+                          ),
                         ),
+                        if (usePageView)
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: usePageView ? 10.w : 4.w,
+                                  vertical: 20.h),
+                              child: PageIndicator(
+                                activePage: activePage.value,
+                                pageNo: images!.length,
+                                height: 4,
+                                activeColor: Colors.white,
+                                inActiveColor: Colors.white.withOpacity(0.5),
+                              ),
+                            ),
+                          ),
                       ],
                     ), //
                   ),

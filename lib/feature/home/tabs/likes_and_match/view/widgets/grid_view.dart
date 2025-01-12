@@ -51,6 +51,7 @@ class LikesGridView extends StatelessWidget {
         onTap: () => Nav.push(
           context,
           MatchingProfilePreview(
+            usePageView: true,
             index: 0,
             userProfile: profile,
             pageName: pageName,

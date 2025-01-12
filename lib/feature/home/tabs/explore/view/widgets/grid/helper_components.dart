@@ -103,6 +103,7 @@ Widget buildDataGrid(BuildContext context, List<LikedUserProfile> tileData) {
               userProfile: item.profile,
               pageName: pageName,
               isLiked: item.isLiked,
+              usePageView: true,
             ),
           ),
           child: Container(
