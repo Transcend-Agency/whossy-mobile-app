@@ -1,7 +1,7 @@
 name: whossy_app
 description: "The mobile app for Whossy"
 publish_to: 'none' # Prevents accidental publication to pub.dev
-version: 1.0.0+20020
+version: 1.0.1+50000
 
 environment:
   sdk: '>=3.3.4 <4.0.0'

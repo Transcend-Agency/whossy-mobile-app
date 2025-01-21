@@ -16,7 +16,7 @@ import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
-import '../../../matching/model/user_profile.dart';
+import '../../../explore/model/liked_user_profile.dart';
 import 'grid_view.dart';
 import 'loading_grid_view.dart';
 
@@ -25,6 +25,8 @@ class Matches extends HookWidget {
 
   final double height = 144;
   final double width = 132;
+
+  static const name = 'matches';
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class Matches extends HookWidget {
         profileStream: match.dataStream(edit.coreProfile!.blockedIds),
       ),
       builder: (_, result, __) {
-        return StreamBuilder<List<UserProfile>>(
+        return StreamBuilder<List<LikedUserProfile>>(
           stream: result.profileStream,
           builder: (context, snapshot) {
             return AppAnimatedSwitcher(
@@ -51,7 +53,7 @@ class Matches extends HookWidget {
 
   Widget _buildContentBasedOnSnapshot(
     BuildContext context,
-    AsyncSnapshot<List<UserProfile>> snapshot,
+    AsyncSnapshot<List<LikedUserProfile>> snapshot,
     CoreProfile profile,
   ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -147,7 +149,7 @@ class Matches extends HookWidget {
                   ],
                 ),
               ),
-            LikesGridView(pageName: 'matches', data: data),
+            LikesGridView(pageName: Matches.name, data: data),
           ],
         );
       }

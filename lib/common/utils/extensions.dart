@@ -257,3 +257,17 @@ extension PrettyPrintJson on Map<String, dynamic> {
     return const JsonEncoder.withIndent('  ').convert(this);
   }
 }
+
+extension DistanceFormatter on double {
+  String formatDistance() {
+    if (this >= 1) {
+      return toStringAsFixed(0);
+    } else if (this >= 0.1) {
+      return toStringAsFixed(1);
+    } else if (this >= 0.01) {
+      return toStringAsFixed(2);
+    } else {
+      return toStringAsFixed(3);
+    }
+  }
+}

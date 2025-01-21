@@ -43,10 +43,10 @@ class _DrinkScreenState extends State<DrinkScreen>
                 return GenericTile(
                   value: data.value,
                   groupValue: _drink,
-                  onChanged: (_) {
-                    setState(() => _drink = _);
+                  onChanged: (newValue) {
+                    setState(() => _drink = newValue);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(drink: _?.index);
+                    onboarding.updateUserProfile(drink: newValue?.index);
                   },
                   title: data.text,
                 );

@@ -213,7 +213,7 @@ class AppStrings {
       "Our team will review your report to ensure community guidelines are upheld.";
 
   static String unlockChat(String name) =>
-      "Unlock this chat with $name for 1 credit?";
+      "Unlock this chat with $name for 1 credit. You'll have access for 24 hours.";
 
   static const String permissionDeniedPhoneCheck =
       'Unable to check for phone number uniqueness due to insufficient permissions.';

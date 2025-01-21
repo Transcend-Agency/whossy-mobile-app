@@ -1,14 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:whossy_app/common/utils/app_utils.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
-import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
+
+import '../../../../../../common/utils/index.dart';
+import '../../../explore/model/liked_user_profile.dart';
 
 class LikesRepository {
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
   final _matches = FirebaseFirestore.instance.collection('matches');
   final _userRepository = UserRepository();
+
+  final excludeSettings = const ExcludeSettings(
+    excludeIncompleteOnboarding: true,
+    excludeBannedUsers: true,
+    excludeUnapprovedUsers: false,
+    excludeBlockedAndSelf: true,
+  );
 
   Future<String> addLike({
     required String likedId,
@@ -67,7 +76,7 @@ class LikesRepository {
     required String dislikedId,
     required String dislikerId,
   }) async {
-     final uid = '${dislikerId}_$dislikedId';
+    final uid = '${dislikerId}_$dislikedId';
 
     // Add the dislike
     final dislikeData = {
@@ -80,43 +89,60 @@ class LikesRepository {
     await _dislikes.doc(uid).set(dislikeData);
   }
 
-  Stream<List<UserProfile>> getLikersWithProfiles(
-    List<String> blockedIds, {
-    List<String>? testLikerIds,
-  }) {
+  Stream<List<LikedUserProfile>> getLikersWithProfiles(
+    List<String> blockedIds,
+  ) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    // Don't forget to add the exclude settings while testing
-    if (testLikerIds != null) {
-      return Stream.value(testLikerIds).asyncMap((likerIds) async {
-        return await _userRepository.getUserProfilesInBatches(
-          userIds: likerIds,
-          blockedIds: blockedIds,
-        );
-      });
-    }
-
-    return _likes
+    // Stream of likers (users who liked the current user)
+    final likersStream = _likes
         .where('liked_id', isEqualTo: userId)
-        .orderBy('timestamp', descending: true)
         .snapshots()
-        .asyncMap((likesSnapshot) async {
-      final likerIds = likesSnapshot.docs
-          .map((doc) => doc['liker_id'] as String)
-          .toSet()
-          .toList();
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => doc['liker_id'] as String).toSet());
 
-      // Use the helper function to fetch profiles in batches
-      return await _userRepository.getUserProfilesInBatches(
-        userIds: likerIds,
-        blockedIds: blockedIds,
-        settings: const ExcludeSettings(
-          excludeIncompleteOnboarding: true,
-          excludeBannedUsers: true,
-          excludeUnapprovedUsers: false,
-          excludeBlockedAndSelf: true,
-        ),
-      );
-    });
+    // Stream of liked users (users that the current user liked)
+    final likedStream = _likes
+        .where('liker_id', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => doc['liked_id'] as String).toSet());
+
+    // Combine the two streams to get likerIds and likedIds
+    final combinedIdsStream = Rx.combineLatest2(
+      likersStream,
+      likedStream,
+      (likerIds, likedIds) => {
+        'likerIds': likerIds,
+        'likedIds': likedIds,
+      },
+    );
+
+    // Use asyncMap to handle the async profile fetching
+    return combinedIdsStream.asyncMap(
+      (idsMap) async {
+        final likerIds = idsMap['likerIds']!;
+        final likedIds = idsMap['likedIds']!;
+
+        // Exclude mutual likes
+        final filteredLikerIds = likerIds.difference(likedIds);
+
+        // Fetch the profiles of users who liked the current user (excluding mutual likes)
+        final allProfiles = await _userRepository.getUserProfilesInBatches(
+          userIds: filteredLikerIds.toList(),
+          blockedIds: blockedIds,
+          settings: excludeSettings,
+        );
+
+        return allProfiles
+            .map(
+              (profile) => LikedUserProfile(
+                profile: profile,
+                isLiked: false,
+              ),
+            )
+            .toList();
+      },
+    );
   }
 }

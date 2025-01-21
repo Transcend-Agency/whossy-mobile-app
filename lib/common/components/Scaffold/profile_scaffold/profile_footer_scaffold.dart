@@ -108,16 +108,16 @@ class ProfileFooterScaffold extends StatelessWidget {
                       builder: (_, location, __) {
                         if (location == null) return const SizedBox.shrink();
 
-                        final distance = (Geolocator.distanceBetween(
-                                  location.latitude,
-                                  location.longitude,
-                                  data.location!.latitude,
-                                  data.location!.longitude,
-                                ) /
-                                1000)
-                            .floor();
+                        final distance = Geolocator.distanceBetween(
+                              location.latitude,
+                              location.longitude,
+                              data.location!.latitude,
+                              data.location!.longitude,
+                            ) /
+                            1000;
+
                         return Text(
-                          "  ~ $distance mi away",
+                          "  ~ ${distance.formatDistance()} mi away",
                           style: TextStyles.prefText.copyWith(
                             color: Colors.white,
                             fontSize: AppUtils.scale(9.5.sp) ?? 12.sp,

@@ -142,7 +142,7 @@ class _TickScreenState extends State<TickScreen>
                   Wrap(
                     spacing: 8.0,
                     runSpacing: 8.0,
-                    children: options.map((_) => _buildAppChip(_)).toList(),
+                    children: options.map((e) => _buildAppChip(e)).toList(),
                   ),
                   addHeight(16),
                   if (index != _filteredAlphabet.length - 1)

@@ -16,7 +16,7 @@ class GradientText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ShaderMask(
-      shaderCallback: (_) => gradient.createShader(_),
+      shaderCallback: (rect) => gradient.createShader(rect),
       child: RichText(
         text: TextSpan(
           style: TextStyles.header.copyWith(fontSize: AppUtils.scale(43.sp)),

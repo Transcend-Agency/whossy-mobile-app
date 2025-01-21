@@ -10,7 +10,7 @@ import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../edit_profile/model/core_profile.dart';
-import '../../../matching/model/user_profile.dart';
+import '../../../explore/model/liked_user_profile.dart';
 import '../../model/likes_match_data.dart';
 import 'grid_view.dart';
 import 'loading_grid_view.dart';
@@ -23,6 +23,8 @@ class Likes extends HookWidget {
   final double height = 142;
   final double width = 135;
 
+  static const name = 'likes';
+
   @override
   Widget build(BuildContext context) {
     useAutomaticKeepAlive();
@@ -33,7 +35,7 @@ class Likes extends HookWidget {
         profileStream: likes.dataStream(edit.coreProfile!.blockedIds),
       ),
       builder: (_, result, __) {
-        return StreamBuilder<List<UserProfile>>(
+        return StreamBuilder<List<LikedUserProfile>>(
           stream: result.profileStream,
           builder: (context, snapshot) {
             return AppAnimatedSwitcher(
@@ -48,7 +50,7 @@ class Likes extends HookWidget {
 
   Widget _buildContentBasedOnSnapshot(
     BuildContext context,
-    AsyncSnapshot<List<UserProfile>> snapshot,
+    AsyncSnapshot<List<LikedUserProfile>> snapshot,
     CoreProfile profile,
   ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -162,10 +164,7 @@ class Likes extends HookWidget {
                       ],
                     ),
                   ),
-            LikesGridView(
-              pageName: 'likes',
-              data: data,
-            ),
+            LikesGridView(pageName: Likes.name, data: data),
           ],
         );
       }

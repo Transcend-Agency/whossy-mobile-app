@@ -47,11 +47,11 @@ final List<Subscription> freePlanData = [
     feature: '✅  Available Via Credits',
     type: 'Visibility',
   ),
-  Subscription(
-    title: 'Dark Mode',
-    feature: '❌  Not Available',
-    type: 'Bonus',
-  ),
+  // Subscription(
+  //   title: 'Dark Mode',
+  //   feature: '❌  Not Available',
+  //   type: 'Bonus',
+  // ),
 ];
 
 final List<Subscription> premiumPlanData = [
@@ -101,9 +101,9 @@ final List<Subscription> premiumPlanData = [
     feature: '✅  Available Unlimited',
     type: 'Visibility',
   ),
-  Subscription(
-    title: 'Dark Mode',
-    feature: '✅  Available',
-    type: 'Bonus',
-  ),
+  // Subscription(
+  //   title: 'Dark Mode',
+  //   feature: '✅  Available',
+  //   type: 'Bonus',
+  // ),
 ];

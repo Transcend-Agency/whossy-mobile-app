@@ -1,8 +1,8 @@
 import '../../../edit_profile/model/core_profile.dart';
-import '../../matching/model/user_profile.dart';
+import '../../explore/model/liked_user_profile.dart';
 
 class LikesMatchData {
-  final Stream<List<UserProfile>> profileStream;
+  final Stream<List<LikedUserProfile>> profileStream;
   final CoreProfile user;
 
   LikesMatchData({

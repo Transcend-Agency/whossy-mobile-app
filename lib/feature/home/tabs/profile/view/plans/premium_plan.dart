@@ -26,7 +26,7 @@ class PremiumPlan extends StatelessWidget {
           containerColor: AppColors.premiumContainer,
           containerShade: AppColors.premiumContainerShade,
           title: 'Premium Plan',
-          amount: '12.99',
+          amount: '9.99',
           showDetails: false,
           stops: [0, 1],
         ),

@@ -13,6 +13,7 @@ import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
+import '../../../explore/model/liked_user_profile.dart';
 
 class LikesGridView extends StatelessWidget {
   const LikesGridView({
@@ -22,7 +23,7 @@ class LikesGridView extends StatelessWidget {
   });
 
   final String pageName;
-  final List<UserProfile> data;
+  final List<LikedUserProfile> data;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,8 @@ class LikesGridView extends StatelessWidget {
   }
 
   // Build individual grid item
-  Widget _buildGridItem(BuildContext context, UserProfile profile) {
+  Widget _buildGridItem(BuildContext context, LikedUserProfile data) {
+    final profile = data.profile;
     return Hero(
       tag: '${profile.user.uid!}$pageName',
       child: GestureDetector(
@@ -55,6 +57,7 @@ class LikesGridView extends StatelessWidget {
             index: 0,
             userProfile: profile,
             pageName: pageName,
+            isLiked: data.isLiked,
           ),
         ),
         child: Container(

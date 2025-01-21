@@ -43,10 +43,10 @@ class _SmokerScreenState extends State<SmokerScreen>
                 return GenericTile(
                   value: data.value,
                   groupValue: _smoke,
-                  onChanged: (_) {
-                    setState(() => _smoke = _);
+                  onChanged: (newValue) {
+                    setState(() => _smoke = newValue);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(smoker: _?.index);
+                    onboarding.updateUserProfile(smoker: newValue?.index);
                   },
                   title: data.text,
                 );

@@ -127,19 +127,19 @@ class Profile extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CustomButton(
-                            onTap: () => showSnackbar(
-                              'This feature is coming soon',
-                              context,
-                              snackBarType: SnackbarType.warning,
-                            ),
-                            imagePath: AppAssets.boost,
-                            title: 'Profile Boost',
-                            subTitle: 'Get Now',
-                            containerColor: AppColors.purpleContainer,
-                            textColor: AppColors.purpleText,
-                          ),
-                          addWidth(10),
+                          // CustomButton(
+                          //   onTap: () => showSnackbar(
+                          //     'This feature is coming soon',
+                          //     context,
+                          //     snackBarType: SnackbarType.warning,
+                          //   ),
+                          //   imagePath: AppAssets.boost,
+                          //   title: 'Profile Boost',
+                          //   subTitle: 'Get Now',
+                          //   containerColor: AppColors.purpleContainer,
+                          //   textColor: AppColors.purpleText,
+                          // ),
+                          // addWidth(10),
                           CustomButton(
                             onTap: () => Nav.push(context, const Credits()),
                             imagePath: AppAssets.credit,
@@ -166,7 +166,7 @@ class Profile extends StatelessWidget {
                       containerColor: AppColors.premiumContainer,
                       containerShade: AppColors.premiumContainerShade,
                       title: 'Premium Plan',
-                      amount: '12.99',
+                      amount: '9.99',
                       benefits: AppStrings.premiumPricing,
                       onSeeAllFeatures: () => Nav.push(
                         context,

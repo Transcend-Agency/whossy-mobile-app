@@ -48,10 +48,10 @@ class _MeetScreenState extends State<MeetScreen>
                 return GenericTile(
                   value: data.value,
                   groupValue: _meet,
-                  onChanged: (_) {
-                    setState(() => _meet = _);
+                  onChanged: (newValue) {
+                    setState(() => _meet = newValue);
                     onboarding.select(widget.pageIndex);
-                    onboarding.updateUserProfile(meet: _?.index);
+                    onboarding.updateUserProfile(meet: newValue?.index);
                   },
                   title: data.text,
                   leadingWidget: data.icon != null
