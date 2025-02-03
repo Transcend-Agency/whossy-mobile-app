@@ -55,6 +55,13 @@ class AppStrings {
   // Onboarding
   static const String distanceSubHeader =
       'Use the slider below to set a radius of how far you want our system to search for matches within your current location. You can always change this later in the settings.';
+  static const String onboardingSelfieTitle = "Take a Selfie";
+  static const String onboardingSelfieSubtitle =
+      "Tap on the camera icon to take a snapshot of yourself for verification. Kindly use a well-lighted background and avoid blurry photos.";
+  static const String onboardingSelfieRetakeTitle = "Awesome!";
+  static const String onboardingSelfieRetakeSubtitle =
+      'Not satisfied? You can always retake the selfie until the desired result is achieved and click continue to save.';
+  static const String skip = "Skip";
 
   // Requirements
   static const List<String> requirements = [
@@ -100,7 +107,7 @@ class AppStrings {
     "Ensure your photos, age, and bio are true. This will increase your chances of getting matched.",
     "Always keep your personal information and do not be too quick to share with anyone.",
     "Treat others the way you would like to be treated, avoid being rude, and chat safely.",
-    "Don’t hesitate to hit the report button whenever you feel threatened or see a bad behavior.",
+    "Don’t hesitate to hit the report button whenever you feel threatened or see bad behaviour.",
   ];
 
   static const List<String> freePricing = [
@@ -129,26 +136,19 @@ class AppStrings {
       'An unknown error occurred. Please try again later.';
   static const String deviceOffline =
       'Network unavailable. Please try again later.';
-
   static const String deniedAccess =
       'Unable to access photos. Please update your permissions in settings.';
-
   static const String unblockFailure =
       'Failed to unblock user, Please try again';
-
   static const String blockFailure = 'Failed to block user, Please try again';
   static const String addCreditsFailure =
       'Failed to add credits, Please try again';
-
   static const String payPremiumFailure =
       'Failed to make payment, Please try again';
-
   static const String unsubscribePremiumFailure =
       'Failed to unsubscribe from premium, Please try again';
-
   static const String deductCreditsFailure =
       'Failed to deduct credits, Please try again';
-
   static const String unUploadedPhotos = 'Some photos could not be uploaded';
 
   // Login User Errors
@@ -178,27 +178,23 @@ class AppStrings {
 
   static const String noProfilePic =
       'You need to add at least one photo to preview your profile.';
-
   static const String uploadTimeout =
       "Failed to upload profile pictures. Please check your network and try again.";
-
   static const String minPicsRequired =
       'You need at least 3 photos to save your profile.';
 
   static const String mission =
-      'Our mission is to help you connect with new people in a safe and enjoyable '
-      'environment. Your safety is our top priority, and we have put together this '
-      'guide to help you navigate the online dating world securely and confidently.';
-
+      'Our mission is to help you connect with new people in a safe and enjoyable environment. Your safety is our top priority, and we have put together this guide to help you navigate the online dating world securely and confidently.';
   static const String chatSafety =
-      'Please respect people privacy and chat safely with everyone. '
-      'We at Whossy have technology that can detect harmful, malicious or illegal activity in your '
-      'messages. \n \n'
-      'Any suspicious activity will have your account suspended. By clicking “Continue” '
-      'you agree to our ';
+      'Please respect people privacy and chat safely with everyone. We at Whossy have technology that can detect harmful, malicious or illegal activity in your messages. \n \nAny suspicious activity will have your account suspended. By clicking “Continue” you agree to our ';
 
+  // Paths
   static String profilePicsPath(String? uid, String fileName) {
     return 'users/$uid/profile_pictures/$fileName';
+  }
+
+  static String faceVerPicPath(String? uid, String fileName) {
+    return 'users/$uid/face_verification/$fileName';
   }
 
   static String chatPicsPath(String fileName, String chatId) {
@@ -206,47 +202,44 @@ class AppStrings {
   }
 
   static String blockUser(String name) =>
-      "Are you sure you want to block $name? "
-      "You can unblock them later under Settings -> Blocked Contacts.";
-
+      "Are you sure you want to block $name? You can unblock them later under Settings -> Blocked Contacts.";
   static String reportUser =
       "Our team will review your report to ensure community guidelines are upheld.";
-
   static String unlockChat(String name) =>
       "Unlock this chat with $name for 1 credit. You'll have access for 24 hours.";
 
   static const String permissionDeniedPhoneCheck =
       'Unable to check for phone number uniqueness due to insufficient permissions.';
 
+  static String disAbleUnapproved(String value) =>
+      '$value is disabled until you have been approved';
+
   // Tutorial for the 'Like' button
   static const String likeButtonTutorial =
       'Tap the button to show interest in a profile. If both you and the other person like each other, it\'s a match!';
 
-// Tutorial for the 'Dislike' button
+  // Tutorial for the 'Dislike' button
   static const String dislikeButtonTutorial =
       'Tap the button to skip a profile you\'re not interested in. You\'ll never see it again!';
 
-// Tutorial for the 'Undo' button
-  static const String undoButtonTutorial =
-      'Made a mistake? Tap the button to revert your last action, whether it was a like or a dislike.';
-
-// Tutorial for the 'Swipe and Match' tab (FireTab)
+  //// Bottom Tabs
+  // Tutorial for the 'Swipe and Match' tab (FireTab)
   static const String fireTabTutorial =
       'Swipe through profiles to show interest. If you both swipe right, it\'s a match!';
 
-// Tutorial for the 'Explore' tab (GlobalSearchTab)
+  // Tutorial for the 'Explore' tab (GlobalSearchTab)
   static const String globalSearchTabTutorial =
       'Browse through profiles freely, no need to swipe. Just explore and discover!';
 
-// Tutorial for the 'Likes and Matches' tab (HeartTab)
+  // Tutorial for the 'Likes and Matches' tab (HeartTab)
   static const String heartTabTutorial =
       'See people who have liked you, and view your matches here!';
 
-// Tutorial for the 'Chats' tab (ChatTab)
+  // Tutorial for the 'Chats' tab (ChatTab)
   static const String chatTabTutorial =
       'You can send messages and images to your matches. Chat away!';
 
-// Tutorial for the 'Profile' tab (UserTab)
+  // Tutorial for the 'Profile' tab (UserTab)
   static const String userTabTutorial =
       'Manage your profile, edit your information, and access your settings here.';
 }

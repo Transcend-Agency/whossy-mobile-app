@@ -34,11 +34,12 @@ class EditProfileRepository {
     }
 
     if (coreProfileData.isNotEmpty) {
-      await _userRepository.setUserData(data: coreProfileData);
-    }
-
-    if (corePrefData.isNotEmpty) {
-      await _prefRepository.uploadPreferences(data: corePrefData);
+      await _userRepository.setUserData(
+        data: {
+          ...coreProfileData,
+          ...corePrefData,
+        },
+      );
     }
 
     if (updateUserDeletePic) {

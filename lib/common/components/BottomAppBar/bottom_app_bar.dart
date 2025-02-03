@@ -4,6 +4,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../constants/index.dart';
 import '../../../feature/home/tutorial.dart';
+import '../../styles/text_style.dart';
+import '../../utils/index.dart';
+
+class BottomNavItem {
+  final String assetPath;
+  final String label;
+
+  const BottomNavItem({required this.assetPath, required this.label});
+}
 
 class CustomBottomAppBar extends StatefulWidget {
   const CustomBottomAppBar({
@@ -13,7 +22,7 @@ class CustomBottomAppBar extends StatefulWidget {
   });
 
   final ValueChanged<int> onTabSelected;
-  final List<String> items;
+  final List<BottomNavItem> items;
 
   @override
   State<CustomBottomAppBar> createState() => _CustomBottomAppBarState();
@@ -22,17 +31,13 @@ class CustomBottomAppBar extends StatefulWidget {
 class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
   int _selectedIndex = 1;
 
-  // Update Index
-  _updatedIndex(int index) {
+  void _updatedIndex(int index) {
     widget.onTabSelected(index);
-    setState(
-      () => _selectedIndex = index,
-    );
+    setState(() => _selectedIndex = index);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Generated a list of the Items for the BottomNavBar
     List<Widget> items = List.generate(
       widget.items.length,
       (index) {
@@ -51,10 +56,10 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
         children: items,
       ),
     );
-  } //
+  }
 
   Widget _buildTabItem({
-    required String item,
+    required BottomNavItem item,
     required int index,
     ValueChanged<int>? onPressed,
   }) {
@@ -62,7 +67,6 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
         ? AppColors.selectedTabIconColor
         : AppColors.unSelectedTabIconColor;
 
-    // Assign the correct global key based on index
     GlobalKey? currentKey;
     switch (index) {
       case 0:
@@ -89,12 +93,26 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
           child: GestureDetector(
             onTap: () => onPressed!(index),
             child: Padding(
-              padding: EdgeInsets.all(12.r),
-              child: SvgPicture.asset(
+              padding: EdgeInsets.all(1.r),
+              child: Column(
                 key: currentKey,
-                item,
-                height: 25,
-                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    item.assetPath,
+                    height: 23,
+                    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                  ),
+                  addHeight(4),
+                  Text(
+                    item.label,
+                    style: TextStyles.prefText.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w500,
+                      fontSize: AppUtils.scale(9.sp) ?? 11.5,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

@@ -36,8 +36,12 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.whossy.whossy_app"
-    compileSdk = 34
+    compileSdk = 35
     ndkVersion '28.0.12916984 rc3'
+
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
 
     compileOptions {
         coreLibraryDesugaringEnabled true
@@ -51,7 +55,7 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdk = 23
         //noinspection OldTargetApi
-        targetSdk = 34
+        targetSdk = 35
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
         multiDexEnabled true
@@ -68,16 +72,14 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile(
-                    'proguard-android-optimize.txt'),
-                    'proguard-rules.pro'
-
-            ndk.debugSymbolLevel = "FULL"
+//            minifyEnabled true
+//            shrinkResources true
+//            proguardFiles getDefaultProguardFile(
+//                    'proguard-android-optimize.txt'),
+//                    'proguard-rules.pro'
 
             signingConfig = signingConfigs.debug
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
         }
     }
 }

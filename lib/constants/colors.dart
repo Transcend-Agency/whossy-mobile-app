@@ -104,12 +104,20 @@ class AppColors {
     stops: const [0.0, 0.5, 1.0],
   );
 
-  static LinearGradient profileShade2 = const LinearGradient(
+  static LinearGradient profileShade2 = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
       Colors.transparent,
-      Colors.black,
+      Colors.black.withOpacity(0.5),
+    ],
+  );
+  static LinearGradient profileShade2Inverted = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Colors.black.withOpacity(0.3),
+      Colors.transparent,
     ],
   );
 
@@ -118,7 +126,7 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [
       Colors.transparent,
-      Colors.black.withOpacity(0.7),
+      Colors.black.withOpacity(0.5),
     ],
   );
 }

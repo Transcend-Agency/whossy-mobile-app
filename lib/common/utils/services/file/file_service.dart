@@ -200,7 +200,10 @@ class FileService {
     if (localFiles.isNotEmpty) {
       try {
         // Upload local files and get URLs
-        final urls = await _userRepository.uploadProfilePictures(localFiles);
+        final urls = await _userRepository.uploadPictures(
+          files: localFiles,
+          pathGenerator: AppStrings.profilePicsPath,
+        );
 
         // Replace local file paths in the list with the new URLs
         for (var url in urls) {

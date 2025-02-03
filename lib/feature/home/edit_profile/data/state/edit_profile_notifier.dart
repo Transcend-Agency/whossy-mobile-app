@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/common/utils/services/services.dart';
+import 'package:whossy_app/feature/auth/onboarding/model/face_verification.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/repository/edit_profile_repository.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
@@ -14,6 +16,7 @@ import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart'
 import '../../../../../common/utils/index.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/onboarding/model/preferences.dart';
+import '../../../../auth/sign_up/data/repository/user_repository.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
 import '../../../../auth/sign_up/model/geography.dart';
 import '../../../../auth/sign_up/model/payment.dart';
@@ -24,6 +27,7 @@ import '../../model/edit_profile_data.dart';
 
 class EditProfileNotifier extends ChangeNotifier {
   final _sharedPrefs = SharedPrefsService();
+  final _userRepository = UserRepository();
 
   CoreProfile? _dynCoreProfile;
   CoreProfile? _staticCoreProfile;
@@ -151,7 +155,7 @@ class EditProfileNotifier extends ChangeNotifier {
       log(e.toString());
     } finally {
       notifyListeners();
-    } //
+    }
   }
 
   // This function is used to handle the initial update of a user's location
@@ -199,30 +203,41 @@ class EditProfileNotifier extends ChangeNotifier {
 
       bool hasPicUploads = false;
 
-      // Iterate through keysToTransfer and transfer matching key-value pairs
-      for (final key in CoreProfileUtils.transferKeys) {
-        if (coreProfileDiff.containsKey(key)) {
-          corePrefsDiff[key] = coreProfileDiff.remove(key);
-        }
-      }
-
       if (corePrefsDiff.isEmpty && coreProfileDiff.isEmpty) return true;
 
-      if (corePrefsDiff.containsKey("photos")) {
-        final photos = corePrefsDiff["photos"];
+      if (coreProfileDiff.containsKey("photos")) {
+        final photos = coreProfileDiff["photos"];
 
         if (photos is List<String>) {
           final updatedPhotos =
               await FileService().processPhotos(photos, showSnackbar);
 
           // Replace the photos list with the updated list
-          corePrefsDiff["photos"] = updatedPhotos.photos;
+          coreProfileDiff["photos"] = updatedPhotos.photos;
 
           hasPicUploads = updatedPhotos.hasUploads;
         }
       }
 
-      //log(' Saving ${coreProfileDiff.toString()} \n ${corePrefsDiff.toString()}');
+      if (coreProfileDiff.containsKey("face_verification")) {
+        final faceVerification =
+            coreProfileDiff["face_verification"] as FaceVerification;
+
+        if (faceVerification.photo != null) {
+          final photoVerificationUrl = await _userRepository.uploadPictures(
+            files: [File(faceVerification.photo!)],
+            pathGenerator: AppStrings.faceVerPicPath,
+          );
+
+          coreProfileDiff["face_verification"] = {
+            ...faceVerification.toJson(),
+            'photo': photoVerificationUrl,
+            'updated_at': FieldValue.serverTimestamp(),
+          };
+        }
+      }
+
+      log(' Saving ${coreProfileDiff.toString()} \n ${corePrefsDiff.toString()}');
       await _editProfileRepo.updateProfileData(
         corePrefData: {...corePrefsDiff},
         coreProfileData: {...coreProfileDiff},
@@ -263,6 +278,7 @@ class EditProfileNotifier extends ChangeNotifier {
     List<String>? interests,
     List<String>? profilePics,
     List<String>? blockedIds,
+    String? photoVerificationUrl,
   }) {
     _dynCoreProfile?.update(
       bio: bio,
@@ -277,6 +293,7 @@ class EditProfileNotifier extends ChangeNotifier {
       blockedIds: blockedIds,
       creditBalance: creditBalance,
       amountPaid: amountPaid,
+      photoVerificationUrl: photoVerificationUrl,
     );
     notifyListeners();
   }

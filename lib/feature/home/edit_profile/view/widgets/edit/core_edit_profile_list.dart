@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -76,6 +79,18 @@ class CoreEditProfileList extends StatelessWidget {
       case 'email':
         // Handle email case
         break;
+
+      case 'photoVerification':
+        return () async {
+          File? image = await context.router.push<File?>(
+            PhotoVerification(
+                photoUrl: profile.coreProfile?.faceVerification?.photo),
+          );
+
+          if (image != null) {
+            profile.updateProfile(photoVerificationUrl: image.path);
+          }
+        };
       case 'phoneNumber':
         // Handle phone number case
         break;

@@ -43,6 +43,9 @@ extension CoreProfileExtension on CoreProfile {
     if (height != other.height) {
       updatedFields['height'] = height;
     }
+    if (faceVerification != other.faceVerification) {
+      updatedFields['face_verification'] = faceVerification;
+    }
     if (!AppUtils.areListsEqual(interests, other.interests)) {
       updatedFields['interests'] = interests;
     }

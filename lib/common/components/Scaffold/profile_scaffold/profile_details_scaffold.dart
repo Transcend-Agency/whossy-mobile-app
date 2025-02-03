@@ -110,7 +110,14 @@ class ProfileDetailsScaffold extends HookWidget {
                               ),
                         IgnorePointer(
                           child: ProfileShade(
-                            heightFactor: 0.4,
+                            heightFactor: 0.2,
+                            alignment: Alignment.topCenter,
+                            gradient: AppColors.profileShade2Inverted,
+                          ),
+                        ),
+                        IgnorePointer(
+                          child: ProfileShade(
+                            heightFactor: 0.2,
                             gradient: AppColors.profileShade2,
                           ),
                         ),
@@ -143,7 +150,22 @@ class ProfileDetailsScaffold extends HookWidget {
                   ),
                 ),
               ],
-            ), //
+            ),
+            Positioned(
+              top: 42,
+              left: 8,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  padding: EdgeInsets.all(10.r),
+                  child: const Icon(
+                    Icons.arrow_back_ios,
+                    size: 24,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
             if (options != null) options!,
           ],
         ),

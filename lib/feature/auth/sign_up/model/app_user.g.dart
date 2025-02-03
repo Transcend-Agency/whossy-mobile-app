@@ -43,6 +43,8 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       blockedIds: (json['blockedIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      faceVerification: FaceVerification.faceVerificationFromJson(
+          json['face_verification'] as Map<String, dynamic>?),
     );
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) {
@@ -81,6 +83,8 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   writeNotNull('location', AppUtils.geoPointToJson(instance.location));
   writeNotNull('geohash', instance.geohash);
   writeNotNull('credit_balance', instance.creditBalance);
+  writeNotNull('face_verification',
+      FaceVerification.faceVerificationToJson(instance.faceVerification));
   return val;
 }
 

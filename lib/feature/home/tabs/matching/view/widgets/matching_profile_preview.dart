@@ -131,18 +131,21 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (widget.showCancel && _isDislikeVisible) ...[
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15.h),
-                    child: MatchIconButton(
-                      animateOnTap: true,
-                      onTap: () => swipeAndMatch.addDislike(
-                        widget.userProfile.user.uid!,
-                        addAction: false,
-                        showSnackbar: (msg) => showSnackbar(msg, context),
-                      ),
-                      assetPath: AppAssets.cancel,
-                      onAnimationComplete: _onDislikeTapComplete,
-                    ),
+                  Selector<EditProfileNotifier, bool>(
+                    selector: (_, edit) =>
+                        edit.coreProfile?.isApproved ?? false,
+                    builder: (_, isApproved, __) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15.h),
+                        child: MatchIconButton(
+                          animateOnTap: isApproved,
+                          onTap: () => onDisLikeTap(context),
+                          assetPath: AppAssets.cancel,
+                          onAnimationComplete:
+                              isApproved ? _onDislikeTapComplete : null,
+                        ),
+                      );
+                    },
                   ),
                 ],
                 if (widget.showMessaging) ...[
@@ -157,21 +160,21 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
                   ),
                 ],
                 if (!widget.isLiked && _isLikeVisible) ...[
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15.h),
-                    child: MatchIconButton(
-                      animateOnTap: true,
-                      onTap: () => swipeAndMatch.addLike(
-                        widget.userProfile.user.uid!,
-                        widget.userProfile.name,
-                        addAction: false,
-                        showSnackbar: (msg, {type = SnackbarType.error}) {
-                          showSnackbar(msg, context, snackBarType: type);
-                        },
-                      ),
-                      onAnimationComplete: _onLikeTapComplete,
-                      assetPath: AppAssets.like,
-                    ),
+                  Selector<EditProfileNotifier, bool>(
+                    selector: (_, edit) =>
+                        edit.coreProfile?.isApproved ?? false,
+                    builder: (_, isApproved, __) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15.h),
+                        child: MatchIconButton(
+                          animateOnTap: isApproved,
+                          onTap: () => onLikeTap(context),
+                          onAnimationComplete:
+                              isApproved ? _onLikeTapComplete : null,
+                          assetPath: AppAssets.like,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ],
@@ -182,8 +185,63 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
     );
   }
 
+  void onDisLikeTap(BuildContext context) {
+    var isApproved =
+        context.read<EditProfileNotifier>().profileData.isUserVerified;
+
+    if (!isApproved) {
+      showSnackbar(
+        AppStrings.disAbleUnapproved('Disliking'),
+        context,
+        snackBarType: SnackbarType.warning,
+      );
+      return;
+    }
+
+    swipeAndMatch.addDislike(
+      widget.userProfile.user.uid!,
+      addAction: false,
+      showSnackbar: (msg) => showSnackbar(msg, context),
+    );
+  }
+
+  void onLikeTap(BuildContext context) {
+    var isApproved =
+        context.read<EditProfileNotifier>().profileData.isUserVerified;
+
+    if (!isApproved) {
+      showSnackbar(
+        AppStrings.disAbleUnapproved('Liking'),
+        context,
+        snackBarType: SnackbarType.warning,
+      );
+      return;
+    }
+
+    swipeAndMatch.addLike(
+      widget.userProfile.user.uid!,
+      widget.userProfile.name,
+      addAction: false,
+      showSnackbar: (msg, {type = SnackbarType.error}) {
+        showSnackbar(msg, context, snackBarType: type);
+      },
+    );
+  }
+
   void onMessageTap(BuildContext context) {
     var notifier = context.read<ChatsNotifier>();
+
+    var isApproved =
+        context.read<EditProfileNotifier>().profileData.isUserVerified;
+
+    if (!isApproved) {
+      showSnackbar(
+        AppStrings.disAbleUnapproved('Messaging'),
+        context,
+        snackBarType: SnackbarType.warning,
+      );
+      return;
+    }
 
     notifier.setCurrentChat(
       username: widget.userProfile.name,

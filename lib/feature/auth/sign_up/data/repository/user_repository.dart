@@ -166,6 +166,39 @@ class UserRepository {
     return result.docs.isNotEmpty;
   }
 
+  Future<List<String>> uploadPictures({
+    required List<File> files,
+    required String Function(String?, String) pathGenerator,
+  }) async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) throw Exception("User not logged in");
+
+      // Create a list of Future tasks for uploading each file
+      final uploadFutures = files.map((file) async {
+        final fileName = p.basenameWithoutExtension(file.path);
+        final storageRef = _storage.ref().child(pathGenerator(uid, fileName));
+
+        final uploadTask = await storageRef.putFile(file);
+        return await uploadTask.ref.getDownloadURL();
+      }).toList();
+
+      // Wait for all upload tasks to complete with a 45-second timeout
+      return await Future.wait(uploadFutures).timeout(
+        const Duration(minutes: 2),
+        onTimeout: () {
+          throw FailedUploadException(AppStrings.uploadTimeout);
+        },
+      );
+    } catch (e) {
+      log(e.toString());
+      if (e is FailedUploadException) {
+        rethrow;
+      }
+      throw FailedUploadException(AppStrings.deviceOffline);
+    }
+  }
+
   Future<List<String>> uploadProfilePictures(List<File> files) async {
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid;

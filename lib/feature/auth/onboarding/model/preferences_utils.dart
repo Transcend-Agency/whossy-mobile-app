@@ -22,6 +22,7 @@ extension PreferencesUtils on Preferences {
     int? maritalStatus,
     List<String>? profilePics,
     List<File>? picFiles,
+    File? verPicFile,
   }) {
     if (relationshipPref != null) this.relationshipPref = relationshipPref;
     if (meet != null) this.meet = meet;
@@ -45,5 +46,6 @@ extension PreferencesUtils on Preferences {
     if (maritalStatus != null) this.maritalStatus = maritalStatus;
     if (profilePics != null) this.profilePics = profilePics;
     if (picFiles != null) this.picFiles = picFiles;
+    if (verPicFile != null) this.verPicFile = verPicFile;
   }
 }

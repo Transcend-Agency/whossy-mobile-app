@@ -9,4 +9,6 @@ export 'pets_screen.dart';
 export 'picture_screen.dart';
 export 'rel_pref_screen.dart';
 export 'smoker_screen.dart';
+export 'take_selfie_screen.dart';
 export 'tick_screen.dart';
+export 'verify_photo_screen.dart';

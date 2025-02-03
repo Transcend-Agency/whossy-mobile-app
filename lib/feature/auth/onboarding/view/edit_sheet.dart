@@ -86,3 +86,20 @@ class EditSheet extends StatelessWidget {
     );
   }
 }
+
+
+Future<void> showEditPhotoSheet(
+  BuildContext context, {
+  required VoidCallback onDelete,
+  required Future<bool> Function() onReUpload,
+}) async {
+  await showModalBottomSheet<void>(
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => EditSheet(
+      onDelete: onDelete,
+      onReUpload: onReUpload,
+    ),
+  );
+}

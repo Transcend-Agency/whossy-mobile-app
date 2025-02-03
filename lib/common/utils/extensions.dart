@@ -188,16 +188,17 @@ extension StringExtention on String? {
       return '${match.group(1)} ${match.group(2)}';
     }).replaceAll('_', ' ');
 
-    // Capitalize the first letter of each word
-    final formattedField = spacedField.split(' ').map((word) {
-      if (word.isNotEmpty) {
+    // Capitalize the first letter of the first word, leave the others as is
+    final words = spacedField.split(' ');
+    final formattedField = words.map((word) {
+      if (words.indexOf(word) == 0) {
         return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+      } else {
+        return word.toLowerCase();
       }
-      return '';
     }).join(' ');
 
-    // Handle specific cases for formatting
-    return formattedField == 'Phone Number' ? 'Phone number' : formattedField;
+    return formattedField;
   }
 }
 
@@ -269,5 +270,11 @@ extension DistanceFormatter on double {
     } else {
       return toStringAsFixed(3);
     }
+  }
+}
+
+extension MapContainsKeys on Map {
+  bool containsKeys(List<String> keys) {
+    return keys.every((key) => containsKey(key));
   }
 }

@@ -186,7 +186,7 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
                     ImageView(
                       index: index,
                       profilePics: widget.profilePics,
-                      onEditTap: () => showCustomModalBottomSheet(
+                      onEditTap: () => showEditPhotoSheet(
                         context,
                         onDelete: () => _deleteImage(index),
                         onReUpload: () => _handlePermissions(index: index),
@@ -213,20 +213,4 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
       ),
     );
   }
-}
-
-void showCustomModalBottomSheet(
-  BuildContext context, {
-  required VoidCallback onDelete,
-  required Future<bool> Function() onReUpload,
-}) {
-  showModalBottomSheet<void>(
-    clipBehavior: Clip.hardEdge,
-    context: context,
-    shape: roundedTop,
-    builder: (_) => EditSheet(
-      onDelete: onDelete,
-      onReUpload: onReUpload,
-    ),
-  );
 }

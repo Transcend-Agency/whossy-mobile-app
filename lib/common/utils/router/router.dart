@@ -44,6 +44,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: Settings.page),
         AutoRoute(page: BlockedContacts.page),
         AutoRoute(page: EditProfile.page),
+        AutoRoute(page: PhotoVerification.page),
         AutoRoute(page: NameEditProfile.page),
         AutoRoute(page: PreviewProfile.page),
         AutoRoute(page: EditProfilePreview.page),

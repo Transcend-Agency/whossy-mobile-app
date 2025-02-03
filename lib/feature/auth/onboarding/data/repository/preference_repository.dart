@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:whossy_app/common/utils/index.dart';
 
 import '../../model/preferences.dart';
 
@@ -13,19 +14,13 @@ class PreferenceRepository {
   final _deletePicQueue =
       FirebaseFirestore.instance.collection('deletePicQueue');
 
-  Future<void> uploadPreferences({required Map<String, dynamic> data}) async {
+  Future<void> uploadFilters({required Map<String, dynamic> data}) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
     try {
-      // Update the 'users' collection
-      await _prefFirestore.doc(uid).set(data, SetOptions(merge: true)).timeout(
-            const Duration(seconds: 5),
-            onTimeout: () =>
-                throw TimeoutException('The upload operation timed out'),
-          );
-
       // Check if the map contains 'meet' and 'distance' keys
-      if (data.containsKey('meet') && data.containsKey('distance')) {
+
+      if (data.containsKeys(['meet', 'distance'])) {
         final filtersData = {
           'meet': data['meet'],
           'distance': data['distance'],

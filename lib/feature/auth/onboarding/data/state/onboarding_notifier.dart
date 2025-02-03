@@ -1,12 +1,14 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
 import 'package:whossy_app/feature/auth/onboarding/data/repository/preference_repository.dart';
 
 import '../../../../../constants/index.dart';
 import '../../../sign_up/data/repository/user_repository.dart';
+import '../../model/face_verification.dart';
 import '../../model/preferences.dart';
 
 class OnboardingNotifier extends ChangeNotifier {
@@ -53,14 +55,40 @@ class OnboardingNotifier extends ChangeNotifier {
       spinnerState = true;
 
       // Upload profile pictures and update user profile
-      final urls = await _userRepository
-          .uploadProfilePictures(_userPreferences.picFiles ?? []);
+      final urls = await _userRepository.uploadPictures(
+        files: _userPreferences.picFiles ?? [],
+        pathGenerator: AppStrings.profilePicsPath,
+      );
+
+      final photoVerificationUrl = await _userRepository.uploadPictures(
+        files: _userPreferences.verPicFile != null
+            ? [_userPreferences.verPicFile!]
+            : [],
+        pathGenerator: AppStrings.faceVerPicPath,
+      );
+
       updateUserProfile(profilePics: urls);
 
+      // Create FaceVerification instance only if there is a verification photo
+      FaceVerification? faceVerification;
+      if (photoVerificationUrl.isNotEmpty) {
+        faceVerification = FaceVerification(
+          photo: photoVerificationUrl.first,
+        );
+      }
+
+      // Construct user data map dynamically
+      final Map<String, dynamic> userData = {
+        "has_completed_onboarding": true,
+        ..._userPreferences.toJson(),
+        if (faceVerification != null)
+          "face_verification": faceVerification.toJson()
+            ..['updated_at'] = FieldValue.serverTimestamp(),
+      };
+
       // Upload preferences and complete onboarding
-      await _prefRepository.uploadPreferences(data: _userPreferences.toJson());
-      await _userRepository
-          .setUserData(data: {"has_completed_onboarding": true});
+      await _prefRepository.uploadFilters(data: _userPreferences.toJson());
+      await _userRepository.setUserData(data: userData);
 
       await _userRepository.addUserToken();
 
@@ -97,6 +125,7 @@ class OnboardingNotifier extends ChangeNotifier {
     String? bio,
     List<String>? profilePics,
     List<File>? picFiles,
+    File? verPicFile,
   }) {
     _userPreferences.update(
       relationshipPref: relationshipPref,
@@ -111,7 +140,10 @@ class OnboardingNotifier extends ChangeNotifier {
       bio: bio,
       profilePics: profilePics,
       picFiles: picFiles,
+      verPicFile: verPicFile,
     );
+
+    log(_userPreferences.toJson().toString());
 
     notifyListeners();
   }

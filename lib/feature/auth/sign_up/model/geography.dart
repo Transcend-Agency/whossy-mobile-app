@@ -40,4 +40,15 @@ class Geography {
   int get hashCode {
     return Object.hash(geohash, geopoint);
   }
+
+  @override
+  String toString() {
+    return 'Geography(\n'
+        '  geohash: $geohash,\n'
+        '  geopoint: {\n'
+        '    latitude: ${geopoint?.latitude ?? "null"},\n'
+        '    longitude: ${geopoint?.longitude ?? "null"}\n'
+        '  }\n'
+        ')';
+  }
 }

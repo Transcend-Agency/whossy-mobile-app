@@ -27,6 +27,7 @@ extension CoreProfileUtils on CoreProfile {
       "gender": gender,
       "email": email,
       "phoneNumber": phoneNumber,
+      "photoVerification": _getPhotoVerificationStatus(),
       "bio": bio,
       "full_name": {
         "firstName": firstName,
@@ -35,6 +36,15 @@ extension CoreProfileUtils on CoreProfile {
     };
 
     return selectedValues[key];
+  }
+
+  String _getPhotoVerificationStatus() {
+    if (faceVerification?.getVerificationStatus() ==
+            FaceVerificationStatus.complete &&
+        !isApproved!) {
+      return FaceVerificationStatus.pending.name;
+    }
+    return faceVerification!.getVerificationStatus().name;
   }
 
   void update({
@@ -50,6 +60,7 @@ extension CoreProfileUtils on CoreProfile {
     List<String>? blockedIds,
     bool? isPremium,
     Payment? amountPaid,
+    String? photoVerificationUrl,
   }) {
     if (bio != null) this.bio = bio;
     if (gender != null) this.gender = gender;
@@ -63,6 +74,9 @@ extension CoreProfileUtils on CoreProfile {
     if (profilePics != null) this.profilePics = profilePics;
     if (blockedIds != null) this.blockedIds = blockedIds;
     if (amountPaid != null) this.amountPaid = amountPaid;
+    if (photoVerificationUrl != null) {
+      faceVerification?.photo = photoVerificationUrl;
+    }
   }
 
   void updateLocation({
@@ -86,6 +100,7 @@ extension CoreProfileUtils on CoreProfile {
     "birthday",
     "gender",
     "email",
+    "photoVerification",
     "phoneNumber",
     "bio",
     "full_name"

@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
 
 import '../../../../common/utils/index.dart';
+import '../../../auth/onboarding/model/face_verification.dart';
 import '../../../auth/sign_up/model/geography.dart';
 import '../../../auth/sign_up/model/payment.dart';
 import '../../settings/model/user_settings.dart';
@@ -102,6 +103,16 @@ class CoreProfile {
   )
   UserSettings? userSettings;
 
+  @JsonKey(
+    name: "face_verification",
+    fromJson: FaceVerification.faceVerificationFromJson,
+    toJson: FaceVerification.faceVerificationToJson,
+  )
+  FaceVerification? faceVerification;
+
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  String? updatedPhoto;
+
   CoreProfile({
     this.firstName,
     this.lastName,
@@ -128,6 +139,8 @@ class CoreProfile {
     this.userSettings,
     this.amountPaid,
     this.geography,
+    this.faceVerification,
+    this.updatedPhoto,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -167,13 +180,8 @@ class CoreProfile {
         '  creditBalance: $creditBalance,\n'
         '  userSettings: ${userSettings.toString()},\n'
         '  amountPaid: ${amountPaid.toString()},\n'
-        '  geography: {\n'
-        '    geohash: ${geography?.geohash ?? "null"},\n'
-        '    geopoint: {\n'
-        '      latitude: ${geography?.geopoint?.latitude ?? "null"},\n'
-        '      longitude: ${geography?.geopoint?.longitude ?? "null"}\n'
-        '    }\n'
-        '  }\n'
+        '  geography: ${geography?.toString() ?? "null"}\n'
+        '  faceVerification: ${faceVerification?.toString() ?? "null"}\n' // Added this line
         ')';
   }
 
@@ -186,8 +194,7 @@ class CoreProfile {
         other.lastName == lastName &&
         other.dateOfBirth == dateOfBirth &&
         other.gender == gender &&
-        other.email == email &&
-        other.phoneNumber == phoneNumber &&
+       //  other.phoneNumber == phoneNumber &&
         listEquals(other.profilePics, profilePics) &&
         other.bio == bio &&
         other.meet == meet &&
@@ -204,7 +211,8 @@ class CoreProfile {
         // other.geohash == geohash &&
         other.creditBalance == creditBalance &&
         other.amountPaid == amountPaid &&
-        other.userSettings == userSettings;
+        other.userSettings == userSettings &&
+        other.faceVerification == faceVerification;
   }
 
   @override
@@ -216,7 +224,7 @@ class CoreProfile {
       dateOfBirth,
       gender,
       email,
-      phoneNumber,
+     // phoneNumber,
       bio,
       meet,
       weight,
@@ -228,6 +236,7 @@ class CoreProfile {
       creditBalance,
       amountPaid,
       userSettings,
+      faceVerification,
       Object.hashAll(profilePics ?? []),
       Object.hashAll(interests ?? []),
       Object.hashAll(blockedIds ?? []),

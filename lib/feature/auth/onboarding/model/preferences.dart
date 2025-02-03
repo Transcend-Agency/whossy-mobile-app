@@ -56,7 +56,6 @@ class Preferences implements ProfileData {
   @JsonKey(name: 'workout')
   int? workOut;
 
-  // Todo: Refactor to pets
   @JsonKey(name: "pets")
   int? petOwner;
 
@@ -69,6 +68,9 @@ class Preferences implements ProfileData {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<File>? picFiles;
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  File? verPicFile;
 
   Preferences({
     this.relationshipPref,
@@ -91,6 +93,7 @@ class Preferences implements ProfileData {
     this.maritalStatus,
     this.profilePics,
     this.picFiles,
+    this.verPicFile,
   });
 
   // Implementations from ProfileBase
@@ -152,7 +155,6 @@ class Preferences implements ProfileData {
   static dynamic dateTimeToJson(DateTime? date) =>
       date != null ? Timestamp.fromDate(date) : null;
 
-  // String representation for debugging
   @override
   String toString() {
     return 'relationshipPref: $relationshipPref\n'
@@ -174,6 +176,7 @@ class Preferences implements ProfileData {
         'bio: $bio\n'
         'maritalStatus: $maritalStatus\n'
         'profilePics: ${profilePics?.join(", ")}\n'
-        'picFiles: ${picFiles?.map((file) => file.path).join(", ")}';
+        'picFiles: ${picFiles?.map((file) => file.path).join(", ")}\n'
+        'verPicFile: ${verPicFile?.path}\n';
   }
 }

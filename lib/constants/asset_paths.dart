@@ -86,6 +86,7 @@ class AppAssets {
 
   static const noMatches = 'assets/images/no_matches.png';
   static const noMessages = 'assets/images/no_messages.png';
+  static const verifiedTick = 'assets/images/verification.png';
   static const noNotifications = 'assets/images/no_notifications.png';
   static const noLikes = 'assets/images/no_likes.png';
   static const flame = 'assets/icons/flame.png';

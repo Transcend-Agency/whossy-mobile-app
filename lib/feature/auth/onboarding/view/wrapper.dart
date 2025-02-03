@@ -51,6 +51,8 @@ class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
       const PetsScreen(pageIndex: 7),
       const BioScreen(pageIndex: 8),
       const PictureScreen(pageIndex: 9),
+      const VerifyPhotoScreen(pageIndex: 10),
+      const TakeSelfieScreen(pageIndex: 11),
     ];
   }
 

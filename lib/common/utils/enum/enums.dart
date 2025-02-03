@@ -274,3 +274,13 @@ enum NotificationType {
 
   final String value;
 }
+
+enum FaceVerificationStatus {
+  pending('Pending'),
+  notCompleteAndDeclined('Not Complete, Declined'),
+  notComplete('Not Complete'),
+  complete('Complete');
+
+  final String name;
+  const FaceVerificationStatus(this.name);
+}

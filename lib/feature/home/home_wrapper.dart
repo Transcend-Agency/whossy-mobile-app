@@ -68,8 +68,9 @@ class _HomeWrapperState extends State<HomeWrapper> {
     _userService = UserPresenceService();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _editProfileNotifier.getUserData(showSnackbar: showAppSnackbar);
-      _editProfileNotifier.checkSafetyGuideOpenedState();
+      _editProfileNotifier
+        ..getUserData(showSnackbar: showAppSnackbar)
+        ..checkSafetyGuideOpenedState();
       _prefsNotifier.getMatchingPreferences(showSnackbar: showAppSnackbar);
       _advancedSearchNotifier.getMatchingPreferences(
         showSnackbar: showAppSnackbar,
@@ -144,11 +145,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
         bottomNavBar: CustomBottomAppBar(
           onTabSelected: _selectedTab,
           items: const [
-            AppAssets.fire,
-            AppAssets.globalSearch,
-            AppAssets.heart,
-            AppAssets.chat,
-            AppAssets.user,
+            BottomNavItem(assetPath: AppAssets.fire, label: "Matching"),
+            BottomNavItem(assetPath: AppAssets.globalSearch, label: "Explore"),
+            BottomNavItem(assetPath: AppAssets.heart, label: "Likes/Match"),
+            BottomNavItem(assetPath: AppAssets.chat, label: "Chat"),
+            BottomNavItem(assetPath: AppAssets.user, label: "Profile"),
           ],
         ),
       ),

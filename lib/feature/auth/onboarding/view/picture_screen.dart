@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/services/file/file_service.dart';
 
 import '../../../../common/components/index.dart';
-import '../../../../common/styles/component_style.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
@@ -144,6 +143,7 @@ class _PictureScreenState extends State<PictureScreen>
         const OnboardingHeaderText(
           title: "Share a snapshot of you",
           subtitle: "Add at least 3 recent photos of yourself 🤗",
+          skip: true,
         ),
         addHeight(8),
         Text(
@@ -157,7 +157,7 @@ class _PictureScreenState extends State<PictureScreen>
         // Todo : Resizing issues in this area
         Center(
           child: SizedBox(
-            height: 320.h, // 340
+            height: 300.h, // 340
             child: Stack(
               children: [
                 ImageCard(
@@ -219,7 +219,7 @@ class _PictureScreenState extends State<PictureScreen>
                                     height: 60,
                                     width: 60,
                                     child: GestureDetector(
-                                      onTap: () => showCustomModalBottomSheet(
+                                      onTap: () => showEditPhotoSheet(
                                         context,
                                         onDelete: () => _deleteImage(0),
                                         onReUpload: () =>
@@ -291,7 +291,7 @@ class _PictureScreenState extends State<PictureScreen>
                               top: -4,
                               left: -4,
                               child: GestureDetector(
-                                onTap: () => showCustomModalBottomSheet(
+                                onTap: () => showEditPhotoSheet(
                                   context,
                                   onDelete: () => _deleteImage(index + 1),
                                   onReUpload: () =>
@@ -332,20 +332,4 @@ class _PictureScreenState extends State<PictureScreen>
       ],
     );
   }
-}
-
-Future<void> showCustomModalBottomSheet(
-  BuildContext context, {
-  required VoidCallback onDelete,
-  required Future<bool> Function() onReUpload,
-}) async {
-  await showModalBottomSheet<void>(
-    clipBehavior: Clip.hardEdge,
-    context: context,
-    shape: roundedTop,
-    builder: (_) => EditSheet(
-      onDelete: onDelete,
-      onReUpload: onReUpload,
-    ),
-  );
 }

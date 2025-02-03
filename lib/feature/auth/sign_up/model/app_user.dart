@@ -4,6 +4,7 @@ import 'package:whossy_app/feature/auth/sign_up/model/payment.dart';
 import 'package:whossy_app/feature/home/settings/model/user_settings.dart';
 
 import '../../../../common/utils/index.dart';
+import '../../onboarding/model/face_verification.dart';
 import 'geography.dart';
 import 'user_status.dart';
 
@@ -105,6 +106,13 @@ class AppUser {
   )
   final Payment? amountPaid;
 
+  @JsonKey(
+    name: "face_verification",
+    fromJson: FaceVerification.faceVerificationFromJson,
+    toJson: FaceVerification.faceVerificationToJson,
+  )
+  final FaceVerification? faceVerification;
+
   AppUser({
     this.uid,
     this.email,
@@ -133,8 +141,10 @@ class AppUser {
     this.creditBalance = 0,
     Payment? payment,
     List<String>? blockedIds,
+    FaceVerification? faceVerification,
   })  : userSettings = userSettings ?? UserSettings(),
         amountPaid = payment ?? Payment(),
+        faceVerification = faceVerification ?? FaceVerification(),
         blockedIds = blockedIds ?? [];
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>

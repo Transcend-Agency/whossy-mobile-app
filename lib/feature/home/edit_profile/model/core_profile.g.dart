@@ -40,6 +40,8 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
           json['amount_paid_in_total'] as Map<String, dynamic>?),
       geography: AppUtils.geographyFromJson(
           json['geography'] as Map<String, dynamic>?),
+      faceVerification: FaceVerification.faceVerificationFromJson(
+          json['face_verification'] as Map<String, dynamic>?),
     );
 
 Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
@@ -79,5 +81,7 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
       'amount_paid_in_total', AppUtils.paymentToJson(instance.amountPaid));
   writeNotNull(
       'user_settings', AppUtils.userSettingsToJson(instance.userSettings));
+  writeNotNull('face_verification',
+      FaceVerification.faceVerificationToJson(instance.faceVerification));
   return val;
 }
