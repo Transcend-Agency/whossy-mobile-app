@@ -1,12 +1,13 @@
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pay_with_paystack/pay_with_paystack.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/common/utils/services/payment/nomba/nomba_web_page.dart';
 
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
@@ -161,7 +162,7 @@ class Credits extends HookWidget {
     required double amount,
     required int quantity,
   }) async {
-    if (currency != 'NGN') {
+    if (currency == 'KES') {
       showSnackbar(
         '$currency Payment is coming soon',
         context,
@@ -173,23 +174,64 @@ class Credits extends HookWidget {
     final editNotifier = context.read<EditProfileNotifier>();
     final paymentService = PaymentService(editNotifier);
 
-    await PayWithPayStack().now(
-      context: context,
-      secretKey: "sk_test_b9688554e5b6a393c6d74c2b8e30d5ba36e7fafe",
-      customerEmail: editNotifier.coreProfile!.email!,
-      reference: const Uuid().v4(),
-      currency: currency,
-      amount: amount,
-      callbackUrl: "https://google.com",
-      transactionCompleted: (response) => paymentService.onCreditSuccess(
-        context,
-        credit: quantity,
-        response: response,
+    if (currency == 'USD') {
+      navigateToUSDPayment(
+        context: context,
+        email: editNotifier.coreProfile!.email!,
         currency: currency,
         amount: amount,
-      ),
-      transactionNotCompleted: (errType, reason) =>
-          paymentService.onCreditFailure(context, errType.message, reason),
-    );
+        customerId: FirebaseAuth.instance.currentUser!.uid,
+        transactionCompleted: (response) => paymentService.onCreditSuccess(
+          context,
+          credit: quantity,
+          response: response,
+          currency: currency,
+          amount: amount,
+        ),
+        transactionNotCompleted: (errType, reason) =>
+            paymentService.onCreditFailure(context, errType.message, reason),
+      );
+    }
+
+    // await PayWithPayStack().now(
+    //   context: context,
+    //   secretKey: "sk_test_b9688554e5b6a393c6d74c2b8e30d5ba36e7fafe",
+    //   customerEmail: editNotifier.coreProfile!.email!,
+    //   reference: const Uuid().v4(),
+    //   currency: currency,
+    //   amount: amount,
+    //   callbackUrl: "https://google.com",
+    //   transactionCompleted: (response) => paymentService.onCreditSuccess(
+    //     context,
+    //     credit: quantity,
+    //     response: response,
+    //     currency: currency,
+    //     amount: amount,
+    //   ),
+    //   transactionNotCompleted: (errType, reason) =>
+    //       paymentService.onCreditFailure(context, errType.message, reason),
+    // );
   }
+}
+
+void navigateToUSDPayment({
+  required BuildContext context,
+  required String email,
+  required String currency,
+  required double amount,
+  required String customerId,
+  required TransactionCompletedCallback transactionCompleted,
+  required TransactionNotCompletedCallback transactionNotCompleted,
+}) {
+  Nav.push(
+    context,
+    NombaWebRoute(
+      email: email,
+      currency: currency,
+      amount: amount,
+      customerId: customerId,
+      transactionCompleted: transactionCompleted,
+      transactionNotCompleted: transactionNotCompleted,
+    ),
+  );
 }

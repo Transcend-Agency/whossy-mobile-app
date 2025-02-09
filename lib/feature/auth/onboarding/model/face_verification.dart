@@ -77,6 +77,6 @@ class FaceVerification {
         '     photo: $photo,\n'
         '     updatedAt: ${updatedAt != null ? AppUtils.timestampToJson(updatedAt) : "null"},\n'
         '     retakePhoto: $retakePhoto\n'
-        ')';
+        ' )';
   }
 }

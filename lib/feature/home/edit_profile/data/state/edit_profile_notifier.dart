@@ -45,6 +45,8 @@ class EditProfileNotifier extends ChangeNotifier {
   set didUserDeletePic(bool value) {
     if (value != _didUserDeletePic) {
       _didUserDeletePic = value;
+
+      log('Did user delete pic changed to $_didUserDeletePic');
     }
   }
 
@@ -200,44 +202,17 @@ class EditProfileNotifier extends ChangeNotifier {
     try {
       final corePrefsDiff = _dynCorePrefs?.diff(_staticCorePrefs!) ?? {};
       final coreProfileDiff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
-
       bool hasPicUploads = false;
 
       if (corePrefsDiff.isEmpty && coreProfileDiff.isEmpty) return true;
 
-      if (coreProfileDiff.containsKey("photos")) {
-        final photos = coreProfileDiff["photos"];
+      // Process profile photos if available
+      hasPicUploads =
+          await _processProfilePhotos(coreProfileDiff, showSnackbar);
 
-        if (photos is List<String>) {
-          final updatedPhotos =
-              await FileService().processPhotos(photos, showSnackbar);
+      // Process face verification if available
+      await _processFaceVerification(coreProfileDiff);
 
-          // Replace the photos list with the updated list
-          coreProfileDiff["photos"] = updatedPhotos.photos;
-
-          hasPicUploads = updatedPhotos.hasUploads;
-        }
-      }
-
-      if (coreProfileDiff.containsKey("face_verification")) {
-        final faceVerification =
-            coreProfileDiff["face_verification"] as FaceVerification;
-
-        if (faceVerification.photo != null) {
-          final photoVerificationUrl = await _userRepository.uploadPictures(
-            files: [File(faceVerification.photo!)],
-            pathGenerator: AppStrings.faceVerPicPath,
-          );
-
-          coreProfileDiff["face_verification"] = {
-            ...faceVerification.toJson(),
-            'photo': photoVerificationUrl,
-            'updated_at': FieldValue.serverTimestamp(),
-          };
-        }
-      }
-
-      log(' Saving ${coreProfileDiff.toString()} \n ${corePrefsDiff.toString()}');
       await _editProfileRepo.updateProfileData(
         corePrefData: {...corePrefsDiff},
         coreProfileData: {...coreProfileDiff},
@@ -245,20 +220,13 @@ class EditProfileNotifier extends ChangeNotifier {
         hasPicUploads: hasPicUploads,
       );
 
-      // Once saved, update the static preferences to match the dynamic ones
+      // Sync static profile with the latest changes
       _staticCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
       _staticCoreProfile = CoreProfile.fromJson(_dynCoreProfile!.toJson());
 
       return true;
-    } on Exception catch (e) {
-      if (e is FirebaseException) {
-        handleFirebaseError(e, showSnackbar);
-      } else if (e is FailedUploadException) {
-        showSnackbar((e as dynamic).message);
-      } else {
-        showSnackbar(AppStrings.errorUnknown);
-        log(e.toString());
-      }
+    } catch (e) {
+      _handleSaveProfileError(e, showSnackbar);
       return false;
     } finally {
       notifyListeners();
@@ -306,5 +274,58 @@ class EditProfileNotifier extends ChangeNotifier {
   void _updateCorePreferences(Preferences prefs) {
     _dynCorePrefs = CorePreferences.fromJson(prefs.toJson());
     _staticCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
+  }
+
+  Future<bool> _processProfilePhotos(
+    Map<String, dynamic> coreProfileDiff,
+    void Function(String) showSnackbar,
+  ) async {
+    if (coreProfileDiff["photos"] is! List<String>) return false;
+
+    final updatedPhotos = await FileService().processPhotos(
+      coreProfileDiff["photos"],
+      showSnackbar,
+    );
+
+    coreProfileDiff["photos"] = updatedPhotos.photos;
+    _dynCoreProfile?.update(profilePics: updatedPhotos.photos);
+    return updatedPhotos.hasUploads;
+  }
+
+  Future<void> _processFaceVerification(
+    Map<String, dynamic> coreProfileDiff,
+  ) async {
+    if (coreProfileDiff["face_verification"] is! FaceVerification) return;
+
+    final faceVerification =
+        coreProfileDiff["face_verification"] as FaceVerification;
+
+    if (faceVerification.photo == null) return;
+
+    final photoUrls = await _userRepository.uploadPictures(
+      files: [File(faceVerification.photo!)],
+      pathGenerator: AppStrings.faceVerPicPath,
+    );
+
+    final photoUrl = photoUrls.isNotEmpty ? photoUrls.first : null;
+
+    coreProfileDiff["face_verification"] = {
+      ...faceVerification.toJson(),
+      'photo': photoUrl,
+      'updated_at': FieldValue.serverTimestamp(),
+    };
+
+    _dynCoreProfile?.update(photoVerificationUrl: photoUrl);
+  }
+
+  void _handleSaveProfileError(Object e, void Function(String) showSnackbar) {
+    if (e is FirebaseException) {
+      handleFirebaseError(e, showSnackbar);
+    } else {
+      showSnackbar(e is FailedUploadException
+          ? (e as dynamic).message
+          : AppStrings.errorUnknown);
+      log(e.toString());
+    }
   }
 }

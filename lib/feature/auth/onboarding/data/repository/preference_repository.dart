@@ -66,15 +66,19 @@ class PreferenceRepository {
 
   Future<void> addDeletePicQueue() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return; // Ensure uid is not null
+
+    final docRef = _deletePicQueue.doc(uid);
+    final batch = FirebaseFirestore.instance.batch();
+
+    batch.delete(docRef);
+    batch.set(docRef, {"uid": uid});
 
     try {
-      await _deletePicQueue
-          .doc(uid)
-          .set({"uid": uid}, SetOptions(merge: true)).timeout(
-        const Duration(seconds: 5),
-        onTimeout: () =>
-            throw TimeoutException('The upload operation timed out'),
-      );
+      await batch.commit().timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException('The operation timed out'),
+          );
     } on TimeoutException catch (e) {
       log("Timeout: ${e.message}");
     } catch (e) {

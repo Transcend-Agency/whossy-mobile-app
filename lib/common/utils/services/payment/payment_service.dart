@@ -25,8 +25,6 @@ class PaymentService {
 
       return;
     }
-//
-    // if (context.mounted) Navigator.of(context).pop();
   }
 
   Future<void> onPremiumSuccess(

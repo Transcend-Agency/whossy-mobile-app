@@ -98,7 +98,7 @@ class PremiumPlan extends StatelessWidget {
     required BuildContext context,
     required Currency currency,
   }) async {
-    if (currency.name != 'NGN') {
+    if (currency.name == 'KES') {
       showSnackbar(
         '${currency.name} Payment is coming soon',
         context,

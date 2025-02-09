@@ -57,6 +57,9 @@ class _BioEditProfileState extends State<BioEditProfile> {
     // Set the text programmatically first
     textController.text = editProfileProvider.coreProfile?.bio ?? '';
 
+    // Update the character count immediately
+    _characterCount = textController.text.length;
+
     // Then register the listener
     textController.addListener(() {
       updateCounter();
