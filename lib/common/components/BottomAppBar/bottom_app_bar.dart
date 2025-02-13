@@ -29,7 +29,7 @@ class CustomBottomAppBar extends StatefulWidget {
 }
 
 class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   void _updatedIndex(int index) {
     widget.onTabSelected(index);
@@ -70,10 +70,10 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
     GlobalKey? currentKey;
     switch (index) {
       case 0:
-        currentKey = GlobalKeys.fireTabKey;
+        currentKey = GlobalKeys.globalSearchTabKey;
         break;
       case 1:
-        currentKey = GlobalKeys.globalSearchTabKey;
+        currentKey = GlobalKeys.fireTabKey;
         break;
       case 2:
         currentKey = GlobalKeys.heartTabKey;

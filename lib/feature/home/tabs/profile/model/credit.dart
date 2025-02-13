@@ -25,35 +25,43 @@ class Credit {
 
 final credits = [
   Credit(
+    quantity: 1,
+    prices: {
+      Currency.USD: 2.00,
+      Currency.NGN: 1000.00,
+      Currency.KES: 100.00,
+    },
+  ),
+  Credit(
     quantity: 5,
     prices: {
-      Currency.USD: 9.99,
-      Currency.NGN: 9500.00,
-      Currency.KES: 1650.00,
+      Currency.USD: 9.00,
+      Currency.NGN: 4500.00,
+      Currency.KES: 450.00,
     },
   ),
   Credit(
     quantity: 10,
     prices: {
-      Currency.USD: 19.99,
-      Currency.NGN: 18500.00,
-      Currency.KES: 3250.00,
+      Currency.USD: 17.00,
+      Currency.NGN: 8500.00,
+      Currency.KES: 850.00,
     },
   ),
   Credit(
     quantity: 20,
     prices: {
-      Currency.USD: 39.99,
-      Currency.NGN: 36000.00,
-      Currency.KES: 6500.00,
+      Currency.USD: 33.00,
+      Currency.NGN: 16500.00,
+      Currency.KES: 1650.00,
     },
   ),
   Credit(
-    quantity: 50,
+    quantity: 100,
     prices: {
-      Currency.USD: 99.99,
-      Currency.NGN: 165000.00,
-      Currency.KES: 28500.00,
+      Currency.USD: 150.00,
+      Currency.NGN: 80000.00,
+      Currency.KES: 8000.00,
     },
   ),
 ];

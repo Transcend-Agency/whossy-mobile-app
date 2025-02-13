@@ -127,43 +127,6 @@ final targets = [
   //   ],
   // ),
 
-  // Tutorial for the 'Swipe and Match' tab (FireTab)
-  TargetFocus(
-    identify: 'fireTab',
-    keyTarget: GlobalKeys.fireTabKey,
-    paddingFocus: 2,
-    contents: [
-      TargetContent(
-        align: ContentAlign.top,
-        builder: (context, controller) => Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Swipe and Match',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
-                color: Colors.white,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h),
-              child: Text(
-                AppStrings.fireTabTutorial,
-                style: TextStyles.prefText.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            addHeight(25),
-          ],
-        ),
-      ),
-    ],
-  ),
-
   // Tutorial for the 'Explore' tab (GlobalSearchTab)
   TargetFocus(
     identify: 'globalSearchTab',
@@ -188,6 +151,43 @@ final targets = [
               padding: EdgeInsets.symmetric(vertical: 10.h),
               child: Text(
                 AppStrings.globalSearchTabTutorial,
+                style: TextStyles.prefText.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            addHeight(25),
+          ],
+        ),
+      ),
+    ],
+  ),
+
+  // Tutorial for the 'Swipe and Match' tab (FireTab)
+  TargetFocus(
+    identify: 'fireTab',
+    keyTarget: GlobalKeys.fireTabKey,
+    paddingFocus: 2,
+    contents: [
+      TargetContent(
+        align: ContentAlign.top,
+        builder: (context, controller) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Swipe and Match',
+              style: TextStyles.boldPrefText.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
+                color: Colors.white,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.h),
+              child: Text(
+                AppStrings.fireTabTutorial,
                 style: TextStyles.prefText.copyWith(
                   fontWeight: FontWeight.w500,
                   color: Colors.white,

@@ -1,13 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pay_with_paystack/pay_with_paystack.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 import 'package:whossy_app/feature/home/tabs/profile/model/credit.dart';
 import 'package:whossy_app/feature/home/tabs/profile/view/widgets/currency_sheet.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/services/payment/nomba/nomba_web_page.dart';
+import '../../../../../../common/utils/services/payment/paystack/paystack_web_page.dart';
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../../../constants/index.dart';
 import '../../data/source/subscription_plan_data.dart';
@@ -110,21 +111,37 @@ class PremiumPlan extends StatelessWidget {
     final editNotifier = context.read<EditProfileNotifier>();
     final paymentService = PaymentService(editNotifier);
 
-    await PayWithPayStack().now(
-      context: context,
-      secretKey: "sk_test_b9688554e5b6a393c6d74c2b8e30d5ba36e7fafe",
-      customerEmail: editNotifier.coreProfile!.email!,
-      reference: const Uuid().v4(),
-      currency: currency.name,
-      amount: 15000,
-      callbackUrl: "https://google.com",
-      transactionCompleted: (response) => paymentService.onPremiumSuccess(
-        context,
-        response: response,
+    if (currency.name == 'USD') {
+      navigateToUSDPayment(
+        context: context,
+        email: editNotifier.coreProfile!.email!,
         currency: currency.name,
-      ),
-      transactionNotCompleted: (errType, reason) =>
-          paymentService.onPremiumFailure(context, errType.message, reason),
-    );
+        amount: 10,
+        customerId: FirebaseAuth.instance.currentUser!.uid,
+        transactionCompleted: (response) => paymentService.onPremiumSuccess(
+          context,
+          response: response,
+          currency: currency.name,
+        ),
+        transactionNotCompleted: (errType, reason) =>
+            paymentService.onCreditFailure(context, errType.message, reason),
+      );
+    }
+
+    if (currency.name == 'NGN') {
+      navigateToPaystackPayment(
+        context: context,
+        email: editNotifier.coreProfile!.email!,
+        currency: currency.name,
+        amount: 15000,
+        transactionCompleted: (response) => paymentService.onPremiumSuccess(
+          context,
+          response: response,
+          currency: currency.name,
+        ),
+        transactionNotCompleted: (errType, reason) =>
+            paymentService.onPremiumFailure(context, errType.message, reason),
+      );
+    }
   }
 }

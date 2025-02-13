@@ -6,11 +6,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
-import 'package:whossy_app/common/utils/router/router.gr.dart';
-import 'package:whossy_app/common/utils/services/payment/nomba/nomba_web_page.dart';
 
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/services/payment/nomba/nomba_web_page.dart';
+import '../../../../../common/utils/services/payment/paystack/paystack_web_page.dart';
 import '../../../../../common/utils/services/services.dart';
 import '../../../../../constants/index.dart';
 import '../../../../../provider/providers.dart';
@@ -109,7 +109,7 @@ class Credits extends HookWidget {
                         children: [
                           addHeight(3),
                           Text(
-                            '${quantity.getPrice(userCurrency.value)} ${userCurrency.value.toString().split('.').last}',
+                            '${quantity.getPrice(userCurrency.value).round()} ${userCurrency.value.toString().split('.').last}',
                             style: TextStyles.profileHead.copyWith(
                               fontSize: AppUtils.scale(12.sp) ?? 15,
                               color: Colors.black87,
@@ -162,15 +162,6 @@ class Credits extends HookWidget {
     required double amount,
     required int quantity,
   }) async {
-    if (currency == 'KES') {
-      showSnackbar(
-        '$currency Payment is coming soon',
-        context,
-        snackBarType: SnackbarType.warning,
-      );
-      return;
-    }
-
     final editNotifier = context.read<EditProfileNotifier>();
     final paymentService = PaymentService(editNotifier);
 
@@ -193,45 +184,22 @@ class Credits extends HookWidget {
       );
     }
 
-    // await PayWithPayStack().now(
-    //   context: context,
-    //   secretKey: "sk_test_b9688554e5b6a393c6d74c2b8e30d5ba36e7fafe",
-    //   customerEmail: editNotifier.coreProfile!.email!,
-    //   reference: const Uuid().v4(),
-    //   currency: currency,
-    //   amount: amount,
-    //   callbackUrl: "https://google.com",
-    //   transactionCompleted: (response) => paymentService.onCreditSuccess(
-    //     context,
-    //     credit: quantity,
-    //     response: response,
-    //     currency: currency,
-    //     amount: amount,
-    //   ),
-    //   transactionNotCompleted: (errType, reason) =>
-    //       paymentService.onCreditFailure(context, errType.message, reason),
-    // );
+    if (currency == 'NGN' || currency == 'KES') {
+      navigateToPaystackPayment(
+        context: context,
+        email: editNotifier.coreProfile!.email!,
+        currency: currency,
+        amount: amount,
+        transactionCompleted: (response) => paymentService.onCreditSuccess(
+          context,
+          credit: quantity,
+          response: response,
+          currency: currency,
+          amount: amount,
+        ),
+        transactionNotCompleted: (errType, reason) =>
+            paymentService.onCreditFailure(context, errType.message, reason),
+      );
+    }
   }
-}
-
-void navigateToUSDPayment({
-  required BuildContext context,
-  required String email,
-  required String currency,
-  required double amount,
-  required String customerId,
-  required TransactionCompletedCallback transactionCompleted,
-  required TransactionNotCompletedCallback transactionNotCompleted,
-}) {
-  Nav.push(
-    context,
-    NombaWebRoute(
-      email: email,
-      currency: currency,
-      amount: amount,
-      customerId: customerId,
-      transactionCompleted: transactionCompleted,
-      transactionNotCompleted: transactionNotCompleted,
-    ),
-  );
 }

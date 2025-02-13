@@ -9,6 +9,7 @@ import '../../feature/auth/sign_up/model/geography.dart';
 import '../../feature/auth/sign_up/model/payment.dart';
 import '../../feature/home/settings/model/user_settings.dart';
 import '../../feature/home/tabs/matching/model/user_profile.dart';
+import 'index.dart';
 
 class AppUtils {
   static Map<String, dynamic>? geographyToJson(Geography? geography) =>
@@ -239,3 +240,8 @@ class ListQueue<T> {
     return _queue.last; // Get the last item in the queue
   }
 }
+
+typedef TransactionCompletedCallback = void Function(
+    Map<String, dynamic> decodedRespBody);
+typedef TransactionNotCompletedCallback = void Function(
+    TransactionErrorType errorType, String reason);

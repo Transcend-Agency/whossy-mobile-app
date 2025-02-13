@@ -1,27 +1,30 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 import '../../../../../../env.dart';
+import '../../../../enum/enums.dart';
 import '../model/nomba_request_response.dart';
 import 'nomba_auth_service.dart';
 
 class NombaPaymentService {
   final NombaAuthService authService;
   final String accountId;
+  final String callbackUrl;
 
   NombaPaymentService({required this.authService})
-      : accountId = Env.nombaAccountId;
+      : accountId = Env.nombaAccountId,
+        callbackUrl = Env.paymentCallbackUrl;
 
   Future<NombaRequestResponse> makePayment({
     required String email,
     required String customerId,
     required double amount,
     required String currency,
-    required String callbackUrl,
   }) async {
     try {
       final token = await authService.getAccessToken();
@@ -61,10 +64,15 @@ class NombaPaymentService {
       }
     } on TimeoutException {
       log("Payment request timed out.");
-      throw Exception("Payment request timeout.");
-    } catch (e) {
+      throw TransactionErrorType.paymentTimeout;
+    } on Exception catch (e) {
       log("Payment error: $e");
-      throw Exception("Payment request failed: ${e.toString()}");
+
+      if (e is SocketException || e is HttpException) {
+        throw TransactionErrorType.noInternetConnection;
+      }
+
+      throw TransactionErrorType.unexpectedError;
     }
   }
 

@@ -93,9 +93,8 @@ class PaymentService {
 
     // Check if the payment data contains a success status
     final bool overallStatus = response['status'] ?? false;
-    final String? dataStatus = response['data']?['status'];
 
-    if (overallStatus && dataStatus == 'success') {
+    if (overallStatus) {
       showSnackbar(
         'Payment completed successfully!',
         context,
@@ -113,6 +112,8 @@ class PaymentService {
         paymentBalance.updatePayment(kshIncrement: amount); // Increment KSH
       } else if (currency == 'NGN') {
         paymentBalance.updatePayment(ngnIncrement: amount); // Increment NGN
+      } else if (currency == 'USD') {
+        paymentBalance.updatePayment(usdIncrement: amount); // Increment USD
       }
 
       editNotifier.updateProfile(

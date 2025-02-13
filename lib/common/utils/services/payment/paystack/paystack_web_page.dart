@@ -1,6 +1,3 @@
-// ignore_for_file: prefer_typing_uninitialized_variables, use_build_context_synchronously
-
-import 'dart:async';
 import 'dart:developer';
 
 import 'package:auto_route/annotations.dart';
@@ -11,51 +8,82 @@ import '../../../../../constants/index.dart';
 import '../../../../components/index.dart';
 import '../../../index.dart';
 import '../../../router/router.gr.dart';
-import 'model/nomba_request_response.dart';
-import 'service/nomba_auth_service.dart';
-import 'service/nomba_payment_service.dart';
+import 'model/paystack_request_response.dart';
+import 'service/paystack_payment_service.dart';
 
 @RoutePage()
-class NombaWebPage extends StatefulWidget {
+class PaystackWebPage extends StatefulWidget {
   final String currency;
   final String email;
   final double amount;
-  final String customerId;
+  final String? plan;
   final TransactionCompletedCallback transactionCompleted;
   final TransactionNotCompletedCallback transactionNotCompleted;
 
-  const NombaWebPage({
+  const PaystackWebPage({
     super.key,
     required this.email,
     required this.currency,
     required this.amount,
-    required this.customerId,
     required this.transactionCompleted,
     required this.transactionNotCompleted,
+    this.plan,
   });
 
   @override
-  State<NombaWebPage> createState() => _NombaWebPageState();
+  State<PaystackWebPage> createState() => _PaystackWebPageState();
 }
 
-class _NombaWebPageState extends State<NombaWebPage> {
-  late final NombaPaymentService _paymentService;
+class _PaystackWebPageState extends State<PaystackWebPage> {
+  late final PaystackPaymentService _paymentService;
   late final String _callbackUrl;
 
   @override
   void initState() {
     super.initState();
-    _paymentService = NombaPaymentService(authService: NombaAuthService());
+    _paymentService = PaystackPaymentService(widget.currency);
     _callbackUrl = _paymentService.callbackUrl;
   }
 
-  Future<NombaRequestResponse> _makePaymentRequest() async {
-    return await _paymentService.makePayment(
-      email: widget.email,
-      customerId: widget.customerId,
-      amount: widget.amount,
-      currency: widget.currency,
-    );
+  Future<PaystackRequestResponse?> _initializePayment() async {
+    try {
+      return await _paymentService.makePayment(
+        email: widget.email,
+        amount: widget.amount,
+        currency: widget.currency,
+        plan: widget.plan,
+      );
+    } on TransactionErrorType catch (e) {
+      widget.transactionNotCompleted(
+        e,
+        "Payment initialization failed",
+      );
+
+      return null;
+    }
+  }
+
+  Future<bool> _checkTransaction(String reference) async {
+    try {
+      final response = await _paymentService.verifyTransaction(reference);
+      return response.status == true && response.data.status == "success";
+    } catch (e) {
+      log("Transaction verification failed: $e");
+      return false;
+    }
+  }
+
+  void _handleTransactionCompletion(String reference) async {
+    final isSuccess = await _checkTransaction(reference);
+
+    if (isSuccess) {
+      widget.transactionCompleted({"status": true});
+    } else {
+      widget.transactionNotCompleted(
+        TransactionErrorType.unexpectedError,
+        "Transaction verification failed",
+      );
+    }
   }
 
   @override
@@ -65,11 +93,10 @@ class _NombaWebPageState extends State<NombaWebPage> {
         color: Colors.white,
         title: 'Payment',
       ),
-      body: FutureBuilder<NombaRequestResponse>(
-        future: _makePaymentRequest(),
+      body: FutureBuilder<PaystackRequestResponse?>(
+        future: _initializePayment(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // Show loading indicator while waiting for response
             return const Center(
               child: AppLoader(color: AppColors.primaryColor, size: 24),
             );
@@ -90,7 +117,7 @@ class _NombaWebPageState extends State<NombaWebPage> {
                   onProgress: (progress) {},
                   onPageFinished: (String url) {
                     if (url.contains(_callbackUrl)) {
-                      widget.transactionCompleted({"status": "success"});
+                      widget.transactionCompleted({"status": true});
                       Navigator.of(context).pop();
                     }
                   },
@@ -102,20 +129,35 @@ class _NombaWebPageState extends State<NombaWebPage> {
                     );
                   },
                   onNavigationRequest: (NavigationRequest request) {
-                    if (request.url.startsWith('https://www.google.com/')) {
+                    final url = request.url;
+
+                    // Define important URLs to check
+                    final importantUrls = {
+                      _callbackUrl,
+                      'https://paystack.co/close',
+                      'https://standard.paystack.co/close'
+                    };
+
+                    // If the URL matches any of these, handle it
+                    if (importantUrls.any(url.contains)) {
+                      _handleTransactionCompletion(
+                        snapshot.data!.data.reference,
+                      );
+
+                      if (context.mounted) Navigator.of(context).pop();
+
                       return NavigationDecision.prevent;
                     }
+
                     return NavigationDecision.navigate;
                   },
                 ),
               )
-              ..loadRequest(Uri.parse(snapshot.data!.data.checkoutLink));
+              ..loadRequest(Uri.parse(snapshot.data!.data.authUrl));
 
-            // Show WebView when payment request is successful
             return WebViewWidget(controller: controller);
           }
 
-          // Fallback UI (shouldn't happen unless data is empty)
           return const Center(
             child: Text('Unexpected error occurred'),
           );
@@ -125,24 +167,24 @@ class _NombaWebPageState extends State<NombaWebPage> {
   }
 }
 
-void navigateToUSDPayment({
+void navigateToPaystackPayment({
   required BuildContext context,
   required String email,
   required String currency,
   required double amount,
-  required String customerId,
   required TransactionCompletedCallback transactionCompleted,
   required TransactionNotCompletedCallback transactionNotCompleted,
+  String? plan,
 }) {
   Nav.push(
     context,
-    NombaWebRoute(
+    PaystackWebRoute(
       email: email,
       currency: currency,
       amount: amount,
-      customerId: customerId,
       transactionCompleted: transactionCompleted,
       transactionNotCompleted: transactionNotCompleted,
+      plan: plan,
     ),
   );
 }

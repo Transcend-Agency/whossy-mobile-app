@@ -289,10 +289,11 @@ enum TransactionErrorType {
   noInternetConnection('Network unavailable. Please try again later.'),
   paymentCancelled('The payment was cancelled by the user.'),
   unexpectedError('An unknown error occurred. Please try again later.'),
-  transactionFailed(
-      'The transaction failed. Please contact support or try again.');
+  transactionFailed('The transaction failed. Please contact support or try again.'),
+  paymentTimeout('The payment request timed out. Please check your connection and try again.'); // New value
 
   const TransactionErrorType(this.message);
 
   final String message;
 }
+

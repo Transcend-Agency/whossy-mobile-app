@@ -47,15 +47,15 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   // Other UI code
   late List<Widget> _pages;
-  int selectedIndex = 1;
+  int selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
     _pages = [
-      const Matching(),
       const Explore(),
+      const Matching(),
       const LikesAndMatch(),
       const Chat(),
       const Profile(),
@@ -145,8 +145,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
         bottomNavBar: CustomBottomAppBar(
           onTabSelected: _selectedTab,
           items: const [
-            BottomNavItem(assetPath: AppAssets.fire, label: "Matching"),
             BottomNavItem(assetPath: AppAssets.globalSearch, label: "Explore"),
+            BottomNavItem(assetPath: AppAssets.fire, label: "Matching"),
             BottomNavItem(assetPath: AppAssets.heart, label: "Likes/Match"),
             BottomNavItem(assetPath: AppAssets.chat, label: "Chat"),
             BottomNavItem(assetPath: AppAssets.user, label: "Profile"),

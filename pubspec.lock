@@ -1178,15 +1178,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
-  pay_with_paystack:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: b8aac26314716426e25252c673ae599b95f7b717
-      resolved-ref: b8aac26314716426e25252c673ae599b95f7b717
-      url: "https://github.com/Transcend-Agency/pay_with_paystack.git"
-    source: git
-    version: "1.0.11"
   permission_handler:
     dependency: "direct main"
     description:

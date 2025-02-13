@@ -56,7 +56,6 @@ dependencies:
   auto_route: ^9.2.2
   flutter_card_swiper: ^7.0.2 # Card swipe functionality
   visibility_detector: ^0.4.0+2
-  # pay_with_paystack: ^1.0.11
   tutorial_coach_mark: ^1.2.12
   rxdart: ^0.27.7
   http: ^1.1.2
@@ -72,17 +71,6 @@ dependencies:
     git:
       url: https://github.com/Transcend-Agency/GeoFlutterFire.git
       ref: 917f7d4d0ae3ad63134f7c945208d7c983c07301
-
-  pay_with_paystack:
-    git:
-      url: https://github.com/Transcend-Agency/pay_with_paystack.git
-      ref: b8aac26314716426e25252c673ae599b95f7b717
-
-
-#  flutter_paystack:
-#    git:
-#      url: https://github.com/Transcend-Agency/flutter_paystack.git
-#      ref: d8f9546acc1797129646a72f62410ebf601115ac
 
 # Development Dependencies
 dev_dependencies:
