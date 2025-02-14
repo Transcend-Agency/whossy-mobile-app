@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 import '../../../../../../env.dart';
 import '../../../../index.dart';
 import '../model/paystack_request_response.dart';
+import '../model/paystack_transaction.dart';
 
 class PaystackPaymentService {
   final String secretKey;
@@ -80,7 +81,7 @@ class PaystackPaymentService {
     }
   }
 
-  Future<dynamic> verifyTransaction(String reference) async {
+  Future<PaystackTransaction> verifyTransaction(String reference) async {
     try {
       final url =
           Uri.parse('https://api.paystack.co/transaction/verify/$reference');
@@ -95,11 +96,10 @@ class PaystackPaymentService {
         const Duration(seconds: 30),
         onTimeout: () => throw TimeoutException("Request timed out."),
       );
-
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         if (responseData['status'] == true) {
-          return responseData;
+          return PaystackTransaction.fromJson(responseData);
         } else {
           throw Exception(
               "Transaction verification failed: ${responseData['message']}");

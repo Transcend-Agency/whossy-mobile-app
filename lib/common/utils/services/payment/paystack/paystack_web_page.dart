@@ -65,8 +65,9 @@ class _PaystackWebPageState extends State<PaystackWebPage> {
 
   Future<bool> _checkTransaction(String reference) async {
     try {
-      final response = await _paymentService.verifyTransaction(reference);
-      return response.status == true && response.data.status == "success";
+      final transaction = await _paymentService.verifyTransaction(reference);
+
+      return transaction.status == true && transaction.data.status == "success";
     } catch (e) {
       log("Transaction verification failed: $e");
       return false;

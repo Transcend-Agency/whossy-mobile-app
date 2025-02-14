@@ -119,7 +119,7 @@ class PlanCard extends StatelessWidget {
                         color: containerColor,
                       ),
                     ),
-                    _line(containerColor),
+                    line(containerColor),
                     addHeight(14),
                   ],
                 );
@@ -136,21 +136,4 @@ class PlanCard extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget _line(Color color) {
-  return Container(
-    margin: EdgeInsets.only(top: 8.r),
-    height: 1, // Height of the divider
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          color,
-          Colors.white
-        ], // Start with full color, end with transparent
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-      ),
-    ),
-  );
 }

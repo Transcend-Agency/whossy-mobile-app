@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
-import 'package:whossy_app/feature/home/tabs/profile/model/credit.dart';
-import 'package:whossy_app/feature/home/tabs/profile/view/widgets/currency_sheet.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
@@ -11,69 +10,99 @@ import '../../../../../../common/utils/services/payment/nomba/nomba_web_page.dar
 import '../../../../../../common/utils/services/payment/paystack/paystack_web_page.dart';
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../../../constants/index.dart';
+import '../../../../../../provider/providers.dart';
 import '../../data/source/subscription_plan_data.dart';
+import '../../model/credit.dart';
+import '../../model/subscription_plan.dart';
+import '../widgets/_.dart';
 import '../widgets/sub_container.dart';
 
-class PremiumPlan extends StatelessWidget {
-  const PremiumPlan({super.key});
+class PremiumPlan extends HookWidget {
+  const PremiumPlan({super.key, required this.userCurrency});
+
+  final ValueNotifier<Currency> userCurrency;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const PlanCard(
-          containerColor: AppColors.premiumContainer,
-          containerShade: AppColors.premiumContainerShade,
-          title: 'Premium Plan',
-          amount: '9.99',
-          showDetails: false,
-          stops: [0, 1],
-        ),
-        addHeight(12),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: premiumPlanData.map((sub) {
+    final selectedPlan = useState<SubscriptionPlan>(subscriptionPlans[0]);
+
+    return ValueListenableBuilder<Currency>(
+      valueListenable: userCurrency,
+      builder: (context, selectedCurrency, _) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            addHeight(4),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  addWidth(14),
+                  ...subscriptionPlans.map(
+                    (plan) => Padding(
+                      padding: EdgeInsets.only(right: 12.r),
+                      child: SubscriptionBilling(
+                        title: "${plan.duration} Plan",
+                        price: plan.getPriceFormatted(selectedCurrency),
+                        discountInfo: plan.discountInfo,
+                        billingCycle: plan.billingCycle,
+                        value: plan,
+                        groupValue: selectedPlan.value,
+                        onChanged: (newPlan) => selectedPlan.value = newPlan!,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14.r),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: premiumPlanData.map((sub) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 6.h),
+                        child: SubscriptionContainer(
+                          title: sub.title,
+                          feature: sub.feature,
+                          chipText: sub.type,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
+            Selector<EditProfileNotifier, bool>(
+              selector: (_, edit) => edit.coreProfile?.isPremium ?? false,
+              builder: (_, isPremium, __) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: SubscriptionContainer(
-                    title: sub.title,
-                    feature: sub.feature,
-                    chipText: sub.type,
+                  padding:
+                      EdgeInsets.only(bottom: 14.r, left: 14.r, right: 14.r),
+                  child: DialogButton(
+                    text: isPremium ? "Cancel Plan" : "Subscribe",
+                    color: AppColors.premiumContainer,
+                    textColor: Colors.white,
+                    onPressed: isPremium
+                        ? () => cancelPlan(context)
+                        : () => pay(
+                              context: context,
+                              currency: selectedCurrency,
+                              selectedPlan: selectedPlan.value,
+                            ),
                   ),
                 );
-              }).toList(),
+              },
             ),
-          ),
-        ),
-        Selector<EditProfileNotifier, bool>(
-          selector: (_, edit) => edit.coreProfile?.isPremium ?? false,
-          builder: (_, isPremium, __) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 14),
-              child: DialogButton(
-                text: isPremium ? "Cancel Plan" : "Subscribe",
-                color: AppColors.premiumContainer,
-                textColor: Colors.white,
-                onPressed: isPremium
-                    ? () => cancelPlan(context)
-                    : () => showCurrencySheet(
-                          context,
-                          onPay: (currency) =>
-                              pay(context: context, currency: currency),
-                        ),
-              ),
-            );
-          },
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
-  // Adjusted method to return Future<bool?>?
   Future<bool?>? cancelPlan(BuildContext context) async {
     bool? result = await showConfirmationDialog(
       context,
@@ -88,7 +117,6 @@ class PremiumPlan extends StatelessWidget {
     if (result && context.mounted) {
       final editNotifier = context.read<EditProfileNotifier>();
       final paymentService = PaymentService(editNotifier);
-
       paymentService.onPremiumUnsubscribe(context);
     }
 
@@ -98,25 +126,19 @@ class PremiumPlan extends StatelessWidget {
   Future<void> pay({
     required BuildContext context,
     required Currency currency,
+    required SubscriptionPlan selectedPlan,
   }) async {
-    if (currency.name == 'KES') {
-      showSnackbar(
-        '${currency.name} Payment is coming soon',
-        context,
-        snackBarType: SnackbarType.warning,
-      );
-      return;
-    }
-
     final editNotifier = context.read<EditProfileNotifier>();
     final paymentService = PaymentService(editNotifier);
 
-    if (currency.name == 'USD') {
+    double amount = selectedPlan.getPrice(currency); // Dynamically set price
+
+    if (currency == Currency.USD) {
       navigateToUSDPayment(
         context: context,
         email: editNotifier.coreProfile!.email!,
         currency: currency.name,
-        amount: 10,
+        amount: amount,
         customerId: FirebaseAuth.instance.currentUser!.uid,
         transactionCompleted: (response) => paymentService.onPremiumSuccess(
           context,
@@ -124,16 +146,16 @@ class PremiumPlan extends StatelessWidget {
           currency: currency.name,
         ),
         transactionNotCompleted: (errType, reason) =>
-            paymentService.onCreditFailure(context, errType.message, reason),
+            paymentService.onPremiumFailure(context, errType.message, reason),
       );
     }
 
-    if (currency.name == 'NGN') {
+    if (currency == Currency.NGN || currency == Currency.KES) {
       navigateToPaystackPayment(
         context: context,
         email: editNotifier.coreProfile!.email!,
         currency: currency.name,
-        amount: 15000,
+        amount: amount,
         transactionCompleted: (response) => paymentService.onPremiumSuccess(
           context,
           response: response,

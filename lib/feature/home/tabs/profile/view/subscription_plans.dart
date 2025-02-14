@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/components/index.dart';
 
+import '../model/credit.dart';
 import 'plans/free_plan.dart';
 import 'plans/premium_plan.dart';
+import 'widgets/_.dart';
 
 @RoutePage()
 class SubscriptionPlans extends StatefulWidget {
@@ -21,35 +23,51 @@ class SubscriptionPlans extends StatefulWidget {
 }
 
 class _SubscriptionPlansState extends State<SubscriptionPlans> {
-  late PageController _pageController;
-  late List<Widget> _pages;
+  late final ValueNotifier<Currency> userCurrency;
+  late final PageController _pageController;
+  late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
-
+    userCurrency = ValueNotifier(Currency.USD);
     _pageController = PageController(initialPage: widget.initialPage);
-
     _pages = [
       const FreePlan(),
-      const PremiumPlan(),
+      PremiumPlan(userCurrency: userCurrency),
     ];
   }
 
   @override
   void dispose() {
-    super.dispose();
-
+    userCurrency.dispose();
     _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         addBarHeight: 4,
         title: 'Subscription Plans',
         color: Colors.white,
+        action: Padding(
+          padding: EdgeInsets.only(right: 20.r),
+          child: ValueListenableBuilder<Currency>(
+            valueListenable: userCurrency,
+            builder: (context, currency, _) {
+              return CurrencyDropdown(
+                selectedCurrency: currency,
+                onCurrencyChanged: (newCurrency) {
+                  if (newCurrency != null) {
+                    userCurrency.value = newCurrency;
+                  }
+                },
+              );
+            },
+          ),
+        ),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -60,10 +78,7 @@ class _SubscriptionPlansState extends State<SubscriptionPlans> {
               itemCount: _pages.length,
               onPageChanged: (page) {},
               itemBuilder: (_, index) {
-                return Padding(
-                  padding: EdgeInsets.only(left: 14.r, right: 14.r, top: 16.r),
-                  child: _pages[index],
-                );
+                return _pages[index];
               },
             ),
           ),

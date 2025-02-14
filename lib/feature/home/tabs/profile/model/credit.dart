@@ -1,12 +1,14 @@
 // ignore_for_file: constant_identifier_names
-enum Currency {
-  USD("Pay using Dollars"),
-  NGN("Pay using Naira"),
-  KES("Pay using Kenyan Shillings");
 
-  const Currency(this.paymentText);
+enum Currency {
+  USD("Pay using Dollars", "\$"),
+  NGN("Pay using Naira", "Ngn"),
+  KES("Pay using Kenyan Shillings", "KSh");
+
+  const Currency(this.paymentText, this.symbol);
 
   final String paymentText;
+  final String symbol;
 }
 
 class Credit {

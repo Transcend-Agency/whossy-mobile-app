@@ -44,7 +44,7 @@ class GenericTile<T> extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
               color: isSelected
                   ? selectedBorderColor ?? AppColors.primaryColor

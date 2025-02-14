@@ -9,17 +9,21 @@ class SubscriptionContainer extends StatelessWidget {
   final String title;
   final String feature;
   final String chipText;
+  final bool isTappable;
+  final VoidCallback? onTap;
 
   const SubscriptionContainer({
     super.key,
     required this.title,
     required this.feature,
     required this.chipText,
+    this.isTappable = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final content = Container(
       padding: EdgeInsets.only(left: 11.r, right: 11.r, top: 6.r, bottom: 10.r),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.outlinedColor),
@@ -32,6 +36,7 @@ class SubscriptionContainer extends StatelessWidget {
             title,
             style: TextStyles.profileHead.copyWith(
               fontSize: AppUtils.scale(12.sp) ?? 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
           addHeight(6),
@@ -80,5 +85,14 @@ class SubscriptionContainer extends StatelessWidget {
         ],
       ),
     );
+
+    if (isTappable) {
+      return GestureDetector(
+        onTap: onTap,
+        child: content,
+      );
+    }
+
+    return content;
   }
 }
