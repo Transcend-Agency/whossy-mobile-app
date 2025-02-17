@@ -40,7 +40,7 @@ class ChatRoomBlur extends HookWidget {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                       child: Container(
-                        color: Colors.black.withOpacity(0.25),
+                        color: Colors.black.withOpacity(0.35),
                         padding: pagePadding,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -49,6 +49,7 @@ class ChatRoomBlur extends HookWidget {
                               'This chat has not been unlocked   🔐',
                               style: TextStyles.profileHead.copyWith(
                                 color: AppColors.inputBackGround,
+                                fontSize: 20,
                               ),
                             ),
                             Padding(
@@ -58,22 +59,24 @@ class ChatRoomBlur extends HookWidget {
                                 textAlign: TextAlign.center,
                                 style: TextStyles.profileHead.copyWith(
                                   color: AppColors.inputBackGround,
+                                  fontSize: 20,
                                 ),
                               ),
                             ),
                             Text(
                               hasCredits
-                                  ? 'Credit balance: $credits'
+                                  ? '🪙 Credit balance: $credits'
                                   : 'You have no credits',
                               style: TextStyles.profileHead.copyWith(
                                 color: AppColors.inputBackGround,
+                                fontSize: 20,
                               ),
                             ),
                             addHeight(20),
                             SizedBox(
-                              width: 180,
-                              height: 50,
+                              width: 160,
                               child: AppButton(
+                                gradient: AppColors.useCredits,
                                 onPress: isLoading.value
                                     ? null
                                     : hasCredits
@@ -90,7 +93,22 @@ class ChatRoomBlur extends HookWidget {
                                 text:
                                     hasCredits ? 'Use Credits' : 'Buy Credits',
                                 loading: isLoading.value,
-                                color: Colors.green,
+                                textStyle: TextStyles.profileHead.copyWith(
+                                  color: AppColors.inputBackGround,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            addHeight(15),
+                            SizedBox(
+                              width: 230,
+                              child: AppButton(
+                                gradient: AppColors.subscribeToPremium,
+                                onPress: () => Nav.push(
+                                  context,
+                                  SubscriptionPlans(initialPage: 1),
+                                ),
+                                text: 'Subscribe to Premium',
                                 textStyle: TextStyles.profileHead.copyWith(
                                   color: AppColors.inputBackGround,
                                   fontSize: 18,

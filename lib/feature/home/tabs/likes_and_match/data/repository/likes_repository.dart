@@ -89,58 +89,78 @@ class LikesRepository {
     await _dislikes.doc(uid).set(dislikeData);
   }
 
-  Stream<List<LikedUserProfile>> getLikersWithProfiles(
-    List<String> blockedIds,
-  ) {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
+  Stream<List<LikedUserProfile>> getProfilesOfUsersWhoLikedMe(
+      List<String> blockedIds) {
+    return _getFilteredProfiles(
+      myUserId: FirebaseAuth.instance.currentUser!.uid,
+      primaryFilter: 'liked_id', // Users who liked me
+      secondaryFilter: 'liker_id', // Users I liked
+      blockedIds: blockedIds,
+      markAsLiked: false, // Since they liked me
+    );
+  }
 
-    // Stream of likers (users who liked the current user)
-    final likersStream = _likes
-        .where('liked_id', isEqualTo: userId)
+  Stream<List<LikedUserProfile>> getProfilesOfUsersILiked(
+      List<String> blockedIds) {
+    return _getFilteredProfiles(
+      myUserId: FirebaseAuth.instance.currentUser!.uid,
+      primaryFilter: 'liker_id', // Users I liked
+      secondaryFilter: 'liked_id', // Users who liked me
+      blockedIds: blockedIds,
+      markAsLiked: true, // Since I liked them
+    );
+  }
+
+  /// Fetches user profiles while excluding mutual matches
+  Stream<List<LikedUserProfile>> _getFilteredProfiles({
+    required String myUserId,
+    required String primaryFilter,
+    required String secondaryFilter,
+    required List<String> blockedIds,
+    required bool markAsLiked,
+  }) {
+    // Stream of primary filtered users
+    final primaryStream = _likes
+        .where(primaryFilter, isEqualTo: myUserId)
         .snapshots()
         .map((snapshot) =>
-            snapshot.docs.map((doc) => doc['liker_id'] as String).toSet());
+            snapshot.docs.map((doc) => doc[secondaryFilter] as String).toSet());
 
-    // Stream of liked users (users that the current user liked)
-    final likedStream = _likes
-        .where('liker_id', isEqualTo: userId)
+    // Stream of secondary filtered users
+    final secondaryStream = _likes
+        .where(secondaryFilter, isEqualTo: myUserId)
         .snapshots()
         .map((snapshot) =>
-            snapshot.docs.map((doc) => doc['liked_id'] as String).toSet());
+            snapshot.docs.map((doc) => doc[primaryFilter] as String).toSet());
 
-    // Combine the two streams to get likerIds and likedIds
+    // Combine both streams
     final combinedIdsStream = Rx.combineLatest2(
-      likersStream,
-      likedStream,
-      (likerIds, likedIds) => {
-        'likerIds': likerIds,
-        'likedIds': likedIds,
+      primaryStream,
+      secondaryStream,
+      (primaryIds, secondaryIds) => {
+        'primaryIds': primaryIds,
+        'secondaryIds': secondaryIds,
       },
     );
 
-    // Use asyncMap to handle the async profile fetching
     return combinedIdsStream.asyncMap(
       (idsMap) async {
-        final likerIds = idsMap['likerIds']!;
-        final likedIds = idsMap['likedIds']!;
+        final primaryIds = idsMap['primaryIds']!;
+        final secondaryIds = idsMap['secondaryIds']!;
 
-        // Exclude mutual likes
-        final filteredLikerIds = likerIds.difference(likedIds);
+        // Exclude mutual matches
+        final filteredIds = primaryIds.difference(secondaryIds);
 
-        // Fetch the profiles of users who liked the current user (excluding mutual likes)
-        final allProfiles = await _userRepository.getUserProfilesInBatches(
-          userIds: filteredLikerIds.toList(),
+        // Fetch user profiles
+        final profiles = await _userRepository.getUserProfilesInBatches(
+          userIds: filteredIds.toList(),
           blockedIds: blockedIds,
           settings: excludeSettings,
         );
 
-        return allProfiles
-            .map(
-              (profile) => LikedUserProfile(
-                profile: profile,
-                isLiked: false,
-              ),
-            )
+        return profiles
+            .map((profile) =>
+                LikedUserProfile(profile: profile, isLiked: markAsLiked))
             .toList();
       },
     );

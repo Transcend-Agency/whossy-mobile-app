@@ -128,7 +128,7 @@ class SubscriptionBilling<T> extends StatelessWidget {
               ],
             ),
 
-            SizedBox(height: 6.h),
+            addHeight(6),
 
             // Billing cycle text
             Text(
@@ -136,6 +136,7 @@ class SubscriptionBilling<T> extends StatelessWidget {
               style: TextStyles.hintThemeText.copyWith(
                 fontWeight: FontWeight.w400,
                 fontSize: AppUtils.scale(10.sp) ?? 13.5.sp,
+                color: Colors.black87,
               ),
             ),
           ],

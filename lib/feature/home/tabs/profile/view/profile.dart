@@ -166,7 +166,7 @@ class Profile extends StatelessWidget {
                       containerColor: AppColors.premiumContainer,
                       containerShade: AppColors.premiumContainerShade,
                       title: 'Premium Plan',
-                      amount: '9.99',
+                      amount: '10',
                       benefits: AppStrings.premiumPricing,
                       onSeeAllFeatures: () => Nav.push(
                         context,

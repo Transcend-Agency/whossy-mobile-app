@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
-import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/likes.dart';
+import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/liked_me.dart';
 import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/matches.dart';
 
 import '../../../../../common/components/index.dart';
@@ -9,6 +9,7 @@ import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/index.dart';
 import '../../../../../common/utils/router/router.gr.dart';
 import '../../../notifications/view/widgets/notification_bell.dart';
+import 'widgets/likes.dart';
 
 class LikesAndMatch extends StatefulWidget {
   const LikesAndMatch({super.key});
@@ -31,8 +32,9 @@ class _LikesAndMatchState extends State<LikesAndMatch>
     _pageController = PageController();
 
     _pages = [
-      const Likes(),
+      const LikedMe(),
       const Matches(),
+      const Likes(),
     ];
   }
 
@@ -75,8 +77,9 @@ class _LikesAndMatchState extends State<LikesAndMatch>
               ),
               child: Row(
                 children: [
-                  _headerText(0, 'Likes'),
-                  _headerText(1, 'Match'),
+                  _headerText(0, 'Liked Me'),
+                  _headerText(1, 'Matches'),
+                  _headerText(2, 'Likes'),
                 ],
               ),
             ),

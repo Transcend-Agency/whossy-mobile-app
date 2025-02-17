@@ -76,7 +76,7 @@ class Credits extends HookWidget {
                     Opacity(
                       opacity: 0.9,
                       child: Text(
-                        'Buy credits to boost profile and get more visibility on Whossy',
+                        "Unlock conversations with Whossy credits!",
                         textAlign: TextAlign.center,
                         style: TextStyles.hintThemeText.copyWith(
                           fontWeight: FontWeight.w500,

@@ -6,8 +6,12 @@ import '../repository/likes_repository.dart';
 class LikesNotifier extends ChangeNotifier {
   final _likesRepository = LikesRepository();
 
-  Stream<List<LikedUserProfile>> dataStream(List<String>? blockedIds) =>
-      _likesRepository.getLikersWithProfiles(
-        blockedIds ?? [],
-      );
+  /// Stream of users who liked the current user (excluding mutual matches)
+  Stream<List<LikedUserProfile>> usersWhoLikedMeStream(
+          List<String>? blockedIds) =>
+      _likesRepository.getProfilesOfUsersWhoLikedMe(blockedIds ?? []);
+
+  /// Stream of users the current user has liked (excluding mutual matches)
+  Stream<List<LikedUserProfile>> usersILikedStream(List<String>? blockedIds) =>
+      _likesRepository.getProfilesOfUsersILiked(blockedIds ?? []);
 }

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:whossy_app/provider/providers.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../constants/index.dart';
-import '../../../../../../provider/providers.dart';
 import '../../../../edit_profile/model/core_profile.dart';
 import '../../../explore/model/liked_user_profile.dart';
 import '../../model/likes_match_data.dart';
@@ -17,13 +17,13 @@ import 'loading_grid_view.dart';
 import 'profile_view.dart';
 import 'profile_view_stack.dart';
 
-class Likes extends HookWidget {
-  const Likes({super.key});
+class LikedMe extends HookWidget {
+  const LikedMe({super.key});
 
   final double height = 142;
   final double width = 135;
 
-  static const name = 'likes';
+  static const name = 'likedMe';
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,8 @@ class Likes extends HookWidget {
     return Selector2<LikesNotifier, EditProfileNotifier, LikesMatchData>(
       selector: (_, likes, edit) => LikesMatchData(
         user: edit.coreProfile!,
-        profileStream: likes.usersILikedStream(edit.coreProfile!.blockedIds),
+        profileStream:
+            likes.usersWhoLikedMeStream(edit.coreProfile!.blockedIds),
       ),
       builder: (_, result, __) {
         return StreamBuilder<List<LikedUserProfile>>(
@@ -78,7 +79,7 @@ class Likes extends HookWidget {
             addHeight(ScreenUtil().screenHeight * 0.3, isRsv: false),
             const EmptyDataBox(
               image: AppAssets.noLikes,
-              text: 'You haven\'t liked anyone yet ',
+              text: 'No likes yet',
             ),
           ],
         );
@@ -94,7 +95,7 @@ class Likes extends HookWidget {
                     child: ProfileViewStack(
                       imageUrl: profile.profilePics![0],
                       likesCount: likesCount,
-                      labelText: 'Likes',
+                      labelText: 'Liked Me',
                     ),
                   )
                 : Container(
@@ -122,7 +123,7 @@ class Likes extends HookWidget {
                             child: ProfileViewStack(
                               imageUrl: profile.profilePics![0],
                               likesCount: likesCount,
-                              labelText: 'Likes',
+                              labelText: 'Liked Me',
                             ),
                           ),
                         ),
@@ -133,7 +134,7 @@ class Likes extends HookWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Upgrade to Premium and Chat with Likes.",
+                                "Go Premium to Chat with Those Who Liked You.",
                                 style: TextStyles.title.copyWith(
                                     fontSize: 20, color: Colors.white),
                                 textAlign: TextAlign.left,
@@ -164,14 +165,14 @@ class Likes extends HookWidget {
                       ],
                     ),
                   ),
-            LikesGridView(pageName: Likes.name, data: data),
+            LikesGridView(pageName: LikedMe.name, data: data),
           ],
         );
       }
     } else {
       return const EmptyDataBox(
         image: AppAssets.noLikes,
-        text: 'You haven\'t liked anyone yet ',
+        text: 'No likes yet',
       );
     }
   }

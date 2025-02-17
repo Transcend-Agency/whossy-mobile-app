@@ -129,4 +129,19 @@ class AppColors {
       Colors.black.withOpacity(0.5),
     ],
   );
+
+  static const useCredits = LinearGradient(
+    colors: [AppColors.premiumContainer, AppColors.sbErrorBorderColor],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const subscribeToPremium = LinearGradient(
+    colors: [
+      AppColors.sbErrorBorderColor,
+      AppColors.premiumContainer,
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }

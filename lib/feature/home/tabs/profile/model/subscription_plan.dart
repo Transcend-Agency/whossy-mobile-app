@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import 'credit.dart';
 
 class SubscriptionPlan {
@@ -18,7 +20,10 @@ class SubscriptionPlan {
   double getPrice(Currency currency) => prices[currency] ?? 0.0;
 
   String getPriceFormatted(Currency currency) {
-    return "${currency.symbol} ${getPrice(currency).toStringAsFixed(0)}";
+    final price = getPrice(currency);
+    final formatter = NumberFormat('#,###');
+
+    return "${currency.symbol} ${formatter.format(price)}";
   }
 
   // Calculate the monthly cost
@@ -56,7 +61,7 @@ class SubscriptionPlan {
 
 final subscriptionPlans = [
   SubscriptionPlan(
-    duration: "1 Month",
+    duration: "Monthly",
     months: 1,
     prices: {
       Currency.USD: 10.00,
