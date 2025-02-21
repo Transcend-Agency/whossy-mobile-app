@@ -30,40 +30,48 @@ final credits = [
     quantity: 1,
     prices: {
       Currency.USD: 2.00,
-      Currency.NGN: 1000.00,
-      Currency.KES: 100.00,
+      Currency.NGN: 500.00,
+      Currency.KES: 50.00,
     },
   ),
   Credit(
     quantity: 5,
     prices: {
       Currency.USD: 9.00,
-      Currency.NGN: 4500.00,
-      Currency.KES: 450.00,
+      Currency.NGN: 2000.00,
+      Currency.KES: 200.00,
     },
   ),
   Credit(
     quantity: 10,
     prices: {
-      Currency.USD: 17.00,
-      Currency.NGN: 8500.00,
-      Currency.KES: 850.00,
+      Currency.USD: 15.00,
+      Currency.NGN: 4000.00,
+      Currency.KES: 400.00,
     },
   ),
   Credit(
     quantity: 20,
     prices: {
-      Currency.USD: 33.00,
-      Currency.NGN: 16500.00,
-      Currency.KES: 1650.00,
+      Currency.USD: 25.00,
+      Currency.NGN: 7000.00,
+      Currency.KES: 700.00,
+    },
+  ),
+  Credit(
+    quantity: 50,
+    prices: {
+      Currency.USD: 50.00,
+      Currency.NGN: 15000.00,
+      Currency.KES: 1500.00,
     },
   ),
   Credit(
     quantity: 100,
     prices: {
-      Currency.USD: 150.00,
-      Currency.NGN: 80000.00,
-      Currency.KES: 8000.00,
+      Currency.USD: 80.00,
+      Currency.NGN: 25000.00,
+      Currency.KES: 2000.00,
     },
   ),
 ];

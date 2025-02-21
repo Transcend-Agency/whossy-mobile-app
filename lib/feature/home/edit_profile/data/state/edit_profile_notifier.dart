@@ -323,7 +323,7 @@ class EditProfileNotifier extends ChangeNotifier {
       handleFirebaseError(e, showSnackbar);
     } else {
       showSnackbar(e is FailedUploadException
-          ? (e as dynamic).message
+          ? (e as dynamic).title
           : AppStrings.errorUnknown);
       log(e.toString());
     }

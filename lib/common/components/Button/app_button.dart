@@ -12,10 +12,10 @@ class AppButton extends StatelessWidget {
   final Color? color;
   final double height;
   final bool loading;
-  final String? text; // Change to nullable
+  final String? text;
   final Widget? child;
   final TextStyle? textStyle;
-  final LinearGradient? gradient; // New gradient parameter
+  final LinearGradient? gradient;
 
   const AppButton({
     super.key,
@@ -23,45 +23,51 @@ class AppButton extends StatelessWidget {
     this.color,
     this.height = 46,
     this.loading = false,
-    this.text, // Change to nullable
+    this.text,
     this.child,
     this.textStyle,
-    this.gradient, // Gradient parameter
+    this.gradient,
   }) : assert(text == null || child == null,
             'You cannot provide both text and child. Please provide either one.');
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: gradient,
-          color: gradient == null ? (color ?? AppColors.buttonColor) : null,
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: MaterialButton(
-          height: height.h,
-          onPressed: loading || onPress == null ? null : onPress,
-          textColor: Colors.white,
-          elevation: 0,
-          highlightElevation: 0,
-          shape: circularBorder,
-          disabledColor: gradient != null
-              ? null
-              : (color ?? AppColors.buttonColor).withOpacity(0.8),
-          child: loading
-              ? const AppLoader()
-              : child ??
-                  Text(
-                    text ?? '',
-                    style: textStyle ??
-                        TextStyles.buttonText.copyWith(
-                          fontSize: AppUtils.scale(18),
-                        ),
-                  ),
-        ),
-      ),
+    final button = MaterialButton(
+      height: height.h,
+      onPressed: loading || onPress == null ? null : onPress,
+      color: gradient == null ? (color ?? AppColors.buttonColor) : null,
+      textColor: Colors.white,
+      elevation: 0,
+      highlightElevation: 0,
+      shape: circularBorder,
+      disabledColor: gradient != null
+          ? null
+          : (color ?? AppColors.buttonColor).withOpacity(0.8),
+      child: loading
+          ? const AppLoader()
+          : child ??
+              Text(
+                text ?? '',
+                style: textStyle ??
+                    TextStyles.buttonText.copyWith(
+                      fontSize: AppUtils.scale(18),
+                    ),
+              ),
     );
+
+    if (gradient != null) {
+      return SizedBox(
+        width: double.infinity,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: button,
+        ),
+      );
+    }
+
+    return SizedBox(width: double.infinity, child: button);
   }
 }

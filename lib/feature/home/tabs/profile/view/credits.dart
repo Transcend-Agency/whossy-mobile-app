@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
 
@@ -109,7 +110,7 @@ class Credits extends HookWidget {
                         children: [
                           addHeight(3),
                           Text(
-                            '${quantity.getPrice(userCurrency.value).round()} ${userCurrency.value.toString().split('.').last}',
+                            formatPrice(quantity, userCurrency.value),
                             style: TextStyles.profileHead.copyWith(
                               fontSize: AppUtils.scale(12.sp) ?? 15,
                               color: Colors.black87,
@@ -154,6 +155,12 @@ class Credits extends HookWidget {
         ),
       ),
     );
+  }
+
+  /// Helper method to format the price with commas
+  String formatPrice(Credit quantity, Currency userCurrency) {
+    final price = quantity.getPrice(userCurrency).round();
+    return '${NumberFormat('#,##0').format(price)} ${userCurrency.toString().split('.').last}';
   }
 
   Future<void> pay({

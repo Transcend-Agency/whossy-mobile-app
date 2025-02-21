@@ -104,9 +104,10 @@ class _PaystackWebPageState extends State<PaystackWebPage> {
           }
 
           if (snapshot.hasError) {
-            log('Error: ${snapshot.error}');
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
+            log('Error with Paystack Payment Page: ${snapshot.error}');
+
+            return const BadNetworkDialog(
+              subtitle: AppStrings.deviceOffline,
             );
           }
 
@@ -159,8 +160,8 @@ class _PaystackWebPageState extends State<PaystackWebPage> {
             return WebViewWidget(controller: controller);
           }
 
-          return const Center(
-            child: Text('Unexpected error occurred'),
+          return const BadNetworkDialog(
+            subtitle: AppStrings.errorUnknown,
           );
         },
       ),

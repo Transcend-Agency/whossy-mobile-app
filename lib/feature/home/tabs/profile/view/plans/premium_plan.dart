@@ -76,9 +76,16 @@ class PremiumPlan extends HookWidget {
                 ),
               ),
             ),
-            Selector<EditProfileNotifier, bool>(
-              selector: (_, edit) => edit.coreProfile?.isPremium ?? false,
-              builder: (_, isPremium, __) {
+            Selector2<EditProfileNotifier, ConnectivityNotifier,
+                Map<String, bool>>(
+              selector: (_, edit, connection) => {
+                "isPremium": edit.coreProfile?.isPremium ?? false,
+                "isConnected": connection.isConnected,
+              },
+              builder: (_, values, __) {
+                final isPremium = values["isPremium"]!;
+                final isConnected = values["isConnected"]!;
+
                 return Padding(
                   padding:
                       EdgeInsets.only(bottom: 14.r, left: 14.r, right: 14.r),
@@ -86,17 +93,23 @@ class PremiumPlan extends HookWidget {
                     text: isPremium ? "Cancel Plan" : "Subscribe",
                     color: AppColors.premiumContainer,
                     textColor: Colors.white,
-                    onPressed: isPremium
-                        ? () => cancelPlan(context)
-                        : () => pay(
-                              context: context,
-                              currency: selectedCurrency,
-                              selectedPlan: selectedPlan.value,
-                            ),
+                    onPressed: () {
+                      if (isPremium) {
+                        cancelPlan(context);
+                      } else if (!isConnected) {
+                        showSnackbar(AppStrings.deviceOffline, context);
+                      } else {
+                        pay(
+                          context: context,
+                          currency: selectedCurrency,
+                          selectedPlan: selectedPlan.value,
+                        );
+                      }
+                    },
                   ),
                 );
               },
-            ),
+            )
           ],
         );
       },

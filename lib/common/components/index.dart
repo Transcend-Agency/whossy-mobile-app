@@ -29,6 +29,7 @@ export '/common/components/Chip/app_chip.dart';
 export '/common/components/Chip/gender_chip.dart';
 export '/common/components/Chip/gradient_chip.dart';
 export '/common/components/Chip/preference_chip.dart';
+export '/common/components/Dialog/bad_network_dialog.dart';
 export '/common/components/Dialog/confirmation_dialog.dart';
 export '/common/components/Dialog/google_loading_dialog.dart';
 export '/common/components/Divider/app_divider.dart';

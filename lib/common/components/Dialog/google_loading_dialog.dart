@@ -49,8 +49,6 @@ class _GoogleLoadingDialogState extends State<GoogleLoadingDialog>
         AppAssets.googleLoading,
         controller: _controller,
         onLoaded: onLoaded,
-        // height: 500,
-        //  width: 500,
       ),
     );
   }

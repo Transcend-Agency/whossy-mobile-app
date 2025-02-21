@@ -8,8 +8,8 @@ import 'package:whossy_app/common/components/index.dart';
 import '../../../../constants/index.dart';
 import '../../../../provider/providers.dart';
 import '../model/app_notification.dart';
-import 'widgets/_.dart';
 import 'widgets/notification_bell.dart';
+import 'widgets/notification_tile.dart';
 
 @RoutePage()
 class NotificationScreen extends StatelessWidget {
@@ -76,10 +76,10 @@ class NotificationScreen extends StatelessWidget {
       );
     } else if (snapshot.hasError) {
       log('Error fetching notifications: ${snapshot.error}');
-      return const Text(
-        'Sorry, try again later',
+
+      return const BadNetworkDialog(
         key: ValueKey('error'),
-      ); //
+      );
     } else {
       return const AppLoader(
         key: ValueKey('loading'),

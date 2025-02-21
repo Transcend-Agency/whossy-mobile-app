@@ -76,9 +76,10 @@ class _NombaWebPageState extends State<NombaWebPage> {
           }
 
           if (snapshot.hasError) {
-            log('Error: ${snapshot.error}');
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
+            log('Error with Nomba Payment Page: ${snapshot.error}');
+
+            return const BadNetworkDialog(
+              subtitle: AppStrings.deviceOffline,
             );
           }
 
@@ -116,8 +117,8 @@ class _NombaWebPageState extends State<NombaWebPage> {
           }
 
           // Fallback UI (shouldn't happen unless data is empty)
-          return const Center(
-            child: Text('Unexpected error occurred'),
+          return const BadNetworkDialog(
+            subtitle: AppStrings.errorUnknown,
           );
         },
       ),

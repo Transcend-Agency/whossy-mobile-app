@@ -163,7 +163,7 @@ class SignUpNotifier extends ChangeNotifier {
       onAuthenticate();
     } on Exception catch (e) {
       if (e is UnregisteredEmailException || e is RegisteredEmailException) {
-        showSnackbar((e as dynamic).message);
+        showSnackbar((e as dynamic).title);
       } else {
         showSnackbar(AppStrings.errorUnknown);
         log(e.toString());

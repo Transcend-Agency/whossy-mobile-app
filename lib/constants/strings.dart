@@ -126,6 +126,8 @@ class AppStrings {
 
   // Error Messages
   static const String errorEmailInUse = 'Account already exists';
+  static const String errorDataFetch =
+      'We encountered an error while trying to load your data';
   static const String errorInvalidEmail = 'The email address is not valid.';
   static const String errorInvalidCode = 'Invalid code';
   static const String errorOperationNotAllowed =
