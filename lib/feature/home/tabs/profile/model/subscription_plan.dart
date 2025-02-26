@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 
+import '../../../../../env.dart';
 import 'credit.dart';
 
 class SubscriptionPlan {
@@ -8,6 +9,7 @@ class SubscriptionPlan {
   final Map<Currency, double> prices;
   final String discountInfo;
   final String billingCycle;
+  final Map<Currency, String> planCodes; // New field for Paystack plan codes
 
   SubscriptionPlan({
     required this.duration,
@@ -15,6 +17,7 @@ class SubscriptionPlan {
     required this.prices,
     required this.discountInfo,
     required this.billingCycle,
+    required this.planCodes,
   });
 
   double getPrice(Currency currency) => prices[currency] ?? 0.0;
@@ -26,26 +29,22 @@ class SubscriptionPlan {
     return "${currency.symbol} ${formatter.format(price)}";
   }
 
-  // Calculate the monthly cost
-  double getMonthlyCost(Currency currency) {
-    return getPrice(currency) / months;
+  double getMonthlyBillingAmount(Currency currency) {
+    final totalPrice = getPrice(currency);
+    return months > 0 ? totalPrice / months : 0.0;
   }
 
-  // Format monthly price
-  String getMonthlyPriceFormatted(Currency currency) {
-    return "${currency.symbol} ${getMonthlyCost(currency).toStringAsFixed(2)} / mo";
+  String getMonthlyRate(Currency currency) {
+    double amount = getMonthlyBillingAmount(currency);
+    final formatter = NumberFormat('#,###.##');
+
+    String formattedAmount = formatter.format(amount);
+
+    return '${currency.symbol} $formattedAmount / mo';
   }
 
-  // Calculate savings percentage compared to 1-month plan
-  double getSavingsPercentage(Currency currency) {
-    double oneMonthPrice = subscriptionPlans[0].getPrice(currency);
-    if (oneMonthPrice == 0.0) return 0.0; // Avoid division by zero
-
-    double totalIfPaidMonthly = oneMonthPrice * months;
-    double actualPrice = getPrice(currency);
-
-    return ((totalIfPaidMonthly - actualPrice) / totalIfPaidMonthly) * 100;
-  }
+  // Get the Paystack plan code for the given currency
+  String? getPlanCode(Currency currency) => planCodes[currency];
 
   @override
   String toString() {
@@ -54,7 +53,8 @@ class SubscriptionPlan {
         '  months: $months,\n'
         '  prices: $prices,\n'
         '  discountInfo: $discountInfo,\n'
-        '  billingCycle: $billingCycle\n'
+        '  billingCycle: $billingCycle,\n'
+        '  planCodes: $planCodes\n'
         ') \n';
   }
 }
@@ -70,6 +70,9 @@ final subscriptionPlans = [
     },
     discountInfo: "Best for trial",
     billingCycle: "Billed monthly",
+    planCodes: {
+      Currency.NGN: Env.paystackPlanCodeNgnMonthly,
+    },
   ),
   SubscriptionPlan(
     duration: "3 Months",
@@ -80,7 +83,10 @@ final subscriptionPlans = [
       Currency.KES: 2000.00,
     },
     discountInfo: "Save 15%",
-    billingCycle: "Billed every 3 months",
+    billingCycle: "billed quarterly",
+    planCodes: {
+      Currency.NGN: Env.paystackPlanCodeNgn3Months,
+    },
   ),
   SubscriptionPlan(
     duration: "6 Months",
@@ -91,7 +97,10 @@ final subscriptionPlans = [
       Currency.KES: 3500.00,
     },
     discountInfo: "Save 15%",
-    billingCycle: "Billed every 6 months",
+    billingCycle: "billed biannually",
+    planCodes: {
+      Currency.NGN: Env.paystackPlanCodeNgn6Months,
+    },
   ),
   SubscriptionPlan(
     duration: "1 Year",
@@ -102,6 +111,9 @@ final subscriptionPlans = [
       Currency.KES: 6000.00,
     },
     discountInfo: "Save 25%",
-    billingCycle: "Billed yearly",
+    billingCycle: "billed annually",
+    planCodes: {
+      Currency.NGN: Env.paystackPlanCodeNgnYearly,
+    },
   ),
 ];

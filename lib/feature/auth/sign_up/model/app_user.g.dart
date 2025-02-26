@@ -40,6 +40,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       geography: AppUtils.geographyFromJson(
           json['geography'] as Map<String, dynamic>?),
       creditBalance: (json['credit_balance'] as num?)?.toInt() ?? 0,
+      currentPlan: (json['current_plan'] as num?)?.toInt(),
       blockedIds: (json['blockedIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -85,6 +86,7 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   writeNotNull('credit_balance', instance.creditBalance);
   writeNotNull('face_verification',
       FaceVerification.faceVerificationToJson(instance.faceVerification));
+  writeNotNull('current_plan', instance.currentPlan);
   return val;
 }
 

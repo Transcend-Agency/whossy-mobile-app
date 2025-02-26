@@ -4,7 +4,9 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/utils/router/router.gr.dart';
 
+import '../../../../common/utils/index.dart';
 import '../../../../constants/index.dart';
 import '../../../../provider/providers.dart';
 import '../model/app_notification.dart';
@@ -14,6 +16,8 @@ import 'widgets/notification_tile.dart';
 @RoutePage()
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
+
+  static const name = 'notification';
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +75,13 @@ class NotificationScreen extends StatelessWidget {
         itemBuilder: (_, index) {
           final tile = tileData[index];
 
-          return NotificationTile(notification: tile);
+          return NotificationTile(
+            notification: tile,
+            onTap: () => onTileTap(
+              context,
+              tile.interactingUserId,
+            ),
+          );
         },
       );
     } else if (snapshot.hasError) {
@@ -86,5 +96,9 @@ class NotificationScreen extends StatelessWidget {
         color: AppColors.primaryColor,
       );
     }
+  }
+
+  void onTileTap(BuildContext context, String? id) {
+    if (id != null) Nav.push(context, NotificationProfilePreview(id: id));
   }
 }

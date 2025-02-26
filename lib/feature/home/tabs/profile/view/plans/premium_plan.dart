@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 
 import '../../../../../../common/components/index.dart';
 import '../../../../../../common/utils/index.dart';
@@ -26,70 +27,88 @@ class PremiumPlan extends HookWidget {
   Widget build(BuildContext context) {
     final selectedPlan = useState<SubscriptionPlan>(subscriptionPlans[0]);
 
-    return ValueListenableBuilder<Currency>(
-      valueListenable: userCurrency,
-      builder: (context, selectedCurrency, _) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            addHeight(4),
-            SingleChildScrollView(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        addHeight(4),
+        Selector<EditProfileNotifier, CoreProfile?>(
+          selector: (_, edit) => edit.staticProfile,
+          builder: (_, profileData, __) {
+            bool hasActivePlan = (profileData?.isPremium ?? false) &&
+                (profileData?.currentPlan != null);
+
+            List<SubscriptionPlan> plans = hasActivePlan
+                ? [subscriptionPlans[profileData!.currentPlan!]]
+                : subscriptionPlans;
+
+            return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  addWidth(14),
-                  ...subscriptionPlans.map(
-                    (plan) => Padding(
-                      padding: EdgeInsets.only(right: 12.r),
-                      child: SubscriptionBilling(
-                        title: "${plan.duration} Plan",
-                        price: plan.getPriceFormatted(selectedCurrency),
-                        discountInfo: plan.discountInfo,
-                        billingCycle: plan.billingCycle,
-                        value: plan,
-                        groupValue: selectedPlan.value,
-                        onChanged: (newPlan) => selectedPlan.value = newPlan!,
+              child: AppAnimatedSwitcher(
+                child: Row(
+                  key: ValueKey(hasActivePlan),
+                  children: [
+                    addWidth(14),
+                    ...plans.map(
+                      (plan) => Padding(
+                        padding: EdgeInsets.only(right: 12.r),
+                        child: ValueListenableBuilder<Currency>(
+                          valueListenable: userCurrency,
+                          builder: (_, selectedCurrency, __) {
+                            return SubscriptionBilling(
+                              plan: plan,
+                              groupValue:
+                                  hasActivePlan ? plan : selectedPlan.value,
+                              onChanged: (newPlan) {
+                                selectedPlan.value = newPlan!;
+                              },
+                              currency: userCurrency.value,
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14.r),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: premiumPlanData.map((sub) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 6.h),
-                        child: SubscriptionContainer(
-                          title: sub.title,
-                          feature: sub.feature,
-                          chipText: sub.type,
-                        ),
-                      );
-                    }).toList(),
-                  ),
+                  ],
                 ),
               ),
+            );
+          },
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14.r),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: premiumPlanData.map((sub) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 6.h),
+                    child: SubscriptionContainer(
+                      title: sub.title,
+                      feature: sub.feature,
+                      chipText: sub.type,
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-            Selector2<EditProfileNotifier, ConnectivityNotifier,
-                Map<String, bool>>(
-              selector: (_, edit, connection) => {
-                "isPremium": edit.coreProfile?.isPremium ?? false,
-                "isConnected": connection.isConnected,
-              },
-              builder: (_, values, __) {
-                final isPremium = values["isPremium"]!;
-                final isConnected = values["isConnected"]!;
+          ),
+        ),
+        Selector2<EditProfileNotifier, ConnectivityNotifier, Map<String, bool>>(
+          selector: (_, edit, connection) => {
+            "isPremium": edit.coreProfile?.isPremium ?? false,
+            "isConnected": connection.isConnected,
+          },
+          builder: (_, values, __) {
+            final isPremium = values["isPremium"]!;
+            final isConnected = values["isConnected"]!;
 
-                return Padding(
-                  padding:
-                      EdgeInsets.only(bottom: 14.r, left: 14.r, right: 14.r),
-                  child: DialogButton(
+            return Padding(
+              padding: EdgeInsets.only(bottom: 14.r, left: 14.r, right: 14.r),
+              child: ValueListenableBuilder<Currency>(
+                valueListenable: userCurrency,
+                builder: (_, selectedCurrency, __) {
+                  return DialogButton(
                     text: isPremium ? "Cancel Plan" : "Subscribe",
                     color: AppColors.premiumContainer,
                     textColor: Colors.white,
@@ -106,20 +125,20 @@ class PremiumPlan extends HookWidget {
                         );
                       }
                     },
-                  ),
-                );
-              },
-            )
-          ],
-        );
-      },
+                  );
+                },
+              ),
+            );
+          },
+        )
+      ],
     );
   }
 
   Future<bool?>? cancelPlan(BuildContext context) async {
     bool? result = await showConfirmationDialog(
       context,
-      title: 'Confirm Plan Cancellation',
+      title: 'Stop Your Plan?',
       content: contentText(AppStrings.cancelPlan),
       yes: 'Yes, Cancel',
       no: 'No, Go Back',
@@ -128,9 +147,8 @@ class PremiumPlan extends HookWidget {
     if (result == null) return null;
 
     if (result && context.mounted) {
-      final editNotifier = context.read<EditProfileNotifier>();
-      final paymentService = PaymentService(editNotifier);
-      paymentService.onPremiumUnsubscribe(context);
+      PaymentService(context.read<EditProfileNotifier>())
+          .onPremiumUnsubscribe(context);
     }
 
     return result;
@@ -165,6 +183,7 @@ class PremiumPlan extends HookWidget {
 
     if (currency == Currency.NGN || currency == Currency.KES) {
       navigateToPaystackPayment(
+        plan: selectedPlan.getPlanCode(currency),
         context: context,
         email: editNotifier.coreProfile!.email!,
         currency: currency.name,
@@ -173,6 +192,7 @@ class PremiumPlan extends HookWidget {
           context,
           response: response,
           currency: currency.name,
+          index: mapMonthsToIndex(selectedPlan.months),
         ),
         transactionNotCompleted: (errType, reason) =>
             paymentService.onPremiumFailure(context, errType.message, reason),

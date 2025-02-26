@@ -39,6 +39,10 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: InterestRoute.page),
 
         AutoRoute(page: NotificationRoute.page),
+        CustomRoute(
+          page: NotificationProfilePreview.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
 
         // Profile / Tab 5
         AutoRoute(page: Settings.page),

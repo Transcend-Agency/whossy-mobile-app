@@ -78,7 +78,10 @@ class _PaystackWebPageState extends State<PaystackWebPage> {
     final isSuccess = await _checkTransaction(reference);
 
     if (isSuccess) {
-      widget.transactionCompleted({"status": true});
+      widget.transactionCompleted({
+        "status": true,
+        "data": {"status": "success"},
+      });
     } else {
       widget.transactionNotCompleted(
         TransactionErrorType.unexpectedError,
@@ -119,7 +122,10 @@ class _PaystackWebPageState extends State<PaystackWebPage> {
                   onProgress: (progress) {},
                   onPageFinished: (String url) {
                     if (url.contains(_callbackUrl)) {
-                      widget.transactionCompleted({"status": true});
+                      widget.transactionCompleted({
+                        "status": true,
+                        "data": {"status": "success"}
+                      });
                       Navigator.of(context).pop();
                     }
                   },

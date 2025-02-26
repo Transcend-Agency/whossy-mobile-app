@@ -42,6 +42,7 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
           json['geography'] as Map<String, dynamic>?),
       faceVerification: FaceVerification.faceVerificationFromJson(
           json['face_verification'] as Map<String, dynamic>?),
+      currentPlan: (json['current_plan'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
@@ -77,6 +78,7 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
   writeNotNull('geohash', instance.geohash);
   writeNotNull('geography', AppUtils.geographyToJson(instance.geography));
   writeNotNull('credit_balance', instance.creditBalance);
+  writeNotNull('current_plan', instance.currentPlan);
   writeNotNull(
       'amount_paid_in_total', AppUtils.paymentToJson(instance.amountPaid));
   writeNotNull(

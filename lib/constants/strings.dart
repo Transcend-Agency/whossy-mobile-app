@@ -152,6 +152,7 @@ class AppStrings {
   static const String deductCreditsFailure =
       'Failed to deduct credits, Please try again';
   static const String unUploadedPhotos = 'Some photos could not be uploaded';
+  static const String noMatches = 'No one has matched with you ^_^';
 
   // Login User Errors
   static const String disabledAccount = 'Your account has been disabled';

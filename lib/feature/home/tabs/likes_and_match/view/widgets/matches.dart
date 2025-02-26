@@ -63,12 +63,8 @@ class Matches extends HookWidget {
         height: profile.premiumUser ? height.r : 150.h,
       );
     } else if (snapshot.hasError) {
-      return Center(
-        key: const ValueKey('error'),
-        child: Text(
-          'Error: ${snapshot.error}',
-          style: const TextStyle(color: Colors.red),
-        ),
+      return const BadNetworkDialog(
+        subtitle: AppStrings.deviceOffline,
       );
     } else if (snapshot.hasData) {
       final data = snapshot.data!;
@@ -81,8 +77,7 @@ class Matches extends HookWidget {
             addHeight(ScreenUtil().screenHeight * 0.3, isRsv: false),
             const EmptyDataBox(
               image: AppAssets.noMatches,
-              imageSize: 100,
-              text: 'No matches yet',
+              text: AppStrings.noMatches,
             ),
           ], //
         );
@@ -157,7 +152,7 @@ class Matches extends HookWidget {
       return const EmptyDataBox(
         image: AppAssets.noMatches,
         imageSize: 100,
-        text: 'No matches yet',
+        text: AppStrings.noMatches,
       );
     }
   }

@@ -89,6 +89,9 @@ class CoreProfile {
   @JsonKey(name: "credit_balance")
   int? creditBalance;
 
+  @JsonKey(name: "current_plan")
+  int? currentPlan;
+
   @JsonKey(
     name: "amount_paid_in_total",
     toJson: AppUtils.paymentToJson,
@@ -141,6 +144,7 @@ class CoreProfile {
     this.geography,
     this.faceVerification,
     this.updatedPhoto,
+    this.currentPlan,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -178,6 +182,7 @@ class CoreProfile {
         '  },\n'
         '  geohash: $geohash,\n'
         '  creditBalance: $creditBalance,\n'
+        '  currentPlan: $currentPlan,\n'
         '  userSettings: ${userSettings.toString()},\n'
         '  amountPaid: ${amountPaid.toString()},\n'
         '  geography: ${geography?.toString() ?? "null"}\n'
@@ -194,7 +199,7 @@ class CoreProfile {
         other.lastName == lastName &&
         other.dateOfBirth == dateOfBirth &&
         other.gender == gender &&
-       //  other.phoneNumber == phoneNumber &&
+        //  other.phoneNumber == phoneNumber &&
         listEquals(other.profilePics, profilePics) &&
         other.bio == bio &&
         other.meet == meet &&
@@ -211,6 +216,7 @@ class CoreProfile {
         // other.geohash == geohash &&
         other.creditBalance == creditBalance &&
         other.amountPaid == amountPaid &&
+        other.currentPlan == currentPlan &&
         other.userSettings == userSettings &&
         other.faceVerification == faceVerification;
   }
@@ -223,8 +229,8 @@ class CoreProfile {
       lastName,
       dateOfBirth,
       gender,
-      email,
-     // phoneNumber,
+      // email,
+      // phoneNumber,
       bio,
       meet,
       weight,
@@ -237,6 +243,7 @@ class CoreProfile {
       amountPaid,
       userSettings,
       faceVerification,
+      currentPlan,
       Object.hashAll(profilePics ?? []),
       Object.hashAll(interests ?? []),
       Object.hashAll(blockedIds ?? []),

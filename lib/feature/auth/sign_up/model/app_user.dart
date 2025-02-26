@@ -113,6 +113,9 @@ class AppUser {
   )
   final FaceVerification? faceVerification;
 
+  @JsonKey(name: "current_plan")
+  int? currentPlan;
+
   AppUser({
     this.uid,
     this.email,
@@ -139,6 +142,7 @@ class AppUser {
     this.geohash,
     this.geography,
     this.creditBalance = 0,
+    this.currentPlan,
     Payment? payment,
     List<String>? blockedIds,
     FaceVerification? faceVerification,

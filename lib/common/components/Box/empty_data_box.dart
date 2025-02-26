@@ -9,7 +9,7 @@ class EmptyDataBox extends StatelessWidget {
     super.key,
     this.image,
     this.text = '',
-    this.imageSize = 110,
+    this.imageSize = 120,
     this.spacing,
     this.header,
   }) : assert(image != null || header != null,
@@ -33,9 +33,7 @@ class EmptyDataBox extends StatelessWidget {
           if (text.isNotEmpty)
             Text(
               text,
-              style: TextStyles.boldPrefText.copyWith(
-                fontSize: AppUtils.scale(11.sp) ?? 12.5.sp,
-              ),
+              style: TextStyles.boldPrefText,
             ),
         ],
       ),

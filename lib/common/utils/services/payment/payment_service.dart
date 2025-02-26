@@ -31,6 +31,7 @@ class PaymentService {
     BuildContext context, {
     required Map<String, dynamic> response,
     required String currency,
+    int? index,
   }) async {
     final bool overallStatus = response['status'] ?? false;
     final String? dataStatus = response['data']?['status'];
@@ -43,15 +44,17 @@ class PaymentService {
       );
 
       bool isPremiumUser = editNotifier.coreProfile?.isPremium ?? false;
+      int? currentPlan = editNotifier.coreProfile?.currentPlan;
 
-      editNotifier.updateProfile(isPremium: true);
+      editNotifier.updateProfile(isPremium: true, currentPlan: index);
 
       bool success = await editNotifier.saveUserProfile(
         showSnackbar: (msg) => showSnackbar(msg, context),
       );
 
       if (!success) {
-        editNotifier.updateProfile(isPremium: isPremiumUser);
+        editNotifier.updateProfile(
+            isPremium: isPremiumUser, currentPlan: currentPlan);
         if (context.mounted) {
           showSnackbar(AppStrings.payPremiumFailure, context);
         }
@@ -59,12 +62,11 @@ class PaymentService {
         return;
       }
 
-      if (context.mounted) Navigator.of(context).pop();
+      // if (context.mounted) Navigator.of(context).pop();
     } else {
       showSnackbar(
         AppStrings.errorUnknown,
         context,
-        snackBarType: SnackbarType.success,
       );
     }
   }

@@ -60,12 +60,8 @@ class Likes extends HookWidget {
         height: profile.premiumUser ? height.r : 150.h,
       );
     } else if (snapshot.hasError) {
-      return Center(
-        key: const ValueKey('error'),
-        child: Text(
-          'Error: ${snapshot.error}',
-          style: const TextStyle(color: Colors.red),
-        ),
+      return const BadNetworkDialog(
+        subtitle: AppStrings.deviceOffline,
       );
     } else if (snapshot.hasData) {
       final data = snapshot.data!;

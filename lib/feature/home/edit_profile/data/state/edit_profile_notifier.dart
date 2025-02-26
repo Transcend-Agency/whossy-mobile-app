@@ -204,6 +204,9 @@ class EditProfileNotifier extends ChangeNotifier {
       final coreProfileDiff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
       bool hasPicUploads = false;
 
+      // log('Core Prefs Diff: ${jsonEncode(corePrefsDiff)}');
+      // log('Core Profile Diff: ${jsonEncode(coreProfileDiff)}');
+
       if (corePrefsDiff.isEmpty && coreProfileDiff.isEmpty) return true;
 
       // Process profile photos if available
@@ -247,6 +250,7 @@ class EditProfileNotifier extends ChangeNotifier {
     List<String>? profilePics,
     List<String>? blockedIds,
     String? photoVerificationUrl,
+    int? currentPlan,
   }) {
     _dynCoreProfile?.update(
       bio: bio,
@@ -262,6 +266,7 @@ class EditProfileNotifier extends ChangeNotifier {
       creditBalance: creditBalance,
       amountPaid: amountPaid,
       photoVerificationUrl: photoVerificationUrl,
+      currentPlan: currentPlan,
     );
     notifyListeners();
   }

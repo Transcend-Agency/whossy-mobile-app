@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
@@ -63,6 +64,7 @@ class PaystackPaymentService {
           );
 
       if (response.statusCode == 200) {
+        debugPrint('Paystack Response Body: ${response.body}');
         return PaystackRequestResponse.fromJson(jsonDecode(response.body));
       } else {
         throw Exception("Payment initialization failed: ${response.body}");

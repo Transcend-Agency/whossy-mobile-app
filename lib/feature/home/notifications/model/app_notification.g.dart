@@ -11,11 +11,11 @@ AppNotification _$AppNotificationFromJson(Map<String, dynamic> json) =>
       title: json['title'] as String,
       id: json['id'] as String,
       seen: json['seen'] as bool,
-      likedId: json['likedId'] as String?,
-      likerId: json['likerId'] as String?,
       timestamp: AppUtils.timestampFromJson(json['timestamp']),
       likerName: json['likerName'] as String?,
       likerProfilePicture: json['likerProfilePicture'] as String?,
+      likedId: json['likedId'] as String?,
+      likerId: json['likerId'] as String?,
       user1Id: json['user1_id'] as String?,
       user1Name: json['user1_name'] as String?,
       user1Pic: json['user1_pic'] as String?,
@@ -37,11 +37,11 @@ Map<String, dynamic> _$AppNotificationToJson(AppNotification instance) {
     }
   }
 
-  writeNotNull('likedId', instance.likedId);
-  writeNotNull('likerId', instance.likerId);
   writeNotNull('timestamp', AppUtils.timestampToJson(instance.timestamp));
   writeNotNull('likerName', instance.likerName);
   writeNotNull('likerProfilePicture', instance.likerProfilePicture);
+  writeNotNull('likedId', instance.likedId);
+  writeNotNull('likerId', instance.likerId);
   writeNotNull('user1_id', instance.user1Id);
   writeNotNull('user1_name', instance.user1Name);
   writeNotNull('user1_pic', instance.user1Pic);

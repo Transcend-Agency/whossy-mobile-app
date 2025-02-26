@@ -61,6 +61,7 @@ extension CoreProfileUtils on CoreProfile {
     bool? isPremium,
     Payment? amountPaid,
     String? photoVerificationUrl,
+    int? currentPlan,
   }) {
     if (bio != null) this.bio = bio;
     if (gender != null) this.gender = gender;
@@ -74,6 +75,7 @@ extension CoreProfileUtils on CoreProfile {
     if (profilePics != null) this.profilePics = profilePics;
     if (blockedIds != null) this.blockedIds = blockedIds;
     if (amountPaid != null) this.amountPaid = amountPaid;
+    if (currentPlan != null) this.currentPlan = currentPlan;
     if (photoVerificationUrl != null) {
       faceVerification?.photo = photoVerificationUrl;
     }

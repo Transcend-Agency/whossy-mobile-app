@@ -4,32 +4,12 @@ import 'package:json_annotation/json_annotation.dart';
 import '../../../../common/utils/index.dart';
 
 part 'app_notification.g.dart';
-//
-// class AppNotification {
-//   final NotificationType type;
-//   final String title;
-//   final String subtitle;
-//   final DateTime timestamp;
-//   final String? imageUrl;
-//   final bool seen;
-//
-//   AppNotification({
-//     required this.type,
-//     required this.title,
-//     required this.subtitle,
-//     required this.timestamp,
-//     this.imageUrl,
-//     this.seen = false,
-//   });
-// }
 
 @JsonSerializable()
 class AppNotification {
   final String title;
   final String id;
   final bool seen;
-  final String? likedId;
-  final String? likerId;
 
   @JsonKey(
     fromJson: AppUtils.timestampFromJson,
@@ -37,9 +17,13 @@ class AppNotification {
   )
   final Timestamp? timestamp;
 
+  // Fields for Like Notification
   final String? likerName;
   final String? likerProfilePicture;
+  final String? likedId;
+  final String? likerId;
 
+  // Fields for Match Notification
   @JsonKey(name: 'user1_id')
   final String? user1Id;
 
@@ -62,11 +46,11 @@ class AppNotification {
     required this.title,
     required this.id,
     required this.seen,
-    this.likedId,
-    this.likerId,
     this.timestamp,
     this.likerName,
     this.likerProfilePicture,
+    this.likedId,
+    this.likerId,
     this.user1Id,
     this.user1Name,
     this.user1Pic,
@@ -82,7 +66,7 @@ class AppNotification {
   /// Method to convert the instance into JSON
   Map<String, dynamic> toJson() => _$AppNotificationToJson(this);
 
-  /// Internal method to determine the notification type
+  /// **Determines the notification type based on the title**
   NotificationType get notificationType {
     switch (title.toLowerCase()) {
       case "like":
@@ -93,6 +77,22 @@ class AppNotification {
         return NotificationType.message;
       default:
         return NotificationType.unknown;
+    }
+  }
+
+  /// **Returns the ID of the person interacting with the user**
+  ///
+  /// - **Like Notification** → `likerId`
+  /// - **Match Notification** → `user1Id`
+  /// - **Others** → `null`
+  String? get interactingUserId {
+    switch (notificationType) {
+      case NotificationType.like:
+        return likerId;
+      case NotificationType.match:
+        return user1Id;
+      default:
+        return null;
     }
   }
 }

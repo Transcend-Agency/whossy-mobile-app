@@ -61,12 +61,8 @@ class LikedMe extends HookWidget {
         height: profile.premiumUser ? height.r : 150.h,
       );
     } else if (snapshot.hasError) {
-      return Center(
-        key: const ValueKey('error'),
-        child: Text(
-          'Error: ${snapshot.error}',
-          style: const TextStyle(color: Colors.red),
-        ),
+      return const BadNetworkDialog(
+        subtitle: AppStrings.deviceOffline,
       );
     } else if (snapshot.hasData) {
       final data = snapshot.data!;
@@ -79,7 +75,7 @@ class LikedMe extends HookWidget {
             addHeight(ScreenUtil().screenHeight * 0.3, isRsv: false),
             const EmptyDataBox(
               image: AppAssets.noLikes,
-              text: 'No likes yet',
+              text: 'Looks like no one has liked you yet',
             ),
           ],
         );
@@ -172,7 +168,7 @@ class LikedMe extends HookWidget {
     } else {
       return const EmptyDataBox(
         image: AppAssets.noLikes,
-        text: 'No likes yet',
+        text: 'Looks like no one has liked you yet',
       );
     }
   }

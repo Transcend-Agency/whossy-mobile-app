@@ -4,37 +4,33 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/index.dart';
 import '../../../../../../constants/index.dart';
+import '../../model/credit.dart';
+import '../../model/subscription_plan.dart';
 
-class SubscriptionBilling<T> extends StatelessWidget {
-  final T value;
-  final T groupValue;
-  final ValueChanged<T?> onChanged;
-  final String title;
-  final String price;
-  final String discountInfo;
-  final String billingCycle;
+class SubscriptionBilling extends StatelessWidget {
+  final SubscriptionPlan plan;
+  final SubscriptionPlan groupValue;
+  final ValueChanged<SubscriptionPlan?> onChanged;
+  final Currency currency;
   final Color selectedBorderColor;
   final Color selectedShade;
 
   const SubscriptionBilling({
     super.key,
-    required this.value,
+    required this.plan,
     required this.groupValue,
     required this.onChanged,
-    required this.title,
-    required this.price,
-    required this.discountInfo,
-    required this.billingCycle,
+    required this.currency,
     this.selectedBorderColor = AppColors.premiumContainer,
     this.selectedShade = AppColors.premiumContainerShade,
   });
 
   @override
   Widget build(BuildContext context) {
-    bool isSelected = value == groupValue;
+    bool isSelected = plan == groupValue;
 
     return GestureDetector(
-      onTap: () => onChanged(value),
+      onTap: () => onChanged(plan),
       child: Container(
         width: 230.w,
         padding: EdgeInsets.all(16.r),
@@ -87,7 +83,7 @@ class SubscriptionBilling<T> extends StatelessWidget {
                 ),
                 addWidth(12),
                 Text(
-                  title,
+                  "${plan.duration} Plan",
                   style: TextStyles.profileHead.copyWith(
                     fontSize: AppUtils.scale(15.sp) ?? 19,
                     fontWeight: FontWeight.w600,
@@ -111,20 +107,12 @@ class SubscriptionBilling<T> extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "$price / mo",
+                  plan.getMonthlyRate(currency),
                   style: TextStyles.profileHead.copyWith(
                     fontSize: AppUtils.scale(14.sp) ?? 18,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                // Text(
-                //   discountInfo,
-                //   style: TextStyle(
-                //     fontSize: 14.sp,
-                //     color: Colors.green,
-                //     fontWeight: FontWeight.w500,
-                //   ),
-                // ),
               ],
             ),
 
@@ -132,7 +120,9 @@ class SubscriptionBilling<T> extends StatelessWidget {
 
             // Billing cycle text
             Text(
-              billingCycle,
+              plan.months == 1
+                  ? plan.billingCycle
+                  : '${plan.getPriceFormatted(currency)} ${plan.billingCycle}',
               style: TextStyles.hintThemeText.copyWith(
                 fontWeight: FontWeight.w400,
                 fontSize: AppUtils.scale(10.sp) ?? 13.5.sp,

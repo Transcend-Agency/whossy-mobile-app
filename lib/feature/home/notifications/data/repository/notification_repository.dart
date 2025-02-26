@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:whossy_app/feature/home/notifications/model/app_notification.dart';
+
+import '../../../tabs/matching/model/user_profile.dart';
+import '../../model/app_notification.dart';
 
 class NotificationRepository {
   final _users = FirebaseFirestore.instance.collection('users');
@@ -43,10 +45,27 @@ class NotificationRepository {
         .map((snapshot) => snapshot.docs.isNotEmpty);
   }
 
+  /// Stream that returns the count of unread notifications
   Stream<int> unreadNotificationCount() {
     return path()
         .where('seen', isEqualTo: false)
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
+  }
+
+  /// Fetch a user profile by user ID
+  Future<UserProfile?> getUserProfile(String userId) async {
+    try {
+      final doc = await _users.doc(userId).get();
+      if (doc.exists) {
+        return UserProfile.fromJson(doc.data()!);
+      } else {
+        log('User profile not found for ID: $userId');
+        return null;
+      }
+    } catch (e) {
+      log('Error fetching user profile: $e');
+      return null;
+    }
   }
 }

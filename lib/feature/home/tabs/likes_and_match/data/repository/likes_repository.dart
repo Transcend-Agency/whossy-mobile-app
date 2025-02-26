@@ -10,7 +10,7 @@ class LikesRepository {
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
   final _matches = FirebaseFirestore.instance.collection('matches');
-  final _userRepository = UserRepository();
+  final _userRepo = UserRepository();
 
   final excludeSettings = const ExcludeSettings(
     excludeIncompleteOnboarding: true,
@@ -152,7 +152,7 @@ class LikesRepository {
         final filteredIds = primaryIds.difference(secondaryIds);
 
         // Fetch user profiles
-        final profiles = await _userRepository.getUserProfilesInBatches(
+        final profiles = await _userRepo.getUserProfilesInBatches(
           userIds: filteredIds.toList(),
           blockedIds: blockedIds,
           settings: excludeSettings,

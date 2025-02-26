@@ -17,8 +17,13 @@ import '../../model/app_notification.dart';
 
 class NotificationTile extends HookWidget {
   final AppNotification notification;
+  final VoidCallback onTap;
 
-  const NotificationTile({super.key, required this.notification});
+  const NotificationTile({
+    super.key,
+    required this.notification,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,113 +51,116 @@ class NotificationTile extends HookWidget {
           isVisible.value = true;
         }
       },
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              ListTile(
-                splashColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                contentPadding:
-                    EdgeInsets.only(top: 14.r, left: 18.r, right: 18.r),
-                title: Row(
-                  children: [
-                    Text(
-                      _getNotificationTitle,
-                      style: TextStyles.profileHead.copyWith(
-                        fontSize: AppUtils.scale(11.5.sp) ?? 16,
-                      ),
-                    ),
-                    if (!notification.seen)
-                      Container(
-                        margin: EdgeInsets.only(left: 8.r),
-                        width: 6.r,
-                        height: 6.r,
-                        decoration: const BoxDecoration(
-                          color: AppColors.primaryColor,
-                          shape: BoxShape.circle,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                ListTile(
+                  splashColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  contentPadding:
+                      EdgeInsets.only(top: 14.r, left: 18.r, right: 18.r),
+                  title: Row(
+                    children: [
+                      Text(
+                        _getNotificationTitle,
+                        style: TextStyles.profileHead.copyWith(
+                          fontSize: AppUtils.scale(11.5.sp) ?? 16,
                         ),
                       ),
-                  ],
-                ),
-                subtitle: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    addHeight(3),
-                    Text(
-                      _getNotificationSubtitle(),
-                      style: TextStyles.hintThemeText.copyWith(
-                        fontSize: AppUtils.scale(9.5.sp) ?? 13.sp,
+                      if (!notification.seen)
+                        Container(
+                          margin: EdgeInsets.only(left: 8.r),
+                          width: 6.r,
+                          height: 6.r,
+                          decoration: const BoxDecoration(
+                            color: AppColors.primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                    ],
+                  ),
+                  subtitle: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      addHeight(3),
+                      Text(
+                        _getNotificationSubtitle(),
+                        style: TextStyles.hintThemeText.copyWith(
+                          fontSize: AppUtils.scale(9.5.sp) ?? 13.sp,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    addHeight(2),
-                  ],
-                ),
-                trailing:
-                    notification.notificationType == NotificationType.match
-                        ? Stack(
-                            children: [
-                              if (imageUrl1 != null)
-                                Transform.translate(
-                                  offset: const Offset(-7, -8),
-                                  child: Transform.rotate(
-                                    angle: -10 * pi / 180,
+                      addHeight(2),
+                    ],
+                  ),
+                  trailing: notification.notificationType ==
+                          NotificationType.match
+                      ? Stack(
+                          children: [
+                            if (imageUrl1 != null)
+                              Transform.translate(
+                                offset: const Offset(-7, -8),
+                                child: Transform.rotate(
+                                  angle: -10 * pi / 180,
+                                  child: RectangleAppAvatar(
+                                    imageUrl: imageUrl1,
+                                    width: 40,
+                                    height: 40,
+                                  ),
+                                ),
+                              ),
+                            if (imageUrl2 != null)
+                              Transform.translate(
+                                offset: const Offset(0, 5),
+                                child: Transform.rotate(
+                                  angle: 10 * pi / 180,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 3,
+                                      ),
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
                                     child: RectangleAppAvatar(
-                                      imageUrl: imageUrl1,
-                                      width: 40,
-                                      height: 40,
+                                      imageUrl: imageUrl2,
+                                      width: 41,
+                                      height: 41,
                                     ),
                                   ),
                                 ),
-                              if (imageUrl2 != null)
-                                Transform.translate(
-                                  offset: const Offset(0, 5),
-                                  child: Transform.rotate(
-                                    angle: 10 * pi / 180,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 3,
-                                        ),
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
-                                      child: RectangleAppAvatar(
-                                        imageUrl: imageUrl2,
-                                        width: 41,
-                                        height: 41,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                            ],
-                          )
-                        : Transform.rotate(
-                            angle: 10 * pi / 180,
-                            child: RectangleAppAvatar(
-                              imageUrl: profilePic ?? "",
-                              width: 46,
-                              height: 46,
-                            ),
+                              )
+                          ],
+                        )
+                      : Transform.rotate(
+                          angle: 10 * pi / 180,
+                          child: RectangleAppAvatar(
+                            imageUrl: profilePic ?? "",
+                            width: 46,
+                            height: 46,
                           ),
-              ),
-              addHeight(8),
-              Padding(
-                padding: pagePadding,
-                child: const AppDivider(),
-              ),
-            ],
-          ),
-          if (!notification.seen)
-            Positioned.fill(
-              child: Container(
-                color: AppColors.primaryColor.withOpacity(0.05),
-              ),
+                        ),
+                ),
+                addHeight(8),
+                Padding(
+                  padding: pagePadding,
+                  child: const AppDivider(),
+                ),
+              ],
             ),
-        ],
+            if (!notification.seen)
+              Positioned.fill(
+                child: Container(
+                  color: AppColors.primaryColor.withOpacity(0.05),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -165,9 +173,7 @@ class NotificationTile extends HookWidget {
       case NotificationType.like:
         String liker = notification.likerName == null
             ? "Someone"
-            : Random().nextBool()
-                ? notification.likerName!
-                : "Someone";
+            : notification.likerName!;
 
         bool showProfileCheck = Random().nextBool();
         return showProfileCheck

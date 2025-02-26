@@ -37,6 +37,9 @@ extension CoreProfileExtension on CoreProfile {
     if (bio != other.bio) {
       updatedFields['bio'] = bio;
     }
+    if (currentPlan != other.currentPlan) {
+      updatedFields['current_plan'] = currentPlan;
+    }
     if (weight != other.weight) {
       updatedFields['weight'] = weight;
     }

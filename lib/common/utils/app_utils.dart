@@ -245,3 +245,5 @@ typedef TransactionCompletedCallback = void Function(
     Map<String, dynamic> decodedRespBody);
 typedef TransactionNotCompletedCallback = void Function(
     TransactionErrorType errorType, String reason);
+
+int mapMonthsToIndex(int months) => [1, 3, 6, 12].indexOf(months);

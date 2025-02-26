@@ -87,7 +87,7 @@ class ExploreRepository {
               uid,
               blockedIds,
               settings: excludeSettings,
-            ));
+            ),);
 
         // Map profiles to LikedUserProfile, checking if the profile has been liked
         return profiles.map((profile) {
