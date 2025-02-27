@@ -98,7 +98,7 @@ class AppSnackbar extends StatelessWidget {
   }
 }
 
-showSnackbar(
+void showSnackbar(
   String message,
   BuildContext context, {
   SnackbarType snackBarType = SnackbarType.error,

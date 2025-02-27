@@ -2,13 +2,13 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
 import '../../../../common/components/index.dart';
 import '../../../../common/utils/index.dart';
 import '../../../../common/utils/router/router.gr.dart';
 import '../../../../constants/index.dart';
 import '../../../../provider/providers.dart';
+import '../../tabs/matching/model/user_profile.dart';
 import 'notification_screen.dart';
 
 @RoutePage()

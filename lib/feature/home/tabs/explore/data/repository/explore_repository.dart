@@ -14,6 +14,7 @@ import '../../model/liked_user_profile.dart';
 class ExploreRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
   final _likes = FirebaseFirestore.instance.collection('likes');
+  final _limit = 30;
 
   final excludeSettings = const ExcludeSettings(
     excludeIncompleteOnboarding: true,
@@ -65,7 +66,7 @@ class ExploreRepository {
       }
     }
 
-    baseQuery = baseQuery.limit(20);
+    baseQuery = baseQuery.limit(_limit);
 
     // Combine profile snapshots with blacklist stream
     return Rx.combineLatest2(
@@ -81,13 +82,14 @@ class ExploreRepository {
             .toList();
 
         // Apply local filtering
-        profiles.removeWhere((profile) =>
-            AppUtils.excludeProfile(
-              profile,
-              uid,
-              blockedIds,
-              settings: excludeSettings,
-            ),);
+        profiles.removeWhere(
+          (profile) => AppUtils.excludeProfile(
+            profile,
+            uid,
+            blockedIds,
+            settings: excludeSettings,
+          ),
+        );
 
         // Map profiles to LikedUserProfile, checking if the profile has been liked
         return profiles.map((profile) {

@@ -96,10 +96,10 @@ class _ChatsState extends State<Chats> {
       );
     } else if (snapshot.hasError) {
       log('Error fetching chat tiles: ${snapshot.error}');
-      return const Text(
-        'Sorry, try again later',
+
+       return const BadNetworkDialog(
         key: ValueKey('error'),
-      ); //
+      );
     } else {
       return AppListBuilder(
         key: const ValueKey('loading'),

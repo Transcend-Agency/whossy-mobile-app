@@ -2,7 +2,6 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/index.dart';
 import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
@@ -56,20 +55,16 @@ class _BlockedContactsState extends State<BlockedContacts> {
     _editNotifier.updateProfile(blockedIds: _uidsNotifier.value);
 
     bool success = await _editNotifier.saveUserProfile(
-      showSnackbar: (msg) => showSnackbar(msg),
+      showSnackbar: (msg) => showSnackbar(msg, context),
     );
 
     if (!success) {
       // If saveUserProfile fails, rollback state
       _uidsNotifier.value = previousUids;
       _editNotifier.updateProfile(blockedIds: previousUids);
-      showSnackbar(AppStrings.unblockFailure);
-    }
-  }
-
-  showSnackbar(String message) {
-    if (mounted) {
-      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+      if (Navigator.of(context).mounted) {
+        showSnackbar(AppStrings.unblockFailure, context);
+      }
     }
   }
 
@@ -114,17 +109,13 @@ class _BlockedContactsState extends State<BlockedContacts> {
     } else if (snapshot.hasData) {
       return buildDataList(snapshot.data!, handleUnblock);
     } else {
-      return const Center(child: Text('Something went wrong.'));
+      return buildErrorWidget(snapshot.error);
     }
   }
 
   Widget buildErrorWidget(Object? error) {
-    return Center(
-      key: const ValueKey('error'),
-      child: Text(
-        'Error: $error',
-        style: const TextStyle(color: Colors.red),
-      ),
+    return const BadNetworkDialog(
+      key: ValueKey('error'),
     );
   }
 
