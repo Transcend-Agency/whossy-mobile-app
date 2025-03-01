@@ -67,14 +67,16 @@ class _ReportDialogState extends State<ReportDialog> {
                 color: Colors.black87,
               ),
             ),
-            addHeight(8),
-            Text(
-              'Reason for reporting:',
-              style: TextStyles.boldPrefText.copyWith(
-                fontSize: AppUtils.scale(12.sp) ?? 13.5.sp,
-                color: Colors.black87,
-              ),
-            ),
+            // addHeight(8),
+
+            // Temporarily commented this
+            // Text(
+            //   'Reason for reporting:',
+            //   style: TextStyles.boldPrefText.copyWith(
+            //     fontSize: AppUtils.scale(12.sp) ?? 13.5.sp,
+            //     color: Colors.black87,
+            //   ),
+            // ),
           ],
         ),
         content: SingleChildScrollView(

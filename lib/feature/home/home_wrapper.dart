@@ -16,6 +16,7 @@ import '../../common/utils/services/services.dart';
 import '../../constants/index.dart';
 import '../../provider/providers.dart';
 import 'tabs/_.dart';
+import 'tabs/explore/data/state/scroll_visibility_notifier.dart';
 import 'tabs/matching/data/state/location_permission_stream.dart';
 
 @RoutePage()
@@ -47,6 +48,14 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   // Other UI code
   late List<Widget> _pages;
+  final List<BottomNavItem> _bottomNavItems = [
+    const BottomNavItem(assetPath: AppAssets.globalSearch, label: "Explore"),
+    const BottomNavItem(assetPath: AppAssets.fire, label: "Matching"),
+    const BottomNavItem(assetPath: AppAssets.heart, label: "Likes/Match"),
+    const BottomNavItem(assetPath: AppAssets.chat, label: "Chat"),
+    const BottomNavItem(assetPath: AppAssets.user, label: "Profile"),
+  ];
+
   int selectedIndex = 0;
 
   @override
@@ -137,20 +146,29 @@ class _HomeWrapperState extends State<HomeWrapper> {
     return StreamProvider<LocationPermission>(
       create: (_) => createLifecycleAwarePermissionStream(),
       initialData: LocationPermission.denied,
-      child: AppScaffold(
-        applyTop: false,
-        body: SizedBox(
-          child: _pages.elementAt(selectedIndex),
-        ),
-        bottomNavBar: CustomBottomAppBar(
-          onTabSelected: _selectedTab,
-          items: const [
-            BottomNavItem(assetPath: AppAssets.globalSearch, label: "Explore"),
-            BottomNavItem(assetPath: AppAssets.fire, label: "Matching"),
-            BottomNavItem(assetPath: AppAssets.heart, label: "Likes/Match"),
-            BottomNavItem(assetPath: AppAssets.chat, label: "Chat"),
-            BottomNavItem(assetPath: AppAssets.user, label: "Profile"),
-          ],
+      child: ChangeNotifierProvider(
+        create: (_) => ScrollVisibilityNotifier(),
+        child: Consumer<ScrollVisibilityNotifier>(
+          builder: (context, scrollNotifier, child) {
+            return AppScaffold(
+              applyTop: false,
+              body: SizedBox(
+                child: _pages.elementAt(selectedIndex),
+              ),
+              bottomNavBar: AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                height: scrollNotifier.isVisible ? 76.h : 0,
+                child: Wrap(
+                  children: [
+                    CustomBottomAppBar(
+                      onTabSelected: _selectedTab,
+                      items: _bottomNavItems,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

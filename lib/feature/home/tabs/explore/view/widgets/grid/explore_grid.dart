@@ -4,7 +4,7 @@ import 'package:whossy_app/feature/home/tabs/explore/model/liked_user_profile.da
 
 import '../../../../../../../common/components/index.dart';
 import '../../../../../../../provider/providers.dart';
-import 'helper_components.dart';
+import 'helpers/index.dart';
 
 class ExploreGrid extends StatelessWidget {
   const ExploreGrid({super.key});
@@ -24,5 +24,22 @@ class ExploreGrid extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+Widget buildContentBasedOnSnapshot(
+  BuildContext context,
+  AsyncSnapshot<List<LikedUserProfile>> snapshot,
+) {
+  if (snapshot.connectionState == ConnectionState.waiting) {
+    return const LoadingGrid();
+  } else if (snapshot.hasError) {
+    return ErrorGrid(error: snapshot.error);
+  } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+    return const EmptyDataGrid();
+  } else if (snapshot.hasData) {
+    return DataGrid(tileData: snapshot.data!);
+  } else {
+    return const Text('No data found');
   }
 }
