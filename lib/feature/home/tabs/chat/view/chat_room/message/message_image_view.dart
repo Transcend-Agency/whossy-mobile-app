@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../../../common/utils/index.dart';
+import '../../../../../../../common/utils/utils.dart';
 
 class MessageImageView extends StatelessWidget {
   const MessageImageView({super.key, this.imageUrl});

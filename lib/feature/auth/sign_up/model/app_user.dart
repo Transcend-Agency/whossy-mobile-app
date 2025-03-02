@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/feature/auth/sign_up/model/payment.dart';
 import 'package:whossy_app/feature/home/settings/model/user_settings.dart';
 
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../../onboarding/model/face_verification.dart';
 import 'geography.dart';
 import 'user_status.dart';

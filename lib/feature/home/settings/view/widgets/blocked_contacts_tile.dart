@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 
-import '../../../../../../common/components/index.dart';
+import '../../../../../../common/components/components.dart';
 import '../../../../../common/styles/component_style.dart';
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 
 class BlockedContactsTile extends StatelessWidget {

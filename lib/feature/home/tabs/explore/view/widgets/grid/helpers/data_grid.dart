@@ -6,9 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../../../common/components/index.dart';
-import '../../../../../../../../common/utils/index.dart';
+import '../../../../../../../../common/components/components.dart';
 import '../../../../../../../../common/utils/router/router.gr.dart';
+import '../../../../../../../../common/utils/utils.dart';
 import '../../../../../../../../constants/index.dart';
 import '../../../../data/state/scroll_visibility_notifier.dart';
 import '../../../../model/liked_user_profile.dart';

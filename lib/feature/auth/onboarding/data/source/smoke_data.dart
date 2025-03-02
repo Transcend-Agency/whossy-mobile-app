@@ -1,4 +1,4 @@
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../model/smoke_model.dart';
 
 List<SmokeModel> smokeData = [

@@ -7,14 +7,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/feature/home/tutorial.dart';
 
 import '../../common/styles/text_style.dart';
-import '../../common/utils/index.dart';
 import '../../common/utils/services/services.dart';
+import '../../common/utils/utils.dart';
 import '../../constants/index.dart';
-import '../../provider/providers.dart';
+import '../../provider/provider.dart';
 import 'tabs/_.dart';
 import 'tabs/explore/data/state/scroll_visibility_notifier.dart';
 import 'tabs/matching/data/state/location_permission_stream.dart';

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../explore/model/liked_user_profile.dart';
 
 class MatchesRepository {

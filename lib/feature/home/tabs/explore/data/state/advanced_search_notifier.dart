@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/tabs/explore/data/repository/advanced_search_repository.dart';
-import 'package:whossy_app/provider/providers.dart';
+import 'package:whossy_app/provider/provider.dart';
 
 import '../../../../../../constants/index.dart';
 import '../../../../preferences/model/core_preferences.dart';

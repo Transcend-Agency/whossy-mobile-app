@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../../../../common/styles/text_style.dart';
-import '../../../../../../../../common/utils/index.dart';
+import '../../../../../../../../common/utils/utils.dart';
 import '../../../../../../../../constants/index.dart';
 import '../../../../../matching/model/user_profile.dart';
 

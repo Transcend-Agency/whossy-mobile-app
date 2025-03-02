@@ -5,9 +5,9 @@ import 'package:whossy_app/feature/home/edit_profile/model/data_range.dart';
 import 'package:whossy_app/feature/home/edit_profile/view/widgets/sheets/slider_sheet.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 
-import '../../../../../../common/components/index.dart';
+import '../../../../../../common/components/components.dart';
 import '../../../../../../common/styles/component_style.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../data/source/edit_profile_data.dart';
 import '../../../data/state/edit_profile_notifier.dart';

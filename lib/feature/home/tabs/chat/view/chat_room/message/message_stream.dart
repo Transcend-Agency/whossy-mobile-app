@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/common/utils/utils.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/state/chats_notifier.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/current_chat.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';
 
-import '../../../../../../../common/components/index.dart';
+import '../../../../../../../common/components/components.dart';
 import '../../../../../../../common/styles/text_style.dart';
 import '../../../../../../../constants/index.dart';
 import 'message_bubble.dart';

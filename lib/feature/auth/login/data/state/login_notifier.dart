@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../sign_up/data/repository/user_repository.dart';
 import '../../model/auth_params.dart';

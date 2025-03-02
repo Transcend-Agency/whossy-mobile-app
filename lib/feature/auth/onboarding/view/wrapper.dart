@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
-import '../../../../provider/providers.dart';
+import '../../../../provider/provider.dart';
 import '../model/selected_data.dart';
 import 'index.dart';
 

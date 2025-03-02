@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 
 import '../../../../../../../../common/styles/text_style.dart';
-import '../../../../../../../../common/utils/index.dart';
+import '../../../../../../../../common/utils/utils.dart';
 import '../../../../../matching/model/user_profile.dart';
 
 class UserDetails extends StatelessWidget {

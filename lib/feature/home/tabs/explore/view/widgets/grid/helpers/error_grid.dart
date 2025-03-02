@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../../../common/components/index.dart';
+import '../../../../../../../../common/components/components.dart';
 
 class ErrorGrid extends StatelessWidget {
   final Object? error;

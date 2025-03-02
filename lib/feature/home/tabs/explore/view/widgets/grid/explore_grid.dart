@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/tabs/explore/model/liked_user_profile.dart';
 
-import '../../../../../../../common/components/index.dart';
-import '../../../../../../../provider/providers.dart';
+import '../../../../../../../common/components/components.dart';
+import '../../../../../../../provider/provider.dart';
 import 'helpers/index.dart';
 
 class ExploreGrid extends StatelessWidget {

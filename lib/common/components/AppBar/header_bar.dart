@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:whossy_app/constants/asset_paths.dart';
 
-import '../../utils/index.dart';
 import '../../utils/router/router.gr.dart';
+import '../../utils/utils.dart';
 import '../Button/app_icon_button.dart';
 
 class HeaderBar extends StatelessWidget {

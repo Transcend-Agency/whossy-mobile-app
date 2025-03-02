@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 
-import '../../../../../common/utils/index.dart';
 import '../../../../../common/utils/services/services.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../tabs/matching/model/user_profile.dart';
 import '../../model/user_settings.dart';

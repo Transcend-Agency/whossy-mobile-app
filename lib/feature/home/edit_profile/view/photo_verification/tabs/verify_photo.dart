@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../common/components/index.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/components/components.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 
 class VerifyPhoto extends StatelessWidget {

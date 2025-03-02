@@ -7,11 +7,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../common/components/index.dart';
-import '../../../../common/utils/index.dart';
+import '../../../../common/components/components.dart';
 import '../../../../common/utils/services/services.dart';
+import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
-import '../../../../provider/providers.dart';
+import '../../../../provider/provider.dart';
 import 'edit_sheet.dart';
 
 class TakeSelfieScreen extends StatefulWidget {
@@ -154,8 +154,6 @@ class _TakeSelfieScreenState extends State<TakeSelfieScreen>
         ),
       ],
     );
-
-    
   }
 
   @override

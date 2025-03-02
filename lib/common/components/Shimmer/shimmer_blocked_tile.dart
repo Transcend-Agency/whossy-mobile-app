@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../styles/component_style.dart';
-import '../index.dart';
+import '../components.dart';
 
 class ShimmerBlockedTile extends StatelessWidget {
   const ShimmerBlockedTile({super.key});

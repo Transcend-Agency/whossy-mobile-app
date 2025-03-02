@@ -9,9 +9,9 @@ import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/tabs/chat/view/chat_room/message/message_image_view.dart';
 
-import '../../../../../../../common/components/index.dart';
-import '../../../../../../../common/utils/index.dart';
-import '../../../../../../../provider/providers.dart';
+import '../../../../../../../common/components/components.dart';
+import '../../../../../../../common/utils/utils.dart';
+import '../../../../../../../provider/provider.dart';
 
 class ImageGrid extends StatelessWidget {
   final List<String>? localPhotos;

@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
-import '../../utils/index.dart';
+import '../../utils/utils.dart';
 
 class RadioTile<T> extends StatelessWidget {
   final String leadingAsset;

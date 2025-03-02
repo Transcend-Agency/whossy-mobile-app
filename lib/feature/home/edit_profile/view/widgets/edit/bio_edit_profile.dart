@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/common/utils/utils.dart';
 
-import '../../../../../../common/components/index.dart';
+import '../../../../../../common/components/components.dart';
 import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../constants/index.dart';
-import '../../../../../../provider/providers.dart';
+import '../../../../../../provider/provider.dart';
 import '../../../data/source/edit_profile_data.dart';
 
 class BioEditProfile extends StatefulWidget {

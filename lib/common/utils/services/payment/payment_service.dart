@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whossy_app/feature/auth/sign_up/model/payment.dart';
 
 import '../../../../constants/index.dart';
-import '../../../../provider/providers.dart';
+import '../../../../provider/provider.dart';
 import '../../../components/Snackbar/app_snackbar.dart';
 
 class PaymentService {

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 
 import '../../../../common/styles/text_style.dart';
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
-import '../../../../provider/providers.dart';
+import '../../../../provider/provider.dart';
 import '../../settings/view/widgets/_.dart';
 import 'widgets/_.dart';
 
@@ -63,12 +63,11 @@ class _EditProfileState extends State<EditProfile>
     _meetsPicCount = context.watch<EditProfileNotifier>().picCount >= 3;
   }
 
-  onSaveChanges() async {
+  Future<bool> onSaveChanges() async {
     if (!_meetsPicCount) {
       return await onValidateSave();
     }
 
-    // Show loading sheet and wait for it to display
     showLoadingSheet(
       context,
       _controller,
@@ -76,20 +75,29 @@ class _EditProfileState extends State<EditProfile>
       subHeader: 'Your changes will be saved in a minute',
     );
 
-    // Save user profile and wait for it to complete
-    await _profileNotifier.saveUserProfile(
+    bool success = await _profileNotifier.saveUserProfile(
       showSnackbar: (msg) => showSnackbar(msg, pop: true),
     );
 
-    if (!mounted) return;
+    if (!mounted) return success;
 
-    Navigator.of(context).pop();
+    if (success) {
+      Navigator.of(context).pop();
+
+      return true;
+    }
+
+    return false;
   }
 
   showSnackbar(String message, {bool pop = false}) {
     if (mounted) {
       if (pop) Navigator.of(context).pop();
-      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+      showTopSnackBar(
+        Overlay.of(context),
+        displayDuration: const Duration(seconds: 5),
+        AppSnackbar(text: message),
+      );
     }
   }
 
@@ -110,9 +118,9 @@ class _EditProfileState extends State<EditProfile>
       if (!result) {
         await wait();
 
-        await onSaveChanges();
+        bool success = await onSaveChanges();
 
-        if (mounted) Navigator.of(context).pop();
+        if (mounted && success) Navigator.of(context).pop();
       }
 
       if (result && mounted) {

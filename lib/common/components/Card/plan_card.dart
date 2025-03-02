@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../styles/text_style.dart';
-import '../../utils/index.dart';
-import '../index.dart';
+import '../../utils/utils.dart';
+import '../components.dart';
 
 class PlanCard extends StatelessWidget {
   final Color containerColor;

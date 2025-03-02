@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../../common/styles/text_style.dart';
-import '../../common/utils/index.dart';
+import '../../common/utils/utils.dart';
 import '../../constants/index.dart';
 
 class GlobalKeys {

@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../../tabs/matching/model/profile_data.dart';
 import 'generic_enum.dart';
 

@@ -2,11 +2,11 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../auth/onboarding/data/state/notifier_set.dart';
 import '../../../auth/onboarding/model/alphabet.dart';
 

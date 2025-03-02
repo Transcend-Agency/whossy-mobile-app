@@ -1,4 +1,4 @@
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 
 class PreferenceModel {
   final String leadingAsset;

@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
-import '../../../../../provider/providers.dart';
+import '../../../../../provider/provider.dart';
 
 class NotificationBell extends HookWidget {
   const NotificationBell({super.key, this.onTap, this.rightSpacing = 16});

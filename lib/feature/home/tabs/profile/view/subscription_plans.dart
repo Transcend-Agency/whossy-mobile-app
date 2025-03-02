@@ -1,7 +1,7 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 
 import '../model/credit.dart';
 import 'plans/free_plan.dart';

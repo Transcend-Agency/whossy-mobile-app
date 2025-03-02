@@ -7,11 +7,11 @@ import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/preferences/model/other_preferences.dart';
 
-import '../../../../../common/components/index.dart';
+import '../../../../../common/components/components.dart';
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
-import '../../../../../provider/providers.dart';
+import '../../../../../provider/provider.dart';
 
 class InterestBioComponent<T extends SearchPreferencesNotifier>
     extends HookWidget {

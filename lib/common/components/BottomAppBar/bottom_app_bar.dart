@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../constants/index.dart';
 import '../../../feature/home/tutorial.dart';
 import '../../styles/text_style.dart';
-import '../../utils/index.dart';
+import '../../utils/utils.dart';
 
 class BottomNavItem {
   final String assetPath;

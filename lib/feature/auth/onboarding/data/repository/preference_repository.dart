@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/common/utils/utils.dart';
 
 import '../../model/preferences.dart';
 

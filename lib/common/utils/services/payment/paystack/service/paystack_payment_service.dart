@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 import '../../../../../../env.dart';
-import '../../../../index.dart';
+import '../../../../utils.dart';
 import '../model/paystack_request_response.dart';
 import '../model/paystack_transaction.dart';
 

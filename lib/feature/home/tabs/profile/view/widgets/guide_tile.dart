@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 
 class GuideTile extends StatelessWidget {

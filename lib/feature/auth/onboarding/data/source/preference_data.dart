@@ -1,4 +1,4 @@
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../model/preference_model.dart';
 

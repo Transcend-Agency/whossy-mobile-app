@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../common/components/index.dart';
+import '../../../../common/components/components.dart';
 import '../../../../common/styles/text_style.dart';
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
 import '../data/state/onboarding_notifier.dart';
 

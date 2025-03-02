@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/utils/services/user_presence/user_presence_service.dart';
 import 'package:whossy_app/constants/strings.dart';
 
-import '../common/utils/index.dart';
+import '../common/utils/utils.dart';
 
 class Whossy extends StatefulWidget {
   const Whossy({super.key});

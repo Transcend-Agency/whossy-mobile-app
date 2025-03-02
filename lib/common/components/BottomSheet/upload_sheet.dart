@@ -5,7 +5,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../../constants/index.dart';
 import '../../styles/component_style.dart';
-import '../index.dart';
+import '../components.dart';
 
 class UploadSheet extends StatefulWidget {
   final String header;

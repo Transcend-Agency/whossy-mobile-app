@@ -6,7 +6,7 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../../constants/index.dart';
 import '../../styles/component_style.dart';
 import '../../styles/text_style.dart';
-import '../../utils/index.dart';
+import '../../utils/utils.dart';
 
 class AppSnackbar extends StatelessWidget {
   const AppSnackbar({

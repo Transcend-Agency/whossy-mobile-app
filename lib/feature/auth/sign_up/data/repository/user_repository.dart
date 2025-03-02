@@ -167,6 +167,7 @@ class UserRepository {
   }
 
   Future<List<String>> uploadPictures({
+    int timeout = 120,
     required List<File> files,
     required String Function(String?, String) pathGenerator,
   }) async {
@@ -185,7 +186,7 @@ class UserRepository {
 
       // Wait for all upload tasks to complete with a 45-second timeout
       return await Future.wait(uploadFutures).timeout(
-        const Duration(minutes: 2),
+        Duration(seconds: timeout),
         onTimeout: () {
           throw FailedUploadException(AppStrings.uploadTimeout);
         },

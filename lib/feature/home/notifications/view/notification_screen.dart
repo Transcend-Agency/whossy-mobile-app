@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
-import '../../../../provider/providers.dart';
+import '../../../../provider/provider.dart';
 import '../model/app_notification.dart';
 import 'widgets/notification_bell.dart';
 import 'widgets/notification_tile.dart';

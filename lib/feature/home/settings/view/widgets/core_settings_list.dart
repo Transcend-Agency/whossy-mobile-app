@@ -4,7 +4,7 @@ import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/feature/home/settings/data/state/settings_notifier.dart';
 
 import '../../../../../../constants/index.dart';
-import '../../../../../common/components/index.dart';
+import '../../../../../common/components/components.dart';
 import '../../data/source/core_settings_text_data.dart';
 import 'core_settings_tile.dart';
 

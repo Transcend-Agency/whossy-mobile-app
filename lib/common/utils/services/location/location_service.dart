@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../../index.dart';
+import '../../utils.dart';
 
 class LocationService {
   final _firestore = FirebaseFirestore.instance;
@@ -82,7 +82,6 @@ class LocationService {
         'geohash': geohash,
         'geography': geoPoint.data,
       });
-
     } catch (e) {
       throw LocationServiceException('Error updating location');
     }

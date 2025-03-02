@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whossy_app/common/utils/app_utils.dart';
-import 'package:whossy_app/common/utils/index.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/chat_with_user.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';

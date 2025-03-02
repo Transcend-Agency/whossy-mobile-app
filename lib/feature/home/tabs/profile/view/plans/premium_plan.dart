@@ -5,13 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 
-import '../../../../../../common/components/index.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/components/components.dart';
 import '../../../../../../common/utils/services/payment/nomba/nomba_web_page.dart';
 import '../../../../../../common/utils/services/payment/paystack/paystack_web_page.dart';
 import '../../../../../../common/utils/services/services.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
-import '../../../../../../provider/providers.dart';
+import '../../../../../../provider/provider.dart';
 import '../../data/source/subscription_plan_data.dart';
 import '../../model/credit.dart';
 import '../../model/subscription_plan.dart';

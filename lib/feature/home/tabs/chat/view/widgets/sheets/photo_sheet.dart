@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/common/utils/utils.dart';
 
-import '../../../../../../../common/components/index.dart';
+import '../../../../../../../common/components/components.dart';
 import '../../../../../../../common/styles/component_style.dart';
 import '../../../../../../../common/styles/text_style.dart';
 import '../../../../../../../constants/index.dart';

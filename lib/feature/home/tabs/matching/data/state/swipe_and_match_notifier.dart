@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whossy_app/common/components/Snackbar/app_snackbar.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/feature/home/home_wrapper.dart';
 import 'package:whossy_app/feature/home/preferences/model/other_preferences.dart';
 

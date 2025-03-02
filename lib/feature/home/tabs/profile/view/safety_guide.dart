@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/components/index.dart';
-import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/common/components/components.dart';
+import 'package:whossy_app/common/utils/utils.dart';
 
 import '../../../../../common/styles/component_style.dart';
 import '../../../../../constants/index.dart';
-import '../../../../../provider/providers.dart';
+import '../../../../../provider/provider.dart';
 import '../data/source/safety_guide_data.dart';
 import '../model/guide_detail.dart';
 import 'widgets/_.dart';

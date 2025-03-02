@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../../constants/index.dart';
-import '../../../../components/index.dart';
-import '../../../index.dart';
+import '../../../../components/components.dart';
 import '../../../router/router.gr.dart';
+import '../../../utils.dart';
 import 'model/nomba_request_response.dart';
 import 'service/nomba_auth_service.dart';
 import 'service/nomba_payment_service.dart';

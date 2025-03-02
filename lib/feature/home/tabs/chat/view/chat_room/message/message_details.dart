@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/source/extensions.dart';
 
 import '../../../../../../../common/styles/text_style.dart';
-import '../../../../../../../common/utils/index.dart';
+import '../../../../../../../common/utils/utils.dart';
 
 class MessageDetails extends StatelessWidget {
   const MessageDetails({

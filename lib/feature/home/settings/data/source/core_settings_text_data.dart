@@ -1,4 +1,4 @@
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../model/core_settings_text.dart';
 
 List<CoreSettingsText> coreSettingItems = [

@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
-import 'package:whossy_app/common/utils/index.dart';
-import 'package:whossy_app/provider/providers.dart';
+import 'package:whossy_app/common/utils/utils.dart';
+import 'package:whossy_app/provider/provider.dart';
 
 import '../../../../../../../common/styles/text_style.dart';
 import '../../../../../../../constants/index.dart';

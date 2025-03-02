@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-import '../../../../../../../../common/components/index.dart';
+import '../../../../../../../../common/components/components.dart';
 
 class LoadingGrid extends StatelessWidget {
   const LoadingGrid({super.key});

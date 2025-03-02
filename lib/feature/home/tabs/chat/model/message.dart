@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
-import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/common/utils/utils.dart';
 
 part 'message.g.dart'; // Generated file for JSON serialization
 

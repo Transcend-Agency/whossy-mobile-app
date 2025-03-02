@@ -1,4 +1,4 @@
-// index.dart
+// components.dart
 export 'app_utils.dart';
 export 'debouncer.dart';
 export 'enum/enum_conversions.dart';

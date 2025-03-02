@@ -6,9 +6,9 @@ import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 
 import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
-import '../../../../../../provider/providers.dart';
+import '../../../../../../provider/provider.dart';
 import '../../model/explore_filters.dart';
 
 class ExploreFiltersComponent extends HookWidget {

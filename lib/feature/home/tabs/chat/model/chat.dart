@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import 'current_chat.dart';
 import 'message.dart';
 

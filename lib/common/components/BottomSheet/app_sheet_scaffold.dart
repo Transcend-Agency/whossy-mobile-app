@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../styles/component_style.dart';
 import '../../styles/text_style.dart';
-import '../../utils/index.dart';
+import '../../utils/utils.dart';
 import '../Divider/app_divider.dart';
 
 class AppSheetScaffold extends StatelessWidget {

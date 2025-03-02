@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../styles/text_style.dart';
-import '../../utils/index.dart';
+import '../../utils/utils.dart';
 
 class SignupHeaderText extends StatelessWidget {
   final String title;

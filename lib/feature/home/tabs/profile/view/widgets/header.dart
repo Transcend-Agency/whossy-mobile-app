@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/provider/providers.dart';
+import 'package:whossy_app/provider/provider.dart';
 
 import '../../../../../../common/components/Shimmer/shimmer_widget.dart';
 import '../../../../../../common/utils/router/router.dart';
