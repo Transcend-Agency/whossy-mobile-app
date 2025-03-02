@@ -8,7 +8,7 @@ import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../../../provider/provider.dart';
-import '../widgets/_.dart';
+import '../widgets/widgets.dart';
 
 @RoutePage()
 class BlockedContacts extends StatefulWidget {

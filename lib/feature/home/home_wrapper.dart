@@ -10,7 +10,6 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/feature/home/tutorial.dart';
 
-import '../../common/styles/text_style.dart';
 import '../../common/utils/services/services.dart';
 import '../../common/utils/utils.dart';
 import '../../constants/index.dart';
@@ -180,17 +179,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
       () {
         if (!_swipeAndMatchNotifier.hasTakenTutorial) {
           TutorialCoachMark(
+            hideSkip: true,
             paddingFocus: 0,
             targets: targets,
-            colorShadow: Colors.black.withOpacity(0.3),
-            skipWidget: Text(
-              'Skip',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(15.sp) ?? 16.5.sp,
-                color: Colors.white,
-              ),
-            ),
+            colorShadow: Colors.black.withOpacity(0.2),
             onFinish: () => _swipeAndMatchNotifier.hasTakenTutorial = true,
           ).show(context: context);
         }

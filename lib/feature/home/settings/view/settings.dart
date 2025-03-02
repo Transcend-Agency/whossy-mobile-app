@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +14,7 @@ import '../../../../../common/styles/text_style.dart';
 import '../../../../../constants/index.dart';
 import '../../../../common/utils/utils.dart';
 import '../data/source/extra_settings_data.dart';
-import 'widgets/_.dart';
+import 'widgets/widgets.dart';
 
 @RoutePage()
 class Settings extends StatefulWidget {
@@ -42,7 +44,10 @@ class _SettingsState extends State<Settings> {
     if (result == null) return null;
 
     if (result && mounted) {
+      log('Attempting to sign out the user...');
       await context.read<SettingsNotifier>().signOut(showSnackbar);
+
+      log("User successfully signed out.");
 
       if (!mounted) return null;
 

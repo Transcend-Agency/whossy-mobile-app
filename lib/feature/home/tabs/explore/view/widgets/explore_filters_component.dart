@@ -24,16 +24,16 @@ class ExploreFiltersComponent extends HookWidget {
     );
 
     useEffect(() {
-      // Delay the filter selection until after the first frame has been rendered.
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (explore.getFilter(Filters.discover) == null) {
+        // Only add 'discover' if no other filters are active
+        if (explore.filters.filters.isEmpty) {
           explore.addFilter(
             Filters.discover,
             _getFilterValue(Filters.discover, profileData),
           );
         }
       });
-      return null; // no cleanup needed
+      return null;
     }, []);
 
     return SingleChildScrollView(
@@ -105,6 +105,7 @@ class ExploreFiltersComponent extends HookWidget {
       case Filters.advancedSearch:
         return ''; // Nothing is needed here
       case Filters.discover:
-        return ''; }
+        return '';
+    }
   }
 }

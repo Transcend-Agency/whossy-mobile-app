@@ -320,8 +320,8 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
                 ),
               ),
               useScroll ? addHeight(60) : const Spacer(),
-              PrivacyText(
-                action: () {},
+              const PrivacyText(
+              
                 text: AppStrings.createAgreement,
               )
             ],

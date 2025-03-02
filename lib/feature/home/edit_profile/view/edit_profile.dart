@@ -10,7 +10,7 @@ import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
 import '../../../../provider/provider.dart';
-import '../../settings/view/widgets/_.dart';
+import '../../settings/view/widgets/widgets.dart';
 import 'widgets/_.dart';
 
 @RoutePage()

@@ -316,8 +316,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               useScroll ? addHeight(60) : const Spacer(),
-              PrivacyText(
-                action: () {},
+              const PrivacyText(
+            
                 text: AppStrings.loginAgreement,
               )
             ],
