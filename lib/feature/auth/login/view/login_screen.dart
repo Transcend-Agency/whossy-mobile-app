@@ -90,6 +90,20 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<void> loginWithApple() async {
+    // showAppleDialog(context);
+
+    await loginNotifier
+        .loginWithApple(
+          showSnackbar: showSnackbar,
+          onAuthenticate: onAuthenticate,
+          showEmailSnackbar: showEmailSnackbar,
+          toCreateAccount: toCreateAccount,
+          toOnboarding: toOnboarding,
+        )
+        .whenComplete(() => context.mounted ? Navigator.of(context).pop() : {});
+  }
+
   Future<void> loginWithGoogle() async {
     showGoogleDialog(context);
 
@@ -102,12 +116,6 @@ class _LoginScreenState extends State<LoginScreen> {
           toOnboarding: toOnboarding,
         )
         .whenComplete(() => context.mounted ? Navigator.of(context).pop() : {});
-  }
-
-  Future<void> loginWithFacebook() async {
-    await loginNotifier.loginWithFacebook(
-      showSnackbar: showSnackbar,
-    );
   }
 
   // Function to show the "Email not verified" Snackbar
@@ -292,32 +300,29 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // OutlinedAppButton(
-                  //   onPress: loginWithFacebook,
-                  //   child: Center(
-                  //     child: fbIcon(),
-                  //   ),
-                  // ),
+                  OutlinedAppButton(
+                    onPress: loginWithApple,
+                    child: Icon(
+                      Icons.apple_rounded,
+                      color: Colors.black,
+                      size: 29.r,
+                    ),
+                  ),
                   OutlinedAppButton(
                     onPress: loginWithGoogle,
-                    child: Center(
-                      child: Transform.scale(
-                        scale: 0.9,
-                        child: SvgPicture.asset(AppAssets.googleLogo),
-                      ),
+                    child: Transform.scale(
+                      scale: 0.9,
+                      child: SvgPicture.asset(AppAssets.googleLogo),
                     ),
                   ),
                   OutlinedAppButton(
                     onPress: () => Nav.push(context, PhoneNumberRoute()),
-                    child: Center(
-                      child: phone(),
-                    ),
+                    child: phone(),
                   ),
                 ],
               ),
               useScroll ? addHeight(60) : const Spacer(),
               const PrivacyText(
-            
                 text: AppStrings.loginAgreement,
               )
             ],

@@ -40,7 +40,6 @@ class UserPresenceService {
     });
   }
 
-  /// Updates user online/offline status manually (when app state changes)
   Future<void> updateUserStatus(bool online) async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -49,10 +48,17 @@ class UserPresenceService {
     }
 
     try {
-      await _userRef(user.uid).update({
-        'online': online,
-        'lastSeen': ServerValue.timestamp,
-      });
+      await _userRef(user.uid).update(
+        {
+          'online': online,
+          'lastSeen': ServerValue.timestamp,
+        },
+      ).timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          return;
+        },
+      );
     } catch (e) {
       log('Online state update failed for user: ${user.uid}. Error: $e');
     }

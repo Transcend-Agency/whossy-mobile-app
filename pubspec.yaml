@@ -62,6 +62,7 @@ dependencies:
   webview_flutter: ^4.8.0
   envied: ^1.1.0
   in_app_purchase: ^3.2.0
+  sign_in_with_apple: ^6.1.4
   # Git Dependencies
   country_picker:
     git:

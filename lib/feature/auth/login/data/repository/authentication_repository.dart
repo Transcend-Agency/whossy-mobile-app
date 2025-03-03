@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
@@ -86,13 +87,11 @@ class AuthenticationRepository {
     final user = FirebaseAuth.instance.currentUser;
 
     try {
-      // Link if a user is already signed in, otherwise sign in
       return user != null
           ? await user.linkWithCredential(credential)
           : await FirebaseAuth.instance.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'provider-already-linked') {
-        // Handle provider-already-linked case
         return await FirebaseAuth.instance.signInWithCredential(credential);
       }
       rethrow;
@@ -105,21 +104,17 @@ class AuthenticationRepository {
 
     if (isSignedIn) await GoogleSignIn().disconnect();
 
-    // Trigger the authentication flow
     final googleUser = await GoogleSignIn().signIn();
 
     if (googleUser == null) return null;
 
-    // Obtain the auth details from the request
     final googleAuth = await googleUser.authentication;
 
-    // Create a new credential
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    // Check if the email is registered with the app
     final emailExists = await _userRepository.doesEmailExist(googleUser.email);
 
     if (emailExists && !isLogin) {
@@ -133,21 +128,53 @@ class AuthenticationRepository {
     final user = FirebaseAuth.instance.currentUser;
 
     try {
-      // Link if a user is already signed in, otherwise sign in
       return user != null
           ? await user.linkWithCredential(credential)
           : await FirebaseAuth.instance.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'provider-already-linked' ||
           e.code == 'credential-already-in-use') {
-        // Sign in with Google credential if provider is already linked
         return await FirebaseAuth.instance.signInWithCredential(credential);
       } else {
-        // Rethrow the exception if it's not provider-already-linked
         rethrow;
       }
     }
   }
 
-  Future<void> handleFacebookLogin() async {}
+  Future<UserCredential?> handleAppleAuthentication() async {
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+
+    final credential = OAuthProvider("apple.com").credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+    );
+
+    final emailExists = appleCredential.email != null
+        ? await _userRepository.doesEmailExist(appleCredential.email!)
+        : false;
+
+    if (emailExists) {
+      throw RegisteredEmailException(AppStrings.registeredEmail);
+    }
+
+    final user = FirebaseAuth.instance.currentUser;
+
+    try {
+      return user != null
+          ? await user.linkWithCredential(credential)
+          : await FirebaseAuth.instance.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'provider-already-linked' ||
+          e.code == 'credential-already-in-use') {
+        return await FirebaseAuth.instance.signInWithCredential(credential);
+      } else {
+        rethrow;
+      }
+    }
+  }
 }

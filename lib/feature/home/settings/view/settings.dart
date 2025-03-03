@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/settings/data/state/settings_notifier.dart';
@@ -25,12 +22,6 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  showSnackbar(String message) {
-    if (mounted) {
-      showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
-    }
-  }
-
   // Adjusted method to return Future<bool?>?
   Future<bool?>? _handleLogout() async {
     bool? result = await showConfirmationDialog(
@@ -44,10 +35,9 @@ class _SettingsState extends State<Settings> {
     if (result == null) return null;
 
     if (result && mounted) {
-      log('Attempting to sign out the user...');
-      await context.read<SettingsNotifier>().signOut(showSnackbar);
-
-      log("User successfully signed out.");
+      await context.read<SettingsNotifier>().signOut(
+            (msg) => showSnackbar(msg, context),
+          );
 
       if (!mounted) return null;
 

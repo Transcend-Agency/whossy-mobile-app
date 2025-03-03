@@ -39,7 +39,7 @@ class SettingsNotifier extends ChangeNotifier {
 
   Future<void> signOut(void Function(String) showSnackbar) async {
     try {
-      //await _userService.updateUserStatus(false);
+      await _userService.updateUserStatus(false);
 
       await _userRepository.signOut();
     } catch (e) {

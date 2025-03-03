@@ -58,6 +58,44 @@ class LoginNotifier extends ChangeNotifier {
     }
   }
 
+  Future<void> loginWithApple({
+    required void Function(String) showSnackbar,
+    required VoidCallback onAuthenticate,
+    required VoidCallback toCreateAccount,
+    required VoidCallback toOnboarding,
+    required void Function(UserCredential) showEmailSnackbar,
+  }) async {
+    try {
+      userCredential = await _authRepository.handleAppleAuthentication();
+
+      await _userRepo.accountCheck(
+        user: userCredential?.user,
+        userCred: userCredential,
+        showSnackbar: showSnackbar,
+        toOnboarding: toOnboarding,
+        onAuthenticate: onAuthenticate,
+        toCreateAccount: toCreateAccount,
+        showEmailSnackbar: showEmailSnackbar,
+      );
+    } on FirebaseAuthException catch (e) {
+      handleFirebaseAuthError(e, showSnackbar);
+    } on FirebaseException catch (e) {
+      handleFirebaseError(e, showSnackbar);
+    } on UnregisteredEmailException catch (e) {
+      showSnackbar(e.message);
+    } on PlatformException catch (e) {
+      if (e.code == 'network_error') {
+        showSnackbar(AppStrings.deviceOffline);
+      } else {
+        log('Apple sign-in failed. Error: ${e.message}');
+        showSnackbar(AppStrings.errorUnknown);
+      }
+    } catch (e) {
+      log('Attempting to sign in from Apple. Error $e');
+      showSnackbar(AppStrings.errorUnknown);
+    }
+  }
+
   Future<void> loginWithGoogle({
     required void Function(String) showSnackbar,
     required VoidCallback onAuthenticate,
@@ -91,23 +129,9 @@ class LoginNotifier extends ChangeNotifier {
         showSnackbar(AppStrings.errorUnknown);
       }
     } catch (e) {
-      log('Attempting to sign in from google. Error $e');
+      log('Attempting to sign in from Google. Error $e');
       showSnackbar(AppStrings.errorUnknown);
     }
-  }
-
-  Future<void> loginWithFacebook({
-    required void Function(String) showSnackbar,
-  }) async {
-    try {
-      await _authRepository.handleFacebookLogin();
-    } on FirebaseAuthException catch (e) {
-      handleFirebaseAuthError(e, showSnackbar);
-    } on UnregisteredEmailException catch (e) {
-      showSnackbar(e.message);
-    } catch (e) {
-      showSnackbar(AppStrings.accUnselected);
-    } finally {}
   }
 
   Future<void> loginWithPhoneNumber({
