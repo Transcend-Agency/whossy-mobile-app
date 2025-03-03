@@ -7,15 +7,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/feature/home/tutorial.dart';
 
-import '../../common/styles/text_style.dart';
-import '../../common/utils/index.dart';
 import '../../common/utils/services/services.dart';
+import '../../common/utils/utils.dart';
 import '../../constants/index.dart';
-import '../../provider/providers.dart';
+import '../../provider/provider.dart';
 import 'tabs/_.dart';
+import 'tabs/explore/data/state/scroll_visibility_notifier.dart';
 import 'tabs/matching/data/state/location_permission_stream.dart';
 
 @RoutePage()
@@ -47,6 +47,14 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   // Other UI code
   late List<Widget> _pages;
+  final List<BottomNavItem> _bottomNavItems = [
+    const BottomNavItem(assetPath: AppAssets.globalSearch, label: "Explore"),
+    const BottomNavItem(assetPath: AppAssets.fire, label: "Matching"),
+    const BottomNavItem(assetPath: AppAssets.heart, label: "Likes/Match"),
+    const BottomNavItem(assetPath: AppAssets.chat, label: "Chat"),
+    const BottomNavItem(assetPath: AppAssets.user, label: "Profile"),
+  ];
+
   int selectedIndex = 0;
 
   @override
@@ -137,20 +145,29 @@ class _HomeWrapperState extends State<HomeWrapper> {
     return StreamProvider<LocationPermission>(
       create: (_) => createLifecycleAwarePermissionStream(),
       initialData: LocationPermission.denied,
-      child: AppScaffold(
-        applyTop: false,
-        body: SizedBox(
-          child: _pages.elementAt(selectedIndex),
-        ),
-        bottomNavBar: CustomBottomAppBar(
-          onTabSelected: _selectedTab,
-          items: const [
-            BottomNavItem(assetPath: AppAssets.globalSearch, label: "Explore"),
-            BottomNavItem(assetPath: AppAssets.fire, label: "Matching"),
-            BottomNavItem(assetPath: AppAssets.heart, label: "Likes/Match"),
-            BottomNavItem(assetPath: AppAssets.chat, label: "Chat"),
-            BottomNavItem(assetPath: AppAssets.user, label: "Profile"),
-          ],
+      child: ChangeNotifierProvider(
+        create: (_) => ScrollVisibilityNotifier(),
+        child: Consumer<ScrollVisibilityNotifier>(
+          builder: (context, scrollNotifier, child) {
+            return AppScaffold(
+              applyTop: false,
+              body: SizedBox(
+                child: _pages.elementAt(selectedIndex),
+              ),
+              bottomNavBar: AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                height: scrollNotifier.isVisible ? 76.h : 0,
+                child: Wrap(
+                  children: [
+                    CustomBottomAppBar(
+                      onTabSelected: _selectedTab,
+                      items: _bottomNavItems,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -162,17 +179,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
       () {
         if (!_swipeAndMatchNotifier.hasTakenTutorial) {
           TutorialCoachMark(
+            hideSkip: true,
             paddingFocus: 0,
             targets: targets,
-            colorShadow: Colors.black.withOpacity(0.3),
-            skipWidget: Text(
-              'Skip',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(15.sp) ?? 16.5.sp,
-                color: Colors.white,
-              ),
-            ),
+            colorShadow: Colors.black.withOpacity(0.2),
             onFinish: () => _swipeAndMatchNotifier.hasTakenTutorial = true,
           ).show(context: context);
         }

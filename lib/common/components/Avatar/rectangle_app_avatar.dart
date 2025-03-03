@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/index.dart';
-import '../../utils/index.dart';
-import '../index.dart';
+import '../../utils/utils.dart';
+import '../components.dart';
 
 class RectangleAppAvatar extends StatelessWidget {
   final String? imageUrl;

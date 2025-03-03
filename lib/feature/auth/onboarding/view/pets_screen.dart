@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../common/components/index.dart';
+import '../../../../common/components/components.dart';
 import '../../../../common/styles/text_style.dart';
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
 import '../data/source/workout_data.dart';
 import '../data/state/onboarding_notifier.dart';
@@ -77,7 +77,7 @@ class _PetsScreenState extends State<PetsScreen>
                   );
                 }).toList()),
             addHeight(16),
-           const AppDivider(),
+            const AppDivider(),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 13.h),
               child: Text(

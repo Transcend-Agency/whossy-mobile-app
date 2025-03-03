@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/feature/home/edit_profile/model/edit_profile_data.dart';
 import 'package:whossy_app/feature/home/edit_profile/view/widgets/edit/image_view.dart';
-import 'package:whossy_app/provider/providers.dart';
+import 'package:whossy_app/provider/provider.dart';
 
 import '../../../../../../common/utils/router/router.dart';
 import '../../../../../../common/utils/router/router.gr.dart';

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../../../home/tabs/matching/model/profile_data.dart';
 
 part 'preferences.g.dart';

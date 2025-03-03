@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 
-import '../../../../../common/components/index.dart';
+import '../../../../../common/components/components.dart';
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 
 class ReportDialog extends StatefulWidget {
@@ -67,14 +67,16 @@ class _ReportDialogState extends State<ReportDialog> {
                 color: Colors.black87,
               ),
             ),
-            addHeight(8),
-            Text(
-              'Reason for reporting:',
-              style: TextStyles.boldPrefText.copyWith(
-                fontSize: AppUtils.scale(12.sp) ?? 13.5.sp,
-                color: Colors.black87,
-              ),
-            ),
+            // addHeight(8),
+
+            // Temporarily commented this
+            // Text(
+            //   'Reason for reporting:',
+            //   style: TextStyles.boldPrefText.copyWith(
+            //     fontSize: AppUtils.scale(12.sp) ?? 13.5.sp,
+            //     color: Colors.black87,
+            //   ),
+            // ),
           ],
         ),
         content: SingleChildScrollView(

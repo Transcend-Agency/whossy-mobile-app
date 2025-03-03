@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 
 class MeetModel {
   final IconData? icon;

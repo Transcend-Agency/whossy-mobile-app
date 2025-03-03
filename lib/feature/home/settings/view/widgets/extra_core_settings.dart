@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 
 import '../../../../../../common/styles/component_style.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 
 class ExtraCoreSettings extends StatelessWidget {
@@ -41,7 +41,7 @@ class ExtraCoreSettings extends StatelessWidget {
             ],
           ),
         ),
-       const AppDivider(),
+        const AppDivider(),
       ],
     );
   }

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
 
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../../../auth/onboarding/model/face_verification.dart';
 import '../../../auth/sign_up/model/geography.dart';
 import '../../../auth/sign_up/model/payment.dart';

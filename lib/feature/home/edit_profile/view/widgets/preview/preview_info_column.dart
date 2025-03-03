@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../common/components/index.dart';
+import '../../../../../../common/components/components.dart';
 import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../model/info_item.dart';
 
@@ -32,7 +32,7 @@ class PreviewInfoColumn extends StatelessWidget {
           if (i < items.length - 1)
             Padding(
               padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
-              child:  const AppDivider(),
+              child: const AppDivider(),
             ),
         ],
       ],

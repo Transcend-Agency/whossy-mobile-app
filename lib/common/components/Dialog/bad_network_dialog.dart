@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
-import '../../utils/index.dart';
+import '../../utils/utils.dart';
 
 class BadNetworkDialog extends StatefulWidget {
   const BadNetworkDialog({

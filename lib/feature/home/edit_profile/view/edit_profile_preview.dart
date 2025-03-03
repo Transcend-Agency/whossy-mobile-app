@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../common/components/index.dart';
-import '../../../../provider/providers.dart';
+import '../../../../common/components/components.dart';
+import '../../../../provider/provider.dart';
 import '../model/edit_profile_data.dart';
 
 @RoutePage()

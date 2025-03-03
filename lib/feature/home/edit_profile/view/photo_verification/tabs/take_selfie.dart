@@ -8,9 +8,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 
-import '../../../../../../common/components/index.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/components/components.dart';
 import '../../../../../../common/utils/services/services.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../auth/onboarding/view/edit_sheet.dart';
 

@@ -1,4 +1,4 @@
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../model/workout_model.dart';
 
 List<WorkoutModel> workOutData = [

@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../constants/index.dart';
-import '../../utils/index.dart';
+import '../../utils/utils.dart';
 
 class Logo extends StatelessWidget {
   const Logo({super.key});

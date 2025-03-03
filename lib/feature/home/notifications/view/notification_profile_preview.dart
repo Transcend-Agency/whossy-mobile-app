@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../common/components/index.dart';
-import '../../../../common/utils/index.dart';
+import '../../../../common/components/components.dart';
 import '../../../../common/utils/router/router.gr.dart';
+import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
-import '../../../../provider/providers.dart';
+import '../../../../provider/provider.dart';
 import '../../tabs/matching/model/user_profile.dart';
 import 'notification_screen.dart';
 

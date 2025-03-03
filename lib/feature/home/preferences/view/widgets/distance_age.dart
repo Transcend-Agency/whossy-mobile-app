@@ -6,10 +6,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/preferences/model/other_preferences.dart';
 
-import '../../../../../common/components/index.dart';
+import '../../../../../common/components/components.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../constants/index.dart';
-import '../../../../../provider/providers.dart';
+import '../../../../../provider/provider.dart';
 
 class DistanceAgeComponent<T extends SearchPreferencesNotifier>
     extends HookWidget {

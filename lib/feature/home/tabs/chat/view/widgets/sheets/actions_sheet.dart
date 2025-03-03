@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../../common/components/index.dart';
+import '../../../../../../../common/components/components.dart';
 import '../../../../../../../common/styles/component_style.dart';
 import '../../../../../../../common/styles/text_style.dart';
-import '../../../../../../../common/utils/index.dart';
+import '../../../../../../../common/utils/utils.dart';
 import '../../../../../../../constants/index.dart';
-import '../../../../../../../provider/providers.dart';
+import '../../../../../../../provider/provider.dart';
 import '../../../../profile/model/report.dart';
 import '../../../../profile/view/report_dialog.dart';
 import '../../../model/chat_room_data.dart';

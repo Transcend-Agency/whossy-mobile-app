@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
-import '../../utils/index.dart';
+import '../../utils/utils.dart';
 
 class ProfileDetailsCard extends StatelessWidget {
   const ProfileDetailsCard({

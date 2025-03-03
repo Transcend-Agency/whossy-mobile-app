@@ -1,7 +1,7 @@
 name: whossy_app
 description: "The mobile app for Whossy"
 publish_to: 'none' # Prevents accidental publication to pub.dev
-version: 1.0.1+50000
+version: 1.0.1+60000
 
 environment:
   sdk: '>=3.3.4 <4.0.0'
@@ -62,6 +62,7 @@ dependencies:
   webview_flutter: ^4.8.0
   envied: ^1.1.0
   in_app_purchase: ^3.2.0
+  sign_in_with_apple: ^6.1.4
   # Git Dependencies
   country_picker:
     git:

@@ -13,7 +13,7 @@ import 'package:whossy_app/feature/home/edit_profile/data/repository/edit_profil
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/onboarding/model/preferences.dart';
 import '../../../../auth/sign_up/data/repository/user_repository.dart';
@@ -308,6 +308,7 @@ class EditProfileNotifier extends ChangeNotifier {
     if (faceVerification.photo == null) return;
 
     final photoUrls = await _userRepository.uploadPictures(
+      timeout: 30,
       files: [File(faceVerification.photo!)],
       pathGenerator: AppStrings.faceVerPicPath,
     );
@@ -327,9 +328,8 @@ class EditProfileNotifier extends ChangeNotifier {
     if (e is FirebaseException) {
       handleFirebaseError(e, showSnackbar);
     } else {
-      showSnackbar(e is FailedUploadException
-          ? (e as dynamic).title
-          : AppStrings.errorUnknown);
+      showSnackbar(
+          e is FailedUploadException ? (e).message : AppStrings.errorUnknown);
       log(e.toString());
     }
   }

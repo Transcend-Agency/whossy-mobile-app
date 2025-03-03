@@ -9,12 +9,12 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 import 'package:whossy_app/feature/home/tabs/likes_and_match/model/likes_match_data.dart';
 import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/profile_view.dart';
-import 'package:whossy_app/provider/providers.dart';
+import 'package:whossy_app/provider/provider.dart';
 
-import '../../../../../../common/components/index.dart';
+import '../../../../../../common/components/components.dart';
 import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../explore/model/liked_user_profile.dart';
 import 'grid_view.dart';

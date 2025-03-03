@@ -5,15 +5,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 
-import '../../../../constants/index.dart';
-import '../../../../feature/home/edit_profile/model/info_item.dart';
-import '../../../../feature/home/edit_profile/view/widgets/_.dart';
-import '../../../../feature/home/edit_profile/view/widgets/edit/image_view.dart';
-import '../../../../feature/home/tabs/matching/model/profile_data.dart';
-import '../../../../provider/providers.dart';
-import '../../../styles/text_style.dart';
-import '../../../utils/index.dart';
-import '../../index.dart';
+import '../../../../../constants/index.dart';
+import '../../../../../feature/home/edit_profile/model/info_item.dart';
+import '../../../../../feature/home/edit_profile/view/widgets/_.dart';
+import '../../../../../feature/home/edit_profile/view/widgets/edit/image_view.dart';
+import '../../../../../feature/home/tabs/matching/model/profile_data.dart';
+import '../../../../../provider/provider.dart';
+import '../../../../styles/text_style.dart';
+import '../../../../utils/utils.dart';
+import '../../../components.dart';
 
 class ProfileDetailsScaffold extends HookWidget {
   const ProfileDetailsScaffold({

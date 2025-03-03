@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 
-import '../../../../../common/components/index.dart';
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/components/components.dart';
+import '../../../../../common/utils/utils.dart';
 
 class CitySheet extends StatefulWidget {
   const CitySheet({super.key, this.city});
@@ -46,7 +46,7 @@ class _CitySheetState extends State<CitySheet> {
   void dispose() {
     cityController.dispose();
     super.dispose();
-  }//
+  } //
 
   @override
   Widget build(BuildContext context) {

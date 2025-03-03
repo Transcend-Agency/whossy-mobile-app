@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../../constants/index.dart';
-import '../../../../components/index.dart';
-import '../../../index.dart';
+import '../../../../components/components.dart';
 import '../../../router/router.gr.dart';
+import '../../../utils.dart';
 import 'model/paystack_request_response.dart';
 import 'service/paystack_payment_service.dart';
 

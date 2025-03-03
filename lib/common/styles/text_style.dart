@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/utils/app_utils.dart';
 
 import '../../constants/index.dart';
-import '../utils/index.dart';
+import '../utils/utils.dart';
 
 class TextStyles {
   static TextStyle header = TextStyle(

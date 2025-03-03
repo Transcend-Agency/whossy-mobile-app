@@ -245,4 +245,9 @@ class AppStrings {
   // Tutorial for the 'Profile' tab (UserTab)
   static const String userTabTutorial =
       'Manage your profile, edit your information, and access your settings here.';
+
+  static const String termsUrl = 'https://www.google.com';
+
+  static const String privacyUrl =
+      'https://whossy-web-app-staging.vercel.app/privacy-policy';
 }

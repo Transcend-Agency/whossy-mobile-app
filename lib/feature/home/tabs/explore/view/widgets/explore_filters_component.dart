@@ -6,9 +6,9 @@ import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 
 import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
-import '../../../../../../provider/providers.dart';
+import '../../../../../../provider/provider.dart';
 import '../../model/explore_filters.dart';
 
 class ExploreFiltersComponent extends HookWidget {
@@ -24,16 +24,16 @@ class ExploreFiltersComponent extends HookWidget {
     );
 
     useEffect(() {
-      // Delay the filter selection until after the first frame has been rendered.
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (explore.getFilter(Filters.discover) == null) {
+        // Only add 'discover' if no other filters are active
+        if (explore.filters.filters.isEmpty) {
           explore.addFilter(
             Filters.discover,
             _getFilterValue(Filters.discover, profileData),
           );
         }
       });
-      return null; // no cleanup needed
+      return null;
     }, []);
 
     return SingleChildScrollView(
@@ -105,6 +105,7 @@ class ExploreFiltersComponent extends HookWidget {
       case Filters.advancedSearch:
         return ''; // Nothing is needed here
       case Filters.discover:
-        return ''; }
+        return '';
+    }
   }
 }

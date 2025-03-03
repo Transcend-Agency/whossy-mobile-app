@@ -1,6 +1,6 @@
 import 'package:whossy_app/feature/home/preferences/model/generic_enum.dart';
 
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../preferences/data/source/options.dart';
 
 List<CorePreferencesData> editProfileData = [

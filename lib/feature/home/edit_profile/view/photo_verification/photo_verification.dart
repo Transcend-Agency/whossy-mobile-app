@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../common/components/index.dart';
+import '../../../../../common/components/components.dart';
 import '../../../../../common/styles/component_style.dart';
 import 'tabs/take_selfie.dart';
 import 'tabs/verify_photo.dart';

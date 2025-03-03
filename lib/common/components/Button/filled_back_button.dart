@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../constants/index.dart';
-import '../../utils/index.dart';
+import '../../utils/utils.dart';
 
 class FilledBackButton extends StatelessWidget {
   const FilledBackButton({super.key, this.onTap, this.isDisabled = false});

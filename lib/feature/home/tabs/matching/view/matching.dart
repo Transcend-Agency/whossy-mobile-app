@@ -7,9 +7,9 @@ import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/tabs/matching/view/widgets/match.dart';
 
-import '../../../../../../common/components/index.dart';
+import '../../../../../../common/components/components.dart';
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../notifications/view/widgets/notification_bell.dart';
 

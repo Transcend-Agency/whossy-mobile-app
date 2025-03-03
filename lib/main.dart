@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/app/whossy.dart';
-import 'package:whossy_app/provider/providers.dart';
+import 'package:whossy_app/provider/app_providers.dart';
 
 import 'common/utils/services/services.dart';
 import 'firebase_options.dart';
@@ -35,53 +35,7 @@ void main() async {
 
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => OnboardingNotifier()),
-        ChangeNotifierProvider(create: (_) => SignUpNotifier()),
-        ChangeNotifierProvider(create: (_) => LoginNotifier()),
-        ChangeNotifierProvider(create: (_) => PreferencesNotifier()),
-        ChangeNotifierProvider(create: (_) => SettingsNotifier()),
-        ChangeNotifierProvider(create: (_) => EditProfileNotifier()),
-        ChangeNotifierProvider(create: (_) => ConnectivityNotifier()),
-        ChangeNotifierProxyProvider2<EditProfileNotifier, ConnectivityNotifier,
-            ChatsNotifier>(
-          create: (_) => ChatsNotifier(),
-          update: (_, profileData, networkStatus, chatNotifier) {
-            return chatNotifier!
-              ..saveProfile(profileData.staticProfile)
-              ..updateConnectivity(networkStatus.isConnected);
-          },
-        ),
-        ChangeNotifierProvider(create: (_) => AdvancedSearchNotifier()),
-        ChangeNotifierProxyProvider2<EditProfileNotifier, PreferencesNotifier,
-            SwipeAndMatchNotifier>(
-          create: (_) => SwipeAndMatchNotifier(),
-          update: (_, profileData, preferences, swipeAndMatch) {
-            return swipeAndMatch!
-              ..saveProfile(profileData.staticProfile)
-              ..saveFilters(
-                preferences.staticCorePreferences,
-                preferences.staticOtherPreferences,
-              );
-          },
-        ),
-        ChangeNotifierProvider(create: (_) => LikesNotifier()),
-        ChangeNotifierProvider(create: (_) => MatchesNotifier()),
-        ChangeNotifierProxyProvider2<EditProfileNotifier,
-            AdvancedSearchNotifier, ExploreNotifier>(
-          create: (_) => ExploreNotifier(),
-          update: (_, profileData, advancedSearchPrefs, explore) {
-            return explore!
-              ..saveProfile(profileData.staticProfile)
-              ..saveFilters(
-                advancedSearchPrefs.staticCorePreferences,
-                advancedSearchPrefs.staticOtherPreferences,
-              );
-          },
-        ),
-        ChangeNotifierProvider(create: (_) => NotificationNotifier()),
-        ChangeNotifierProvider(create: (_) => ReportNotifier()),
-      ],
+      providers: appProviders,
       child: const Whossy(),
     ),
   );

@@ -6,12 +6,12 @@ import 'package:flutter_hooks/flutter_hooks.dart'; // Import flutter_hooks
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart'; // Import the visibility_detector package
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/feature/home/notifications/data/state/notification_notifier.dart';
 
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../model/app_notification.dart';
 

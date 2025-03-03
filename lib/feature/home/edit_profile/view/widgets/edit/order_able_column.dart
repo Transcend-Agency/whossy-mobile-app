@@ -10,9 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/common/utils/services/file/file_service.dart';
 
-import '../../../../../../common/components/index.dart';
-import '../../../../../../common/utils/index.dart';
-import '../../../../../../provider/providers.dart';
+import '../../../../../../common/components/components.dart';
+import '../../../../../../common/utils/utils.dart';
+import '../../../../../../provider/provider.dart';
 import '../../../../../auth/onboarding/view/edit_sheet.dart';
 import 'image_view.dart';
 

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../common/components/index.dart';
+import '../../../../common/components/components.dart';
 import '../../../../common/styles/text_style.dart';
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../data/state/onboarding_notifier.dart';
 
 class BioScreen extends StatefulWidget {

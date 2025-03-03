@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 
 import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 
 class WhossySafetyGuide extends StatelessWidget {

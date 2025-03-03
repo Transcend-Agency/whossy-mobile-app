@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../preferences/model/core_preferences.dart';
 import '../../../../preferences/model/other_preferences.dart';
 import '../../../matching/data/repository/query_helper.dart';

@@ -10,11 +10,11 @@ import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:whossy_app/feature/home/tabs/matching/model/profile_data_footer.dart';
 
-import '../../../../constants/index.dart';
-import '../../../../provider/providers.dart';
-import '../../../styles/text_style.dart';
-import '../../../utils/index.dart';
-import '../../index.dart';
+import '../../../../../constants/index.dart';
+import '../../../../../provider/provider.dart';
+import '../../../../styles/text_style.dart';
+import '../../../../utils/utils.dart';
+import '../../../components.dart';
 
 typedef TapCallback = void Function(BuildContext context, int index);
 

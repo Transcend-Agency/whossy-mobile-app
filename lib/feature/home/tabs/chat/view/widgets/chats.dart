@@ -4,13 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/provider/providers.dart';
+import 'package:whossy_app/provider/provider.dart';
 
-import '../../../../../../common/components/index.dart';
+import '../../../../../../common/components/components.dart';
 import '../../../../../../common/styles/component_style.dart';
 import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../common/utils/index.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../model/chat_with_user.dart';
 import 'chat_tile.dart';
@@ -97,7 +97,7 @@ class _ChatsState extends State<Chats> {
     } else if (snapshot.hasError) {
       log('Error fetching chat tiles: ${snapshot.error}');
 
-       return const BadNetworkDialog(
+      return const BadNetworkDialog(
         key: ValueKey('error'),
       );
     } else {

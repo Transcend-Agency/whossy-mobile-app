@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../common/styles/text_style.dart';
-import '../../../common/utils/index.dart';
+import '../../../common/utils/utils.dart';
 import '../../../constants/index.dart';
 
 class OnboardingHeaderText extends StatelessWidget {

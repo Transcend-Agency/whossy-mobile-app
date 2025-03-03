@@ -11,11 +11,11 @@
 import 'package:auto_route/auto_route.dart' as _i36;
 import 'package:flutter/material.dart' as _i37;
 import 'package:image_picker/image_picker.dart' as _i38;
-import 'package:whossy_app/common/utils/index.dart' as _i40;
 import 'package:whossy_app/common/utils/services/payment/nomba/nomba_web_page.dart'
     as _i13;
 import 'package:whossy_app/common/utils/services/payment/paystack/paystack_web_page.dart'
     as _i16;
+import 'package:whossy_app/common/utils/utils.dart' as _i40;
 import 'package:whossy_app/feature/auth/login/view/login_screen.dart' as _i10;
 import 'package:whossy_app/feature/auth/login/view/phone_number_screen.dart'
     as _i17;

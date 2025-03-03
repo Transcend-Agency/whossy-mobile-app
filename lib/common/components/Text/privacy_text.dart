@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:whossy_app/common/utils/app_utils.dart';
 
 import '../../../constants/index.dart';
@@ -9,12 +10,19 @@ import '../../styles/text_style.dart';
 class PrivacyText extends StatelessWidget {
   const PrivacyText({
     super.key,
-    required this.action,
     required this.text,
   });
 
-  final VoidCallback action;
   final String text;
+
+  void _launchURL(String url) async {
+    if (!await launchUrl(
+      Uri.parse(url),
+      mode: LaunchMode.externalApplication,
+    )) {
+      debugPrint('Could not launch $url');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +43,8 @@ class PrivacyText extends StatelessWidget {
               style: TextStyles.privacyText.copyWith(
                 fontSize: AppUtils.scale(16),
               ),
-              recognizer: TapGestureRecognizer()..onTap = action,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => _launchURL(AppStrings.termsUrl),
             ),
             TextSpan(
               text: AppStrings.dataProcessingInfo,
@@ -48,7 +57,8 @@ class PrivacyText extends StatelessWidget {
               style: TextStyles.privacyText.copyWith(
                 fontSize: AppUtils.scale(16),
               ),
-              recognizer: TapGestureRecognizer()..onTap = action,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => _launchURL(AppStrings.privacyUrl),
             ),
           ], //
         ),

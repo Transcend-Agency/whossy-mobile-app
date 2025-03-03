@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../constants/colors.dart';
-import '../utils/index.dart';
+import '../utils/utils.dart';
 
 final pagePadding = EdgeInsets.symmetric(horizontal: 14.r);
 

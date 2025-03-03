@@ -3,10 +3,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/utils/index.dart';
+import 'package:whossy_app/common/utils/utils.dart';
 import 'package:whossy_app/feature/home/preferences/model/other_preferences.dart';
 
-import '../../../../../common/components/index.dart';
+import '../../../../../common/components/components.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/onboarding/data/source/meet_data.dart';

@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../constants/index.dart';
 import '../../styles/text_style.dart';
-import '../../utils/index.dart';
-import '../index.dart';
+import '../../utils/utils.dart';
+import '../components.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String title;

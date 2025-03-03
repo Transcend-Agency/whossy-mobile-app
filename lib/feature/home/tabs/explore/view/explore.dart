@@ -5,8 +5,8 @@ import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/tabs/explore/view/widgets/explore_filters_component.dart';
 import 'package:whossy_app/feature/home/tabs/explore/view/widgets/grid/explore_grid.dart';
 
-import '../../../../../../common/utils/index.dart';
-import '../../../../../common/components/index.dart';
+import '../../../../../../common/utils/utils.dart';
+import '../../../../../common/components/components.dart';
 import '../../../../../constants/index.dart';
 import '../../../notifications/view/widgets/notification_bell.dart';
 

@@ -9,9 +9,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/services/file/file_service.dart';
 
-import '../../../../common/components/index.dart';
+import '../../../../common/components/components.dart';
 import '../../../../common/styles/text_style.dart';
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
 import '../data/state/onboarding_notifier.dart';
 import 'edit_sheet.dart';

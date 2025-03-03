@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
-import '../../common/styles/text_style.dart';
-import '../../common/utils/index.dart';
+import '../../common/styles/component_style.dart';
 import '../../constants/index.dart';
+import 'settings/view/widgets/widgets.dart';
 
 class GlobalKeys {
   // Global Key for the Like button
@@ -127,81 +127,46 @@ final targets = [
   //   ],
   // ),
 
-  // Tutorial for the 'Explore' tab (GlobalSearchTab)
   TargetFocus(
     identify: 'globalSearchTab',
     keyTarget: GlobalKeys.globalSearchTabKey,
-    paddingFocus: 2,
     contents: [
       TargetContent(
         align: ContentAlign.top,
-        builder: (context, controller) => Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Explore',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
-                color: Colors.white,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h),
-              child: Text(
-                AppStrings.globalSearchTabTutorial,
-                style: TextStyles.prefText.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            addHeight(25),
-          ],
-        ),
+        padding: pagePadding.copyWith(bottom: 40.h),
+        builder: (context, controller) {
+          return TutorialComponent(
+            title: 'Explore',
+            step: "1 / 5",
+            body: AppStrings.globalSearchTabTutorial,
+            onSkip: () => controller.skip(),
+            onNext: () => controller.next(),
+          );
+        },
       ),
     ],
   ),
 
-  // Tutorial for the 'Swipe and Match' tab (FireTab)
   TargetFocus(
     identify: 'fireTab',
     keyTarget: GlobalKeys.fireTabKey,
-    paddingFocus: 2,
     contents: [
       TargetContent(
         align: ContentAlign.top,
-        builder: (context, controller) => Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Swipe and Match',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
-                color: Colors.white,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h),
-              child: Text(
-                AppStrings.fireTabTutorial,
-                style: TextStyles.prefText.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            addHeight(25),
-          ],
-        ),
+        padding: pagePadding.copyWith(bottom: 40.h),
+        builder: (context, controller) {
+          return TutorialComponent(
+            title: 'Swipe and Match',
+            step: "2 / 5",
+            body: AppStrings.fireTabTutorial,
+            onSkip: () => controller.skip(),
+            onNext: () => controller.next(),
+          );
+        },
       ),
     ],
   ),
 
-  // Tutorial for the 'Likes and Matches' tab (HeartTab)
   TargetFocus(
     identify: 'heartTab',
     keyTarget: GlobalKeys.heartTabKey,
@@ -209,36 +174,20 @@ final targets = [
     contents: [
       TargetContent(
         align: ContentAlign.top,
-        builder: (context, controller) => Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Likes and Matches',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
-                color: Colors.white,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h),
-              child: Text(
-                AppStrings.heartTabTutorial,
-                style: TextStyles.prefText.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            addHeight(25),
-          ],
-        ),
+        padding: pagePadding.copyWith(bottom: 40.h),
+        builder: (context, controller) {
+          return TutorialComponent(
+            title: 'Likes and Matches',
+            step: "3 / 5",
+            body: AppStrings.heartTabTutorial,
+            onSkip: () => controller.skip(),
+            onNext: () => controller.next(),
+          );
+        },
       ),
     ],
   ),
 
-  // Tutorial for the 'Chats' tab (ChatTab)
   TargetFocus(
     identify: 'chatTab',
     keyTarget: GlobalKeys.chatTabKey,
@@ -246,36 +195,20 @@ final targets = [
     contents: [
       TargetContent(
         align: ContentAlign.top,
-        builder: (context, controller) => Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Chats',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
-                color: Colors.white,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h),
-              child: Text(
-                AppStrings.chatTabTutorial,
-                style: TextStyles.prefText.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            addHeight(25),
-          ],
-        ),
+        padding: pagePadding.copyWith(bottom: 40.h),
+        builder: (context, controller) {
+          return TutorialComponent(
+            title: 'Chats',
+            step: "4 / 5",
+            body: AppStrings.chatTabTutorial,
+            onSkip: () => controller.skip(),
+            onNext: () => controller.next(),
+          );
+        },
       ),
     ],
   ),
 
-  // Tutorial for the 'Profile' tab (UserTab)
   TargetFocus(
     identify: 'userTab',
     keyTarget: GlobalKeys.userTabKey,
@@ -283,31 +216,16 @@ final targets = [
     contents: [
       TargetContent(
         align: ContentAlign.top,
-        builder: (context, controller) => Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Profile',
-              style: TextStyles.boldPrefText.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: AppUtils.scale(14.sp) ?? 15.5.sp,
-                color: Colors.white,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h),
-              child: Text(
-                AppStrings.userTabTutorial,
-                style: TextStyles.prefText.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            addHeight(25),
-          ],
-        ),
+        padding: pagePadding.copyWith(bottom: 40.h),
+        builder: (context, controller) {
+          return TutorialComponent(
+            title: 'Profile',
+            step: "5 / 5",
+            body: AppStrings.userTabTutorial,
+            onNext: () => controller.next(),
+            next: 'Done',
+          );
+        },
       ),
     ],
   ),

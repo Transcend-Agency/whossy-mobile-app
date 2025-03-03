@@ -2,13 +2,13 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart';
 
-import '../../../../../common/utils/index.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
-import '../../../../../provider/providers.dart';
-import '../widgets/_.dart';
+import '../../../../../provider/provider.dart';
+import '../widgets/widgets.dart';
 
 @RoutePage()
 class BlockedContacts extends StatefulWidget {

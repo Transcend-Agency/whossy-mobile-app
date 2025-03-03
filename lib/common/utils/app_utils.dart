@@ -9,7 +9,7 @@ import '../../feature/auth/sign_up/model/geography.dart';
 import '../../feature/auth/sign_up/model/payment.dart';
 import '../../feature/home/settings/model/user_settings.dart';
 import '../../feature/home/tabs/matching/model/user_profile.dart';
-import 'index.dart';
+import 'utils.dart';
 
 class AppUtils {
   static Map<String, dynamic>? geographyToJson(Geography? geography) =>

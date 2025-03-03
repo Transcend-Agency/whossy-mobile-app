@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../feature/home/preferences/model/generic_enum.dart';
 import '../../styles/component_style.dart';
-import '../../utils/index.dart';
-import '../index.dart';
+import '../../utils/utils.dart';
+import '../components.dart';
 
 class AppSheet<T extends GenericEnum> extends StatefulWidget {
   const AppSheet({super.key, required this.item, this.selectedItem});

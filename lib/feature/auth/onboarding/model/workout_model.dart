@@ -1,4 +1,4 @@
-import '../../../../common/utils/index.dart';
+import '../../../../common/utils/utils.dart';
 
 class WorkoutModel {
   final String text;

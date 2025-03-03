@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../common/components/index.dart';
-import '../../../../common/utils/index.dart';
+import '../../../../common/components/components.dart';
+import '../../../../common/utils/utils.dart';
 import '../data/source/meet_data.dart';
 import '../data/state/onboarding_notifier.dart';
 

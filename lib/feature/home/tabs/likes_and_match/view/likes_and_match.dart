@@ -4,10 +4,10 @@ import 'package:whossy_app/common/styles/component_style.dart';
 import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/liked_me.dart';
 import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/matches.dart';
 
-import '../../../../../common/components/index.dart';
+import '../../../../../common/components/components.dart';
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/index.dart';
 import '../../../../../common/utils/router/router.gr.dart';
+import '../../../../../common/utils/utils.dart';
 import '../../../notifications/view/widgets/notification_bell.dart';
 import 'widgets/likes.dart';
 

@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../../../../common/utils/index.dart';
+import '../../../../../../common/utils/utils.dart';
 import '../../../../preferences/model/core_preferences.dart';
 import '../../../../preferences/model/other_preferences.dart';
 import '../../model/user_profile.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whossy_app/common/components/index.dart';
+import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/feature/home/tabs/chat/view/widgets/_.dart';
 
 class Chat extends StatelessWidget {
