@@ -51,6 +51,9 @@ final reportProvider = ChangeNotifierProvider(
   create: (_) => ReportNotifier(),
 );
 
+final tourProvider = ChangeNotifierProvider(
+  create: (_) => TourNotifier(),
+);
 // Proxy Providers
 final chatsProvider = ChangeNotifierProxyProvider2<EditProfileNotifier,
     ConnectivityNotifier, ChatsNotifier>(
@@ -102,6 +105,7 @@ final appProviders = [
   matchesProvider,
   notificationProvider,
   reportProvider,
+  tourProvider,
   chatsProvider,
   swipeAndMatchProvider,
   exploreProvider,

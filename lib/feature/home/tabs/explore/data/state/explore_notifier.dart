@@ -73,4 +73,13 @@ class ExploreNotifier extends ChangeNotifier {
   }
 
   dynamic getFilter(Filters type) => _filters.filters[type];
+
+  /// Reset all stored values to their defaults
+  void reset() {
+    _profileData = null;
+    _corePreferences = null;
+    _otherPreferences = null;
+    _filters = ExploreFilters(filters: {});
+    notifyListeners();
+  }
 }

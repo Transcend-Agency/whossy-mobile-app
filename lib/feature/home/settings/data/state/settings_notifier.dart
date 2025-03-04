@@ -41,7 +41,9 @@ class SettingsNotifier extends ChangeNotifier {
     try {
       await _userService.updateUserStatus(false);
 
-      await _userRepository.signOut();
+      _userRepository.removeUserToken().then((_) {
+        _userRepository.signOut();
+      });
     } catch (e) {
       showSnackbar(AppStrings.signOutFailure);
     }

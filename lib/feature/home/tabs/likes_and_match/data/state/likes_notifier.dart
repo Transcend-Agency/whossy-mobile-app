@@ -8,7 +8,8 @@ class LikesNotifier extends ChangeNotifier {
 
   /// Stream of users who liked the current user (excluding mutual matches)
   Stream<List<LikedUserProfile>> usersWhoLikedMeStream(
-          List<String>? blockedIds) =>
+    List<String>? blockedIds,
+  ) =>
       _likesRepository.getProfilesOfUsersWhoLikedMe(blockedIds ?? []);
 
   /// Stream of users the current user has liked (excluding mutual matches)

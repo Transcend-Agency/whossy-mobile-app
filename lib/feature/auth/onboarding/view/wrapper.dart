@@ -114,9 +114,9 @@ class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
   }
 
   goToNext() {
-    Nav.replaceAll(context, [HomeWrapper(fromOnboarding: true)]);
-
     _onboardingNotifier.reset();
+
+    Nav.replaceAll(context, [HomeWrapper(fromOnboarding: true)]);
   }
 
   showSnackbar(BuildContext context, String message, {bool pop = true}) {

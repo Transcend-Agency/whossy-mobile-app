@@ -333,4 +333,15 @@ class EditProfileNotifier extends ChangeNotifier {
       log(e.toString());
     }
   }
+
+  void reset() {
+    _dynCoreProfile = null;
+    _staticCoreProfile = null;
+    _dynCorePrefs = null;
+    _staticCorePrefs = null;
+    _hasSafetyGuideOpened = true;
+    _didUserDeletePic = false;
+
+    notifyListeners();
+  }
 }

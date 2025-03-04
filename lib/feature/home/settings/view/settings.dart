@@ -5,11 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
-import 'package:whossy_app/feature/home/settings/data/state/settings_notifier.dart';
 
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../constants/index.dart';
 import '../../../../common/utils/utils.dart';
+import '../../../../provider/provider.dart';
 import '../data/source/extra_settings_data.dart';
 import 'widgets/widgets.dart';
 
@@ -35,6 +35,8 @@ class _SettingsState extends State<Settings> {
     if (result == null) return null;
 
     if (result && mounted) {
+      resetAllNotifiers(context);
+
       await context.read<SettingsNotifier>().signOut(
             (msg) => showSnackbar(msg, context),
           );
@@ -45,6 +47,22 @@ class _SettingsState extends State<Settings> {
     }
 
     return result;
+  }
+
+  Future<bool?> takeTutorial() async {
+    final startTour = await showConfirmationDialog(
+      context,
+      title: 'Start Guided Tour',
+      yes: 'Let\'s go!',
+      content: contentText(AppStrings.startTutorial),
+    );
+
+    if (startTour == true && mounted) {
+      Navigator.pop<String>(context, AppStrings.startTour);
+      // context.read<TutorialNotifier>().startTutorial();
+    }
+
+    return startTour;
   }
 
   @override
@@ -72,7 +90,12 @@ class _SettingsState extends State<Settings> {
             children: extraSettings.map((data) {
               return Padding(
                 padding: EdgeInsets.only(bottom: 8.h),
-                child: ExtraCoreSettings(title: data.name, route: data.route),
+                child: ExtraCoreSettings(
+                  title: data.name,
+                  route: data.route,
+                  onTap:
+                      data.name == 'Guided Tour' ? () => takeTutorial() : null,
+                ),
               );
             }).toList(),
           ),

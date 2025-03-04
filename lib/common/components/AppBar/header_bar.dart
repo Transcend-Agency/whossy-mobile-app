@@ -9,18 +9,22 @@ class HeaderBar extends StatelessWidget {
   const HeaderBar({
     super.key,
     this.icon,
+    this.iconKey,
     this.onIconTap,
+    this.icon2,
+    this.icon2Key,
     this.onIcon2Tap,
     this.child,
-    this.icon2,
-    this.topPadding = 8, //8
+    this.topPadding = 8, // Default: 8
     this.iconSize = 18,
     this.customWidget,
     this.showFilters = true,
   });
 
   final String? icon;
+  final Key? iconKey;
   final String? icon2;
+  final Key? icon2Key;
   final double topPadding;
   final double iconSize;
   final VoidCallback? onIconTap;
@@ -48,6 +52,7 @@ class HeaderBar extends StatelessWidget {
                 ],
                 if (icon != null) ...[
                   GestureDetector(
+                    key: iconKey, // Assign key to the first icon
                     onTap: onIconTap,
                     child: Container(
                       margin: const EdgeInsets.all(12),
@@ -62,6 +67,7 @@ class HeaderBar extends StatelessWidget {
                 ],
                 if (showFilters)
                   AppIconButton(
+                    key: icon2Key, // Assign key to the second icon
                     margin: 12,
                     path: icon2 ?? AppAssets.tune,
                     size: 24,

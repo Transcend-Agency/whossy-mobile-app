@@ -325,4 +325,28 @@ class ChatsNotifier extends ChangeNotifier {
           success ? 'Uploaded successfully' : 'Did not upload successfully'),
     );
   }
+
+  void reset() {
+    currentChat = null;
+    _profileData = null;
+    chatExpTime = null;
+    _hasChatRoomOpened = true;
+    _blockedIds = null;
+    _isUserConnected = false;
+    _lastMessageId = null;
+
+    _chatSubscription?.cancel();
+    _chatSubscription = null;
+
+    _progressMap.clear();
+    _isUploadingMap.clear();
+    _hasUploadFailedMap.clear();
+
+    _uploadQueue.clear();
+    _isProcessingQueue = false;
+    _uploadTimeout?.cancel();
+    _uploadTimeout = null;
+
+    notifyListeners();
+  }
 }

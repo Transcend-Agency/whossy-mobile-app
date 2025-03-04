@@ -4,11 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
+import '../../constants/index.dart';
 import '../../feature/auth/sign_up/model/geography.dart';
 import '../../feature/auth/sign_up/model/payment.dart';
 import '../../feature/home/settings/model/user_settings.dart';
 import '../../feature/home/tabs/matching/model/user_profile.dart';
+import '../../provider/provider.dart';
+import '../components/components.dart';
 import 'utils.dart';
 
 class AppUtils {
@@ -247,3 +251,35 @@ typedef TransactionNotCompletedCallback = void Function(
     TransactionErrorType errorType, String reason);
 
 int mapMonthsToIndex(int months) => [1, 3, 6, 12].indexOf(months);
+
+final List<BottomNavItem> bottomNavItems = [
+  const BottomNavItem(assetPath: AppAssets.globalSearch, label: "Explore"),
+  const BottomNavItem(assetPath: AppAssets.fire, label: "Matching"),
+  const BottomNavItem(assetPath: AppAssets.heart, label: "Likes/Match"),
+  const BottomNavItem(assetPath: AppAssets.chat, label: "Chat"),
+  const BottomNavItem(assetPath: AppAssets.user, label: "Profile"),
+];
+
+class GlobalKeys {
+  // Global Keys for Bottom Navigation Items
+  static final GlobalKey fireTabKey = GlobalKey();
+  static final GlobalKey globalSearchTabKey = GlobalKey();
+  static final GlobalKey heartTabKey = GlobalKey();
+  static final GlobalKey chatTabKey = GlobalKey();
+  static final GlobalKey userTabKey = GlobalKey();
+
+  static final GlobalKey notificationKey = GlobalKey();
+  static final GlobalKey advancedSearchKey = GlobalKey();
+  static final GlobalKey matchingPreferencesKey = GlobalKey();
+}
+
+void resetAllNotifiers(BuildContext context) {
+  context.read<ExploreNotifier>().reset();
+  context.read<SwipeAndMatchNotifier>().reset();
+  context.read<ChatsNotifier>().reset();
+  context.read<TourNotifier>().reset();
+  context.read<AdvancedSearchNotifier>().reset();
+  context.read<EditProfileNotifier>().reset();
+  context.read<PreferencesNotifier>().reset();
+  context.read<LoginNotifier>().reset();
+}
