@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -16,10 +18,35 @@ class SignupOptions extends StatelessWidget {
   const SignupOptions({super.key});
 
   signUpWithGoogle(BuildContext context, SignUpNotifier data) async {
-    showGoogleDialog(context);
+    showLoadingDialog(context);
 
     await data
         .signUpWithGoogle(
+          showSnackbar: (message) =>
+              showTopSnackBar(Overlay.of(context), AppSnackbar(text: message)),
+          onAuthenticate: () {
+            Nav.pushAndPopUntil(
+                context, const SignUpNameRoute(), SignUpCreateRoute.name);
+          },
+        )
+        .whenComplete(() => context.mounted ? Navigator.pop(context) : {});
+  }
+
+  // Future<void> signUpWithApple(BuildContext context) async {
+  //   showLoadingDialog(context, animation: AppAssets.appleLoading);
+  //
+  //   await Future.delayed(const Duration(seconds: 10)); // Simulate delay
+  //
+  //   if (context.mounted) {
+  //     Navigator.pop(context); // Dismiss the loading dialog
+  //   }
+  // }
+
+  signUpWithApple(BuildContext context, SignUpNotifier data) async {
+    showLoadingDialog(context, animation: AppAssets.appleLoading);
+
+    await data
+        .signUpWithApple(
           showSnackbar: (message) =>
               showTopSnackBar(Overlay.of(context), AppSnackbar(text: message)),
           onAuthenticate: () {
@@ -64,27 +91,34 @@ class SignupOptions extends StatelessWidget {
                   ),
                 ),
                 const AppDivider(),
-                addHeight(14),
-                // Padding(
-                //   padding: pagePadding,
-                //   child: OutlinedAppButton(
-                //     onPress: () {},
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: [
-                //         fbIcon(),
-                //         addWidth(6),
-                //         Text(
-                //           "Sign up with Facebook",
-                //           style: TextStyles.buttonText.copyWith(
-                //             color: AppColors.hintTextColor,
-                //             fontSize: AppUtils.scale(17),
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
+                if (Platform.isIOS) ...[
+                  addHeight(14),
+                  Padding(
+                    padding: pagePadding,
+                    child: OutlinedAppButton(
+                      onPress: () => signUpWithApple(context, data),
+                      // onPress: () => signUpWithApple(context),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.apple_rounded,
+                            color: Colors.black,
+                            size: 29.r,
+                          ),
+                          addWidth(6),
+                          Text(
+                            "Sign up with Apple",
+                            style: TextStyles.buttonText.copyWith(
+                              color: AppColors.hintTextColor,
+                              fontSize: AppUtils.scale(17),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
                 Padding(
                   padding:
                       EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.w),
@@ -118,7 +152,7 @@ class SignupOptions extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         phone(),
-                        addWidth(4),
+                        addWidth(6),
                         Text(
                           "Sign up with Phone number",
                           style: TextStyles.buttonText.copyWith(

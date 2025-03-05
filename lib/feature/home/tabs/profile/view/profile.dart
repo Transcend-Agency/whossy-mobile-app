@@ -1,10 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
-import 'package:whossy_app/feature/home/edit_profile/model/core_profile.dart';
 
 import '../../../../../../common/components/components.dart';
 import '../../../../../../common/styles/component_style.dart';
@@ -13,10 +13,13 @@ import '../../../../../../constants/index.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/router/router.gr.dart';
 import '../../../../../provider/provider.dart';
+import '../../../edit_profile/model/core_profile.dart';
 import 'widgets/_.dart';
 
 class Profile extends StatelessWidget {
-  const Profile({super.key});
+  final VoidCallback onStartTour;
+
+  const Profile({super.key, required this.onStartTour});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,15 @@ class Profile extends StatelessWidget {
                       HeaderBar(
                         icon: AppAssets.settings,
                         iconSize: 24,
-                        onIconTap: () => Nav.push(context, const Settings()),
+                        onIconTap: () async {
+                          final result = await context.router.push<String>(
+                            const Settings(),
+                          );
+
+                          if (result == AppStrings.startTour) {
+                            onStartTour();
+                          }
+                        },
                         showFilters: false,
                         child: const Logo(),
                       ),

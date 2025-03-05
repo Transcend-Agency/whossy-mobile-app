@@ -31,6 +31,7 @@ class Matching extends StatelessWidget {
                 onTap: () => Nav.push(context, const NotificationRoute()),
                 rightSpacing: 0,
               ),
+              icon2Key: GlobalKeys.matchingPreferencesKey,
               child: const Logo(),
             ),
             Expanded(

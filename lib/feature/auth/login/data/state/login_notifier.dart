@@ -237,4 +237,11 @@ class LoginNotifier extends ChangeNotifier {
       spinnerState = false;
     }
   }
+
+  /// Reset all stored values to their defaults
+  void reset() {
+    userCredential = null;
+    _createSpinner = false;
+    notifyListeners();
+  }
 }

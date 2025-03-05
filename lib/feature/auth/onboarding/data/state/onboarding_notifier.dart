@@ -108,6 +108,7 @@ class OnboardingNotifier extends ChangeNotifier {
     ticks = 0;
     _selections.clear();
     _userPreferences = Preferences();
+    _createSpinner = false;
     notifyListeners();
   }
 
@@ -143,7 +144,7 @@ class OnboardingNotifier extends ChangeNotifier {
       verPicFile: verPicFile,
     );
 
-    log(_userPreferences.toJson().toString());
+    // log(_userPreferences.toJson().toString());
 
     notifyListeners();
   }

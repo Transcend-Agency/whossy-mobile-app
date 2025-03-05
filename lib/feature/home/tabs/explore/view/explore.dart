@@ -25,11 +25,13 @@ class Explore extends StatelessWidget {
           children: [
             HeaderBar(
               customWidget: NotificationBell(
+                key: GlobalKeys.notificationKey,
                 onTap: () => Nav.push(context, const NotificationRoute()),
                 rightSpacing: 0,
               ),
               icon2: AppAssets.explore,
               onIcon2Tap: () => Nav.push(context, const AdvancedSearchRoute()),
+              icon2Key: GlobalKeys.advancedSearchKey,
               child: const Logo(),
             ),
             addHeight(4),

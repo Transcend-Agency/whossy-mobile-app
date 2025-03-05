@@ -163,7 +163,36 @@ class SignUpNotifier extends ChangeNotifier {
       onAuthenticate();
     } on Exception catch (e) {
       if (e is UnregisteredEmailException || e is RegisteredEmailException) {
-        showSnackbar((e as dynamic).title);
+        showSnackbar((e as dynamic).message);
+      } else {
+        showSnackbar(AppStrings.errorUnknown);
+        log(e.toString());
+      }
+    } finally {
+      spinnerState = false;
+    }
+  }
+
+  Future<void> signUpWithApple({
+    required void Function(String) showSnackbar,
+    required VoidCallback onAuthenticate,
+  }) async {
+    try {
+      spinnerState = true;
+
+      userCredential = await _authRepository.handleAppleAuthentication();
+
+      // Update data in firebase
+      setBaseData(
+        authMethod: AuthMethod.apple,
+        email: userCredential!.user!.email,
+      );
+
+      // Account creation successful, handle accordingly
+      onAuthenticate();
+    } on Exception catch (e) {
+      if (e is UnregisteredEmailException || e is RegisteredEmailException) {
+        showSnackbar((e as dynamic).message);
       } else {
         showSnackbar(AppStrings.errorUnknown);
         log(e.toString());

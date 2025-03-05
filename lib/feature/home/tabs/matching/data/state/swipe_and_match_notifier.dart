@@ -137,17 +137,17 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     required void Function(String, {SnackbarType type}) showSnackbar,
   }) async {
     try {
-      String value = await _likesRepository.addLike(
+      await _likesRepository.addLike(
         likedId: likedId,
         likerId: FirebaseAuth.instance.currentUser!.uid,
       );
 
-      if (value == "match") {
-        showSnackbar(
-          'You have matched with $name!',
-          type: SnackbarType.success,
-        );
-      }
+      // if (value == "match") {
+      //   showSnackbar(
+      //     'You have matched with $name!',
+      //     type: SnackbarType.success,
+      //   );
+      // }
 
       // Refresh profiles after action
       fetchProfiles();
@@ -185,5 +185,18 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     _profileSubscription?.cancel();
     _profileController.close();
     super.dispose();
+  }
+
+  /// Reset all stored values to their default state
+  void reset() {
+    _profileSubscription?.cancel();
+    _profileController.add([]);
+    _profileData = null;
+    _corePreferences = null;
+    _otherPreferences = null;
+    _hasFetchedProfiles = false;
+    _hasDeniedLocationPermission = false;
+    _hasTakenTutorial = false;
+    notifyListeners();
   }
 }

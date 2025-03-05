@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants/index.dart';
-import '../../../feature/home/tutorial.dart';
+import '../../../provider/provider.dart';
 import '../../styles/text_style.dart';
 import '../../utils/utils.dart';
 
@@ -17,11 +18,9 @@ class BottomNavItem {
 class CustomBottomAppBar extends StatefulWidget {
   const CustomBottomAppBar({
     super.key,
-    required this.onTabSelected,
     required this.items,
   });
 
-  final ValueChanged<int> onTabSelected;
   final List<BottomNavItem> items;
 
   @override
@@ -29,15 +28,14 @@ class CustomBottomAppBar extends StatefulWidget {
 }
 
 class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
-  int _selectedIndex = 0;
-
-  void _updatedIndex(int index) {
-    widget.onTabSelected(index);
-    setState(() => _selectedIndex = index);
-  }
+  void _updatedIndex(int index) =>
+      context.read<TourNotifier>().setTab(index, context);
 
   @override
   Widget build(BuildContext context) {
+    final selectedIndex =
+        context.select<TourNotifier, int>((tour) => tour.currentIndex);
+
     List<Widget> items = List.generate(
       widget.items.length,
       (index) {
@@ -45,6 +43,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
           item: widget.items[index],
           index: index,
           onPressed: _updatedIndex,
+          isSelected: selectedIndex == index,
         );
       },
     );
@@ -62,8 +61,9 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
     required BottomNavItem item,
     required int index,
     ValueChanged<int>? onPressed,
+    required bool isSelected,
   }) {
-    Color? color = _selectedIndex == index
+    Color? color = isSelected
         ? AppColors.selectedTabIconColor
         : AppColors.unSelectedTabIconColor;
 

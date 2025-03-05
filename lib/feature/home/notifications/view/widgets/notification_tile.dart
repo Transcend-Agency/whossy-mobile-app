@@ -175,7 +175,8 @@ class NotificationTile extends HookWidget {
             ? "Someone"
             : notification.likerName!;
 
-        bool showProfileCheck = Random().nextBool();
+        // Use a deterministic hash to decide which text to show
+        bool showProfileCheck = _hash(notification.id) % 2 == 0;
         return showProfileCheck
             ? '$liker is interested in you'
             : '$liker liked your profile!';
@@ -189,6 +190,15 @@ class NotificationTile extends HookWidget {
       default:
         return '';
     }
+  }
+
+  // Simple hash function to generate a consistent pseudo-random value
+  int _hash(String input) {
+    int hash = 0;
+    for (int i = 0; i < input.length; i++) {
+      hash = 31 * hash + input.codeUnitAt(i);
+    }
+    return hash.abs(); // Ensure it's always positive
   }
 
   // Function to update the notification status after a 2-second delay

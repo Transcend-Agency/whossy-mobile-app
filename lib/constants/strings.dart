@@ -163,6 +163,7 @@ class AppStrings {
   static const String success = 'Successful';
   static const String reset =
       'A link has been sent to your email to reset your password.';
+  static const String startTour = 'Start guided tour';
 
   // Registration Status
   static const String unregisteredEmail =
@@ -173,7 +174,6 @@ class AppStrings {
 
   // Misc
   static const String accUnselected = 'No account selected';
-  static const String signOutFailure = 'Failed to sign out. Please try again.';
   static const String logout =
       'All your current sessions will be closed after logging out. Are you sure you want to log out?';
   static const String cancelPlan =
@@ -181,6 +181,9 @@ class AppStrings {
 
   static const String noProfilePic =
       'You need to add at least one photo to preview your profile.';
+
+  static const String startTutorial =
+      'You\'ll be guided through the key features of the app. ';
   static const String uploadTimeout =
       "Failed to upload profile pictures. Please check your network and try again.";
   static const String minPicsRequired =
@@ -217,32 +220,33 @@ class AppStrings {
   static String disAbleUnapproved(String value) =>
       '$value is disabled until you have been approved';
 
-  // Tutorial for the 'Like' button
-  static const String likeButtonTutorial =
-      'Tap the button to show interest in a profile. If both you and the other person like each other, it\'s a match!';
-
-  // Tutorial for the 'Dislike' button
-  static const String dislikeButtonTutorial =
-      'Tap the button to skip a profile you\'re not interested in. You\'ll never see it again!';
-
   //// Bottom Tabs
-  // Tutorial for the 'Swipe and Match' tab (FireTab)
+  // Tour for the 'Swipe and Match' tab (FireTab)
   static const String fireTabTutorial =
       'Swipe through profiles to show interest. If you both swipe right, it\'s a match!';
 
-  // Tutorial for the 'Explore' tab (GlobalSearchTab)
+  // Tour for the 'Explore' tab (GlobalSearchTab)
   static const String globalSearchTabTutorial =
       'Browse through profiles freely, no need to swipe. Just explore and discover!';
 
-  // Tutorial for the 'Likes and Matches' tab (HeartTab)
+  static const String notificationsTabTutorial =
+      'Stay updated with new matches, messages, and important updates. Never miss a moment!';
+
+  static const String advancedSearchTutorial =
+      'Adjust who appears on your Explore page with filters like age, gender, and relationship goals for better matches.';
+
+  static const String matchingFiltersTutorial =
+      'Customize who you see while swiping with filters like age, gender, and relationship goals for better connections.';
+
+  // Tour for the 'Likes and Matches' tab (HeartTab)
   static const String heartTabTutorial =
       'See people who have liked you, and view your matches here!';
 
-  // Tutorial for the 'Chats' tab (ChatTab)
+  // Tour for the 'Chats' tab (ChatTab)
   static const String chatTabTutorial =
       'You can send messages and images to your matches. Chat away!';
 
-  // Tutorial for the 'Profile' tab (UserTab)
+  // Tour for the 'Profile' tab (UserTab)
   static const String userTabTutorial =
       'Manage your profile, edit your information, and access your settings here.';
 

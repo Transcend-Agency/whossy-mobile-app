@@ -168,4 +168,13 @@ class PreferencesNotifier extends ChangeNotifier
 
     notifyListeners();
   }
+
+  void reset() {
+    _dynCorePrefs = null;
+    _statCorePrefs = null;
+    _dynOtherPrefs = null;
+    _statOtherPrefs = null;
+
+    notifyListeners();
+  }
 }

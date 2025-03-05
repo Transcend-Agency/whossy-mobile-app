@@ -9,7 +9,6 @@ import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/provider.dart';
 import '../../../../edit_profile/view/widgets/edit/image_view.dart';
-import '../../../../tutorial.dart';
 import '../../model/user_profile.dart';
 import 'match_helper_components.dart';
 
@@ -247,7 +246,6 @@ class _MatchState extends State<Match> {
           opacity: (!_isSwiping || thresholdX < 0) ? 1 : 0,
           duration: const Duration(milliseconds: 300),
           child: MatchIconButton(
-            key: GlobalKeys.dislikeButtonKey,
             onTap: () {
               controller.swipe(CardSwiperDirection.left);
               dislike();
@@ -260,7 +258,6 @@ class _MatchState extends State<Match> {
           opacity: (!_isSwiping || thresholdX > 0) ? 1 : 0,
           duration: const Duration(milliseconds: 300),
           child: MatchIconButton(
-            key: GlobalKeys.likeButtonKey,
             onTap: () {
               controller.swipe(CardSwiperDirection.right);
               like();

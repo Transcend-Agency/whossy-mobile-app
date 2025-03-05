@@ -1,10 +1,10 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../constants/index.dart';
 import '../../styles/component_style.dart';
+import '../../utils/utils.dart';
 import '../components.dart';
 
 class UploadSheet extends StatefulWidget {
@@ -77,13 +77,6 @@ class _UploadSheetState extends State<UploadSheet>
       ),
     );
   }
-}
-
-Future<LottieComposition?> customDecoder(List<int> bytes) {
-  return LottieComposition.decodeZip(bytes, filePicker: (files) {
-    return files.firstWhereOrNull(
-        (f) => f.name.startsWith('animations/') && f.name.endsWith('.json'));
-  });
 }
 
 const minSize = 0.4;

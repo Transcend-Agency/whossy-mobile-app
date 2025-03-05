@@ -54,13 +54,14 @@ class LikesRepository {
     return existingLikeDoc.docs.isNotEmpty;
   }
 
-  Future<void> _createMatch(String uid, String likerId, String likedId) async {
-    final matchData = {
-      'user_ids': [likerId, likedId],
-      'timestamp': FieldValue.serverTimestamp(),
-    };
-    await _matches.doc(uid).set(matchData);
-  }
+Future<void> _createMatch(String uid, String likerId, String likedId) async {
+  final matchData = {
+    'user1_id': likerId,
+    'user2_id': likedId,
+    'timestamp': FieldValue.serverTimestamp(),
+  };
+  await _matches.doc(uid).set(matchData);
+}
 
   Future<void> _setLike(String uid, String likerId, String likedId) async {
     final likeData = {

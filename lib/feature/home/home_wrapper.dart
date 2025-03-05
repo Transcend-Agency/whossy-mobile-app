@@ -6,14 +6,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:whossy_app/common/components/components.dart';
-import 'package:whossy_app/feature/home/tutorial.dart';
 
 import '../../common/utils/services/services.dart';
 import '../../common/utils/utils.dart';
-import '../../constants/index.dart';
 import '../../provider/provider.dart';
+import '../auth/sign_up/data/repository/user_repository.dart';
+import 'Tour/view/guided_tour.dart';
+import 'Tour/view/intro_tour.dart';
 import 'tabs/_.dart';
 import 'tabs/explore/data/state/scroll_visibility_notifier.dart';
 import 'tabs/matching/data/state/location_permission_stream.dart';
@@ -27,7 +27,7 @@ class HomeWrapper extends StatefulWidget {
 
   final bool fromOnboarding;
 
-  static String tutorial = 'Tutorial';
+  static String tutorial = 'Tour';
 
   @override
   State<HomeWrapper> createState() => _HomeWrapperState();
@@ -38,6 +38,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
   late Stream<LocationPermission> locationPermissionStream;
   final locationService = LocationService();
   late UserPresenceService _userService;
+  late UserRepository _userRepository;
 
   // Set up the notifiers
   late EditProfileNotifier _editProfileNotifier;
@@ -47,14 +48,6 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   // Other UI code
   late List<Widget> _pages;
-  final List<BottomNavItem> _bottomNavItems = [
-    const BottomNavItem(assetPath: AppAssets.globalSearch, label: "Explore"),
-    const BottomNavItem(assetPath: AppAssets.fire, label: "Matching"),
-    const BottomNavItem(assetPath: AppAssets.heart, label: "Likes/Match"),
-    const BottomNavItem(assetPath: AppAssets.chat, label: "Chat"),
-    const BottomNavItem(assetPath: AppAssets.user, label: "Profile"),
-  ];
-
   int selectedIndex = 0;
 
   @override
@@ -66,7 +59,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
       const Matching(),
       const LikesAndMatch(),
       const Chat(),
-      const Profile(),
+      Profile(onStartTour: startTour),
     ];
 
     _editProfileNotifier = context.read<EditProfileNotifier>();
@@ -74,6 +67,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
     _advancedSearchNotifier = context.read<AdvancedSearchNotifier>();
     _prefsNotifier = context.read<PreferencesNotifier>();
     _userService = UserPresenceService();
+    _userRepository = UserRepository();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _editProfileNotifier
@@ -85,12 +79,18 @@ class _HomeWrapperState extends State<HomeWrapper> {
       );
       context.read<ChatsNotifier>().checkOpenedState();
       _userService.updateUserStatus(true);
+      _userRepository.addUserToken();
     });
 
     _requestLocationPermission();
 
-    startTutorial();
+    startIntroTutorial(
+      context: context,
+      swipeAndMatchNotifier: _swipeAndMatchNotifier,
+    );
   }
+
+  void startTour() => startGuidedTutorial(context);
 
   Future<void> _requestLocationPermission() async {
     try {
@@ -134,10 +134,6 @@ class _HomeWrapperState extends State<HomeWrapper> {
     }
   }
 
-  void _selectedTab(int index) {
-    setState(() => selectedIndex = index);
-  }
-
   showAppSnackbar(String msg) => showSnackbar(msg, context);
 
   @override
@@ -151,42 +147,22 @@ class _HomeWrapperState extends State<HomeWrapper> {
           builder: (context, scrollNotifier, child) {
             return AppScaffold(
               applyTop: false,
-              body: SizedBox(
-                child: _pages.elementAt(selectedIndex),
+              body: Builder(
+                builder: (_) => _pages.elementAt(
+                  context.watch<TourNotifier>().currentIndex,
+                ),
               ),
               bottomNavBar: AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
                 height: scrollNotifier.isVisible ? 76.h : 0,
                 child: Wrap(
-                  children: [
-                    CustomBottomAppBar(
-                      onTabSelected: _selectedTab,
-                      items: _bottomNavItems,
-                    ),
-                  ],
+                  children: [CustomBottomAppBar(items: bottomNavItems)],
                 ),
               ),
             );
           },
         ),
       ),
-    );
-  }
-
-  void startTutorial() {
-    Future.delayed(
-      const Duration(seconds: 5),
-      () {
-        if (!_swipeAndMatchNotifier.hasTakenTutorial) {
-          TutorialCoachMark(
-            hideSkip: true,
-            paddingFocus: 0,
-            targets: targets,
-            colorShadow: Colors.black.withOpacity(0.2),
-            onFinish: () => _swipeAndMatchNotifier.hasTakenTutorial = true,
-          ).show(context: context);
-        }
-      },
     );
   }
 }

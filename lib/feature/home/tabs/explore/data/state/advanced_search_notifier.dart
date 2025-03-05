@@ -168,4 +168,9 @@ class AdvancedSearchNotifier extends ChangeNotifier
 
     notifyListeners();
   }
+
+  void reset() {
+    _initializeDefaultValues();
+    notifyListeners();
+  }
 }

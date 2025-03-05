@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/components.dart';
@@ -12,13 +13,19 @@ import '../../../../constants/index.dart';
 import '../../../../provider/provider.dart';
 
 @RoutePage()
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends HookWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final signUpNotifier = context.read<SignUpNotifier>();
+
+    useEffect(() {
+      return signUpNotifier.reset;
+    }, const []);
+
     return PopScope(
-      onPopInvoked: (_) => context.read<SignUpNotifier>().reset(),
+      onPopInvoked: (_) => signUpNotifier.reset(),
       child: AppScaffold(
         padding: pagePadding,
         body: Column(

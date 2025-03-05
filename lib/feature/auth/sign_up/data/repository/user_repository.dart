@@ -35,17 +35,22 @@ class UserRepository {
     return false;
   }
 
-  Future<void> addUserToken({List<String>? tokens}) async {
+  Future<void> addUserToken() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     String token = await NotificationService().getToken();
-
-    if (tokens != null && tokens.contains(token)) {
-      return;
-    }
 
     await _users.doc(userId).update({
       'tokens': FieldValue.arrayUnion([token])
     });
+  }
+
+  Future<void> removeUserToken() async {
+    await NotificationService().deleteToken().timeout(
+      const Duration(seconds: 3),
+      onTimeout: () {
+        return;
+      },
+    );
   }
 
   Future<void> setUserData({required Map<String, dynamic> data}) async {

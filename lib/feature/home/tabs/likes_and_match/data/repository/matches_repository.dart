@@ -20,7 +20,10 @@ class MatchesRepository {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
     return _matches
-        .where('user_ids', arrayContains: userId)
+        .where(Filter.or(
+          Filter('user1_id', isEqualTo: userId),
+          Filter('user2_id', isEqualTo: userId),
+        ))
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
   }
@@ -30,37 +33,38 @@ class MatchesRepository {
   ) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    // Normal scenario
     return _matches
-        .where('user_ids', arrayContains: userId)
+        .where(Filter.or(
+          Filter('user1_id', isEqualTo: userId),
+          Filter('user2_id', isEqualTo: userId),
+        ))
         .snapshots()
-        .asyncMap(
-      (matchesSnapshot) async {
-        final otherUserIds = <String>{};
+        .asyncMap((matchesSnapshot) async {
+      final otherUserIds = <String>{};
 
-        for (final doc in matchesSnapshot.docs) {
-          final ids = List<String>.from(doc['user_ids']);
-          ids.remove(userId); // Remove the current user's ID
-          otherUserIds.addAll(ids);
-        }
+      for (final doc in matchesSnapshot.docs) {
+        final user1 = doc['user1_id'];
+        final user2 = doc['user2_id'];
+        final otherUserId = (user1 == userId) ? user2 : user1;
+        otherUserIds.add(otherUserId);
+      }
 
-        // Fetch the profiles of matched users
-        final profiles = await _userRepository.getUserProfilesInBatches(
-          userIds: otherUserIds.toList(),
-          blockedIds: blockedIds,
-          settings: excludeSettings,
-        );
+      // Fetch the profiles of matched users
+      final profiles = await _userRepository.getUserProfilesInBatches(
+        userIds: otherUserIds.toList(),
+        blockedIds: blockedIds,
+        settings: excludeSettings,
+      );
 
-        // Map to LikedUserProfile with isLiked set to true
-        return profiles
-            .map(
-              (profile) => LikedUserProfile(
-                profile: profile,
-                isLiked: true,
-              ),
-            )
-            .toList();
-      },
-    );
+      // Map to LikedUserProfile with isLiked set to true
+      return profiles
+          .map(
+            (profile) => LikedUserProfile(
+              profile: profile,
+              isLiked: true,
+            ),
+          )
+          .toList();
+    });
   }
 }
