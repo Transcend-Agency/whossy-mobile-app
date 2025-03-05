@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../constants/index.dart';
+import '../../utils/utils.dart';
 
-class GoogleLoadingDialog extends StatefulWidget {
-  const GoogleLoadingDialog({super.key});
+class LoadingDialog extends StatefulWidget {
+  final String animation;
+
+  const LoadingDialog({super.key, required this.animation});
 
   @override
-  State<GoogleLoadingDialog> createState() => _GoogleLoadingDialogState();
+  State<LoadingDialog> createState() => _LoadingDialogState();
 }
 
-class _GoogleLoadingDialogState extends State<GoogleLoadingDialog>
+class _LoadingDialogState extends State<LoadingDialog>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -46,20 +49,24 @@ class _GoogleLoadingDialogState extends State<GoogleLoadingDialog>
   Widget build(BuildContext context) {
     return Center(
       child: Lottie.asset(
-        AppAssets.googleLoading,
+        widget.animation,
         controller: _controller,
         onLoaded: onLoaded,
+        decoder: customDecoder,
       ),
     );
   }
 }
 
-void showGoogleDialog(BuildContext context) {
+void showLoadingDialog(
+  BuildContext context, {
+  String animation = AppAssets.googleLoading,
+}) {
   showDialog(
     context: context,
     barrierDismissible: false,
-    builder: (context) => const Center(
-      child: GoogleLoadingDialog(),
+    builder: (context) => Center(
+      child: LoadingDialog(animation: animation),
     ),
   );
 }

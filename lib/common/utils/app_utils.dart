@@ -1,9 +1,11 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/index.dart';
@@ -282,4 +284,11 @@ void resetAllNotifiers(BuildContext context) {
   context.read<EditProfileNotifier>().reset();
   context.read<PreferencesNotifier>().reset();
   context.read<LoginNotifier>().reset();
+}
+
+Future<LottieComposition?> customDecoder(List<int> bytes) {
+  return LottieComposition.decodeZip(bytes, filePicker: (files) {
+    return files.firstWhereOrNull(
+        (f) => f.name.startsWith('animations/') && f.name.endsWith('.json'));
+  });
 }

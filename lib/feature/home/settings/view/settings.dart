@@ -102,13 +102,23 @@ class _SettingsState extends State<Settings> {
           addHeight(16),
           Padding(
             padding: EdgeInsets.only(bottom: 24.h),
-            child: ExtraCoreSettings(
-              onTap: _handleLogout,
-              customChildren: [
-                SvgPicture.asset(AppAssets.logout, width: 18),
-                addWidth(8),
-                Text('Logout', style: TextStyles.prefText),
-              ],
+            child: Selector<ConnectivityNotifier, bool>(
+              selector: (_, connection) => connection.isConnected,
+              builder: (_, isOnline, __) {
+                return ExtraCoreSettings(
+                  onTap: isOnline
+                      ? () async => await _handleLogout()
+                      : () async {
+                          showSnackbar(AppStrings.deviceOffline, context);
+                          return null;
+                        },
+                  customChildren: [
+                    SvgPicture.asset(AppAssets.logout, width: 18),
+                    addWidth(8),
+                    Text('Logout', style: TextStyles.prefText),
+                  ],
+                );
+              },
             ),
           ),
           Padding(

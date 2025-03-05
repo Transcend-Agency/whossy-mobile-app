@@ -25,6 +25,7 @@ class AppAssets {
 
   static const loading = 'assets/animations/loading.lottie';
   static const googleLoading = 'assets/animations/google.json';
+  static const appleLoading = 'assets/animations/apple.lottie';
   static const badNetwork = 'assets/animations/network.json';
 
   // Tab bar icons

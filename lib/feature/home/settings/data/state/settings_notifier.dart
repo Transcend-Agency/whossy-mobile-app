@@ -1,9 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 
 import '../../../../../common/utils/services/services.dart';
 import '../../../../../common/utils/utils.dart';
-import '../../../../../constants/index.dart';
 import '../../../tabs/matching/model/user_profile.dart';
 import '../../model/user_settings.dart';
 
@@ -41,11 +42,11 @@ class SettingsNotifier extends ChangeNotifier {
     try {
       await _userService.updateUserStatus(false);
 
-      _userRepository.removeUserToken().then((_) {
-        _userRepository.signOut();
-      });
+      await _userRepository.removeUserToken();
+      await _userRepository.signOut();
     } catch (e) {
-      showSnackbar(AppStrings.signOutFailure);
+      log(e.toString());
+      //showSnackbar(AppStrings.signOutFailure);
     }
 
     notifyListeners();

@@ -26,7 +26,7 @@ class OutlinedAppButton extends StatelessWidget {
     this.text,
     this.textColor = AppColors.hintTextColor,
     this.child,
-    this.width = 94,
+    this.width = 86,
   }) : assert(text != null || child != null,
             'Either text or child must be provided.');
 

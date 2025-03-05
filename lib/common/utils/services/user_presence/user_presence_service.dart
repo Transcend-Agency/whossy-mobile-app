@@ -54,7 +54,7 @@ class UserPresenceService {
           'lastSeen': ServerValue.timestamp,
         },
       ).timeout(
-        const Duration(seconds: 5),
+        const Duration(seconds: 3),
         onTimeout: () {
           return;
         },

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,7 @@ import 'package:whossy_app/common/utils/router/router.gr.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
-import '../data/state/login_notifier.dart';
+import '../../../../provider/provider.dart';
 
 @RoutePage()
 class LoginScreen extends StatefulWidget {
@@ -105,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> loginWithGoogle() async {
-    showGoogleDialog(context);
+    showLoadingDialog(context);
 
     await loginNotifier
         .loginWithGoogle(
@@ -144,7 +146,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  onAuthenticate() => Nav.replaceAll(context, [HomeWrapper()]);
+  onAuthenticate() {
+    context.read<SwipeAndMatchNotifier>()
+      ..checkLocationPermissionState()
+      ..checkTutorialTakenState();
+
+    Nav.replaceAll(context, [HomeWrapper()]);
+  }
 
   toCreateAccount() => Nav.push(context, const SignUpNameRoute());
 
@@ -300,14 +308,15 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  OutlinedAppButton(
-                    onPress: loginWithApple,
-                    child: Icon(
-                      Icons.apple_rounded,
-                      color: Colors.black,
-                      size: 29.r,
+                  if (Platform.isIOS)
+                    OutlinedAppButton(
+                      onPress: loginWithApple,
+                      child: Icon(
+                        Icons.apple_rounded,
+                        color: Colors.black,
+                        size: 29.r,
+                      ),
                     ),
-                  ),
                   OutlinedAppButton(
                     onPress: loginWithGoogle,
                     child: Transform.scale(

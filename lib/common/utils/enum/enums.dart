@@ -262,7 +262,7 @@ enum MessageStatus {
   final String value;
 }
 
-enum AuthMethod { local, google, phone }
+enum AuthMethod { local, google, phone, apple }
 
 enum NotificationType {
   like('New Like'),
@@ -289,11 +289,12 @@ enum TransactionErrorType {
   noInternetConnection('Network unavailable. Please try again later.'),
   paymentCancelled('The payment was cancelled by the user.'),
   unexpectedError('An unknown error occurred. Please try again later.'),
-  transactionFailed('The transaction failed. Please contact support or try again.'),
-  paymentTimeout('The payment request timed out. Please check your connection and try again.'); // New value
+  transactionFailed(
+      'The transaction failed. Please contact support or try again.'),
+  paymentTimeout(
+      'The payment request timed out. Please check your connection and try again.'); // New value
 
   const TransactionErrorType(this.message);
 
   final String message;
 }
-
