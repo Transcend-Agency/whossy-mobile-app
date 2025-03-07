@@ -63,7 +63,7 @@ import 'package:whossy_app/feature/home/tabs/matching/model/user_profile.dart'
     as _i39;
 import 'package:whossy_app/feature/home/tabs/matching/view/widgets/matching_profile_preview.dart'
     as _i11;
-import 'package:whossy_app/feature/home/tabs/profile/view/credits.dart' as _i4;
+import 'package:whossy_app/iap/apple/credit_screen.dart' as _i4;
 import 'package:whossy_app/feature/home/tabs/profile/view/safety_guide.dart'
     as _i23;
 import 'package:whossy_app/feature/home/tabs/profile/view/subscription_plans.dart'

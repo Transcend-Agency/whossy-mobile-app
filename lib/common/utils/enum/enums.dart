@@ -2,6 +2,31 @@ import 'package:flutter/material.dart';
 
 import '../../../feature/home/preferences/model/generic_enum.dart';
 
+enum SubscriptionProductIds implements GenericEnum {
+  month1('premium_1month'),
+  month3('premium_3month'),
+  month6('premium_6month'),
+  year1('premium_1year'),
+  ;
+  const SubscriptionProductIds(this.name);
+
+  @override
+  final String name;
+}
+enum CreditBundleIds implements GenericEnum {
+  credit1('1credit'),
+  credit5('5credit'),
+  credit10('10credit'),
+  credit20('20credit'),
+  credit50('50credit'),
+  credit100('100credit'),
+  ;
+  const CreditBundleIds(this.name);
+
+  @override
+  final String name;
+}
+
 enum CoreSettings implements GenericEnum {
   publicSearch('Public Search',
       'Your profile will be visible to others for swiping and matching.'),
