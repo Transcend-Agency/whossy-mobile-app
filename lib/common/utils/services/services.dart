@@ -1,5 +1,6 @@
 export 'crashlytics/crashlytics_service.dart';
 export 'file/file_service.dart';
+export 'in_app_purchase/iap.dart';
 export 'location/location_service.dart';
 export 'notification/notification_service.dart';
 export 'payment/payment_service.dart';

@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/auth/login/data/repository/authentication_repository.dart';
 
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../constants/index.dart';
@@ -22,6 +23,14 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  late AuthenticationRepository authRepo;
+
+  @override
+  void initState() {
+    authRepo = AuthenticationRepository();
+    super.initState();
+  }
+
   // Adjusted method to return Future<bool?>?
   Future<bool?>? _handleLogout() async {
     bool? result = await showConfirmationDialog(
@@ -49,6 +58,28 @@ class _SettingsState extends State<Settings> {
     return result;
   }
 
+  Future<bool?> _handleDeleteAccount() async {
+    bool? result = await context
+        .read<SettingsNotifier>()
+        .deleteAccount(context, (msg) => showSnackbar(msg, context));
+
+    if (result == true && mounted) {
+      showSnackbar(
+        AppStrings.accDelSuccess,
+        context,
+        snackBarType: SnackbarType.success,
+      );
+      if (context.mounted) {
+        Nav.replaceAll(context, [const LoginRoute()]);
+      }
+    } else if (result == false && mounted) {
+      showSnackbar(AppStrings.accDelFailure, context);
+    }
+
+    return null;
+    // If result is null, do nothing (user canceled)
+  }
+
   Future<bool?> takeTutorial() async {
     final startTour = await showConfirmationDialog(
       context,
@@ -73,39 +104,40 @@ class _SettingsState extends State<Settings> {
         title: 'Settings',
         addBarHeight: 4,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.h),
-            child: const CoreSettingsList(),
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 8.h),
-            child: const BlockedContactsTile(),
-          ),
-          ListView(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            children: extraSettings.map((data) {
-              return Padding(
+      body: Selector<ConnectivityNotifier, bool>(
+        selector: (_, connection) => connection.isConnected,
+        builder: (_, isOnline, __) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.h),
+                child: const CoreSettingsList(),
+              ),
+              Padding(
                 padding: EdgeInsets.only(bottom: 8.h),
+                child: const BlockedContactsTile(),
+              ),
+              ListView(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                children: extraSettings.map((data) {
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 8.h),
+                    child: ExtraCoreSettings(
+                      title: data.name,
+                      route: data.route,
+                      onTap: data.name == 'Guided Tour'
+                          ? () => takeTutorial()
+                          : null,
+                    ),
+                  );
+                }).toList(),
+              ),
+              addHeight(16),
+              Padding(
+                padding: EdgeInsets.only(bottom: 24.h),
                 child: ExtraCoreSettings(
-                  title: data.name,
-                  route: data.route,
-                  onTap:
-                      data.name == 'Guided Tour' ? () => takeTutorial() : null,
-                ),
-              );
-            }).toList(),
-          ),
-          addHeight(16),
-          Padding(
-            padding: EdgeInsets.only(bottom: 24.h),
-            child: Selector<ConnectivityNotifier, bool>(
-              selector: (_, connection) => connection.isConnected,
-              builder: (_, isOnline, __) {
-                return ExtraCoreSettings(
                   onTap: isOnline
                       ? () async => await _handleLogout()
                       : () async {
@@ -117,24 +149,30 @@ class _SettingsState extends State<Settings> {
                     addWidth(8),
                     Text('Logout', style: TextStyles.prefText),
                   ],
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 24.h),
-            child: ExtraCoreSettings(
-              customChildren: [
-                Text(
-                  'Delete Account',
-                  style: TextStyles.prefText.copyWith(
-                    color: Colors.red,
-                  ),
                 ),
-              ],
-            ),
-          ),
-        ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 24.h),
+                child: ExtraCoreSettings(
+                  onTap: isOnline
+                      ? () async => await _handleDeleteAccount()
+                      : () async {
+                          showSnackbar(AppStrings.deviceOffline, context);
+                          return null;
+                        },
+                  customChildren: [
+                    Text(
+                      'Delete Account',
+                      style: TextStyles.prefText.copyWith(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

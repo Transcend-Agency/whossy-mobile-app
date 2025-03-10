@@ -20,8 +20,6 @@ class AppStrings {
   static const String forgotPassword = "Forgot Password ?";
   static const String loginButton = 'Login';
   static const String orDivider = 'or sign in with';
-  static const String signInFacebook = 'Sign in with Facebook';
-  static const String signInGoogle = 'Sign in with Google';
   static const String createAccountButton = 'Create new account';
   static const String loginAgreement = 'By clicking "Login" you agree to our';
   static const String createAgreement =
@@ -176,11 +174,20 @@ class AppStrings {
   static const String accUnselected = 'No account selected';
   static const String logout =
       'All your current sessions will be closed after logging out. Are you sure you want to log out?';
+  static const String deleteAccount =
+      'Deleting your account will permanently erase all data and cannot be undone. You\'ll need to confirm your identity to proceed.';
   static const String cancelPlan =
       'Are you sure you want to cancel your premium plan? You will lose access to premium features after your current billing cycle ends';
-
+  static const String deleteAccountFailed =
+      'An error occurred while attempting to delete your account. Please try again later.';
+  static const String failedReAuth =
+      "Reauthentication failed. Please try again.";
   static const String noProfilePic =
       'You need to add at least one photo to preview your profile.';
+  static const String accDelSuccess =
+      'Your account has been deleted successfully.';
+  static const String accDelFailure =
+      'Account deletion failed. Please try again.';
 
   static const String startTutorial =
       'You\'ll be guided through the key features of the app. ';

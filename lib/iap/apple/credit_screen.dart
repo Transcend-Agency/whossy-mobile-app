@@ -11,7 +11,8 @@ import 'package:whossy_app/iap/apple/in_app_purchase_service.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/services/payment/nomba/nomba_web_page.dart';
 import '../../../../../common/utils/services/payment/paystack/paystack_web_page.dart';
-import '../../../../../common/utils/services/services.dart';
+import '../../../../../common/utils/services/services.dart'
+    hide InAppPurchaseService;
 import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../../../provider/provider.dart';

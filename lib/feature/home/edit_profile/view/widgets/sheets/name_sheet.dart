@@ -73,7 +73,7 @@ class _NameSheetState extends State<NameSheet> {
             focusNode: nameFocusNode,
             textController: nameController,
             hintText: 'Enter your name',
-            prefixIcon: search(),
+            // prefixIcon: search(),
             lengthLimit: 50, // You can adjust this limit
             padding: 13,
             curvierEdges: true,

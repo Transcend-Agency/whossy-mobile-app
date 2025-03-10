@@ -45,8 +45,6 @@ class EditProfileNotifier extends ChangeNotifier {
   set didUserDeletePic(bool value) {
     if (value != _didUserDeletePic) {
       _didUserDeletePic = value;
-
-      log('Did user delete pic changed to $_didUserDeletePic');
     }
   }
 

@@ -177,4 +177,79 @@ class AuthenticationRepository {
       }
     }
   }
+
+  /// Re-authenticate with Google
+  Future<bool> reAuthenticateWithGoogle() async {
+    try {
+      final googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return false;
+
+      final googleAuth = await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await FirebaseAuth.instance.currentUser
+          ?.reauthenticateWithCredential(credential);
+      return true;
+    } catch (e) {
+      log("Google re-authentication failed: $e");
+      return false;
+    }
+  }
+
+  /// Re-authenticate with Apple
+  Future<bool> reAuthenticateWithApple() async {
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final credential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      await FirebaseAuth.instance.currentUser
+          ?.reauthenticateWithCredential(credential);
+      return true;
+    } catch (e) {
+      log("Apple re-authentication failed: $e");
+      return false;
+    }
+  }
+
+  /// Re-authenticate with Email & Password
+  Future<bool> reAuthenticateWithEmail(String password) async {
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user == null || user.email == null) return false;
+
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: password,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+      return true;
+    } catch (e) {
+      log("Email re-authentication failed: $e");
+      return false;
+    }
+  }
+
+  /// Get the authentication provider of the current user
+  String? getUserAuthProvider() {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null || user.providerData.isEmpty) return null;
+
+    String provider = user.providerData.first.providerId;
+    log("User signed in with: $provider");
+    return provider;
+  }
 }

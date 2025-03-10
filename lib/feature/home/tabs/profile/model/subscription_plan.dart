@@ -9,6 +9,7 @@ class SubscriptionPlan {
   final Map<Currency, double> prices;
   final String discountInfo;
   final String billingCycle;
+  final String iapProductId;
   final Map<Currency, String> planCodes; // New field for Paystack plan codes
 
   SubscriptionPlan({
@@ -18,6 +19,7 @@ class SubscriptionPlan {
     required this.discountInfo,
     required this.billingCycle,
     required this.planCodes,
+    required this.iapProductId,
   });
 
   double getPrice(Currency currency) => prices[currency] ?? 0.0;
@@ -73,6 +75,7 @@ final subscriptionPlans = [
     planCodes: {
       Currency.NGN: Env.paystackPlanCodeNgnMonthly,
     },
+    iapProductId: "monthly_subscription", // Add product ID
   ),
   SubscriptionPlan(
     duration: "3 Months",
@@ -87,6 +90,7 @@ final subscriptionPlans = [
     planCodes: {
       Currency.NGN: Env.paystackPlanCodeNgn3Months,
     },
+    iapProductId: "quarterly_subscription",
   ),
   SubscriptionPlan(
     duration: "6 Months",
@@ -101,6 +105,7 @@ final subscriptionPlans = [
     planCodes: {
       Currency.NGN: Env.paystackPlanCodeNgn6Months,
     },
+    iapProductId: "biannual_subscription",
   ),
   SubscriptionPlan(
     duration: "1 Year",
@@ -115,5 +120,6 @@ final subscriptionPlans = [
     planCodes: {
       Currency.NGN: Env.paystackPlanCodeNgnYearly,
     },
+    iapProductId: "annual_subscription",
   ),
 ];

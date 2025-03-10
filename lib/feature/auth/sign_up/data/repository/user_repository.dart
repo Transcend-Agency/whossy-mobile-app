@@ -281,6 +281,30 @@ class UserRepository {
     }
   }
 
+  Future<void> deleteUserData(String userId) async {
+    try {
+      // 🔹 Delete all notifications at once
+      final notificationsRef = _users.doc(userId).collection("notifications");
+
+      final notificationsSnap = await notificationsRef.get(
+        const GetOptions(source: Source.server),
+      );
+
+      final batch = FirebaseFirestore.instance.batch();
+
+      for (var doc in notificationsSnap.docs) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit(); // Commit the batch delete
+
+      // 🔹 Now delete the user document
+      await _users.doc(userId).delete();
+    } catch (e) {
+      log("Error deleting user data: $e");
+      rethrow;
+    }
+  }
+
   Future<void> signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
