@@ -39,11 +39,16 @@ class ExploreFiltersComponent extends HookWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: Filters.values.map((filter) {
-          final isSelected = explore.getFilter(filter) != null;
+        children: Filters.values.asMap().entries.map((entry) {
+          final int index = entry.key;
+          final Filters filter = entry.value;
+          final bool isSelected = explore.getFilter(filter) != null;
 
           return Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: EdgeInsets.only(
+              left: index == 0 ? 16.0 : 4.0, // Extra padding for the first item
+              right: index == Filters.values.length - 1 ? 16.0 : 4.0, // Extra padding for the last item
+            ),
             child: ChoiceChip(
               padding: const EdgeInsets.all(7),
               label: Text(
@@ -56,10 +61,9 @@ class ExploreFiltersComponent extends HookWidget {
               ),
               avatar: filter.avatar != null
                   ? svgIcon(
-                      filter.avatar!,
-                      color:
-                          isSelected ? Colors.white : AppColors.hintTextColor,
-                    )
+                filter.avatar!,
+                color: isSelected ? Colors.white : AppColors.hintTextColor,
+              )
                   : null,
               selected: isSelected,
               showCheckmark: false,

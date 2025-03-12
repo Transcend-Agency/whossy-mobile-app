@@ -17,13 +17,13 @@ class Explore extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 375.w,
-      child: Padding(
-        padding: pagePadding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            HeaderBar(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: pagePadding,
+            child: HeaderBar(
               customWidget: NotificationBell(
                 key: GlobalKeys.notificationKey,
                 onTap: () => Nav.push(context, const NotificationRoute()),
@@ -34,11 +34,16 @@ class Explore extends StatelessWidget {
               icon2Key: GlobalKeys.advancedSearchKey,
               child: const Logo(),
             ),
-            addHeight(4),
-            const ExploreFiltersComponent(),
-            const Expanded(child: ExploreGrid()),
-          ],
-        ),
+          ),
+          addHeight(4),
+          const ExploreFiltersComponent(),
+          Expanded(
+            child: Padding(
+              padding: pagePadding,
+              child: const ExploreGrid(),
+            ),
+          ),
+        ],
       ),
     );
   }

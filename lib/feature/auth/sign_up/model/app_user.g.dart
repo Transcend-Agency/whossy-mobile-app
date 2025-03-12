@@ -94,4 +94,5 @@ const _$AuthMethodEnumMap = {
   AuthMethod.local: 'local',
   AuthMethod.google: 'google',
   AuthMethod.phone: 'phone',
+  AuthMethod.apple: 'apple',
 };

@@ -53,12 +53,8 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: PreviewProfile.page),
         AutoRoute(page: EditProfilePreview.page),
         AutoRoute(page: SafetyGuide.page),
-        AutoRoute(page: SubscriptionPlans.page),
-        AutoRoute(page: Credits.page),
 
         // Payment
-        AutoRoute(page: NombaWebRoute.page),
-        AutoRoute(page: PaystackWebRoute.page),
 
         // Likes and Match / Tab 3
         //AutoRoute(page: MoreInfoRoute.page),
