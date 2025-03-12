@@ -155,8 +155,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
               bottomNavBar: AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
                 height: scrollNotifier.isVisible ? 76.h : 0,
-                child: Wrap(
-                  children: [CustomBottomAppBar(items: bottomNavItems)],
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                  child: Wrap(
+                    children: [CustomBottomAppBar(items: bottomNavItems)],
+                  ),
                 ),
               ),
             );

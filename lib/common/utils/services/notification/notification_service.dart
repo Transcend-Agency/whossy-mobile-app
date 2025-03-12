@@ -79,10 +79,8 @@ class NotificationService {
 
   Future<void> initLocalNotifications() async {
     final android = AndroidInitializationSettings(icon);
-    const iOS = DarwinInitializationSettings(
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
 
-    final settings = InitializationSettings(android: android, iOS: iOS);
+    final settings = InitializationSettings(android: android);
 
     await _localNotifications.initialize(
       settings,
@@ -129,10 +127,3 @@ Future<void> onDidReceiveNotificationResponse(
 
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {}
-
-void onDidReceiveLocalNotification(
-  int id,
-  String? title,
-  String? body,
-  String? payload,
-) async {}

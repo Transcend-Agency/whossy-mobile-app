@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
@@ -176,7 +175,7 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
               ),
             ),
             childWhenDragging: Container(decoration: editMediaDecoration),
-            onDragStarted: () => Vibrate.feedback(FeedbackType.success),
+            // onDragStarted: () => Vibrate.feedback(FeedbackType.success),
             child: DragTarget<int>(
               builder: (ctx, candidateData, rejectedData) {
                 bool isDraggingOver = candidateData.isNotEmpty;

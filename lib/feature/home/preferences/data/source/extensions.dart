@@ -154,9 +154,7 @@ extension DataRangeExtension on double {
       case RangeType.height:
         final heightInches = convertCmToInches(this);
         return "${round()}cm ($heightInches)";
-      default:
-        return 'Invalid type';
-    }
+      }
   }
 }
 

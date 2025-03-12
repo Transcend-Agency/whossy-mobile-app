@@ -205,7 +205,8 @@ class NotificationTile extends HookWidget {
   Future<void> _updateNotificationStatus(
     ValueNotifier<bool> isUpdating,
     BuildContext context,
-  ) async {
+  ) async
+  {
     isUpdating.value = true;
 
     await Future.delayed(const Duration(seconds: 2));
