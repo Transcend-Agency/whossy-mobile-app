@@ -23,6 +23,22 @@
           }
         },
         {
+          "client_id": "332139466657-840tjb94cu79755jfesc37il6o1rssqi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whossy.whossy_app",
+            "certificate_hash": "e7baa736bc7e13072bedd3800f7bd7c0365473ab"
+          }
+        },
+        {
+          "client_id": "332139466657-9v0tmm6dggiqvosdicre0nn85rgvjrhb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whossy.whossy_app",
+            "certificate_hash": "5754559577bb7e4ded6cee44f2c52dc2e6988367"
+          }
+        },
+        {
           "client_id": "332139466657-jf3p239ic82afjmajov9b9as4tpbveje.apps.googleusercontent.com",
           "client_type": 3
         }

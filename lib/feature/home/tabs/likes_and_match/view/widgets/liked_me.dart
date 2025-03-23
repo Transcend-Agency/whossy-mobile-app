@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/provider/provider.dart';
 
 import '../../../../../../common/components/components.dart';
-import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../edit_profile/model/core_profile.dart';
