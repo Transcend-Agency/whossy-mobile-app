@@ -11,6 +11,7 @@ class NotificationService {
   final _localNotifications = FlutterLocalNotificationsPlugin();
 
   factory NotificationService() => _instance;
+
   NotificationService._internal();
 
   final String icon = 'icon';
@@ -56,6 +57,7 @@ class NotificationService {
   }
 
   Future<String> getToken() async => (await _messaging.getToken()) ?? '';
+
   Future<void> deleteToken() async => await _messaging.deleteToken();
 
   Future<void> initPushNotifications() async {
@@ -79,8 +81,9 @@ class NotificationService {
 
   Future<void> initLocalNotifications() async {
     final android = AndroidInitializationSettings(icon);
+    const ios = DarwinInitializationSettings();
 
-    final settings = InitializationSettings(android: android);
+    final settings = InitializationSettings(android: android, iOS: ios);
 
     await _localNotifications.initialize(
       settings,
@@ -97,8 +100,16 @@ class NotificationService {
       await androidPlugin.createNotificationChannel(_androidChannel);
     }
 
-    _localNotifications.resolvePlatformSpecificImplementation<
+    final iosPlugin = _localNotifications.resolvePlatformSpecificImplementation<
         IOSFlutterLocalNotificationsPlugin>();
+
+    if (iosPlugin != null) {
+      await iosPlugin.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
   }
 }
 
