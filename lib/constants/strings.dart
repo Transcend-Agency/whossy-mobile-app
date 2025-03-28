@@ -260,5 +260,5 @@ class AppStrings {
   static const String termsUrl = 'https://www.google.com';
 
   static const String privacyUrl =
-      'https://whossy-web-app-staging.vercel.app/privacy-policy';
+      'https://whossy.com/privacy-policy';
 }
