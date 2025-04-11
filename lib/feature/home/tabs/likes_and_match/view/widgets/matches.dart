@@ -13,7 +13,6 @@ import 'package:whossy_app/provider/provider.dart';
 
 import '../../../../../../common/components/components.dart';
 import '../../../../../../common/styles/text_style.dart';
-import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../explore/model/liked_user_profile.dart';
