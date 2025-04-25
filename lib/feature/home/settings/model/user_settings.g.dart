@@ -12,17 +12,9 @@ UserSettings _$UserSettingsFromJson(Map<String, dynamic> json) => UserSettings(
       readReceipts: json['read_receipts'] as bool? ?? true,
     );
 
-Map<String, dynamic> _$UserSettingsToJson(UserSettings instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('online_status', instance.onlineStatus);
-  writeNotNull('public_search', instance.publicSearch);
-  writeNotNull('read_receipts', instance.readReceipts);
-  return val;
-}
+Map<String, dynamic> _$UserSettingsToJson(UserSettings instance) =>
+    <String, dynamic>{
+      if (instance.onlineStatus case final value?) 'online_status': value,
+      if (instance.publicSearch case final value?) 'public_search': value,
+      if (instance.readReceipts case final value?) 'read_receipts': value,
+    };

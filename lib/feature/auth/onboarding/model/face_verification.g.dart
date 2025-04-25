@@ -13,17 +13,10 @@ FaceVerification _$FaceVerificationFromJson(Map<String, dynamic> json) =>
       retakePhoto: json['retake_photo'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$FaceVerificationToJson(FaceVerification instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('photo', instance.photo);
-  writeNotNull('updated_at', AppUtils.timestampToJson(instance.updatedAt));
-  writeNotNull('retake_photo', instance.retakePhoto);
-  return val;
-}
+Map<String, dynamic> _$FaceVerificationToJson(FaceVerification instance) =>
+    <String, dynamic>{
+      if (instance.photo case final value?) 'photo': value,
+      if (AppUtils.timestampToJson(instance.updatedAt) case final value?)
+        'updated_at': value,
+      if (instance.retakePhoto case final value?) 'retake_photo': value,
+    };

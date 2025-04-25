@@ -12,17 +12,9 @@ UserStatus _$UserStatusFromJson(Map<String, dynamic> json) => UserStatus(
           (json['lastSeen'] as num?)?.toInt()),
     );
 
-Map<String, dynamic> _$UserStatusToJson(UserStatus instance) {
-  final val = <String, dynamic>{
-    'online': instance.online,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('lastSeen', AppUtils.timestampToMilliseconds(instance.lastSeen));
-  return val;
-}
+Map<String, dynamic> _$UserStatusToJson(UserStatus instance) =>
+    <String, dynamic>{
+      'online': instance.online,
+      if (AppUtils.timestampToMilliseconds(instance.lastSeen) case final value?)
+        'lastSeen': value,
+    };

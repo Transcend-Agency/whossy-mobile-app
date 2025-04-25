@@ -14,20 +14,13 @@ SubChat _$SubChatFromJson(Map<String, dynamic> json) => SubChat(
           TimestampWrapper.timestampFromJson(json['expiration_time']),
     );
 
-Map<String, dynamic> _$SubChatToJson(SubChat instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('id', instance.id);
-  writeNotNull(
-      'unlock_time', TimestampWrapper.timestampToJson(instance.unlockTime));
-  writeNotNull('expiration_time',
-      TimestampWrapper.timestampToJson(instance.expirationTime));
-  writeNotNull('last_message_id', instance.lastMessageId);
-  return val;
-}
+Map<String, dynamic> _$SubChatToJson(SubChat instance) => <String, dynamic>{
+      if (instance.id case final value?) 'id': value,
+      if (TimestampWrapper.timestampToJson(instance.unlockTime)
+          case final value?)
+        'unlock_time': value,
+      if (TimestampWrapper.timestampToJson(instance.expirationTime)
+          case final value?)
+        'expiration_time': value,
+      if (instance.lastMessageId case final value?) 'last_message_id': value,
+    };

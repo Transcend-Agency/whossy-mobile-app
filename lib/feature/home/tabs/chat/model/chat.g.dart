@@ -25,30 +25,26 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       isUnlocked: json['is_unlocked'] as bool?,
     );
 
-Map<String, dynamic> _$ChatToJson(Chat instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('id', instance.id);
-  val['participants'] = instance.participants;
-  val['last_message'] = instance.lastMessage;
-  writeNotNull('last_message_timestamp',
-      TimestampWrapper.timestampToJson(instance.lastMessageTimestamp));
-  writeNotNull(
-      'unlock_time', TimestampWrapper.timestampToJson(instance.unlockTime));
-  writeNotNull('expiration_time',
-      TimestampWrapper.timestampToJson(instance.expirationTime));
-  writeNotNull('status', _$MessageStatusEnumMap[instance.lastMessageStatus]);
-  writeNotNull('last_message_id', instance.lastMessageId);
-  writeNotNull('is_seen_by_receiver', instance.isSeenByReceiver);
-  writeNotNull('is_unlocked', instance.isUnlocked);
-  return val;
-}
+Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
+      if (instance.id case final value?) 'id': value,
+      'participants': instance.participants,
+      'last_message': instance.lastMessage,
+      if (TimestampWrapper.timestampToJson(instance.lastMessageTimestamp)
+          case final value?)
+        'last_message_timestamp': value,
+      if (TimestampWrapper.timestampToJson(instance.unlockTime)
+          case final value?)
+        'unlock_time': value,
+      if (TimestampWrapper.timestampToJson(instance.expirationTime)
+          case final value?)
+        'expiration_time': value,
+      if (_$MessageStatusEnumMap[instance.lastMessageStatus] case final value?)
+        'status': value,
+      if (instance.lastMessageId case final value?) 'last_message_id': value,
+      if (instance.isSeenByReceiver case final value?)
+        'is_seen_by_receiver': value,
+      if (instance.isUnlocked case final value?) 'is_unlocked': value,
+    };
 
 const _$MessageStatusEnumMap = {
   MessageStatus.sent: 'sent',

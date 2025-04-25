@@ -134,12 +134,74 @@ class Profile extends StatelessWidget {
                         padding: EdgeInsets.symmetric(vertical: 10.h),
                         child: const WhossySafetyGuide(),
                       ),
+
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // CustomButton(
+                          //   onTap: () => showSnackbar(
+                          //     'This feature is coming soon',
+                          //     context,
+                          //     snackBarType: SnackbarType.warning,
+                          //   ),
+                          //   imagePath: AppAssets.boost,
+                          //   title: 'Profile Boost',
+                          //   subTitle: 'Get Now',
+                          //   containerColor: AppColors.purpleContainer,
+                          //   textColor: AppColors.purpleText,
+                          // ),
+                          // addWidth(10),
+                          CustomButton(
+                            onTap: () => Nav.push(context, const Credits()),
+                            imagePath: AppAssets.credit,
+                            title: '${data?.creditBalance ?? 0} Credits',
+                            subTitle: 'Get Now',
+                            containerColor: AppColors.yellowContainer,
+                            textColor: AppColors.yellowText,
+                          ),
+                        ],
+                      ),
                     ],
                   );
                 },
               ),
             ),
 
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    addWidth(14),
+                    PlanCard(
+                      containerColor: AppColors.premiumContainer,
+                      containerShade: AppColors.premiumContainerShade,
+                      title: 'Premium Plan',
+                      amount: '10',
+                      benefits: AppStrings.premiumPricing,
+                      onSeeAllFeatures: () => Nav.push(
+                        context,
+                        SubscriptionPlans(initialPage: 1),
+                      ),
+                    ),
+                    addWidth(12),
+                    PlanCard(
+                      containerColor: AppColors.freeContainer,
+                      containerShade: AppColors.freeContainerShade,
+                      title: 'Whossy Free Plan',
+                      amount: '0',
+                      benefits: AppStrings.freePricing,
+                      onSeeAllFeatures: () => Nav.push(
+                        context,
+                        SubscriptionPlans(initialPage: 0),
+                      ),
+                    ),
+                    addWidth(12),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

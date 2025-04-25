@@ -45,45 +45,41 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       currentPlan: (json['current_plan'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('first_name', instance.firstName);
-  writeNotNull('last_name', instance.lastName);
-  writeNotNull(
-      'date_of_birth', Preferences.dateTimeToJson(instance.dateOfBirth));
-  writeNotNull('gender', instance.gender);
-  writeNotNull('email', instance.email);
-  writeNotNull('weight', instance.weight);
-  writeNotNull('height', instance.height);
-  writeNotNull('phone_number', instance.phoneNumber);
-  writeNotNull('photos', instance.profilePics);
-  writeNotNull('bio', instance.bio);
-  writeNotNull('meet', instance.meet);
-  writeNotNull('interests', instance.interests);
-  writeNotNull('country_of_origin', instance.countryOfOrigin);
-  writeNotNull('is_premium', instance.isPremium);
-  writeNotNull('is_approved', instance.isApproved);
-  writeNotNull('is_banned', instance.isBanned);
-  writeNotNull('blockedIds', instance.blockedIds);
-  writeNotNull('latitude', instance.latitude);
-  writeNotNull('longitude', instance.longitude);
-  writeNotNull('location', AppUtils.geoPointToJson(instance.location));
-  writeNotNull('geohash', instance.geohash);
-  writeNotNull('geography', AppUtils.geographyToJson(instance.geography));
-  writeNotNull('credit_balance', instance.creditBalance);
-  writeNotNull('current_plan', instance.currentPlan);
-  writeNotNull(
-      'amount_paid_in_total', AppUtils.paymentToJson(instance.amountPaid));
-  writeNotNull(
-      'user_settings', AppUtils.userSettingsToJson(instance.userSettings));
-  writeNotNull('face_verification',
-      FaceVerification.faceVerificationToJson(instance.faceVerification));
-  return val;
-}
+Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) =>
+    <String, dynamic>{
+      if (instance.firstName case final value?) 'first_name': value,
+      if (instance.lastName case final value?) 'last_name': value,
+      if (Preferences.dateTimeToJson(instance.dateOfBirth) case final value?)
+        'date_of_birth': value,
+      if (instance.gender case final value?) 'gender': value,
+      if (instance.email case final value?) 'email': value,
+      if (instance.weight case final value?) 'weight': value,
+      if (instance.height case final value?) 'height': value,
+      if (instance.phoneNumber case final value?) 'phone_number': value,
+      if (instance.profilePics case final value?) 'photos': value,
+      if (instance.bio case final value?) 'bio': value,
+      if (instance.meet case final value?) 'meet': value,
+      if (instance.interests case final value?) 'interests': value,
+      if (instance.countryOfOrigin case final value?)
+        'country_of_origin': value,
+      if (instance.isPremium case final value?) 'is_premium': value,
+      if (instance.isApproved case final value?) 'is_approved': value,
+      if (instance.isBanned case final value?) 'is_banned': value,
+      if (instance.blockedIds case final value?) 'blockedIds': value,
+      if (instance.latitude case final value?) 'latitude': value,
+      if (instance.longitude case final value?) 'longitude': value,
+      if (AppUtils.geoPointToJson(instance.location) case final value?)
+        'location': value,
+      if (instance.geohash case final value?) 'geohash': value,
+      if (AppUtils.geographyToJson(instance.geography) case final value?)
+        'geography': value,
+      if (instance.creditBalance case final value?) 'credit_balance': value,
+      if (instance.currentPlan case final value?) 'current_plan': value,
+      if (AppUtils.paymentToJson(instance.amountPaid) case final value?)
+        'amount_paid_in_total': value,
+      if (AppUtils.userSettingsToJson(instance.userSettings) case final value?)
+        'user_settings': value,
+      if (FaceVerification.faceVerificationToJson(instance.faceVerification)
+          case final value?)
+        'face_verification': value,
+    };

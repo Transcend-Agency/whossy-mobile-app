@@ -24,29 +24,22 @@ AppNotification _$AppNotificationFromJson(Map<String, dynamic> json) =>
       user2Pic: json['user2_pic'] as String?,
     );
 
-Map<String, dynamic> _$AppNotificationToJson(AppNotification instance) {
-  final val = <String, dynamic>{
-    'title': instance.title,
-    'id': instance.id,
-    'seen': instance.seen,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('timestamp', AppUtils.timestampToJson(instance.timestamp));
-  writeNotNull('likerName', instance.likerName);
-  writeNotNull('likerProfilePicture', instance.likerProfilePicture);
-  writeNotNull('likedId', instance.likedId);
-  writeNotNull('likerId', instance.likerId);
-  writeNotNull('user1_id', instance.user1Id);
-  writeNotNull('user1_name', instance.user1Name);
-  writeNotNull('user1_pic', instance.user1Pic);
-  writeNotNull('user2_id', instance.user2Id);
-  writeNotNull('user2_name', instance.user2Name);
-  writeNotNull('user2_pic', instance.user2Pic);
-  return val;
-}
+Map<String, dynamic> _$AppNotificationToJson(AppNotification instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'id': instance.id,
+      'seen': instance.seen,
+      if (AppUtils.timestampToJson(instance.timestamp) case final value?)
+        'timestamp': value,
+      if (instance.likerName case final value?) 'likerName': value,
+      if (instance.likerProfilePicture case final value?)
+        'likerProfilePicture': value,
+      if (instance.likedId case final value?) 'likedId': value,
+      if (instance.likerId case final value?) 'likerId': value,
+      if (instance.user1Id case final value?) 'user1_id': value,
+      if (instance.user1Name case final value?) 'user1_name': value,
+      if (instance.user1Pic case final value?) 'user1_pic': value,
+      if (instance.user2Id case final value?) 'user2_id': value,
+      if (instance.user2Name case final value?) 'user2_name': value,
+      if (instance.user2Pic case final value?) 'user2_pic': value,
+    };

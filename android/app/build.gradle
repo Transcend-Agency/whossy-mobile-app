@@ -77,15 +77,14 @@ android {
     }
 
     buildTypes {
-        release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile(
-                    'proguard-android-optimize.txt'),
-                    'proguard-rules.pro'
+        debug {
+            // Comment out minifyEnabled, shrinkResources, and proguardFiles for debug builds
+            // minifyEnabled true
+            // shrinkResources true
+            // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+            // 'proguard-rules.pro'
 
-//            signingConfig = signingConfigs.debug
-           signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug // Make sure you're using the debug signing config
         }
     }
 }

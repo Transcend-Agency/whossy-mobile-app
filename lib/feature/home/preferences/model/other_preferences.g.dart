@@ -29,25 +29,17 @@ OtherPreferences _$OtherPreferencesFromJson(Map<String, dynamic> json) =>
       city: json['city'] as String?,
     );
 
-Map<String, dynamic> _$OtherPreferencesToJson(OtherPreferences instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('meet', instance.meet);
-  writeNotNull('similar_interest', instance.similarInterest);
-  writeNotNull('has_bio', instance.hasBio);
-  writeNotNull('age_range', instance.ageRange);
-  writeNotNull('interests', instance.interests);
-  writeNotNull('distance', instance.distance);
-  writeNotNull('outreach', instance.outreach);
-  writeNotNull('country', instance.country);
-  writeNotNull('city', instance.city);
-  writeNotNull('height_range', instance.heightRange);
-  writeNotNull('weight_range', instance.weightRange);
-  return val;
-}
+Map<String, dynamic> _$OtherPreferencesToJson(OtherPreferences instance) =>
+    <String, dynamic>{
+      if (instance.meet case final value?) 'meet': value,
+      if (instance.similarInterest case final value?) 'similar_interest': value,
+      if (instance.hasBio case final value?) 'has_bio': value,
+      if (instance.ageRange case final value?) 'age_range': value,
+      if (instance.interests case final value?) 'interests': value,
+      if (instance.distance case final value?) 'distance': value,
+      if (instance.outreach case final value?) 'outreach': value,
+      if (instance.country case final value?) 'country': value,
+      if (instance.city case final value?) 'city': value,
+      if (instance.heightRange case final value?) 'height_range': value,
+      if (instance.weightRange case final value?) 'weight_range': value,
+    };

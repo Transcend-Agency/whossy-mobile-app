@@ -31,34 +31,27 @@ Preferences _$PreferencesFromJson(Map<String, dynamic> json) => Preferences(
           (json['photos'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$PreferencesToJson(Preferences instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('preference', instance.relationshipPref);
-  writeNotNull('bio', instance.bio);
-  writeNotNull('meet', instance.meet);
-  writeNotNull('distance', instance.search);
-  writeNotNull(
-      'date_of_birth', Preferences.dateTimeToJson(instance.dateOfBirth));
-  writeNotNull('interests', instance.ticks);
-  writeNotNull('smoke', instance.smoker);
-  writeNotNull('drink', instance.drink);
-  writeNotNull('education', instance.education);
-  writeNotNull('love_language', instance.loveLanguage);
-  writeNotNull('communication_style', instance.communicationStyle);
-  writeNotNull('zodiac', instance.zodiac);
-  writeNotNull('religion', instance.religion);
-  writeNotNull('dietary', instance.dietary);
-  writeNotNull('family_goal', instance.futureFamilyPlans);
-  writeNotNull('workout', instance.workOut);
-  writeNotNull('pets', instance.petOwner);
-  writeNotNull('marital_status', instance.maritalStatus);
-  writeNotNull('photos', instance.profilePics);
-  return val;
-}
+Map<String, dynamic> _$PreferencesToJson(Preferences instance) =>
+    <String, dynamic>{
+      if (instance.relationshipPref case final value?) 'preference': value,
+      if (instance.bio case final value?) 'bio': value,
+      if (instance.meet case final value?) 'meet': value,
+      if (instance.search case final value?) 'distance': value,
+      if (Preferences.dateTimeToJson(instance.dateOfBirth) case final value?)
+        'date_of_birth': value,
+      if (instance.ticks case final value?) 'interests': value,
+      if (instance.smoker case final value?) 'smoke': value,
+      if (instance.drink case final value?) 'drink': value,
+      if (instance.education case final value?) 'education': value,
+      if (instance.loveLanguage case final value?) 'love_language': value,
+      if (instance.communicationStyle case final value?)
+        'communication_style': value,
+      if (instance.zodiac case final value?) 'zodiac': value,
+      if (instance.religion case final value?) 'religion': value,
+      if (instance.dietary case final value?) 'dietary': value,
+      if (instance.futureFamilyPlans case final value?) 'family_goal': value,
+      if (instance.workOut case final value?) 'workout': value,
+      if (instance.petOwner case final value?) 'pets': value,
+      if (instance.maritalStatus case final value?) 'marital_status': value,
+      if (instance.profilePics case final value?) 'photos': value,
+    };

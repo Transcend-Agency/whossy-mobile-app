@@ -16,22 +16,13 @@ Report _$ReportFromJson(Map<String, dynamic> json) => Report(
       timestamp: TimestampWrapper.timestampFromJson(json['timestamp']),
     );
 
-Map<String, dynamic> _$ReportToJson(Report instance) {
-  final val = <String, dynamic>{
-    'message': instance.message,
-    'reportedId': instance.reportedId,
-    'reportedName': instance.reportedName,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('reporterId', instance.reporterId);
-  writeNotNull('reporterName', instance.reporterName);
-  writeNotNull(
-      'timestamp', TimestampWrapper.timestampToJson(instance.timestamp));
-  return val;
-}
+Map<String, dynamic> _$ReportToJson(Report instance) => <String, dynamic>{
+      'message': instance.message,
+      'reportedId': instance.reportedId,
+      'reportedName': instance.reportedName,
+      if (instance.reporterId case final value?) 'reporterId': value,
+      if (instance.reporterName case final value?) 'reporterName': value,
+      if (TimestampWrapper.timestampToJson(instance.timestamp)
+          case final value?)
+        'timestamp': value,
+    };

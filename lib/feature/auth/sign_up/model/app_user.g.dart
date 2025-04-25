@@ -48,47 +48,44 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           json['face_verification'] as Map<String, dynamic>?),
     );
 
-Map<String, dynamic> _$AppUserToJson(AppUser instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('uid', instance.uid);
-  writeNotNull('email', instance.email);
-  writeNotNull('first_name', instance.firstName);
-  writeNotNull('last_name', instance.lastName);
-  writeNotNull('gender', instance.gender);
-  writeNotNull('phone_number', instance.phoneNumber);
-  writeNotNull('country_of_origin', instance.countryOfOrigin);
-  writeNotNull('auth_provider', _$AuthMethodEnumMap[instance.authProvider]);
-  writeNotNull('weight', instance.weight);
-  writeNotNull('height', instance.height);
-  val['has_completed_account_creation'] = instance.hasCompletedAccountCreation;
-  val['has_completed_onboarding'] = instance.hasCompletedOnboarding;
-  writeNotNull('tokens', instance.tokens);
-  val['is_approved'] = instance.isApproved;
-  val['is_banned'] = instance.isBanned;
-  writeNotNull(
-      'created_at', TimestampWrapper.timestampToJson(instance.createdAt));
-  writeNotNull(
-      'user_settings', AppUtils.userSettingsToJson(instance.userSettings));
-  writeNotNull('geography', AppUtils.geographyToJson(instance.geography));
-  writeNotNull('is_premium', instance.isPremium);
-  writeNotNull('blockedIds', instance.blockedIds);
-  writeNotNull('latitude', instance.latitude);
-  writeNotNull('longitude', instance.longitude);
-  writeNotNull('location', AppUtils.geoPointToJson(instance.location));
-  writeNotNull('geohash', instance.geohash);
-  writeNotNull('credit_balance', instance.creditBalance);
-  writeNotNull('face_verification',
-      FaceVerification.faceVerificationToJson(instance.faceVerification));
-  writeNotNull('current_plan', instance.currentPlan);
-  return val;
-}
+Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
+      if (instance.uid case final value?) 'uid': value,
+      if (instance.email case final value?) 'email': value,
+      if (instance.firstName case final value?) 'first_name': value,
+      if (instance.lastName case final value?) 'last_name': value,
+      if (instance.gender case final value?) 'gender': value,
+      if (instance.phoneNumber case final value?) 'phone_number': value,
+      if (instance.countryOfOrigin case final value?)
+        'country_of_origin': value,
+      if (_$AuthMethodEnumMap[instance.authProvider] case final value?)
+        'auth_provider': value,
+      if (instance.weight case final value?) 'weight': value,
+      if (instance.height case final value?) 'height': value,
+      'has_completed_account_creation': instance.hasCompletedAccountCreation,
+      'has_completed_onboarding': instance.hasCompletedOnboarding,
+      if (instance.tokens case final value?) 'tokens': value,
+      'is_approved': instance.isApproved,
+      'is_banned': instance.isBanned,
+      if (TimestampWrapper.timestampToJson(instance.createdAt)
+          case final value?)
+        'created_at': value,
+      if (AppUtils.userSettingsToJson(instance.userSettings) case final value?)
+        'user_settings': value,
+      if (AppUtils.geographyToJson(instance.geography) case final value?)
+        'geography': value,
+      if (instance.isPremium case final value?) 'is_premium': value,
+      if (instance.blockedIds case final value?) 'blockedIds': value,
+      if (instance.latitude case final value?) 'latitude': value,
+      if (instance.longitude case final value?) 'longitude': value,
+      if (AppUtils.geoPointToJson(instance.location) case final value?)
+        'location': value,
+      if (instance.geohash case final value?) 'geohash': value,
+      if (instance.creditBalance case final value?) 'credit_balance': value,
+      if (FaceVerification.faceVerificationToJson(instance.faceVerification)
+          case final value?)
+        'face_verification': value,
+      if (instance.currentPlan case final value?) 'current_plan': value,
+    };
 
 const _$AuthMethodEnumMap = {
   AuthMethod.local: 'local',

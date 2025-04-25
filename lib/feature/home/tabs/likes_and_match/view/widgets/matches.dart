@@ -13,6 +13,7 @@ import 'package:whossy_app/provider/provider.dart';
 
 import '../../../../../../common/components/components.dart';
 import '../../../../../../common/styles/text_style.dart';
+import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../explore/model/liked_user_profile.dart';
@@ -86,12 +87,61 @@ class Matches extends HookWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (profile.premiumUser)
               ProfileView(
                 gradient: AppColors.matchContainerGradient,
                 size: Size(width.r, height.r),
                 child: profileViewStack(
                   matchesCount: matchesCount,
                   imageUrl: profile.profilePics![0],
+                ),
+              )
+            else
+              Container(
+                height: 150.h,
+                padding: EdgeInsets.all(12.r),
+                decoration: BoxDecoration(
+                  gradient: AppColors.matchContainerGradient,
+                  borderRadius: BorderRadius.circular(18.r),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Upgrade to Premium to Chat New Matches',
+                            style: TextStyles.title
+                                .copyWith(fontSize: 20, color: Colors.white),
+                            textAlign: TextAlign.left,
+                          ),
+                          addHeight(10),
+                          GestureDetector(
+                            onTap: () => Nav.push(
+                              context,
+                              SubscriptionPlans(initialPage: 1),
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.r, vertical: 6.r),
+                              decoration: BoxDecoration(
+                                gradient: AppColors.splashGradient,
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                              child: Text(
+                                'UPGRADE',
+                                style: TextStyles.pageHeader
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Image.asset(AppAssets.flame),
+                  ],
                 ),
               ),
             LikesGridView(pageName: Matches.name, data: data),

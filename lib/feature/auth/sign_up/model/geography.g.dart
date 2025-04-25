@@ -11,16 +11,8 @@ Geography _$GeographyFromJson(Map<String, dynamic> json) => Geography(
       geopoint: AppUtils.geoPointFromJson(json['geopoint']),
     );
 
-Map<String, dynamic> _$GeographyToJson(Geography instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('geohash', instance.geohash);
-  writeNotNull('geopoint', AppUtils.geoPointToJson(instance.geopoint));
-  return val;
-}
+Map<String, dynamic> _$GeographyToJson(Geography instance) => <String, dynamic>{
+      if (instance.geohash case final value?) 'geohash': value,
+      if (AppUtils.geoPointToJson(instance.geopoint) case final value?)
+        'geopoint': value,
+    };

@@ -18,27 +18,19 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       isSenderBlocked: json['sender_id_blocked'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$MessageToJson(Message instance) {
-  final val = <String, dynamic>{
-    'id': instance.id,
-    'sender_id': instance.senderId,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('message', instance.message);
-  writeNotNull(
-      'timestamp', TimestampWrapper.timestampToJson(instance.timestamp));
-  writeNotNull('local_photo', instance.localPhoto);
-  writeNotNull('photo', instance.photo);
-  writeNotNull('status', _$MessageStatusEnumMap[instance.status]);
-  val['sender_id_blocked'] = instance.isSenderBlocked;
-  return val;
-}
+Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
+      'id': instance.id,
+      'sender_id': instance.senderId,
+      if (instance.message case final value?) 'message': value,
+      if (TimestampWrapper.timestampToJson(instance.timestamp)
+          case final value?)
+        'timestamp': value,
+      if (instance.localPhoto case final value?) 'local_photo': value,
+      if (instance.photo case final value?) 'photo': value,
+      if (_$MessageStatusEnumMap[instance.status] case final value?)
+        'status': value,
+      'sender_id_blocked': instance.isSenderBlocked,
+    };
 
 const _$MessageStatusEnumMap = {
   MessageStatus.sent: 'sent',

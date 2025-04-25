@@ -28,27 +28,24 @@ CorePreferences _$CorePreferencesFromJson(Map<String, dynamic> json) =>
           indexToMaritalStatus((json['marital_status'] as num?)?.toInt()),
     );
 
-Map<String, dynamic> _$CorePreferencesToJson(CorePreferences instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('preference', enumToIndex(instance.relationshipPreference));
-  writeNotNull('marital_status', enumToIndex(instance.maritalStatus));
-  writeNotNull('education', enumToIndex(instance.education));
-  writeNotNull('love_language', enumToIndex(instance.loveLanguage));
-  writeNotNull('zodiac', enumToIndex(instance.zodiac));
-  writeNotNull('smoke', enumToIndex(instance.smoker));
-  writeNotNull('drink', enumToIndex(instance.drinking));
-  writeNotNull('workout', enumToIndex(instance.workout));
-  writeNotNull('pets', enumToIndex(instance.petOwner));
-  writeNotNull('religion', enumToIndex(instance.religion));
-  writeNotNull('dietary', enumToIndex(instance.dietary));
-  writeNotNull('family_goal', enumToIndex(instance.futureFamilyPlans));
-  writeNotNull('communication_style', enumToIndex(instance.communicationStyle));
-  return val;
-}
+Map<String, dynamic> _$CorePreferencesToJson(CorePreferences instance) =>
+    <String, dynamic>{
+      if (enumToIndex(instance.relationshipPreference) case final value?)
+        'preference': value,
+      if (enumToIndex(instance.maritalStatus) case final value?)
+        'marital_status': value,
+      if (enumToIndex(instance.education) case final value?) 'education': value,
+      if (enumToIndex(instance.loveLanguage) case final value?)
+        'love_language': value,
+      if (enumToIndex(instance.zodiac) case final value?) 'zodiac': value,
+      if (enumToIndex(instance.smoker) case final value?) 'smoke': value,
+      if (enumToIndex(instance.drinking) case final value?) 'drink': value,
+      if (enumToIndex(instance.workout) case final value?) 'workout': value,
+      if (enumToIndex(instance.petOwner) case final value?) 'pets': value,
+      if (enumToIndex(instance.religion) case final value?) 'religion': value,
+      if (enumToIndex(instance.dietary) case final value?) 'dietary': value,
+      if (enumToIndex(instance.futureFamilyPlans) case final value?)
+        'family_goal': value,
+      if (enumToIndex(instance.communicationStyle) case final value?)
+        'communication_style': value,
+    };
