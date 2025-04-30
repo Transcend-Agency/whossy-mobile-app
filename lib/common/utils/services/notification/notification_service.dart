@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -43,9 +42,7 @@ class NotificationService {
   }
 
   Future<void> init() async {
-    await _messaging.requestPermission().then((value) =>
-        log('Notification authorization status: ${value.authorizationStatus}'));
-
+    await _messaging.requestPermission();
     await _messaging.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,

@@ -13,6 +13,7 @@ import '../../feature/auth/sign_up/model/geography.dart';
 import '../../feature/auth/sign_up/model/payment.dart';
 import '../../feature/home/settings/model/user_settings.dart';
 import '../../feature/home/tabs/matching/model/user_profile.dart';
+import '../../feature/home/tabs/profile/model/credit.dart';
 import '../../provider/provider.dart';
 import '../components/components.dart';
 import 'utils.dart';
@@ -38,6 +39,9 @@ class AppUtils {
 
   static Timestamp? timestampFromJson(dynamic json) => json as Timestamp?;
   static dynamic timestampToJson(Timestamp? timestamp) => timestamp;
+
+  static Currency? currencyFromJson(String? code) => Currency.fromCode(code);
+  static String? currencyToJson(Currency? currency) => currency?.toJson();
 
   static GeoPoint? geoPointFromJson(dynamic json) => json as GeoPoint?;
 

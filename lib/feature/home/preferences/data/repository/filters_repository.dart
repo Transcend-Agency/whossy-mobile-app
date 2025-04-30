@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whossy_app/feature/home/preferences/model/other_preferences.dart';
@@ -18,7 +16,7 @@ class FiltersRepository {
     if (filtersSnapshot.exists) {
       final data = filtersSnapshot.data();
 
-      log('The data gotten back from filters $data');
+      // log('The data gotten back from filters $data');
 
       if (data != null) {
         return Filters(

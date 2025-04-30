@@ -11,6 +11,7 @@ import 'package:whossy_app/common/components/components.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/services/payment/nomba/nomba_web_page.dart';
 import '../../../../../common/utils/services/payment/paystack/paystack_web_page.dart';
+import '../../../../../common/utils/services/payment/paystack/service/paystack_payment_service.dart';
 import '../../../../../common/utils/services/services.dart';
 import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
@@ -169,9 +170,11 @@ class Credits extends HookWidget {
     required double amount,
     required int quantity,
   }) async {
-
     final editNotifier = context.read<EditProfileNotifier>();
-   final paymentService = PaymentService(editNotifier);
+    final paymentService = PaymentService(
+      editNotifier,
+      PaystackPaymentService(currency),
+    );
 
     if (currency == 'USD') {
       navigateToUSDPayment(

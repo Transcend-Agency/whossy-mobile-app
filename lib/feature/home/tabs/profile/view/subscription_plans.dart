@@ -1,7 +1,9 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/components.dart';
+import 'package:whossy_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 
 import '../model/credit.dart';
 import 'plans/free_plan.dart';
@@ -14,7 +16,7 @@ class SubscriptionPlans extends StatefulWidget {
     super.key,
     required this.initialPage,
   }) : assert(initialPage == 0 || initialPage == 1,
-  'Initial page must be 0 (Free Plan) or 1 (Premium Plan)');
+            'Initial page must be 0 (Free Plan) or 1 (Premium Plan)');
 
   final int initialPage;
 
@@ -26,11 +28,21 @@ class _SubscriptionPlansState extends State<SubscriptionPlans> {
   late final ValueNotifier<Currency> userCurrency;
   late final PageController _pageController;
   late final List<Widget> _pages;
+  late final EditProfileNotifier editNotifier;
 
   @override
   void initState() {
     super.initState();
-    userCurrency = ValueNotifier(Currency.USD);
+    editNotifier = context.read<EditProfileNotifier>();
+
+    final isPremium = editNotifier.coreProfile?.isPremium ?? false;
+    final storedCurrency = editNotifier.coreProfile?.paystackUser?.currency;
+
+    // Use stored currency if user is premium and it exists
+    userCurrency = ValueNotifier(
+      (isPremium && storedCurrency != null) ? storedCurrency : Currency.USD,
+    );
+
     _pageController = PageController(initialPage: widget.initialPage);
     _pages = [
       const FreePlan(),

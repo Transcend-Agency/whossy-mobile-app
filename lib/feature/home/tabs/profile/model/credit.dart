@@ -9,6 +9,16 @@ enum Currency {
 
   final String paymentText;
   final String symbol;
+
+  static Currency? fromCode(String? code) {
+    if (code == null) return null;
+    return Currency.values.firstWhere(
+      (e) => e.name.toUpperCase() == code.toUpperCase(),
+      orElse: () => Currency.USD,
+    );
+  }
+
+  String toJson() => name.toUpperCase();
 }
 
 class Credit {

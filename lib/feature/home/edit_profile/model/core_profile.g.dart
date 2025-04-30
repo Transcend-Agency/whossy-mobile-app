@@ -43,6 +43,8 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       faceVerification: FaceVerification.faceVerificationFromJson(
           json['face_verification'] as Map<String, dynamic>?),
       currentPlan: (json['current_plan'] as num?)?.toInt(),
+      paystackUser: PaystackUser.paystackUserFromJson(
+          json['paystack'] as Map<String, dynamic>?),
     );
 
 Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) =>
@@ -82,4 +84,7 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) =>
       if (FaceVerification.faceVerificationToJson(instance.faceVerification)
           case final value?)
         'face_verification': value,
+      if (PaystackUser.paystackUserToJson(instance.paystackUser)
+          case final value?)
+        'paystack': value,
     };

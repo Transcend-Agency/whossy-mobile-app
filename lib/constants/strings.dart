@@ -165,7 +165,7 @@ class AppStrings {
 
   // Registration Status
   static const String unregisteredEmail =
-      'Account not registered with app, consider signing up instead';
+      'Account not registered, consider signing up instead';
   static const String registeredEmail = 'Account already registered';
   static const String differentCredentials =
       'Account exists with different credential';
@@ -259,6 +259,5 @@ class AppStrings {
 
   static const String termsUrl = 'https://www.google.com';
 
-  static const String privacyUrl =
-      'https://whossy.com/privacy-policy';
+  static const String privacyUrl = 'https://whossy.com/privacy-policy';
 }

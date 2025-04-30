@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:whossy_app/feature/auth/sign_up/model/payment.dart';
 import 'package:whossy_app/feature/home/settings/model/user_settings.dart';
 
+import '../../../../common/utils/services/payment/paystack/model/paystack_user.dart';
 import '../../../../common/utils/utils.dart';
 import '../../onboarding/model/face_verification.dart';
 import 'geography.dart';
@@ -116,6 +117,13 @@ class AppUser {
   @JsonKey(name: "current_plan")
   int? currentPlan;
 
+  @JsonKey(
+    name: 'paystack',
+    fromJson: PaystackUser.paystackUserFromJson,
+    toJson: PaystackUser.paystackUserToJson,
+  )
+  PaystackUser? paystackUser;
+
   AppUser({
     this.uid,
     this.email,
@@ -143,6 +151,7 @@ class AppUser {
     this.geography,
     this.creditBalance = 0,
     this.currentPlan,
+    this.paystackUser,
     Payment? payment,
     List<String>? blockedIds,
     FaceVerification? faceVerification,

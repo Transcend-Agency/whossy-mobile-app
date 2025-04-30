@@ -47,7 +47,7 @@ extension CoreProfileExtension on CoreProfile {
       updatedFields['height'] = height;
     }
     if (faceVerification != other.faceVerification) {
-      updatedFields['face_verification'] = faceVerification;
+      updatedFields['face_verification'] = faceVerification?.toJson();
     }
     if (!AppUtils.areListsEqual(interests, other.interests)) {
       updatedFields['interests'] = interests;
@@ -55,7 +55,9 @@ extension CoreProfileExtension on CoreProfile {
     if (!AppUtils.areListsEqual(blockedIds, other.blockedIds)) {
       updatedFields['blockedIds'] = blockedIds;
     }
-
+    if (paystackUser != other.paystackUser) {
+      updatedFields['paystack'] = paystackUser?.toJson();
+    }
     return updatedFields;
   }
 }

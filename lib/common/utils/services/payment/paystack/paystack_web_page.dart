@@ -3,12 +3,14 @@ import 'dart:developer';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:whossy_app/feature/home/tabs/profile/model/credit.dart';
 
 import '../../../../../constants/index.dart';
 import '../../../../components/components.dart';
 import '../../../router/router.gr.dart';
 import '../../../utils.dart';
 import 'model/paystack_request_response.dart';
+import 'model/paystack_user.dart';
 import 'service/paystack_payment_service.dart';
 
 @RoutePage()
@@ -63,29 +65,47 @@ class _PaystackWebPageState extends State<PaystackWebPage> {
     }
   }
 
-  Future<bool> _checkTransaction(String reference) async {
+  Future<Map<String, dynamic>> _checkTransaction(String reference) async {
     try {
       final transaction = await _paymentService.verifyTransaction(reference);
 
-      return transaction.status == true && transaction.data.status == "success";
+      if (transaction.status == true && transaction.data.status == "success") {
+        final paystackUser = PaystackUser(
+          customerId: transaction.data.customer.id,
+          currency: Currency.fromCode(transaction.data.currency),
+        );
+
+        return {
+          "status": true,
+          "paystack_user": paystackUser.toJson(),
+        };
+      } else {
+        return {
+          "status": false,
+          "message": "Transaction verification failed",
+        };
+      }
     } catch (e) {
       log("Transaction verification failed: $e");
-      return false;
+      return {
+        "status": false,
+        "message": e.toString(),
+      };
     }
   }
 
   void _handleTransactionCompletion(String reference) async {
-    final isSuccess = await _checkTransaction(reference);
+    final transactionResult = await _checkTransaction(reference);
 
-    if (isSuccess) {
+    if (transactionResult['status'] == true) {
       widget.transactionCompleted({
         "status": true,
-        "data": {"status": "success"},
+        "paystack_user": transactionResult['paystack_user']
       });
     } else {
       widget.transactionNotCompleted(
         TransactionErrorType.unexpectedError,
-        "Transaction verification failed",
+        transactionResult['message'] ?? "Transaction verification failed",
       );
     }
   }

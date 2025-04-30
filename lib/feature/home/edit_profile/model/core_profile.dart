@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:whossy_app/common/utils/services/payment/paystack/model/paystack_user.dart';
 import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
 
 import '../../../../common/utils/utils.dart';
@@ -116,6 +117,13 @@ class CoreProfile {
   @JsonKey(includeToJson: false, includeFromJson: false)
   String? updatedPhoto;
 
+  @JsonKey(
+    name: 'paystack',
+    fromJson: PaystackUser.paystackUserFromJson,
+    toJson: PaystackUser.paystackUserToJson,
+  )
+  PaystackUser? paystackUser;
+
   CoreProfile({
     this.firstName,
     this.lastName,
@@ -145,6 +153,7 @@ class CoreProfile {
     this.faceVerification,
     this.updatedPhoto,
     this.currentPlan,
+    this.paystackUser,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -186,7 +195,8 @@ class CoreProfile {
         '  userSettings: ${userSettings.toString()},\n'
         '  amountPaid: ${amountPaid.toString()},\n'
         '  geography: ${geography?.toString() ?? "null"}\n'
-        '  faceVerification: ${faceVerification?.toString() ?? "null"}\n' // Added this line
+        '  faceVerification: ${faceVerification?.toString() ?? "null"}\n'
+        '  paystackUser: ${paystackUser?.toString() ?? "null"} \n' // Added this line
         ')';
   }
 
@@ -197,7 +207,6 @@ class CoreProfile {
     return other is CoreProfile &&
         other.firstName == firstName &&
         other.lastName == lastName &&
-        other.dateOfBirth == dateOfBirth &&
         other.gender == gender &&
         //  other.phoneNumber == phoneNumber &&
         listEquals(other.profilePics, profilePics) &&
@@ -213,6 +222,7 @@ class CoreProfile {
         other.latitude == latitude &&
         other.longitude == longitude &&
         other.location == location &&
+        other.paystackUser == paystackUser &&
         // other.geohash == geohash &&
         other.creditBalance == creditBalance &&
         other.amountPaid == amountPaid &&
@@ -227,7 +237,6 @@ class CoreProfile {
     return Object.hash(
       firstName,
       lastName,
-      dateOfBirth,
       gender,
       // email,
       // phoneNumber,
@@ -244,6 +253,7 @@ class CoreProfile {
       userSettings,
       faceVerification,
       currentPlan,
+      paystackUser,
       Object.hashAll(profilePics ?? []),
       Object.hashAll(interests ?? []),
       Object.hashAll(blockedIds ?? []),

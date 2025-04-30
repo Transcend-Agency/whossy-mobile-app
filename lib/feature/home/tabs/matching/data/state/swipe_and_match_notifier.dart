@@ -46,7 +46,7 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     _corePreferences = corePrefs;
     notifyListeners();
 
-    log('Other Preferences \n ${otherPrefs.toString()}');
+    //log('Other Preferences \n ${otherPrefs.toString()}');
 
     fetchProfiles();
   }
@@ -56,7 +56,7 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     _profileData = data;
     notifyListeners();
 
-    log('User Data \n ${data.toString()}');
+    // log('User Data \n ${data.toString()}');
 
     if (_profileData != null && !_hasFetchedProfiles) {
       fetchProfiles();

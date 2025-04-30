@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -14,10 +13,17 @@ import '../model/paystack_request_response.dart';
 import '../model/paystack_transaction.dart';
 
 class PaystackPaymentService {
+  static final Map<String, PaystackPaymentService> _instances = {};
+
   final String secretKey;
   final String callbackUrl;
 
-  PaystackPaymentService(String currency)
+  factory PaystackPaymentService(String currency) {
+    return _instances.putIfAbsent(
+        currency, () => PaystackPaymentService._internal(currency));
+  }
+
+  PaystackPaymentService._internal(String currency)
       : secretKey = _getSecretKey(currency),
         callbackUrl = Env.paymentCallbackUrl;
 
@@ -52,23 +58,19 @@ class PaystackPaymentService {
 
       final response = await http
           .post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $secretKey',
-        },
-        body: jsonEncode(requestBody),
-      )
+            url,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $secretKey',
+            },
+            body: jsonEncode(requestBody),
+          )
           .timeout(
-        const Duration(seconds: 30),
-        onTimeout: () => throw TimeoutException("Request timed out."),
-      );
-
+            const Duration(seconds: 30),
+            onTimeout: () => throw TimeoutException("Request timed out."),
+          );
 
       if (response.statusCode == 200) {
-        if (kDebugMode) {
-          debugPrint('Paystack Response Body: ${response.body}');
-        }
         return PaystackRequestResponse.fromJson(jsonDecode(response.body));
       } else {
         throw Exception("Payment initialization failed: ${response.body}");
@@ -90,7 +92,7 @@ class PaystackPaymentService {
   Future<PaystackTransaction> verifyTransaction(String reference) async {
     try {
       final url =
-      Uri.parse('https://api.paystack.co/transaction/verify/$reference');
+          Uri.parse('https://api.paystack.co/transaction/verify/$reference');
 
       final response = await http.get(
         url,
@@ -118,6 +120,110 @@ class PaystackPaymentService {
       throw TransactionErrorType.paymentTimeout;
     } on Exception catch (e) {
       log("Verify transaction error: $e");
+
+      if (e is SocketException || e is HttpException) {
+        throw TransactionErrorType.noInternetConnection;
+      }
+
+      throw TransactionErrorType.unexpectedError;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getSubscriptionsForCustomer(
+    int customerCode,
+  ) async {
+    try {
+      final url = Uri.parse(
+          'https://api.paystack.co/subscription?customer=$customerCode');
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $secretKey',
+        },
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw TimeoutException("Request timed out."),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['status'] == true) {
+          // Assuming there's a list of subscriptions under the "data" key
+          List<Map<String, dynamic>> subscriptions = [];
+          for (var subscription in responseData['data']) {
+            subscriptions.add({
+              'subscription_code': subscription['subscription_code'],
+              'email_token': subscription['email_token'],
+            });
+          }
+          return subscriptions;
+        } else {
+          throw Exception(
+              "Failed to retrieve subscriptions: ${responseData['message']}");
+        }
+      } else {
+        throw Exception("Failed to get subscriptions: ${response.body}");
+      }
+    } on TimeoutException {
+      log("Get subscriptions request timed out.");
+      throw TransactionErrorType.paymentTimeout;
+    } on Exception catch (e) {
+      log("Error getting subscriptions: $e");
+
+      if (e is SocketException || e is HttpException) {
+        throw TransactionErrorType.noInternetConnection;
+      }
+
+      throw TransactionErrorType.unexpectedError;
+    }
+  }
+
+  Future<void> unsubscribe({
+    required String subscriptionCode,
+    required String emailToken,
+  }) async {
+    try {
+      final url = Uri.parse('https://api.paystack.co/subscription/disable');
+
+      final requestBody = {
+        "code": subscriptionCode,
+        "token": emailToken,
+      };
+
+      final response = await http
+          .post(
+            url,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $secretKey',
+            },
+            body: jsonEncode(requestBody),
+          )
+          .timeout(
+            const Duration(seconds: 30),
+            onTimeout: () =>
+                throw TimeoutException("Unsubscription request timed out."),
+          );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['status'] == true) {
+          if (kDebugMode) {
+            debugPrint('Successfully unsubscribed: ${response.body}');
+          }
+        } else {
+          throw Exception("Unsubscription failed: ${responseData['message']}");
+        }
+      } else {
+        throw Exception("Unsubscription failed: ${response.body}");
+      }
+    } on TimeoutException {
+      log("Unsubscription request timed out.");
+      throw TransactionErrorType.paymentTimeout;
+    } on Exception catch (e) {
+      log("Unsubscribe error: $e");
 
       if (e is SocketException || e is HttpException) {
         throw TransactionErrorType.noInternetConnection;

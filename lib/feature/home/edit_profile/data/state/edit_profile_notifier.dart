@@ -13,6 +13,7 @@ import 'package:whossy_app/feature/home/edit_profile/data/repository/edit_profil
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 
+import '../../../../../common/utils/services/payment/paystack/model/paystack_user.dart';
 import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/onboarding/model/preferences.dart';
@@ -249,6 +250,7 @@ class EditProfileNotifier extends ChangeNotifier {
     List<String>? blockedIds,
     String? photoVerificationUrl,
     int? currentPlan,
+    PaystackUser? paystackUser,
   }) {
     _dynCoreProfile?.update(
       bio: bio,
@@ -265,6 +267,7 @@ class EditProfileNotifier extends ChangeNotifier {
       amountPaid: amountPaid,
       photoVerificationUrl: photoVerificationUrl,
       currentPlan: currentPlan,
+      paystackUser: paystackUser,
     );
     notifyListeners();
   }
