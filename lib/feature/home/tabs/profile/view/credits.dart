@@ -1,6 +1,7 @@
+import 'dart:developer';
+
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/components.dart';
 
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/services/payment/nomba/nomba_web_page.dart';
 import '../../../../../common/utils/services/payment/paystack/paystack_web_page.dart';
 import '../../../../../common/utils/services/payment/paystack/service/paystack_payment_service.dart';
 import '../../../../../common/utils/services/services.dart';
@@ -176,41 +176,59 @@ class Credits extends HookWidget {
       PaystackPaymentService(currency),
     );
 
-    if (currency == 'USD') {
-      navigateToUSDPayment(
-        context: context,
-        email: editNotifier.coreProfile!.email!,
-        currency: currency,
-        amount: amount,
-        customerId: FirebaseAuth.instance.currentUser!.uid,
-        transactionCompleted: (response) => paymentService.onCreditSuccess(
-          context,
-          credit: quantity,
-          response: response,
-          currency: currency,
-          amount: amount,
-        ),
-        transactionNotCompleted: (errType, reason) =>
-            paymentService.onCreditFailure(context, errType.message, reason),
-      );
-    }
+    log('The currency in use is $currency');
 
-    if (currency == 'NGN' || currency == 'KES') {
-      navigateToPaystackPayment(
-        context: context,
-        email: editNotifier.coreProfile!.email!,
+    navigateToPaystackPayment(
+      context: context,
+      email: editNotifier.coreProfile!.email!,
+      currency: currency,
+      amount: amount,
+      transactionCompleted: (response) => paymentService.onCreditSuccess(
+        context,
+        credit: quantity,
+        response: response,
         currency: currency,
         amount: amount,
-        transactionCompleted: (response) => paymentService.onCreditSuccess(
-          context,
-          credit: quantity,
-          response: response,
-          currency: currency,
-          amount: amount,
-        ),
-        transactionNotCompleted: (errType, reason) =>
-            paymentService.onCreditFailure(context, errType.message, reason),
-      );
-    }
+      ),
+      transactionNotCompleted: (errType, reason) =>
+          paymentService.onCreditFailure(context, errType.message, reason),
+    );
+
+    // if (currency == 'USD') {
+    //   navigateToUSDPayment(
+    //     context: context,
+    //     email: editNotifier.coreProfile!.email!,
+    //     currency: currency,
+    //     amount: amount,
+    //     customerId: FirebaseAuth.instance.currentUser!.uid,
+    //     transactionCompleted: (response) => paymentService.onCreditSuccess(
+    //       context,
+    //       credit: quantity,
+    //       response: response,
+    //       currency: currency,
+    //       amount: amount,
+    //     ),
+    //     transactionNotCompleted: (errType, reason) =>
+    //         paymentService.onCreditFailure(context, errType.message, reason),
+    //   );
+    // }
+
+    // if (currency == 'NGN' || currency == 'KES') {
+    //   navigateToPaystackPayment(
+    //     context: context,
+    //     email: editNotifier.coreProfile!.email!,
+    //     currency: currency,
+    //     amount: amount,
+    //     transactionCompleted: (response) => paymentService.onCreditSuccess(
+    //       context,
+    //       credit: quantity,
+    //       response: response,
+    //       currency: currency,
+    //       amount: amount,
+    //     ),
+    //     transactionNotCompleted: (errType, reason) =>
+    //         paymentService.onCreditFailure(context, errType.message, reason),
+    //   );
+    // }
   }
 }

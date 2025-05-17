@@ -33,6 +33,8 @@ class PaystackPaymentService {
         return Env.paystackSecretKeyNgn;
       case "KES":
         return Env.paystackSecretKeyKes;
+      case "USD":
+        return Env.paystackSecretKeyUsd;
       default:
         return '';
     }

@@ -173,41 +173,57 @@ class PremiumPlan extends HookWidget {
       PaystackPaymentService(currency.name),
     );
 
-    double amount = selectedPlan.getPrice(currency); // Dynamically set price
+    double amount = selectedPlan.getPrice(currency); // Dynamically set price\
 
-    if (currency == Currency.USD) {
-      navigateToUSDPayment(
-        context: context,
-        email: editNotifier.coreProfile!.email!,
+    navigateToPaystackPayment(
+      plan: selectedPlan.getPlanCode(currency),
+      context: context,
+      email: editNotifier.coreProfile!.email!,
+      currency: currency.name,
+      amount: amount,
+      transactionCompleted: (response) => paymentService.onPremiumSuccess(
+        context,
+        response: response,
         currency: currency.name,
-        amount: amount,
-        customerId: FirebaseAuth.instance.currentUser!.uid,
-        transactionCompleted: (response) => paymentService.onPremiumSuccess(
-          context,
-          response: response,
-          currency: currency.name,
-        ),
-        transactionNotCompleted: (errType, reason) =>
-            paymentService.onPremiumFailure(context, errType.message, reason),
-      );
-    }
+        index: mapMonthsToIndex(selectedPlan.months),
+      ),
+      transactionNotCompleted: (errType, reason) =>
+          paymentService.onPremiumFailure(context, errType.message, reason),
+    );
 
-    if (currency == Currency.NGN || currency == Currency.KES) {
-      navigateToPaystackPayment(
-        plan: selectedPlan.getPlanCode(currency),
-        context: context,
-        email: editNotifier.coreProfile!.email!,
-        currency: currency.name,
-        amount: amount,
-        transactionCompleted: (response) => paymentService.onPremiumSuccess(
-          context,
-          response: response,
-          currency: currency.name,
-          index: mapMonthsToIndex(selectedPlan.months),
-        ),
-        transactionNotCompleted: (errType, reason) =>
-            paymentService.onPremiumFailure(context, errType.message, reason),
-      );
-    }
+    // if (currency == Currency.USD) {
+    //   navigateToUSDPayment(
+    //     context: context,
+    //     email: editNotifier.coreProfile!.email!,
+    //     currency: currency.name,
+    //     amount: amount,
+    //     customerId: FirebaseAuth.instance.currentUser!.uid,
+    //     transactionCompleted: (response) => paymentService.onPremiumSuccess(
+    //       context,
+    //       response: response,
+    //       currency: currency.name,
+    //     ),
+    //     transactionNotCompleted: (errType, reason) =>
+    //         paymentService.onPremiumFailure(context, errType.message, reason),
+    //   );
+    // }
+
+    // if (currency == Currency.NGN || currency == Currency.KES) {
+    //   navigateToPaystackPayment(
+    //     plan: selectedPlan.getPlanCode(currency),
+    //     context: context,
+    //     email: editNotifier.coreProfile!.email!,
+    //     currency: currency.name,
+    //     amount: amount,
+    //     transactionCompleted: (response) => paymentService.onPremiumSuccess(
+    //       context,
+    //       response: response,
+    //       currency: currency.name,
+    //       index: mapMonthsToIndex(selectedPlan.months),
+    //     ),
+    //     transactionNotCompleted: (errType, reason) =>
+    //         paymentService.onPremiumFailure(context, errType.message, reason),
+    //   );
+    // }
   }
 }

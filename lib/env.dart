@@ -19,6 +19,9 @@ abstract class Env {
   @EnviedField(varName: 'PAYSTACK_SECRET_KEY_KES')
   static String paystackSecretKeyKes = _Env.paystackSecretKeyKes;
 
+  @EnviedField(varName: 'PAYSTACK_SECRET_KEY_USD')
+  static String paystackSecretKeyUsd = _Env.paystackSecretKeyUsd;
+
   @EnviedField(varName: 'PAYMENT_CALLBACK_URL')
   static String paymentCallbackUrl = _Env.paymentCallbackUrl;
 
