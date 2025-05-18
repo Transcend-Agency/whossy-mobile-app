@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whossy_app/common/utils/services/user_presence/user_presence_service.dart';
+import 'package:provider/provider.dart';
 import 'package:whossy_app/constants/strings.dart';
+import 'package:whossy_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 
+import '../common/utils/services/iap/purchase_handler.dart';
+import '../common/utils/services/services.dart';
 import '../common/utils/utils.dart';
 
 class Whossy extends StatefulWidget {
@@ -23,12 +26,28 @@ class _WhossyState extends State<Whossy> with WidgetsBindingObserver {
     _userService = UserPresenceService();
     _userService.trackUserPresence();
 
+    _initIAP();
+
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> _initIAP() async {
+    IAPService.instance.configure(
+      handler: AppPurchaseHandler(
+        context.read<EditProfileNotifier>(),
+      ),
+    );
+
+    await IAPService.instance.initialize();
   }
 
   @override
   void dispose() {
+    // Cancel purchase stream to avoid memory leaks
+    IAPService.instance.dispose();
+
     WidgetsBinding.instance.removeObserver(this);
+
     super.dispose();
   }
 

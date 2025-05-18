@@ -61,6 +61,7 @@ dependencies:
   webview_flutter: ^4.8.0
   envied: ^1.1.0
   sign_in_with_apple: ^6.1.4
+  in_app_purchase: ^3.2.3
   # Git Dependencies
   country_picker:
     git:
@@ -79,8 +80,9 @@ dev_dependencies:
   flutter_lints: ^5.0.0 # Linting
   auto_route_generator: ^10.0.1
   build_runner: ^2.4.11
-  json_serializable: ^6.8.0
+  json_serializable: ^6.8.5
   envied_generator: ^1.1.0
+  in_app_purchase_platform_interface: ^1.4.0
 
 # Flutter-Specific Settings
 flutter:

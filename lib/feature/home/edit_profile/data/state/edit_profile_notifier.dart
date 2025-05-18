@@ -335,6 +335,71 @@ class EditProfileNotifier extends ChangeNotifier {
     }
   }
 
+  Future<bool> addCreditsAfterPurchase({
+    required int credits,
+    void Function(String message)? onSnackbar,
+    required double amount,
+    required String currency,
+  }) async {
+    final previousCredit = coreProfile?.creditBalance ?? 0;
+    final previousPayment = coreProfile?.amountPaid ?? Payment();
+
+    final originalPayment = Payment.fromJson(previousPayment.toJson());
+    var updatedPayment = Payment.fromJson(previousPayment.toJson());
+
+    if (currency == 'KES') {
+      updatedPayment.updatePayment(kshIncrement: amount);
+    } else if (currency == 'NGN') {
+      updatedPayment.updatePayment(ngnIncrement: amount);
+    } else if (currency == 'USD') {
+      updatedPayment.updatePayment(usdIncrement: amount);
+    }
+
+    updateProfile(
+      creditBalance: previousCredit + credits,
+      amountPaid: updatedPayment,
+    );
+
+    final success = await saveUserProfile(
+      showSnackbar: (msg) {},
+    );
+
+    if (!success) {
+      updateProfile(
+        creditBalance: previousCredit,
+        amountPaid: originalPayment,
+      );
+      onSnackbar?.call(AppStrings.addCreditsFailure);
+      return false;
+    }
+
+    onSnackbar?.call('Payment completed successfully!');
+    return true;
+  }
+
+  Future<bool> updateSubscription({
+    required int? planIndex,
+  }) async {
+    final isPremiumUser = coreProfile?.isPremium ?? false;
+    final currentPlan = coreProfile?.currentPlan;
+
+    updateProfile(
+      isPremium: true,
+      currentPlan: planIndex,
+    );
+
+    final success = await saveUserProfile(showSnackbar: (msg) {});
+
+    if (!success) {
+      updateProfile(
+        isPremium: isPremiumUser,
+        currentPlan: currentPlan,
+      );
+    }
+
+    return success;
+  }
+
   void reset() {
     _dynCoreProfile = null;
     _staticCoreProfile = null;

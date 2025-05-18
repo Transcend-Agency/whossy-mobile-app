@@ -24,11 +24,12 @@ enum Currency {
 class Credit {
   final int quantity;
   final Map<Currency, double> prices;
+  final String productId;
 
   Credit({
     required this.quantity,
     required this.prices,
-  });
+  }) : productId = 'credits_${quantity}_usd';
 
   double getPrice(Currency currency) {
     return prices[currency] ?? 0.0;

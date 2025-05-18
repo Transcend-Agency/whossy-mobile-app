@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +5,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/components/components.dart';
 
+import '../../../../../common/components/components.dart';
 import '../../../../../common/styles/text_style.dart';
 import '../../../../../common/utils/services/payment/paystack/paystack_web_page.dart';
 import '../../../../../common/utils/services/payment/paystack/service/paystack_payment_service.dart';
@@ -137,7 +135,6 @@ class Credits extends HookWidget {
                         ? null
                         : isConnected
                             ? () async => await pay(
-                                  quantity: creditValue.value!.quantity,
                                   context: context,
                                   currency: userCurrency.value
                                       .toString()
@@ -145,6 +142,7 @@ class Credits extends HookWidget {
                                       .last,
                                   amount: creditValue.value!
                                       .getPrice(userCurrency.value),
+                                  credit: creditValue.value!,
                                 )
                             : () =>
                                 showSnackbar(AppStrings.deviceOffline, context),
@@ -168,7 +166,7 @@ class Credits extends HookWidget {
     required BuildContext context,
     required String currency,
     required double amount,
-    required int quantity,
+    required Credit credit,
   }) async {
     final editNotifier = context.read<EditProfileNotifier>();
     final paymentService = PaymentService(
@@ -176,59 +174,29 @@ class Credits extends HookWidget {
       PaystackPaymentService(currency),
     );
 
-    log('The currency in use is $currency');
+    final quantity = credit.quantity;
+    final productId = credit.productId;
 
-    navigateToPaystackPayment(
-      context: context,
-      email: editNotifier.coreProfile!.email!,
-      currency: currency,
-      amount: amount,
-      transactionCompleted: (response) => paymentService.onCreditSuccess(
-        context,
-        credit: quantity,
-        response: response,
+    if (currency == 'NGN' || currency == 'KES') {
+      navigateToPaystackPayment(
+        context: context,
+        email: editNotifier.coreProfile!.email!,
         currency: currency,
         amount: amount,
-      ),
-      transactionNotCompleted: (errType, reason) =>
-          paymentService.onCreditFailure(context, errType.message, reason),
-    );
+        transactionCompleted: (response) => paymentService.onCreditSuccess(
+          context,
+          credit: quantity,
+          response: response,
+          currency: currency,
+          amount: amount,
+        ),
+        transactionNotCompleted: (errType, reason) =>
+            paymentService.onCreditFailure(context, errType.message, reason),
+      );
+    }
 
-    // if (currency == 'USD') {
-    //   navigateToUSDPayment(
-    //     context: context,
-    //     email: editNotifier.coreProfile!.email!,
-    //     currency: currency,
-    //     amount: amount,
-    //     customerId: FirebaseAuth.instance.currentUser!.uid,
-    //     transactionCompleted: (response) => paymentService.onCreditSuccess(
-    //       context,
-    //       credit: quantity,
-    //       response: response,
-    //       currency: currency,
-    //       amount: amount,
-    //     ),
-    //     transactionNotCompleted: (errType, reason) =>
-    //         paymentService.onCreditFailure(context, errType.message, reason),
-    //   );
-    // }
-
-    // if (currency == 'NGN' || currency == 'KES') {
-    //   navigateToPaystackPayment(
-    //     context: context,
-    //     email: editNotifier.coreProfile!.email!,
-    //     currency: currency,
-    //     amount: amount,
-    //     transactionCompleted: (response) => paymentService.onCreditSuccess(
-    //       context,
-    //       credit: quantity,
-    //       response: response,
-    //       currency: currency,
-    //       amount: amount,
-    //     ),
-    //     transactionNotCompleted: (errType, reason) =>
-    //         paymentService.onCreditFailure(context, errType.message, reason),
-    //   );
-    // }
+    if (currency == 'USD') {
+      IAPService.instance.buyConsumableProduct(productId);
+    }
   }
 }

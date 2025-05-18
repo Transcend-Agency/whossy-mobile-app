@@ -43,6 +43,8 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       currentPlan: (json['current_plan'] as num?)?.toInt(),
       paystackUser: PaystackUser.paystackUserFromJson(
           json['paystack'] as Map<String, dynamic>?),
+      amountPaid: AppUtils.paymentFromJson(
+          json['amount_paid_in_total'] as Map<String, dynamic>?),
       blockedIds: (json['blockedIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -83,6 +85,8 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
         'location': value,
       if (instance.geohash case final value?) 'geohash': value,
       if (instance.creditBalance case final value?) 'credit_balance': value,
+      if (AppUtils.paymentToJson(instance.amountPaid) case final value?)
+        'amount_paid_in_total': value,
       if (FaceVerification.faceVerificationToJson(instance.faceVerification)
           case final value?)
         'face_verification': value,

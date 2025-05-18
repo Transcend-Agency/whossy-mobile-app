@@ -152,11 +152,10 @@ class AppUser {
     this.creditBalance = 0,
     this.currentPlan,
     this.paystackUser,
-    Payment? payment,
+    this.amountPaid,
     List<String>? blockedIds,
     FaceVerification? faceVerification,
   })  : userSettings = userSettings ?? UserSettings(),
-        amountPaid = payment ?? Payment(),
         faceVerification = faceVerification ?? FaceVerification(),
         blockedIds = blockedIds ?? [];
 
