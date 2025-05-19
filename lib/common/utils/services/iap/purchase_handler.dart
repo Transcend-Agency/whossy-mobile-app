@@ -6,7 +6,10 @@ abstract class IAPPurchaseHandler {
     required double amount,
     required String currency,
   });
-  Future<void> markUserSubscribed(int planIndex);
+  Future<void> markUserSubscribed({
+    required String planId,
+    required String purchaseToken,
+  });
 }
 
 class AppPurchaseHandler implements IAPPurchaseHandler {
@@ -28,7 +31,11 @@ class AppPurchaseHandler implements IAPPurchaseHandler {
   }
 
   @override
-  Future<void> markUserSubscribed(int planIndex) async {
-    await editProfile.updateSubscription(planIndex: planIndex);
+  Future<void> markUserSubscribed(
+      {required String planId, required String purchaseToken}) async {
+    await editProfile.updateSubscription(
+      planId: planId,
+      purchaseToken: purchaseToken,
+    );
   }
 }

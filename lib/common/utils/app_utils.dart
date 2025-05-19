@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -295,4 +296,18 @@ Future<LottieComposition?> customDecoder(List<int> bytes) {
     return files.firstWhereOrNull(
         (f) => f.name.startsWith('animations/') && f.name.endsWith('.json'));
   });
+}
+
+String formatPrice(double price, String currencyCode) {
+  final hasDecimal = price % 1 != 0;
+
+  final formatter = NumberFormat.currency(
+    name: currencyCode,
+    decimalDigits: hasDecimal ? 2 : 0,
+  );
+
+  final formatted = formatter.format(price);
+  final symbol = formatter.currencySymbol;
+
+  return formatted.replaceFirst(symbol, '$symbol ');
 }

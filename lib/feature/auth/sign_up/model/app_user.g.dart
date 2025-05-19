@@ -40,9 +40,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       geography: AppUtils.geographyFromJson(
           json['geography'] as Map<String, dynamic>?),
       creditBalance: (json['credit_balance'] as num?)?.toInt() ?? 0,
-      currentPlan: (json['current_plan'] as num?)?.toInt(),
-      paystackUser: PaystackUser.paystackUserFromJson(
-          json['paystack'] as Map<String, dynamic>?),
+      currentPlan: json['current_plan'] as String?,
       amountPaid: AppUtils.paymentFromJson(
           json['amount_paid_in_total'] as Map<String, dynamic>?),
       blockedIds: (json['blockedIds'] as List<dynamic>?)
@@ -91,9 +89,6 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
           case final value?)
         'face_verification': value,
       if (instance.currentPlan case final value?) 'current_plan': value,
-      if (PaystackUser.paystackUserToJson(instance.paystackUser)
-          case final value?)
-        'paystack': value,
     };
 
 const _$AuthMethodEnumMap = {

@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:intl/intl.dart';
+
+import 'app_utils.dart';
 
 extension StringExtention on String? {
   /// Validate the email input (checks if it's a valid email format)
@@ -276,5 +279,62 @@ extension DistanceFormatter on double {
 extension MapContainsKeys on Map {
   bool containsKeys(List<String> keys) {
     return keys.every((key) => containsKey(key));
+  }
+}
+
+extension CreditProductIdParsing on String {
+  int? get creditQty {
+    final match = RegExp(r'^credits_(\d+)(?:_.*)?$').firstMatch(this);
+    if (match == null) return null;
+    return int.tryParse(match.group(1)!);
+  }
+}
+
+extension SubscriptionPlanExtension on ProductDetails {
+  int get months {
+    if (id.contains("1months")) return 1;
+    if (id.contains("3months")) return 3;
+    if (id.contains("6months")) return 6;
+    if (id.contains("1year")) return 12;
+    return 1;
+  }
+
+  String get displayName {
+    switch (months) {
+      case 1:
+        return 'Monthly Plan';
+      case 12:
+        return '1 Year Plan';
+      default:
+        return '$months Months Plan';
+    }
+  }
+
+  String get monthlyRateDisplay {
+    final monthsCount = months;
+    final monthlyRate = rawPrice / monthsCount;
+
+    return '${formatPrice(monthlyRate, currencyCode)} / mo';
+  }
+
+  String totalBilledText() {
+    final billingCycle = _billingCycleDescription(months);
+
+    return '${formatPrice(rawPrice, currencyCode)} $billingCycle';
+  }
+
+  String _billingCycleDescription(int months) {
+    switch (months) {
+      case 1:
+        return '';
+      case 3:
+        return 'billed quarterly';
+      case 6:
+        return 'billed biannually';
+      case 12:
+        return 'billed yearly';
+      default:
+        return 'every $months months';
+    }
   }
 }

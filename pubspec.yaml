@@ -59,7 +59,7 @@ dependencies:
   rxdart: ^0.27.7
   http: ^1.1.2
   webview_flutter: ^4.8.0
-  envied: ^1.1.0
+
   sign_in_with_apple: ^6.1.4
   in_app_purchase: ^3.2.3
   # Git Dependencies
@@ -72,6 +72,7 @@ dependencies:
     git:
       url: https://github.com/Transcend-Agency/GeoFlutterFire.git
       ref: 917f7d4d0ae3ad63134f7c945208d7c983c07301
+  package_info_plus: ^8.3.0
 
 # Development Dependencies
 dev_dependencies:

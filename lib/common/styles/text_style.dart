@@ -129,7 +129,7 @@ class TextStyles {
   );
 
   static TextStyle errorStyle = TextStyle(
-    color: AppColors.errorBorderColor.withOpacity(0.7),
+    color: AppColors.errorBorderColor.withValues(alpha: .7),
     fontSize: 13,
     fontFamily: 'NeueMontreal',
     height: 1.4,

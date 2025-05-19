@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:whossy_app/common/utils/services/payment/paystack/model/paystack_user.dart';
 import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
 
 import '../../../../common/utils/utils.dart';
@@ -91,7 +90,7 @@ class CoreProfile {
   int? creditBalance;
 
   @JsonKey(name: "current_plan")
-  int? currentPlan;
+  String? currentPlan;
 
   @JsonKey(
     name: "amount_paid_in_total",
@@ -118,11 +117,10 @@ class CoreProfile {
   String? updatedPhoto;
 
   @JsonKey(
-    name: 'paystack',
-    fromJson: PaystackUser.paystackUserFromJson,
-    toJson: PaystackUser.paystackUserToJson,
+    name: "purchase_token",
+    includeFromJson: false,
   )
-  PaystackUser? paystackUser;
+  String? purchaseToken;
 
   CoreProfile({
     this.firstName,
@@ -153,7 +151,7 @@ class CoreProfile {
     this.faceVerification,
     this.updatedPhoto,
     this.currentPlan,
-    this.paystackUser,
+    this.purchaseToken,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -196,7 +194,7 @@ class CoreProfile {
         '  amountPaid: ${amountPaid.toString()},\n'
         '  geography: ${geography?.toString() ?? "null"}\n'
         '  faceVerification: ${faceVerification?.toString() ?? "null"}\n'
-        '  paystackUser: ${paystackUser?.toString() ?? "null"} \n' // Added this line
+        // Added this line
         ')';
   }
 
@@ -222,7 +220,7 @@ class CoreProfile {
         other.latitude == latitude &&
         other.longitude == longitude &&
         other.location == location &&
-        other.paystackUser == paystackUser &&
+        other.purchaseToken == purchaseToken &&
         // other.geohash == geohash &&
         other.creditBalance == creditBalance &&
         other.amountPaid == amountPaid &&
@@ -253,7 +251,7 @@ class CoreProfile {
       userSettings,
       faceVerification,
       currentPlan,
-      paystackUser,
+      purchaseToken,
       Object.hashAll(profilePics ?? []),
       Object.hashAll(interests ?? []),
       Object.hashAll(blockedIds ?? []),

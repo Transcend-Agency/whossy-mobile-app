@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:whossy_app/common/utils/utils.dart';
+import 'package:whossy_app/feature/home/tabs/profile/model/subscription_plan.dart';
 
+import '../../../../feature/home/tabs/profile/model/credit.dart';
 import 'purchase_handler.dart';
 
 class IAPService {
@@ -20,13 +23,17 @@ class IAPService {
   // ✅ Cache for product metadata
   final Map<String, ProductDetails> _productDetailsMap = {};
 
-  final Set<String> _kIds = {'credit_100', 'credit_500', 'credit_1000'};
+  final Set<String> _kIds = {
+    ...credits.map((c) => c.productId),
+    ...subscriptionPlans.map((s) => s.productId),
+  };
 
   void configure({required IAPPurchaseHandler handler}) {
     _handler = handler;
   }
 
-  List<ProductDetails> products = [];
+  Set<ProductDetails> creditProducts = {};
+  Set<ProductDetails> subscriptionProducts = {};
 
   Future<void> initialize() async {
     if (await _iap.isAvailable()) {
@@ -49,8 +56,22 @@ class IAPService {
 
   Future<void> updateAvailableProducts() async {
     final response = await _iap.queryProductDetails(_kIds);
+
     if (response.notFoundIDs.isEmpty) {
-      products = response.productDetails;
+      // Sort all products by price ascending first
+      final sortedProducts = response.productDetails.toList()
+        ..sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
+
+      // Filter products for credits
+      creditProducts = sortedProducts
+          .where((product) => credits.any((c) => c.productId == product.id))
+          .toSet();
+
+      // Filter products for subscriptions
+      subscriptionProducts = sortedProducts
+          .where((product) =>
+              subscriptionPlans.any((s) => s.productId == product.id))
+          .toSet();
     }
   }
 
@@ -145,10 +166,10 @@ class IAPService {
   Future<void> _deliverProduct(PurchaseDetails purchase) async {
     final productId = purchase.productID;
     final product = _productDetailsMap[productId];
+    final purchaseToken = purchase.verificationData.serverVerificationData;
 
     if (productId.startsWith('credits_')) {
-      final match = RegExp(r'^credits_(\d+)_?.*').firstMatch(productId);
-      final quantity = match != null ? int.tryParse(match.group(1)!) : null;
+      final quantity = productId.creditQty;
 
       if (quantity != null && _handler != null && product != null) {
         final double amount = product.rawPrice;
@@ -162,7 +183,10 @@ class IAPService {
       }
     } else if (productId.startsWith('subscription_')) {
       if (_handler != null) {
-        await _handler!.markUserSubscribed(0);
+        await _handler!.markUserSubscribed(
+          planId: productId,
+          purchaseToken: purchaseToken,
+        );
       }
     }
   }

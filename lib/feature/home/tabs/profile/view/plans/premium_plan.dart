@@ -1,32 +1,28 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/utils/services/payment/paystack/service/paystack_payment_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../common/components/components.dart';
-import '../../../../../../common/utils/services/payment/nomba/nomba_web_page.dart';
-import '../../../../../../common/utils/services/payment/paystack/paystack_web_page.dart';
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/provider.dart';
 import '../../../../edit_profile/model/core_profile.dart';
 import '../../data/source/subscription_plan_data.dart';
-import '../../model/credit.dart';
-import '../../model/subscription_plan.dart';
 import '../widgets/_.dart';
 import '../widgets/sub_container.dart';
 
 class PremiumPlan extends HookWidget {
-  const PremiumPlan({super.key, required this.userCurrency});
-
-  final ValueNotifier<Currency> userCurrency;
+  const PremiumPlan({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final selectedPlan = useState<SubscriptionPlan>(subscriptionPlans[0]);
+    final plans = IAPService.instance.subscriptionProducts;
+    final planId = useState<String?>(null);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -39,9 +35,9 @@ class PremiumPlan extends HookWidget {
             bool hasActivePlan = (profileData?.isPremium ?? false) &&
                 (profileData?.currentPlan != null);
 
-            List<SubscriptionPlan> plans = hasActivePlan
-                ? [subscriptionPlans[profileData!.currentPlan!]]
-                : subscriptionPlans;
+            Iterable<ProductDetails> displayedPlans = hasActivePlan
+                ? plans.where((p) => p.id == profileData!.currentPlan!).toList()
+                : plans;
 
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -50,25 +46,17 @@ class PremiumPlan extends HookWidget {
                   key: ValueKey(hasActivePlan),
                   children: [
                     addWidth(14),
-                    ...plans.map(
-                      (plan) => Padding(
+                    ...displayedPlans.map((product) {
+                      return Padding(
                         padding: EdgeInsets.only(right: 12.r),
-                        child: ValueListenableBuilder<Currency>(
-                          valueListenable: userCurrency,
-                          builder: (_, selectedCurrency, __) {
-                            return SubscriptionBilling(
-                              plan: plan,
-                              groupValue:
-                                  hasActivePlan ? plan : selectedPlan.value,
-                              onChanged: (newPlan) {
-                                selectedPlan.value = newPlan!;
-                              },
-                              currency: userCurrency.value,
-                            );
-                          },
+                        child: SubscriptionBilling(
+                          value: product.id,
+                          groupValue: planId.value,
+                          product: product,
+                          onChanged: (id) => planId.value = id,
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -95,135 +83,71 @@ class PremiumPlan extends HookWidget {
             ),
           ),
         ),
-        Selector2<EditProfileNotifier, ConnectivityNotifier, Map<String, bool>>(
-          selector: (_, edit, connection) => {
-            "isPremium": edit.coreProfile?.isPremium ?? false,
-            "isConnected": connection.isConnected,
-          },
-          builder: (_, values, __) {
-            final isPremium = values["isPremium"]!;
-            final isConnected = values["isConnected"]!;
-
-            return Padding(
-              padding: EdgeInsets.only(bottom: 14.r, left: 14.r, right: 14.r),
-              child: ValueListenableBuilder<Currency>(
-                valueListenable: userCurrency,
-                builder: (_, selectedCurrency, __) {
-                  return DialogButton(
-                    text: isPremium ? "Cancel Plan" : "Subscribe",
-                    color: AppColors.premiumContainer,
-                    textColor: Colors.white,
-                    onPressed: () {
-                      if (isPremium) {
-                        cancelPlan(context);
-                      } else if (!isConnected) {
-                        showSnackbar(AppStrings.deviceOffline, context);
-                      } else {
-                        pay(
-                          context: context,
-                          currency: selectedCurrency,
-                          selectedPlan: selectedPlan.value,
-                        );
-                      }
-                    },
-                  );
-                },
-              ),
-            );
-          },
-        )
+        SubscribeButton(
+          productId: planId.value,
+          onUnsubscribe: () => onUnsubscribe(planId.value!),
+        ),
       ],
     );
   }
 
-  Future<bool?>? cancelPlan(
-    BuildContext context,
-  ) async {
-    bool? result = await showConfirmationDialog(
-      context,
-      title: 'Stop Your Plan?',
-      content: contentText(AppStrings.cancelPlan),
-      yes: 'Yes, Cancel',
-      no: 'No, Go Back',
-    );
+  void onUnsubscribe(String sku) async {
+    final info = await PackageInfo.fromPlatform();
+    final packageId = info.packageName;
 
-    if (result == null) return null;
+    final url =
+        'https://play.google.com/store/account/subscriptions?sku=$sku&package=$packageId';
+    launchUrl(Uri.parse(url));
 
-    if (result && context.mounted) {
-      final editNotifier = context.read<EditProfileNotifier>();
-      final storedCurrency = editNotifier.coreProfile?.paystackUser?.currency;
-
-      PaymentService(
-        editNotifier,
-        PaystackPaymentService(storedCurrency?.name ?? Currency.USD.name),
-      ).onPremiumUnsubscribe(context);
-    }
-
-    return result;
+    // https://play.google.com/store/account/subscriptions?sku=subscription_1months&package=com.whossy.whossy_app
   }
+}
 
-  Future<void> pay({
-    required BuildContext context,
-    required Currency currency,
-    required SubscriptionPlan selectedPlan,
-  }) async {
-    final editNotifier = context.read<EditProfileNotifier>();
-    final paymentService = PaymentService(
-      editNotifier,
-      PaystackPaymentService(currency.name),
+class SubscribeButton extends StatelessWidget {
+  final String? productId;
+  final VoidCallback? onUnsubscribe;
+
+  const SubscribeButton({super.key, this.productId, this.onUnsubscribe});
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector2<EditProfileNotifier, ConnectivityNotifier,
+        Map<String, bool>>(
+      selector: (_, edit, connection) => {
+        "isPremium": edit.coreProfile?.isPremium ?? false,
+        "isConnected": connection.isConnected,
+      },
+      builder: (_, values, __) {
+        final isPremium = values["isPremium"]!;
+        final isConnected = values["isConnected"]!;
+
+        return Padding(
+          padding: EdgeInsets.only(bottom: 14.r, left: 14.r, right: 14.r),
+          child: DialogButton(
+            text: isPremium ? "Cancel Plan" : "Subscribe",
+            color: AppColors.premiumContainer,
+            textColor: Colors.white,
+            onPressed: productId == null
+                ? null
+                : isConnected
+                    ? () async {
+                        if (isPremium) {
+                          bool? confirm = await showConfirmationDialog(
+                            context,
+                            title: 'Stop Your Plan?',
+                            content: contentText(AppStrings.cancelPlan),
+                            yes: 'Yes, Cancel',
+                            no: 'No, Go Back',
+                          );
+                          if (confirm == true) onUnsubscribe?.call();
+                        } else {
+                          IAPService.instance.buySubscription(productId!);
+                        }
+                      }
+                    : () => showSnackbar(AppStrings.deviceOffline, context),
+          ),
+        );
+      },
     );
-
-    double amount = selectedPlan.getPrice(currency); // Dynamically set price\
-
-    navigateToPaystackPayment(
-      plan: selectedPlan.getPlanCode(currency),
-      context: context,
-      email: editNotifier.coreProfile!.email!,
-      currency: currency.name,
-      amount: amount,
-      transactionCompleted: (response) => paymentService.onPremiumSuccess(
-        context,
-        response: response,
-        currency: currency.name,
-        index: mapMonthsToIndex(selectedPlan.months),
-      ),
-      transactionNotCompleted: (errType, reason) =>
-          paymentService.onPremiumFailure(context, errType.message, reason),
-    );
-
-    // if (currency == Currency.USD) {
-    //   navigateToUSDPayment(
-    //     context: context,
-    //     email: editNotifier.coreProfile!.email!,
-    //     currency: currency.name,
-    //     amount: amount,
-    //     customerId: FirebaseAuth.instance.currentUser!.uid,
-    //     transactionCompleted: (response) => paymentService.onPremiumSuccess(
-    //       context,
-    //       response: response,
-    //       currency: currency.name,
-    //     ),
-    //     transactionNotCompleted: (errType, reason) =>
-    //         paymentService.onPremiumFailure(context, errType.message, reason),
-    //   );
-    // }
-
-    // if (currency == Currency.NGN || currency == Currency.KES) {
-    //   navigateToPaystackPayment(
-    //     plan: selectedPlan.getPlanCode(currency),
-    //     context: context,
-    //     email: editNotifier.coreProfile!.email!,
-    //     currency: currency.name,
-    //     amount: amount,
-    //     transactionCompleted: (response) => paymentService.onPremiumSuccess(
-    //       context,
-    //       response: response,
-    //       currency: currency.name,
-    //       index: mapMonthsToIndex(selectedPlan.months),
-    //     ),
-    //     transactionNotCompleted: (errType, reason) =>
-    //         paymentService.onPremiumFailure(context, errType.message, reason),
-    //   );
-    // }
   }
 }

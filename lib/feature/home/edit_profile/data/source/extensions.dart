@@ -37,6 +37,9 @@ extension CoreProfileExtension on CoreProfile {
     if (bio != other.bio) {
       updatedFields['bio'] = bio;
     }
+    if (purchaseToken != other.purchaseToken) {
+      updatedFields['purchase_token'] = purchaseToken;
+    }
     if (currentPlan != other.currentPlan) {
       updatedFields['current_plan'] = currentPlan;
     }
@@ -54,9 +57,6 @@ extension CoreProfileExtension on CoreProfile {
     }
     if (!AppUtils.areListsEqual(blockedIds, other.blockedIds)) {
       updatedFields['blockedIds'] = blockedIds;
-    }
-    if (paystackUser != other.paystackUser) {
-      updatedFields['paystack'] = paystackUser?.toJson();
     }
     return updatedFields;
   }

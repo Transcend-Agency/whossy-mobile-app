@@ -13,7 +13,6 @@ import 'package:whossy_app/feature/home/edit_profile/data/repository/edit_profil
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 
-import '../../../../../common/utils/services/payment/paystack/model/paystack_user.dart';
 import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/onboarding/model/preferences.dart';
@@ -249,8 +248,8 @@ class EditProfileNotifier extends ChangeNotifier {
     List<String>? profilePics,
     List<String>? blockedIds,
     String? photoVerificationUrl,
-    int? currentPlan,
-    PaystackUser? paystackUser,
+    String? currentPlan,
+    String? purchaseToken,
   }) {
     _dynCoreProfile?.update(
       bio: bio,
@@ -267,7 +266,7 @@ class EditProfileNotifier extends ChangeNotifier {
       amountPaid: amountPaid,
       photoVerificationUrl: photoVerificationUrl,
       currentPlan: currentPlan,
-      paystackUser: paystackUser,
+      purchaseToken: purchaseToken,
     );
     notifyListeners();
   }
@@ -378,14 +377,16 @@ class EditProfileNotifier extends ChangeNotifier {
   }
 
   Future<bool> updateSubscription({
-    required int? planIndex,
+    required String planId,
+    required String purchaseToken,
   }) async {
     final isPremiumUser = coreProfile?.isPremium ?? false;
     final currentPlan = coreProfile?.currentPlan;
 
     updateProfile(
       isPremium: true,
-      currentPlan: planIndex,
+      currentPlan: planId,
+      purchaseToken: purchaseToken,
     );
 
     final success = await saveUserProfile(showSnackbar: (msg) {});

@@ -3,19 +3,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../common/components/components.dart';
 import '../../../../../common/styles/text_style.dart';
-import '../../../../../common/utils/services/payment/paystack/paystack_web_page.dart';
-import '../../../../../common/utils/services/payment/paystack/service/paystack_payment_service.dart';
 import '../../../../../common/utils/services/services.dart';
 import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../../../provider/provider.dart';
-import '../model/credit.dart';
-import 'widgets/_.dart';
 
 @RoutePage()
 class Credits extends HookWidget {
@@ -23,25 +18,13 @@ class Credits extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final creditValue = useState<Credit?>(null);
-    final userCurrency = useState<Currency>(Currency.USD);
+    final selectedProductId = useState<String?>(null);
 
     return AppScaffold(
       appBar: CustomAppBar(
         addBarHeight: 4,
         title: 'Whossy Credits',
         color: Colors.white,
-        action: Padding(
-          padding: EdgeInsets.only(right: 20.r),
-          child: CurrencyDropdown(
-            selectedCurrency: userCurrency.value,
-            onCurrencyChanged: (newCurrency) {
-              if (newCurrency != null) {
-                userCurrency.value = newCurrency;
-              }
-            },
-          ),
-        ),
       ),
       body: Padding(
         padding: EdgeInsets.only(left: 14.r, right: 14.r, top: 16.r),
@@ -94,24 +77,24 @@ class Credits extends HookWidget {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: credits.map((quantity) {
+                  children: IAPService.instance.creditProducts.map((product) {
                     return GenericTile(
                       unselectedBorderColor: AppColors.outlinedColor,
                       tileColor: Colors.white,
                       bottom: 14.r,
-                      value: quantity,
-                      groupValue: creditValue.value,
-                      onChanged: (newEnum) => creditValue.value = newEnum,
-                      title: '${quantity.quantity} Credits',
+                      value: product.id,
+                      groupValue: selectedProductId.value,
+                      onChanged: (id) => selectedProductId.value = id,
+                      title: '${product.id.creditQty} Credits',
                       subtitle: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           addHeight(3),
                           Text(
-                            formatPrice(quantity, userCurrency.value),
+                            formatPrice(product.rawPrice, product.currencyCode),
                             style: TextStyles.profileHead.copyWith(
-                              fontSize: AppUtils.scale(12.sp) ?? 15,
+                              fontSize: AppUtils.scale(12.sp) ?? 16,
                               color: Colors.black87,
                             ),
                           ),
@@ -122,81 +105,39 @@ class Credits extends HookWidget {
                 ),
               ),
             ),
-            Selector<ConnectivityNotifier, bool>(
-              selector: (_, connection) => connection.isConnected,
-              builder: (_, isConnected, __) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: DialogButton(
-                    text: "Continue",
-                    color: AppColors.buttonColor,
-                    textColor: Colors.white,
-                    onPressed: creditValue.value == null
-                        ? null
-                        : isConnected
-                            ? () async => await pay(
-                                  context: context,
-                                  currency: userCurrency.value
-                                      .toString()
-                                      .split('.')
-                                      .last,
-                                  amount: creditValue.value!
-                                      .getPrice(userCurrency.value),
-                                  credit: creditValue.value!,
-                                )
-                            : () =>
-                                showSnackbar(AppStrings.deviceOffline, context),
-                  ),
-                );
-              },
-            )
+            PayButton(productId: selectedProductId.value),
           ],
         ),
       ),
     );
   }
+}
 
-  /// Helper method to format the price with commas
-  String formatPrice(Credit quantity, Currency userCurrency) {
-    final price = quantity.getPrice(userCurrency).round();
-    return '${NumberFormat('#,##0').format(price)} ${userCurrency.toString().split('.').last}';
-  }
+class PayButton extends StatelessWidget {
+  final String? productId;
 
-  Future<void> pay({
-    required BuildContext context,
-    required String currency,
-    required double amount,
-    required Credit credit,
-  }) async {
-    final editNotifier = context.read<EditProfileNotifier>();
-    final paymentService = PaymentService(
-      editNotifier,
-      PaystackPaymentService(currency),
+  const PayButton({super.key, this.productId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<ConnectivityNotifier, bool>(
+      selector: (_, connection) => connection.isConnected,
+      builder: (_, isConnected, __) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: DialogButton(
+            text: "Continue",
+            color: AppColors.buttonColor,
+            textColor: Colors.white,
+            onPressed: productId == null
+                ? null
+                : isConnected
+                    ? () async => await IAPService.instance
+                        .buyConsumableProduct(productId!)
+                    : () => showSnackbar(AppStrings.deviceOffline, context),
+          ),
+        );
+      },
     );
-
-    final quantity = credit.quantity;
-    final productId = credit.productId;
-
-    if (currency == 'NGN' || currency == 'KES') {
-      navigateToPaystackPayment(
-        context: context,
-        email: editNotifier.coreProfile!.email!,
-        currency: currency,
-        amount: amount,
-        transactionCompleted: (response) => paymentService.onCreditSuccess(
-          context,
-          credit: quantity,
-          response: response,
-          currency: currency,
-          amount: amount,
-        ),
-        transactionNotCompleted: (errType, reason) =>
-            paymentService.onCreditFailure(context, errType.message, reason),
-      );
-    }
-
-    if (currency == 'USD') {
-      IAPService.instance.buyConsumableProduct(productId);
-    }
   }
 }
