@@ -6,6 +6,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:intl/intl.dart';
 
 import 'app_utils.dart';
+import 'enum/enums.dart';
 
 extension StringExtention on String? {
   /// Validate the email input (checks if it's a valid email format)
@@ -335,6 +336,17 @@ extension SubscriptionPlanExtension on ProductDetails {
         return 'billed yearly';
       default:
         return 'every $months months';
+    }
+  }
+}
+
+extension PaymentPlatformExtension on PaymentPlatform {
+  String get jsonValue {
+    switch (this) {
+      case PaymentPlatform.web:
+        return 'web';
+      case PaymentPlatform.mobile:
+        return 'mobile';
     }
   }
 }

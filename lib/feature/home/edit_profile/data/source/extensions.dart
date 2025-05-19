@@ -49,6 +49,9 @@ extension CoreProfileExtension on CoreProfile {
     if (height != other.height) {
       updatedFields['height'] = height;
     }
+    if (paymentPlatform != other.paymentPlatform) {
+      updatedFields['payment_platform'] = paymentPlatform?.jsonValue;
+    }
     if (faceVerification != other.faceVerification) {
       updatedFields['face_verification'] = faceVerification?.toJson();
     }

@@ -122,6 +122,9 @@ class CoreProfile {
   )
   String? purchaseToken;
 
+  @JsonKey(name: "payment_platform")
+  PaymentPlatform? paymentPlatform;
+
   CoreProfile({
     this.firstName,
     this.lastName,
@@ -152,6 +155,7 @@ class CoreProfile {
     this.updatedPhoto,
     this.currentPlan,
     this.purchaseToken,
+    this.paymentPlatform,
   });
 
   factory CoreProfile.fromJson(Map<String, dynamic> json) =>
@@ -177,24 +181,22 @@ class CoreProfile {
         '  weight: $weight,\n'
         '  height: $height,\n'
         '  countryOfOrigin: $countryOfOrigin,\n'
-        '  is_premium: $isPremium,\n'
+        '  isPremium: $isPremium,\n'
         '  isApproved: $isApproved,\n'
         '  isBanned: $isBanned,\n'
         '  blockedIds: ${blockedIds?.join(", ") ?? "null"},\n'
         '  latitude: $latitude,\n'
         '  longitude: $longitude,\n'
-        '  location: {\n'
-        '    latitude: ${location?.latitude ?? "null"},\n'
-        '    longitude: ${location?.longitude ?? "null"}\n'
-        '  },\n'
+        '  location: ${location != null ? '{ latitude: ${location!.latitude}, longitude: ${location!.longitude} }' : "null"},\n'
         '  geohash: $geohash,\n'
         '  creditBalance: $creditBalance,\n'
         '  currentPlan: $currentPlan,\n'
-        '  userSettings: ${userSettings.toString()},\n'
-        '  amountPaid: ${amountPaid.toString()},\n'
-        '  geography: ${geography?.toString() ?? "null"}\n'
-        '  faceVerification: ${faceVerification?.toString() ?? "null"}\n'
-        // Added this line
+        '  amountPaid: ${amountPaid?.toString() ?? "null"},\n'
+        '  userSettings: ${userSettings?.toString() ?? "null"},\n'
+        '  geography: ${geography?.toString() ?? "null"},\n'
+        '  faceVerification: ${faceVerification?.toString() ?? "null"},\n'
+        '  updatedPhoto: $updatedPhoto,\n'
+        '  paymentPlatform: $paymentPlatform\n'
         ')';
   }
 
@@ -221,6 +223,7 @@ class CoreProfile {
         other.longitude == longitude &&
         other.location == location &&
         other.purchaseToken == purchaseToken &&
+        other.paymentPlatform == paymentPlatform &&
         // other.geohash == geohash &&
         other.creditBalance == creditBalance &&
         other.amountPaid == amountPaid &&

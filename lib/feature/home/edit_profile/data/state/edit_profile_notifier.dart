@@ -250,6 +250,7 @@ class EditProfileNotifier extends ChangeNotifier {
     String? photoVerificationUrl,
     String? currentPlan,
     String? purchaseToken,
+    PaymentPlatform? paymentPlatform,
   }) {
     _dynCoreProfile?.update(
       bio: bio,
@@ -267,6 +268,7 @@ class EditProfileNotifier extends ChangeNotifier {
       photoVerificationUrl: photoVerificationUrl,
       currentPlan: currentPlan,
       purchaseToken: purchaseToken,
+      paymentPlatform: paymentPlatform,
     );
     notifyListeners();
   }
@@ -382,11 +384,13 @@ class EditProfileNotifier extends ChangeNotifier {
   }) async {
     final isPremiumUser = coreProfile?.isPremium ?? false;
     final currentPlan = coreProfile?.currentPlan;
+    final paymentPlatform = coreProfile?.paymentPlatform;
 
     updateProfile(
       isPremium: true,
       currentPlan: planId,
       purchaseToken: purchaseToken,
+      paymentPlatform: PaymentPlatform.mobile,
     );
 
     final success = await saveUserProfile(showSnackbar: (msg) {});
@@ -395,6 +399,7 @@ class EditProfileNotifier extends ChangeNotifier {
       updateProfile(
         isPremium: isPremiumUser,
         currentPlan: currentPlan,
+        paymentPlatform: paymentPlatform,
       );
     }
 

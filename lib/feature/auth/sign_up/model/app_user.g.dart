@@ -43,6 +43,8 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       currentPlan: json['current_plan'] as String?,
       amountPaid: AppUtils.paymentFromJson(
           json['amount_paid_in_total'] as Map<String, dynamic>?),
+      paymentPlatform: $enumDecodeNullable(
+          _$PaymentPlatformEnumMap, json['payment_platform']),
       blockedIds: (json['blockedIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -89,6 +91,8 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
           case final value?)
         'face_verification': value,
       if (instance.currentPlan case final value?) 'current_plan': value,
+      if (_$PaymentPlatformEnumMap[instance.paymentPlatform] case final value?)
+        'payment_platform': value,
     };
 
 const _$AuthMethodEnumMap = {
@@ -96,4 +100,9 @@ const _$AuthMethodEnumMap = {
   AuthMethod.google: 'google',
   AuthMethod.phone: 'phone',
   AuthMethod.apple: 'apple',
+};
+
+const _$PaymentPlatformEnumMap = {
+  PaymentPlatform.web: 'web',
+  PaymentPlatform.mobile: 'mobile',
 };

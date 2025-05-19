@@ -122,6 +122,9 @@ class AppUser {
   )
   String? purchaseToken;
 
+  @JsonKey(name: "payment_platform")
+  PaymentPlatform? paymentPlatform;
+
   AppUser({
     this.uid,
     this.email,
@@ -151,6 +154,7 @@ class AppUser {
     this.currentPlan,
     this.amountPaid,
     this.purchaseToken,
+    this.paymentPlatform,
     List<String>? blockedIds,
     FaceVerification? faceVerification,
   })  : userSettings = userSettings ?? UserSettings(),

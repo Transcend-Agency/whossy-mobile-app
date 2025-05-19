@@ -9,12 +9,12 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../../../common/components/components.dart';
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../../../common/utils/utils.dart';
-import '../../../../../../constants/index.dart';
 import '../../../../../../provider/provider.dart';
 import '../../../../edit_profile/model/core_profile.dart';
 import '../../data/source/subscription_plan_data.dart';
 import '../widgets/_.dart';
 import '../widgets/sub_container.dart';
+import '../widgets/subscribe_button.dart';
 
 class PremiumPlan extends HookWidget {
   const PremiumPlan({super.key});
@@ -23,6 +23,19 @@ class PremiumPlan extends HookWidget {
   Widget build(BuildContext context) {
     final plans = IAPService.instance.subscriptionProducts;
     final planId = useState<String?>(null);
+
+    final profile = useMemoized(
+      () => useContext().read<EditProfileNotifier>().coreProfile,
+    );
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if ((profile?.isPremium ?? false) && profile?.currentPlan != null) {
+          planId.value = profile!.currentPlan!;
+        }
+      });
+      return null;
+    }, []);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -98,56 +111,5 @@ class PremiumPlan extends HookWidget {
     final url =
         'https://play.google.com/store/account/subscriptions?sku=$sku&package=$packageId';
     launchUrl(Uri.parse(url));
-
-    // https://play.google.com/store/account/subscriptions?sku=subscription_1months&package=com.whossy.whossy_app
-  }
-}
-
-class SubscribeButton extends StatelessWidget {
-  final String? productId;
-  final VoidCallback? onUnsubscribe;
-
-  const SubscribeButton({super.key, this.productId, this.onUnsubscribe});
-
-  @override
-  Widget build(BuildContext context) {
-    return Selector2<EditProfileNotifier, ConnectivityNotifier,
-        Map<String, bool>>(
-      selector: (_, edit, connection) => {
-        "isPremium": edit.coreProfile?.isPremium ?? false,
-        "isConnected": connection.isConnected,
-      },
-      builder: (_, values, __) {
-        final isPremium = values["isPremium"]!;
-        final isConnected = values["isConnected"]!;
-
-        return Padding(
-          padding: EdgeInsets.only(bottom: 14.r, left: 14.r, right: 14.r),
-          child: DialogButton(
-            text: isPremium ? "Cancel Plan" : "Subscribe",
-            color: AppColors.premiumContainer,
-            textColor: Colors.white,
-            onPressed: productId == null
-                ? null
-                : isConnected
-                    ? () async {
-                        if (isPremium) {
-                          bool? confirm = await showConfirmationDialog(
-                            context,
-                            title: 'Stop Your Plan?',
-                            content: contentText(AppStrings.cancelPlan),
-                            yes: 'Yes, Cancel',
-                            no: 'No, Go Back',
-                          );
-                          if (confirm == true) onUnsubscribe?.call();
-                        } else {
-                          IAPService.instance.buySubscription(productId!);
-                        }
-                      }
-                    : () => showSnackbar(AppStrings.deviceOffline, context),
-          ),
-        );
-      },
-    );
   }
 }

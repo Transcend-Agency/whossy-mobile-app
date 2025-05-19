@@ -63,6 +63,7 @@ extension CoreProfileUtils on CoreProfile {
     String? photoVerificationUrl,
     String? currentPlan,
     String? purchaseToken,
+    PaymentPlatform? paymentPlatform,
   }) {
     if (bio != null) this.bio = bio;
     if (gender != null) this.gender = gender;
@@ -78,6 +79,7 @@ extension CoreProfileUtils on CoreProfile {
     if (amountPaid != null) this.amountPaid = amountPaid;
     if (currentPlan != null) this.currentPlan = currentPlan;
     if (purchaseToken != null) this.purchaseToken = purchaseToken;
+    if (paymentPlatform != null) this.paymentPlatform = paymentPlatform;
     if (photoVerificationUrl != null) {
       faceVerification?.photo = photoVerificationUrl;
     }
