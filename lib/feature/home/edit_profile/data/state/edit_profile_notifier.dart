@@ -19,7 +19,6 @@ import '../../../../auth/onboarding/model/preferences.dart';
 import '../../../../auth/sign_up/data/repository/user_repository.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
 import '../../../../auth/sign_up/model/geography.dart';
-import '../../../../auth/sign_up/model/payment.dart';
 import '../../../preferences/model/core_preferences.dart';
 import '../../../preferences/model/generic_enum.dart';
 import '../../model/core_profile.dart';
@@ -243,7 +242,6 @@ class EditProfileNotifier extends ChangeNotifier {
     double? height,
     int? creditBalance,
     bool? isPremium,
-    Payment? amountPaid,
     List<String>? interests,
     List<String>? profilePics,
     List<String>? blockedIds,
@@ -264,7 +262,6 @@ class EditProfileNotifier extends ChangeNotifier {
       isPremium: isPremium,
       blockedIds: blockedIds,
       creditBalance: creditBalance,
-      amountPaid: amountPaid,
       photoVerificationUrl: photoVerificationUrl,
       currentPlan: currentPlan,
       purchaseToken: purchaseToken,
@@ -343,22 +340,9 @@ class EditProfileNotifier extends ChangeNotifier {
     required String currency,
   }) async {
     final previousCredit = coreProfile?.creditBalance ?? 0;
-    final previousPayment = coreProfile?.amountPaid ?? Payment();
-
-    final originalPayment = Payment.fromJson(previousPayment.toJson());
-    var updatedPayment = Payment.fromJson(previousPayment.toJson());
-
-    if (currency == 'KES') {
-      updatedPayment.updatePayment(kshIncrement: amount);
-    } else if (currency == 'NGN') {
-      updatedPayment.updatePayment(ngnIncrement: amount);
-    } else if (currency == 'USD') {
-      updatedPayment.updatePayment(usdIncrement: amount);
-    }
 
     updateProfile(
       creditBalance: previousCredit + credits,
-      amountPaid: updatedPayment,
     );
 
     final success = await saveUserProfile(
@@ -368,7 +352,6 @@ class EditProfileNotifier extends ChangeNotifier {
     if (!success) {
       updateProfile(
         creditBalance: previousCredit,
-        amountPaid: originalPayment,
       );
       onSnackbar?.call(AppStrings.addCreditsFailure);
       return false;

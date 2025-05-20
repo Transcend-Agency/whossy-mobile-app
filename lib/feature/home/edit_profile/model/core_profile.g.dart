@@ -36,8 +36,6 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       creditBalance: (json['credit_balance'] as num?)?.toInt(),
       userSettings: AppUtils.userSettingsFromJson(
           json['user_settings'] as Map<String, dynamic>?),
-      amountPaid: AppUtils.paymentFromJson(
-          json['amount_paid_in_total'] as Map<String, dynamic>?),
       geography: AppUtils.geographyFromJson(
           json['geography'] as Map<String, dynamic>?),
       faceVerification: FaceVerification.faceVerificationFromJson(
@@ -77,8 +75,6 @@ Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) =>
         'geography': value,
       if (instance.creditBalance case final value?) 'credit_balance': value,
       if (instance.currentPlan case final value?) 'current_plan': value,
-      if (AppUtils.paymentToJson(instance.amountPaid) case final value?)
-        'amount_paid_in_total': value,
       if (AppUtils.userSettingsToJson(instance.userSettings) case final value?)
         'user_settings': value,
       if (FaceVerification.faceVerificationToJson(instance.faceVerification)

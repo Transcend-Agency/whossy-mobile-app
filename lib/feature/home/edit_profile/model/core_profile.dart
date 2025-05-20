@@ -7,7 +7,6 @@ import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
 import '../../../../common/utils/utils.dart';
 import '../../../auth/onboarding/model/face_verification.dart';
 import '../../../auth/sign_up/model/geography.dart';
-import '../../../auth/sign_up/model/payment.dart';
 import '../../settings/model/user_settings.dart';
 
 part 'core_profile.g.dart';
@@ -93,13 +92,6 @@ class CoreProfile {
   String? currentPlan;
 
   @JsonKey(
-    name: "amount_paid_in_total",
-    toJson: AppUtils.paymentToJson,
-    fromJson: AppUtils.paymentFromJson,
-  )
-  Payment? amountPaid;
-
-  @JsonKey(
     name: 'user_settings',
     fromJson: AppUtils.userSettingsFromJson,
     toJson: AppUtils.userSettingsToJson,
@@ -149,7 +141,6 @@ class CoreProfile {
     this.isBanned,
     this.creditBalance,
     this.userSettings,
-    this.amountPaid,
     this.geography,
     this.faceVerification,
     this.updatedPhoto,
@@ -191,7 +182,6 @@ class CoreProfile {
         '  geohash: $geohash,\n'
         '  creditBalance: $creditBalance,\n'
         '  currentPlan: $currentPlan,\n'
-        '  amountPaid: ${amountPaid?.toString() ?? "null"},\n'
         '  userSettings: ${userSettings?.toString() ?? "null"},\n'
         '  geography: ${geography?.toString() ?? "null"},\n'
         '  faceVerification: ${faceVerification?.toString() ?? "null"},\n'
@@ -226,7 +216,6 @@ class CoreProfile {
         other.paymentPlatform == paymentPlatform &&
         // other.geohash == geohash &&
         other.creditBalance == creditBalance &&
-        other.amountPaid == amountPaid &&
         other.currentPlan == currentPlan &&
         other.userSettings == userSettings &&
         other.faceVerification == faceVerification;
@@ -250,7 +239,6 @@ class CoreProfile {
       isBanned,
       location,
       creditBalance,
-      amountPaid,
       userSettings,
       faceVerification,
       currentPlan,

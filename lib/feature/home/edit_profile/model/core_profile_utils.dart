@@ -59,7 +59,6 @@ extension CoreProfileUtils on CoreProfile {
     List<String>? profilePics,
     List<String>? blockedIds,
     bool? isPremium,
-    Payment? amountPaid,
     String? photoVerificationUrl,
     String? currentPlan,
     String? purchaseToken,
@@ -76,7 +75,6 @@ extension CoreProfileUtils on CoreProfile {
     if (interests != null) this.interests = interests;
     if (profilePics != null) this.profilePics = profilePics;
     if (blockedIds != null) this.blockedIds = blockedIds;
-    if (amountPaid != null) this.amountPaid = amountPaid;
     if (currentPlan != null) this.currentPlan = currentPlan;
     if (purchaseToken != null) this.purchaseToken = purchaseToken;
     if (paymentPlatform != null) this.paymentPlatform = paymentPlatform;

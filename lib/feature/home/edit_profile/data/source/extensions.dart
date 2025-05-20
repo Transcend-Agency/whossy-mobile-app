@@ -28,9 +28,6 @@ extension CoreProfileExtension on CoreProfile {
     if (creditBalance != other.creditBalance) {
       updatedFields['credit_balance'] = creditBalance;
     }
-    if (amountPaid != other.amountPaid) {
-      updatedFields['amount_paid_in_total'] = amountPaid?.toJson();
-    }
     if (!listEquals(profilePics, other.profilePics)) {
       updatedFields['photos'] = profilePics;
     }

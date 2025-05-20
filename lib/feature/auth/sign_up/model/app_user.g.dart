@@ -41,8 +41,6 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           json['geography'] as Map<String, dynamic>?),
       creditBalance: (json['credit_balance'] as num?)?.toInt() ?? 0,
       currentPlan: json['current_plan'] as String?,
-      amountPaid: AppUtils.paymentFromJson(
-          json['amount_paid_in_total'] as Map<String, dynamic>?),
       paymentPlatform: $enumDecodeNullable(
           _$PaymentPlatformEnumMap, json['payment_platform']),
       blockedIds: (json['blockedIds'] as List<dynamic>?)
@@ -85,8 +83,6 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
         'location': value,
       if (instance.geohash case final value?) 'geohash': value,
       if (instance.creditBalance case final value?) 'credit_balance': value,
-      if (AppUtils.paymentToJson(instance.amountPaid) case final value?)
-        'amount_paid_in_total': value,
       if (FaceVerification.faceVerificationToJson(instance.faceVerification)
           case final value?)
         'face_verification': value,

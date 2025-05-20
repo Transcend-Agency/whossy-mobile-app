@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 
 import '../../constants/index.dart';
 import '../../feature/auth/sign_up/model/geography.dart';
-import '../../feature/auth/sign_up/model/payment.dart';
 import '../../feature/home/settings/model/user_settings.dart';
 import '../../feature/home/tabs/matching/model/user_profile.dart';
 import '../../feature/home/tabs/profile/model/credit.dart';
@@ -31,12 +30,6 @@ class AppUtils {
 
   static Map<String, dynamic>? userSettingsToJson(UserSettings? settings) =>
       settings?.toJson();
-
-  static Payment paymentFromJson(Map<String, dynamic>? json) =>
-      json == null ? Payment() : Payment.fromJson(json);
-
-  static Map<String, dynamic>? paymentToJson(Payment? payment) =>
-      payment?.toJson();
 
   static Timestamp? timestampFromJson(dynamic json) => json as Timestamp?;
   static dynamic timestampToJson(Timestamp? timestamp) => timestamp;

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:whossy_app/feature/auth/sign_up/model/payment.dart';
 import 'package:whossy_app/feature/home/settings/model/user_settings.dart';
 
 import '../../../../common/utils/utils.dart';
@@ -100,13 +99,6 @@ class AppUser {
   final int? creditBalance;
 
   @JsonKey(
-    name: "amount_paid_in_total",
-    toJson: AppUtils.paymentToJson,
-    fromJson: AppUtils.paymentFromJson,
-  )
-  final Payment? amountPaid;
-
-  @JsonKey(
     name: "face_verification",
     fromJson: FaceVerification.faceVerificationFromJson,
     toJson: FaceVerification.faceVerificationToJson,
@@ -152,7 +144,6 @@ class AppUser {
     this.geography,
     this.creditBalance = 0,
     this.currentPlan,
-    this.amountPaid,
     this.purchaseToken,
     this.paymentPlatform,
     List<String>? blockedIds,
