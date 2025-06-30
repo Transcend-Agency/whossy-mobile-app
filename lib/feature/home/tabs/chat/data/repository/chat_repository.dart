@@ -91,7 +91,7 @@ class ChatRepository {
         'unlock_time': FieldValue.serverTimestamp(),
         'expiration_time': Timestamp.fromDate(
           DateTime.now().add(
-            const Duration(hours: 24),
+            const Duration(hours: 48),
           ),
         ),
       },
