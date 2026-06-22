@@ -13,6 +13,7 @@ import 'package:whossy_app/feature/home/tabs/chat/model/sub_chat.dart';
 
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../edit_profile/model/core_profile.dart';
+import '../../../likes_and_match/data/repository/matches_repository.dart';
 import '../../../matching/model/user_profile.dart';
 import '../../model/current_chat.dart';
 import '../repository/chat_repository.dart';
@@ -22,6 +23,7 @@ class ChatsNotifier extends ChangeNotifier {
   // Internal services and repository
   final _sharedPrefs = SharedPrefsService();
   final _chatRepository = ChatRepository();
+  final _matchesRepository = MatchesRepository();
 
   final _fileService = FileService();
 
@@ -38,6 +40,10 @@ class ChatsNotifier extends ChangeNotifier {
 
   List<String>? _blockedIds; // Variable to store blocked IDs
   bool _isUserConnected = false;
+
+  // Whether the current user and the chat partner have a mutual `matches`
+  // doc. Unrelated to `_isUserConnected` above (see updateConnectivity).
+  bool _isMutualMatch = false;
   Timer? _uploadTimeout;
 
   final Map<String, double> _progressMap = {};
@@ -49,7 +55,13 @@ class ChatsNotifier extends ChangeNotifier {
   Map<String, bool> get isUploadingMap => _isUploadingMap;
   Map<String, bool> get hasUploadFailedMap => _hasUploadFailedMap;
 
+  bool get isMutualMatch => _isMutualMatch;
+
   bool get viewPermission {
+    // The credit/premium unlock mechanism only kicks in once both users
+    // are mutually matched — see whossy-mobile-app-implementation-plan.md §1.
+    if (!_isMutualMatch) return false;
+
     // Check if chatExpTime is available and in the past
     bool? isCreditFinished = chatExpTime?.isInThePast();
 
@@ -163,7 +175,14 @@ class ChatsNotifier extends ChangeNotifier {
       isBlocked: isBlocked ?? false,
     );
 
+    _isMutualMatch = false;
+
     notifyListeners();
+
+    _matchesRepository.isMutualMatch(uidUser1, uidUser2).then((isMatch) {
+      _isMutualMatch = isMatch;
+      notifyListeners();
+    });
   }
 
   Future<void> updateUnlockTime() async =>
@@ -333,6 +352,7 @@ class ChatsNotifier extends ChangeNotifier {
     _hasChatRoomOpened = true;
     _blockedIds = null;
     _isUserConnected = false;
+    _isMutualMatch = false;
     _lastMessageId = null;
 
     _chatSubscription?.cancel();
