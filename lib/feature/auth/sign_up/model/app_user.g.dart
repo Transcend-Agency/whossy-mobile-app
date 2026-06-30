@@ -41,8 +41,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           json['geography'] as Map<String, dynamic>?),
       creditBalance: (json['credit_balance'] as num?)?.toInt() ?? 0,
       currentPlan: json['current_plan'] as String?,
-      paymentPlatform: $enumDecodeNullable(
-          _$PaymentPlatformEnumMap, json['payment_platform']),
+      paymentPlatform: paymentPlatformFromJson(json['payment_platform']),
       blockedIds: (json['blockedIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),

@@ -39,12 +39,18 @@ extension CoreProfileUtils on CoreProfile {
   }
 
   String _getPhotoVerificationStatus() {
-    if (faceVerification?.getVerificationStatus() ==
-            FaceVerificationStatus.complete &&
+    final verificationStatus = faceVerification!.getVerificationStatus();
+
+    // Legacy documents (no `status` field yet) only become "complete" once
+    // an admin separately flips `is_approved` — keep that fallback for
+    // pre-migration data. Documents with `status` already encode this via
+    // 'pending_review'/'approved'/'rejected', so trust it directly.
+    if (faceVerification?.status == null &&
+        verificationStatus == FaceVerificationStatus.complete &&
         !isApproved!) {
       return FaceVerificationStatus.pending.name;
     }
-    return faceVerification!.getVerificationStatus().name;
+    return verificationStatus.name;
   }
 
   void update({

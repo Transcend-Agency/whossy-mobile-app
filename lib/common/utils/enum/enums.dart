@@ -335,3 +335,14 @@ enum PaymentPlatform {
   @JsonValue('mobile')
   mobile,
 }
+
+PaymentPlatform? paymentPlatformFromJson(Object? value) {
+  switch (value) {
+    case 'web':
+      return PaymentPlatform.web;
+    case 'mobile':
+      return PaymentPlatform.mobile;
+    default:
+      return null;
+  }
+}

@@ -12,6 +12,8 @@ import '../../../../common/utils/services/services.dart';
 import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
 import '../../../../provider/provider.dart';
+import '../data/repository/verification_challenge_repository.dart';
+import '../model/verification_challenge.dart';
 import 'edit_sheet.dart';
 
 class TakeSelfieScreen extends StatefulWidget {
@@ -26,14 +28,31 @@ class TakeSelfieScreen extends StatefulWidget {
 class _TakeSelfieScreenState extends State<TakeSelfieScreen>
     with AutomaticKeepAliveClientMixin<TakeSelfieScreen> {
   late OnboardingNotifier onboarding;
+  final _challengeRepository = VerificationChallengeRepository();
 
   final _picker = ImagePicker();
   File? _image;
+  VerificationChallenge? _challenge;
+  bool _didInitChallenge = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     onboarding = context.read<OnboardingNotifier>();
+
+    if (!_didInitChallenge) {
+      _didInitChallenge = true;
+      _loadChallenge();
+    }
+  }
+
+  Future<void> _loadChallenge() async {
+    final challenge = await _challengeRepository.getRandomChallenge();
+
+    if (!mounted) return;
+
+    setState(() => _challenge = challenge);
+    onboarding.updateUserProfile(verificationChallenge: challenge);
   }
 
   Future<bool> _handlePermissions({int? index}) async {
@@ -103,7 +122,9 @@ class _TakeSelfieScreenState extends State<TakeSelfieScreen>
               : AppStrings.onboardingSelfieSubtitle,
           skip: true,
         ),
-        addHeight(42),
+        addHeight(24),
+        if (_challenge != null) VerificationChallengeCard(challenge: _challenge!),
+        addHeight(18),
         Center(
           child: GestureDetector(
             onTap: () {

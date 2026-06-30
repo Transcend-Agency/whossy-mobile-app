@@ -20,10 +20,39 @@ class FaceVerification {
   @JsonKey(name: 'retake_photo')
   bool? retakePhoto;
 
+  // Which verification_challenges doc was shown for this submission, and a
+  // denormalized copy of its image so admin review stays stable even if the
+  // challenge pool changes later. Written by the client; admin-only fields
+  // below are written by the (Retool) admin tooling.
+  @JsonKey(name: 'challenge_id')
+  String? challengeId;
+
+  @JsonKey(name: 'challenge_image_url')
+  String? challengeImageUrl;
+
+  // 'pending_review' | 'approved' | 'rejected'
+  @JsonKey(name: 'status')
+  String? status;
+
+  @JsonKey(name: 'reviewed_by')
+  String? reviewedBy;
+
+  @JsonKey(
+    name: 'reviewed_at',
+    toJson: AppUtils.timestampToJson,
+    fromJson: AppUtils.timestampFromJson,
+  )
+  Timestamp? reviewedAt;
+
   FaceVerification({
     this.photo, // Directly use this.photo instead of verificationPic
     this.updatedAt,
     this.retakePhoto = false,
+    this.challengeId,
+    this.challengeImageUrl,
+    this.status,
+    this.reviewedBy,
+    this.reviewedAt,
   });
 
   factory FaceVerification.fromJson(Map<String, dynamic> json) =>
@@ -51,16 +80,40 @@ class FaceVerification {
     return other is FaceVerification &&
         other.photo == photo &&
         other.updatedAt == updatedAt &&
-        other.retakePhoto == retakePhoto;
+        other.retakePhoto == retakePhoto &&
+        other.challengeId == challengeId &&
+        other.challengeImageUrl == challengeImageUrl &&
+        other.status == status &&
+        other.reviewedBy == reviewedBy &&
+        other.reviewedAt == reviewedAt;
   }
 
   @override
   int get hashCode {
-    return Object.hash(photo, updatedAt, retakePhoto);
+    return Object.hash(
+      photo,
+      updatedAt,
+      retakePhoto,
+      challengeId,
+      challengeImageUrl,
+      status,
+      reviewedBy,
+      reviewedAt,
+    );
   }
 
-// Method to get the FaceVerification status
+  // Method to get the FaceVerification status
   FaceVerificationStatus getVerificationStatus() {
+    switch (status) {
+      case 'approved':
+        return FaceVerificationStatus.complete;
+      case 'rejected':
+        return FaceVerificationStatus.notCompleteAndDeclined;
+      case 'pending_review':
+        return FaceVerificationStatus.pending;
+    }
+
+    // Fallback for documents written before the `status` field existed.
     if (photo == null) {
       return FaceVerificationStatus.notComplete;
     }
@@ -76,7 +129,12 @@ class FaceVerification {
     return 'FaceVerification(\n'
         '     photo: $photo,\n'
         '     updatedAt: ${updatedAt != null ? AppUtils.timestampToJson(updatedAt) : "null"},\n'
-        '     retakePhoto: $retakePhoto\n'
+        '     retakePhoto: $retakePhoto,\n'
+        '     challengeId: $challengeId,\n'
+        '     challengeImageUrl: $challengeImageUrl,\n'
+        '     status: $status,\n'
+        '     reviewedBy: $reviewedBy,\n'
+        '     reviewedAt: ${reviewedAt != null ? AppUtils.timestampToJson(reviewedAt) : "null"}\n'
         ' )';
   }
 }

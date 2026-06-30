@@ -114,7 +114,7 @@ class AppUser {
   )
   String? purchaseToken;
 
-  @JsonKey(name: "payment_platform")
+  @JsonKey(name: "payment_platform", fromJson: paymentPlatformFromJson)
   PaymentPlatform? paymentPlatform;
 
   AppUser({

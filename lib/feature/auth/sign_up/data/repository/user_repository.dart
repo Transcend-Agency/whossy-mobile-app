@@ -13,6 +13,7 @@ import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
 import '../../../../../common/utils/services/services.dart';
 import '../../../../../constants/index.dart';
 import '../../../../home/tabs/matching/model/user_profile.dart';
+import '../../../onboarding/model/face_verification.dart';
 import '../../model/app_user.dart';
 
 /// Interacting with the database [Firebase](www.firebase.com) directly
@@ -105,6 +106,22 @@ class UserRepository {
     return {
       'message': 'Oops, an unknown error occurred',
     };
+  }
+
+  /// Watches the current user's `face_verification` field, so the app can
+  /// react when an admin approves/rejects a submitted selfie (reviewed via
+  /// the Retool admin tooling, which writes directly to this document).
+  Stream<FaceVerification?> faceVerificationStream() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
+    return _users.doc(uid).snapshots().map((snapshot) {
+      final data = snapshot.data();
+      if (data == null) return null;
+
+      return FaceVerification.faceVerificationFromJson(
+        data['face_verification'] as Map<String, dynamic>?,
+      );
+    });
   }
 
   Future<AppUser?> getUserData() async {

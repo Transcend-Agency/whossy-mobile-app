@@ -224,6 +224,9 @@ class AppStrings {
   static String matchRequired(String name) =>
       "You and $name need to match with each other before you can chat.";
 
+  static const String faceVerificationRejected =
+      "Your selfie didn't match the pose shown — please try again.";
+
   static const String permissionDeniedPhoneCheck =
       'Unable to check for phone number uniqueness due to insufficient permissions.';
 

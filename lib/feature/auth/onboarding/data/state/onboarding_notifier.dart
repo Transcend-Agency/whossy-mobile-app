@@ -10,6 +10,7 @@ import '../../../../../constants/index.dart';
 import '../../../sign_up/data/repository/user_repository.dart';
 import '../../model/face_verification.dart';
 import '../../model/preferences.dart';
+import '../../model/verification_challenge.dart';
 
 class OnboardingNotifier extends ChangeNotifier {
   final _prefRepository = PreferenceRepository();
@@ -74,6 +75,9 @@ class OnboardingNotifier extends ChangeNotifier {
       if (photoVerificationUrl.isNotEmpty) {
         faceVerification = FaceVerification(
           photo: photoVerificationUrl.first,
+          challengeId: _userPreferences.verificationChallenge?.id,
+          challengeImageUrl: _userPreferences.verificationChallenge?.imageUrl,
+          status: 'pending_review',
         );
       }
 
@@ -127,6 +131,7 @@ class OnboardingNotifier extends ChangeNotifier {
     List<String>? profilePics,
     List<File>? picFiles,
     File? verPicFile,
+    VerificationChallenge? verificationChallenge,
   }) {
     _userPreferences.update(
       relationshipPref: relationshipPref,
@@ -142,6 +147,7 @@ class OnboardingNotifier extends ChangeNotifier {
       profilePics: profilePics,
       picFiles: picFiles,
       verPicFile: verPicFile,
+      verificationChallenge: verificationChallenge,
     );
 
     // log(_userPreferences.toJson().toString());

@@ -23,6 +23,7 @@ extension PreferencesUtils on Preferences {
     List<String>? profilePics,
     List<File>? picFiles,
     File? verPicFile,
+    VerificationChallenge? verificationChallenge,
   }) {
     if (relationshipPref != null) this.relationshipPref = relationshipPref;
     if (meet != null) this.meet = meet;
@@ -47,5 +48,8 @@ extension PreferencesUtils on Preferences {
     if (profilePics != null) this.profilePics = profilePics;
     if (picFiles != null) this.picFiles = picFiles;
     if (verPicFile != null) this.verPicFile = verPicFile;
+    if (verificationChallenge != null) {
+      this.verificationChallenge = verificationChallenge;
+    }
   }
 }

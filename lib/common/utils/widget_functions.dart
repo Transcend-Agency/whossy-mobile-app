@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:iconly/iconly.dart';
 
 import '../../constants/colors.dart';
 import '../styles/text_style.dart';
@@ -37,7 +36,7 @@ Widget svgIcon(String path, {double? size, Color? color}) {
 
 Widget sendIcon() {
   return Icon(
-    IconlyBold.send,
+    Icons.send_rounded,
     size: 24.r,
     color: Colors.black,
   );
@@ -53,7 +52,7 @@ Widget moreIcon() {
 
 Widget voiceIcon() {
   return Icon(
-    IconlyBold.voice,
+    Icons.mic_rounded,
     size: 24.r,
     color: Colors.black,
   );
@@ -69,7 +68,7 @@ Icon offline({double size = 32}) {
 
 Icon user({double size = 32}) {
   return Icon(
-    IconlyLight.profile,
+    Icons.person_outline_rounded,
     size: size.r,
     color: AppColors.outlinedColor,
   );
@@ -85,7 +84,7 @@ Icon visibilityIcon(bool isVisible, Color passwordColor) {
 
 Icon dropDownIcon({double size = 20}) {
   return Icon(
-    IconlyLight.arrow_down_2,
+    Icons.keyboard_arrow_down_rounded,
     size: size.r,
     color: AppColors.hintTextColor,
   );
@@ -123,7 +122,7 @@ Icon cancelIcon() {
 
 Icon camera({double size = 42, Color color = AppColors.midWay}) {
   return Icon(
-    IconlyBold.camera,
+    Icons.camera_alt_rounded,
     size: size.r,
     color: color,
   );
@@ -139,7 +138,7 @@ Icon add({Color color = AppColors.midWay, double size = 26}) {
 
 Icon search() {
   return Icon(
-    IconlyLight.search,
+    Icons.search_rounded,
     color: AppColors.hintTextColor,
     size: 18.r,
   );

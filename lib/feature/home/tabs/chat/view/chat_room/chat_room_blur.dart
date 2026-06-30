@@ -41,29 +41,55 @@ class ChatRoomBlur extends HookWidget {
               child: Container(
                 color: Colors.black.withValues(alpha: .25),
                 padding: pagePadding,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "You're not connected yet  🔒",
-                      textAlign: TextAlign.center,
-                      style: TextStyles.profileHead.copyWith(
-                        color: AppColors.inputBackGround,
-                        fontSize: 20,
-                      ),
+                child: Center(
+                  child: Container(
+                    constraints: BoxConstraints(maxWidth: 280.w),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.w,
+                      vertical: 28.h,
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.h),
-                      child: Text(
-                        AppStrings.matchRequired(data.userName),
-                        textAlign: TextAlign.center,
-                        style: TextStyles.profileHead.copyWith(
-                          color: AppColors.inputBackGround,
-                          fontSize: 20,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [matchButtonShadow],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 56.r,
+                          height: 56.r,
+                          decoration: const BoxDecoration(
+                            gradient: AppColors.matchContainerGradient,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.lock_rounded,
+                            color: Colors.white,
+                            size: 28,
+                          ),
                         ),
-                      ),
+                        addHeight(16),
+                        Text(
+                          "You're not connected yet",
+                          textAlign: TextAlign.center,
+                          style: TextStyles.profileHead.copyWith(
+                            color: AppColors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                        addHeight(8),
+                        Text(
+                          AppStrings.matchRequired(data.userName),
+                          textAlign: TextAlign.center,
+                          style: TextStyles.bioText.copyWith(
+                            fontSize: 14,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),

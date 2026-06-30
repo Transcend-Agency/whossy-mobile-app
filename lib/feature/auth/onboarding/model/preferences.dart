@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../common/utils/utils.dart';
 import '../../../home/tabs/matching/model/profile_data.dart';
+import 'verification_challenge.dart';
 
 part 'preferences.g.dart';
 part 'preferences_utils.dart';
@@ -72,6 +73,9 @@ class Preferences implements ProfileData {
   @JsonKey(includeFromJson: false, includeToJson: false)
   File? verPicFile;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  VerificationChallenge? verificationChallenge;
+
   Preferences({
     this.relationshipPref,
     this.meet,
@@ -94,6 +98,7 @@ class Preferences implements ProfileData {
     this.profilePics,
     this.picFiles,
     this.verPicFile,
+    this.verificationChallenge,
   });
 
   // Implementations from ProfileBase
