@@ -176,10 +176,11 @@ class _TakeSelfieState extends State<TakeSelfie> {
                             width: double.infinity,
                             height: double.infinity,
                           ),
-                      SvgPicture.asset(
-                        AppAssets.cam2,
-                        width: 32.r,
-                      ),
+                      if (_image == null && currentImage == null)
+                        SvgPicture.asset(
+                          AppAssets.cam2,
+                          width: 32.r,
+                        ),
                     ],
                   ),
                 ),

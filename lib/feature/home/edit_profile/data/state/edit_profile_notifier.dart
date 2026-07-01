@@ -175,6 +175,11 @@ class EditProfileNotifier extends ChangeNotifier {
 
   int get picCount => _dynCoreProfile?.profilePics?.length ?? 0;
 
+  bool get isChangingPhotos {
+    final diff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
+    return diff.containsKey('photos');
+  }
+
   Future<void> getUserData({
     required void Function(String) showSnackbar,
   }) async {

@@ -87,9 +87,28 @@ class CoreEditProfileList extends StatelessWidget {
                 photoUrl: profile.coreProfile?.faceVerification?.photo),
           );
 
-          if (image != null) {
-            profile.updateProfile(photoVerificationUrl: image.path);
-          }
+          if (image == null || !context.mounted) return;
+
+          profile.updateProfile(photoVerificationUrl: image.path);
+
+          // Auto-save immediately — face verification is a complete discrete
+          // action; requiring the user to find the AppBar Save button is
+          // confusing here.
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => const Center(child: CircularProgressIndicator()),
+          );
+
+          String? errorMsg;
+          await profile.saveUserProfile(
+            showSnackbar: (msg) => errorMsg = msg,
+          );
+
+          if (!context.mounted) return;
+          Navigator.of(context, rootNavigator: true).pop();
+
+          if (errorMsg != null) showSnackbar(errorMsg!, context);
         };
       case 'phoneNumber':
         // Handle phone number case
