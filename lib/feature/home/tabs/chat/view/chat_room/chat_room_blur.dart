@@ -27,11 +27,74 @@ class ChatRoomBlur extends HookWidget {
         user: chats.userData,
         userName: chats.currentChat!.username,
         hasChatExpired: chats.chatExpTime?.isInThePast() ?? true,
+        isMutualMatch: chats.isMutualMatch,
       ),
       builder: (_, data, __) {
         final isPremiumUser = data.user?.isPremium ?? false;
         final credits = (data.user?.creditBalance ?? 0);
         final hasCredits = credits > 0;
+
+        if (!data.isMutualMatch) {
+          return Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+              child: Container(
+                color: Colors.black.withValues(alpha: .25),
+                padding: pagePadding,
+                child: Center(
+                  child: Container(
+                    constraints: BoxConstraints(maxWidth: 280.w),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.w,
+                      vertical: 28.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [matchButtonShadow],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 56.r,
+                          height: 56.r,
+                          decoration: const BoxDecoration(
+                            gradient: AppColors.matchContainerGradient,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.lock_rounded,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                        ),
+                        addHeight(16),
+                        Text(
+                          "You're not connected yet",
+                          textAlign: TextAlign.center,
+                          style: TextStyles.profileHead.copyWith(
+                            color: AppColors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                        addHeight(8),
+                        Text(
+                          AppStrings.matchRequired(data.userName),
+                          textAlign: TextAlign.center,
+                          style: TextStyles.bioText.copyWith(
+                            fontSize: 14,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
 
         return isPremiumUser
             ? const SizedBox.shrink()
@@ -130,6 +193,15 @@ class ChatRoomBlur extends HookWidget {
       BuildContext context,
       String name,
       ) async {
+    final chatsNotifier = context.read<ChatsNotifier>();
+
+    if (!chatsNotifier.isMutualMatch) {
+      showSnackbar(AppStrings.matchRequired(name));
+      isLoading.value = false;
+
+      return;
+    }
+
     bool? result = await showConfirmationDialog(
       context,
       title: 'Unlock Chat',
@@ -145,7 +217,6 @@ class ChatRoomBlur extends HookWidget {
     }
 
     final editNotifier = context.read<EditProfileNotifier>();
-    final chatsNotifier = context.read<ChatsNotifier>();
 
     var creditBalance = editNotifier.coreProfile?.creditBalance ?? 0;
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
@@ -9,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/common/utils/services/services.dart';
 import 'package:whossy_app/feature/auth/onboarding/model/face_verification.dart';
+import 'package:whossy_app/feature/auth/onboarding/model/verification_challenge.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/repository/edit_profile_repository.dart';
 import 'package:whossy_app/feature/home/edit_profile/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
@@ -45,6 +47,55 @@ class EditProfileNotifier extends ChangeNotifier {
     if (value != _didUserDeletePic) {
       _didUserDeletePic = value;
     }
+  }
+
+  // The challenge shown for the verification photo currently sitting in
+  // `_dynCoreProfile.faceVerification.photo` (a local file path, not yet
+  // uploaded) — set by the photo-verification flow, consumed and cleared by
+  // `_processFaceVerification` on save.
+  VerificationChallenge? _pendingVerificationChallenge;
+
+  set pendingVerificationChallenge(VerificationChallenge? value) {
+    _pendingVerificationChallenge = value;
+  }
+
+  StreamSubscription<FaceVerification?>? _faceVerificationSub;
+  bool _hasSeenFirstFaceVerificationSnapshot = false;
+
+  /// Watches `users/{uid}.face_verification` so the app reflects an admin's
+  /// approve/reject verdict (set via the Retool admin tooling) without
+  /// requiring a manual refresh. Fires [onRejected] only on a genuine
+  /// transition into 'rejected' observed during this subscription — not on
+  /// the initial snapshot, so re-opening the app doesn't re-prompt for an
+  /// already-known rejection.
+  void listenToFaceVerificationStatus({
+    required void Function(String message) onRejected,
+  }) {
+    _faceVerificationSub?.cancel();
+    _hasSeenFirstFaceVerificationSnapshot = false;
+
+    _faceVerificationSub =
+        _userRepository.faceVerificationStream().listen((faceVerification) {
+      final previousStatus = _dynCoreProfile?.faceVerification?.status;
+      final isFirstSnapshot = !_hasSeenFirstFaceVerificationSnapshot;
+      _hasSeenFirstFaceVerificationSnapshot = true;
+
+      _dynCoreProfile?.faceVerification = faceVerification;
+      _staticCoreProfile?.faceVerification = faceVerification;
+
+      if (!isFirstSnapshot &&
+          previousStatus != 'rejected' &&
+          faceVerification?.status == 'rejected') {
+        onRejected(AppStrings.faceVerificationRejected);
+      }
+
+      notifyListeners();
+    });
+  }
+
+  void cancelFaceVerificationListener() {
+    _faceVerificationSub?.cancel();
+    _faceVerificationSub = null;
   }
 
   // Getter for hasSafetyGuideOpened
@@ -123,6 +174,11 @@ class EditProfileNotifier extends ChangeNotifier {
   }
 
   int get picCount => _dynCoreProfile?.profilePics?.length ?? 0;
+
+  bool get isChangingPhotos {
+    final diff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
+    return diff.containsKey('photos');
+  }
 
   Future<void> getUserData({
     required void Function(String) showSnackbar,
@@ -299,28 +355,37 @@ class EditProfileNotifier extends ChangeNotifier {
   Future<void> _processFaceVerification(
     Map<String, dynamic> coreProfileDiff,
   ) async {
-    if (coreProfileDiff["face_verification"] is! FaceVerification) return;
+    // `diff()` already serialized this to a Map via `faceVerification.toJson()`
+    // — it is never a `FaceVerification` instance.
+    if (coreProfileDiff["face_verification"] is! Map) return;
 
-    final faceVerification =
-        coreProfileDiff["face_verification"] as FaceVerification;
+    final localPhoto = _dynCoreProfile?.faceVerification?.photo;
 
-    if (faceVerification.photo == null) return;
+    // Nothing to upload — either no photo, or it's already a Storage URL
+    // (e.g. only `status`/other fields changed).
+    if (localPhoto == null || localPhoto.isUrl) return;
 
     final photoUrls = await _userRepository.uploadPictures(
       timeout: 30,
-      files: [File(faceVerification.photo!)],
+      files: [File(localPhoto)],
       pathGenerator: AppStrings.faceVerPicPath,
     );
 
     final photoUrl = photoUrls.isNotEmpty ? photoUrls.first : null;
+    final challenge = _pendingVerificationChallenge;
 
     coreProfileDiff["face_verification"] = {
-      ...faceVerification.toJson(),
+      ...coreProfileDiff["face_verification"] as Map<String, dynamic>,
       'photo': photoUrl,
       'updated_at': FieldValue.serverTimestamp(),
+      'challenge_id': challenge?.id,
+      'challenge_image_url': challenge?.imageUrl,
+      'status': 'pending_review',
+      'retake_photo': false,
     };
 
     _dynCoreProfile?.update(photoVerificationUrl: photoUrl);
+    _pendingVerificationChallenge = null;
   }
 
   void _handleSaveProfileError(Object e, void Function(String) showSnackbar) {
@@ -396,6 +461,8 @@ class EditProfileNotifier extends ChangeNotifier {
     _staticCorePrefs = null;
     _hasSafetyGuideOpened = true;
     _didUserDeletePic = false;
+    _pendingVerificationChallenge = null;
+    cancelFaceVerificationListener();
 
     notifyListeners();
   }

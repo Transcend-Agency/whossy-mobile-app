@@ -72,7 +72,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _editProfileNotifier
         ..getUserData(showSnackbar: showAppSnackbar)
-        ..checkSafetyGuideOpenedState();
+        ..checkSafetyGuideOpenedState()
+        ..listenToFaceVerificationStatus(onRejected: showAppSnackbar);
       _prefsNotifier.getMatchingPreferences(showSnackbar: showAppSnackbar);
       _advancedSearchNotifier.getMatchingPreferences(
         showSnackbar: showAppSnackbar,

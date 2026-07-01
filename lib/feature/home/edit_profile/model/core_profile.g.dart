@@ -41,8 +41,7 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       faceVerification: FaceVerification.faceVerificationFromJson(
           json['face_verification'] as Map<String, dynamic>?),
       currentPlan: json['current_plan'] as String?,
-      paymentPlatform: $enumDecodeNullable(
-          _$PaymentPlatformEnumMap, json['payment_platform']),
+      paymentPlatform: paymentPlatformFromJson(json['payment_platform']),
     );
 
 Map<String, dynamic> _$CoreProfileToJson(CoreProfile instance) =>

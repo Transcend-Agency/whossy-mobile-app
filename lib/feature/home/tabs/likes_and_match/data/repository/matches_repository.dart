@@ -16,6 +16,23 @@ class MatchesRepository {
     excludeBlockedAndSelf: true,
   );
 
+  /// Whether a `matches` doc exists connecting [uidA] and [uidB], in either
+  /// `user1_id`/`user2_id` slot — same semantics as the web app's `isConnectedTo`.
+  Future<bool> isMutualMatch(String uidA, String uidB) async {
+    final result = await _matches.where(Filter.or(
+      Filter.and(
+        Filter('user1_id', isEqualTo: uidA),
+        Filter('user2_id', isEqualTo: uidB),
+      ),
+      Filter.and(
+        Filter('user1_id', isEqualTo: uidB),
+        Filter('user2_id', isEqualTo: uidA),
+      ),
+    )).limit(1).get();
+
+    return result.docs.isNotEmpty;
+  }
+
   Stream<int> getMatchesCount() {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 

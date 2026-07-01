@@ -64,7 +64,8 @@ class _EditProfileState extends State<EditProfile>
   }
 
   Future<bool> onSaveChanges() async {
-    if (!_meetsPicCount) {
+    final isChangingPhotos = _profileNotifier.isChangingPhotos;
+    if (isChangingPhotos && !_meetsPicCount) {
       return await onValidateSave();
     }
 

@@ -12,17 +12,20 @@ import '../../../../../../common/components/components.dart';
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
+import '../../../../../auth/onboarding/model/verification_challenge.dart';
 import '../../../../../auth/onboarding/view/edit_sheet.dart';
 
 class TakeSelfie extends StatefulWidget {
   const TakeSelfie({
     super.key,
     this.photoUrl,
+    this.challenge,
     required this.imagePickedNotifier,
     required this.onImagePicked,
   });
 
   final String? photoUrl;
+  final VerificationChallenge? challenge;
   final ValueNotifier<bool> imagePickedNotifier;
   final ValueChanged<File?> onImagePicked;
 
@@ -106,7 +109,10 @@ class _TakeSelfieState extends State<TakeSelfie> {
               ? AppStrings.onboardingSelfieRetakeSubtitle
               : AppStrings.onboardingSelfieSubtitle,
         ),
-        addHeight(42),
+        addHeight(24),
+        if (widget.challenge != null)
+          VerificationChallengeCard(challenge: widget.challenge!),
+        addHeight(18),
         // Your existing UI components
         Center(
           child: GestureDetector(
@@ -170,10 +176,11 @@ class _TakeSelfieState extends State<TakeSelfie> {
                             width: double.infinity,
                             height: double.infinity,
                           ),
-                      SvgPicture.asset(
-                        AppAssets.cam2,
-                        width: 32.r,
-                      ),
+                      if (_image == null && currentImage == null)
+                        SvgPicture.asset(
+                          AppAssets.cam2,
+                          width: 32.r,
+                        ),
                     ],
                   ),
                 ),

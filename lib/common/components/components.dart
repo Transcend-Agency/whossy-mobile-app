@@ -25,6 +25,7 @@ export '/common/components/Card/image_card.dart';
 export '/common/components/Card/plan_card.dart';
 export '/common/components/Card/profile_card.dart';
 export '/common/components/Card/profile_details_card.dart';
+export '/common/components/Card/verification_challenge_card.dart';
 export '/common/components/Chip/app_chip.dart';
 export '/common/components/Chip/gender_chip.dart';
 export '/common/components/Chip/gradient_chip.dart';

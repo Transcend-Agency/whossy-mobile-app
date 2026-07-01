@@ -22,6 +22,11 @@ class AppRangeSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final start = values.start.clamp(range.start, range.end);
+    final end = values.end.clamp(range.start, range.end);
+    final safeValues =
+        start <= end ? RangeValues(start, end) : RangeValues(end, start);
+
     return isAndroid
         ? SliderTheme(
             data: SliderTheme.of(context).copyWith(
@@ -30,7 +35,7 @@ class AppRangeSlider extends StatelessWidget {
               thumbColor: Colors.white,
             ),
             child: RangeSlider(
-              values: values,
+              values: safeValues,
               onChanged: onChanged,
               min: range.start,
               max: range.end,
@@ -40,13 +45,14 @@ class AppRangeSlider extends StatelessWidget {
             widthFactor: 1,
             child: CupertinoRangeSlider(
               activeColor: AppColors.black,
-              minValue: values.start,
-              maxValue: values.end,
+              minValue: safeValues.start,
+              maxValue: safeValues.end,
               min: range.start,
               max: range.end,
               onMinChanged: (start) =>
-                  onChanged(RangeValues(start, values.end)),
-              onMaxChanged: (end) => onChanged(RangeValues(values.start, end)),
+                  onChanged(RangeValues(start, safeValues.end)),
+              onMaxChanged: (end) =>
+                  onChanged(RangeValues(safeValues.start, end)),
               trackColor: CupertinoColors.systemGrey4,
             ),
           );

@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/components.dart';
@@ -310,7 +309,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
                       Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Icon(
-                          IconlyLight.arrow_down_2,
+                          Icons.keyboard_arrow_down_rounded,
                           size: 14.r,
                           color: AppColors.hintTextColor,
                         ),
