@@ -16,7 +16,7 @@ class VerificationChallenge {
     return VerificationChallenge(
       id: id,
       imageUrl: json['image_url'] as String,
-      label: json['label'] as String? ?? '',
+      label: json['instruction'] as String? ?? '',
     );
   }
 

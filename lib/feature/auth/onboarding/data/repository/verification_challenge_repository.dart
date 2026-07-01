@@ -6,13 +6,13 @@ import '../../model/verification_challenge.dart';
 
 class VerificationChallengeRepository {
   final _challenges = FirebaseFirestore.instance.collection(
-    'verification_challenges',
+    'Challenges',
   );
 
   /// Picks a random active challenge to show the user before they capture
   /// their verification selfie. Returns null if the pool is empty.
   Future<VerificationChallenge?> getRandomChallenge() async {
-    final snapshot = await _challenges.where('is_active', isEqualTo: true).get();
+    final snapshot = await _challenges.where('active', isEqualTo: true).get();
 
     if (snapshot.docs.isEmpty) return null;
 
