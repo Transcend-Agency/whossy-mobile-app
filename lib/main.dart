@@ -1,5 +1,6 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -19,13 +20,20 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Todo: (Prod) Test this in a production-enabled environment
-  // Getting the error
-  // E/FirebaseAuth(26281): [SmsRetrieverHelper] SMS verification code request failed:
-  // unknown status code: 18002 Invalid PlayIntegrity token; app not Recognized by Play Store.
+  // App Check attestation. Play Integrity / App Attest only succeed on real,
+  // store-recognized builds — on emulators and debug builds they fail with
+  // "App attestation failed" (403), and once App Check is enforced (or rate-
+  // limited: "Too many attempts") that blocks every Firestore/Storage call,
+  // making the app look like it can't get past login.
+  //
+  // So in debug builds use the debug provider instead. It prints an App Check
+  // debug token to the console on first run; register that token in Firebase
+  // Console → App Check → (this app) → Manage debug tokens to allow the
+  // device. Release builds keep the real attestation providers.
   await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.playIntegrity,
-    appleProvider: AppleProvider.appAttest,
+    androidProvider:
+        kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.appAttest,
   );
 
   // Start up necessary services

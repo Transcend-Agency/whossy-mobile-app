@@ -188,6 +188,25 @@ class UserRepository {
     return result.docs.isNotEmpty;
   }
 
+  /// Maps a file extension to its image MIME type. `putData` (unlike
+  /// `putFile`) does not infer content type, so without this the object would
+  /// be stored as `application/octet-stream` and fail to render as an image.
+  static String imageContentType(String path) {
+    final ext = p.extension(path).toLowerCase();
+    switch (ext) {
+      case '.png':
+        return 'image/png';
+      case '.heic':
+        return 'image/heic';
+      case '.heif':
+        return 'image/heif';
+      case '.webp':
+        return 'image/webp';
+      default:
+        return 'image/jpeg';
+    }
+  }
+
   Future<List<String>> uploadPictures({
     int timeout = 120,
     required List<File> files,
@@ -197,12 +216,24 @@ class UserRepository {
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid == null) throw Exception("User not logged in");
 
-      // Create a list of Future tasks for uploading each file
+      // Create a list of Future tasks for uploading each file.
+      //
+      // Uploads the file's bytes via `putData` rather than `putFile`.
+      // `putFile` hangs indefinitely on the iOS Simulator (a long-standing
+      // FlutterFire issue) — the task never progresses and only surfaces via
+      // the outer timeout, which is exactly what the verification selfie
+      // upload was hitting. `putData` mirrors the web app's byte-based upload
+      // and works reliably on simulator and device. Content type must be set
+      // explicitly since, unlike `putFile`, `putData` can't infer it.
       final uploadFutures = files.map((file) async {
         final fileName = p.basenameWithoutExtension(file.path);
         final storageRef = _storage.ref().child(pathGenerator(uid, fileName));
 
-        final uploadTask = await storageRef.putFile(file);
+        final bytes = await file.readAsBytes();
+        final uploadTask = await storageRef.putData(
+          bytes,
+          SettableMetadata(contentType: imageContentType(file.path)),
+        );
         return await uploadTask.ref.getDownloadURL();
       }).toList();
 
@@ -226,12 +257,18 @@ class UserRepository {
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid;
 
-      // Create a list of Future tasks for uploading each file
+      // Create a list of Future tasks for uploading each file.
+      // Uses byte-based `putData` (not `putFile`) to avoid the iOS Simulator
+      // upload hang — see the note in `uploadPictures`.
       final uploadFutures = files.map((file) async {
         final fileName = p.basenameWithoutExtension(file.path);
         final storageRef =
             _storage.ref().child(AppStrings.profilePicsPath(uid, fileName));
-        final uploadTask = await storageRef.putFile(file);
+        final bytes = await file.readAsBytes();
+        final uploadTask = await storageRef.putData(
+          bytes,
+          SettableMetadata(contentType: imageContentType(file.path)),
+        );
         return uploadTask.ref.getDownloadURL();
       }).toList();
 

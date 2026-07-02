@@ -80,8 +80,16 @@ class EditProfileNotifier extends ChangeNotifier {
       final isFirstSnapshot = !_hasSeenFirstFaceVerificationSnapshot;
       _hasSeenFirstFaceVerificationSnapshot = true;
 
+      // Assign independent instances to the dynamic and static profiles.
+      // Sharing a single instance here silently breaks `saveUserProfile`'s
+      // diff: when the user takes a new selfie, `update()` mutates
+      // `_dynCoreProfile.faceVerification.photo` in place — which would also
+      // mutate the static baseline, so `diff()` sees no change (identical
+      // instance) and the new photo is never uploaded or persisted.
       _dynCoreProfile?.faceVerification = faceVerification;
-      _staticCoreProfile?.faceVerification = faceVerification;
+      _staticCoreProfile?.faceVerification = faceVerification == null
+          ? null
+          : FaceVerification.fromJson(faceVerification.toJson());
 
       if (!isFirstSnapshot &&
           previousStatus != 'rejected' &&
@@ -205,9 +213,9 @@ class EditProfileNotifier extends ChangeNotifier {
       }
     } on FirebaseException catch (e) {
       handleFirebaseError(e, showSnackbar);
-    } catch (e) {
+    } catch (e, s) {
       showSnackbar(AppStrings.errorUnknown);
-      log(e.toString());
+      log('getUserData failed', name: 'EditProfile', error: e, stackTrace: s);
     } finally {
       notifyListeners();
     }

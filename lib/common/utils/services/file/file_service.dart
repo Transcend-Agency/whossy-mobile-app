@@ -36,7 +36,13 @@ class FileService {
     final fName = p.basenameWithoutExtension(file.path);
     final storageRef =
         _storage.ref().child(AppStrings.chatPicsPath(fName, chatId));
-    final uploadTask = storageRef.putFile(file);
+    // Byte-based `putData` (not `putFile`) to avoid the iOS Simulator upload
+    // hang — see the note in `UserRepository.uploadPictures`.
+    final bytes = await file.readAsBytes();
+    final uploadTask = storageRef.putData(
+      bytes,
+      SettableMetadata(contentType: UserRepository.imageContentType(file.path)),
+    );
 
     // Track the upload progress
     _uploadTasks[file.path] = uploadTask;
