@@ -101,14 +101,23 @@ class CoreEditProfileList extends StatelessWidget {
           );
 
           String? errorMsg;
-          await profile.saveUserProfile(
+          final success = await profile.saveUserProfile(
             showSnackbar: (msg) => errorMsg = msg,
           );
 
           if (!context.mounted) return;
           Navigator.of(context, rootNavigator: true).pop();
 
-          if (errorMsg != null) showSnackbar(errorMsg!, context);
+          if (!context.mounted) return;
+          if (errorMsg != null) {
+            showSnackbar(errorMsg!, context);
+          } else if (success) {
+            showSnackbar(
+              AppStrings.faceVerificationSubmitted,
+              context,
+              snackBarType: SnackbarType.success,
+            );
+          }
         };
       case 'phoneNumber':
         // Handle phone number case

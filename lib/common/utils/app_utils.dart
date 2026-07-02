@@ -31,7 +31,26 @@ class AppUtils {
   static Map<String, dynamic>? userSettingsToJson(UserSettings? settings) =>
       settings?.toJson();
 
-  static Timestamp? timestampFromJson(dynamic json) => json as Timestamp?;
+
+  static Timestamp? timestampFromJson(dynamic json) {
+    if (json == null) return null;
+    if (json is Timestamp) return json;
+    if (json is DateTime) return Timestamp.fromDate(json);
+    if (json is int) return Timestamp.fromMillisecondsSinceEpoch(json);
+    if (json is String) {
+      final parsed = DateTime.tryParse(json);
+      return parsed != null ? Timestamp.fromDate(parsed) : null;
+    }
+    if (json is Map) {
+      final seconds = json['seconds'] ?? json['_seconds'];
+      final nanoseconds = json['nanoseconds'] ?? json['_nanoseconds'] ?? 0;
+      if (seconds is int && nanoseconds is int) {
+        return Timestamp(seconds, nanoseconds);
+      }
+    }
+    return null;
+  }
+
   static dynamic timestampToJson(Timestamp? timestamp) => timestamp;
 
   static Currency? currencyFromJson(String? code) => Currency.fromCode(code);

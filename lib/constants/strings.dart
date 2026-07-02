@@ -227,6 +227,9 @@ class AppStrings {
   static const String faceVerificationRejected =
       "Your selfie didn't match the pose shown — please try again.";
 
+  static const String faceVerificationSubmitted =
+      "Selfie submitted! We'll review it and let you know once it's verified.";
+
   static const String permissionDeniedPhoneCheck =
       'Unable to check for phone number uniqueness due to insufficient permissions.';
 
