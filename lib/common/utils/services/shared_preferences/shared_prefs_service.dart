@@ -15,4 +15,20 @@ class SharedPrefsService {
 
     return false;
   }
+
+  static const _verificationAckKey = 'verification_approved_ack';
+
+  /// Millis of the last `face_verification.reviewed_at` the user has already
+  /// seen an "approved" banner for. Used to show that banner exactly once.
+  Future<int?> getVerificationApprovalAck(String? uid) async {
+    final asyncPrefs = SharedPreferencesAsync();
+
+    return asyncPrefs.getInt('$uid - $_verificationAckKey');
+  }
+
+  Future<void> setVerificationApprovalAck(String? uid, int reviewedAt) async {
+    final asyncPrefs = SharedPreferencesAsync();
+
+    await asyncPrefs.setInt('$uid - $_verificationAckKey', reviewedAt);
+  }
 }

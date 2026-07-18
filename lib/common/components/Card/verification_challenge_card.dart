@@ -11,10 +11,18 @@ import '../components.dart';
 /// Shows the reference pose the user is asked to match before they capture
 /// their verification selfie — displayed above the camera preview on both
 /// onboarding and the profile-edit retake flow.
+///
+/// When [onRefresh] is provided, a recaptcha-style refresh button lets the
+/// user swap to a different pose without leaving the flow.
 class VerificationChallengeCard extends StatelessWidget {
-  const VerificationChallengeCard({super.key, required this.challenge});
+  const VerificationChallengeCard({
+    super.key,
+    required this.challenge,
+    this.onRefresh,
+  });
 
   final VerificationChallenge challenge;
+  final VoidCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +70,19 @@ class VerificationChallengeCard extends StatelessWidget {
               ],
             ),
           ),
+          if (onRefresh != null) ...[
+            addWidth(8),
+            IconButton(
+              onPressed: onRefresh,
+              visualDensity: VisualDensity.compact,
+              tooltip: 'Try a different pose',
+              icon: Icon(
+                Icons.refresh,
+                size: 22.r,
+                color: AppColors.hintTextColor,
+              ),
+            ),
+          ],
         ],
       ),
     );

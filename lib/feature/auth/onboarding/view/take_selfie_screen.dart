@@ -46,8 +46,10 @@ class _TakeSelfieScreenState extends State<TakeSelfieScreen>
     }
   }
 
-  Future<void> _loadChallenge() async {
-    final challenge = await _challengeRepository.getRandomChallenge();
+  // [excludeId] backs the in-flow "different pose" refresh.
+  Future<void> _loadChallenge({String? excludeId}) async {
+    final challenge =
+        await _challengeRepository.getRandomChallenge(excludeId: excludeId);
 
     if (!mounted) return;
 
@@ -123,7 +125,11 @@ class _TakeSelfieScreenState extends State<TakeSelfieScreen>
           skip: true,
         ),
         addHeight(24),
-        if (_challenge != null) VerificationChallengeCard(challenge: _challenge!),
+        if (_challenge != null)
+          VerificationChallengeCard(
+            challenge: _challenge!,
+            onRefresh: () => _loadChallenge(excludeId: _challenge?.id),
+          ),
         addHeight(18),
         Center(
           child: GestureDetector(

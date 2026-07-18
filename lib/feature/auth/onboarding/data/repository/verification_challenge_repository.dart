@@ -9,14 +9,18 @@ class VerificationChallengeRepository {
     'Challenges',
   );
 
-  /// Picks a random active challenge to show the user before they capture
-  /// their verification selfie. Returns null if the pool is empty.
-  Future<VerificationChallenge?> getRandomChallenge() async {
+
+  Future<VerificationChallenge?> getRandomChallenge({String? excludeId}) async {
     final snapshot = await _challenges.where('active', isEqualTo: true).get();
 
     if (snapshot.docs.isEmpty) return null;
 
-    final pick = snapshot.docs[Random().nextInt(snapshot.docs.length)];
+    var docs = snapshot.docs;
+    if (excludeId != null && docs.length > 1) {
+      docs = docs.where((d) => d.id != excludeId).toList();
+    }
+
+    final pick = docs[Random().nextInt(docs.length)];
 
     return VerificationChallenge.fromJson(pick.id, pick.data());
   }

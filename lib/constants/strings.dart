@@ -230,6 +230,16 @@ class AppStrings {
   static const String faceVerificationSubmitted =
       "Selfie submitted! We'll review it and let you know once it's verified.";
 
+  // Verification status banner
+  static const String verificationBannerPrompt =
+      'Verify your photo to start matching';
+  static const String verificationBannerPending =
+      "Selfie under review, you'll be able to like and message once approved";
+  static const String verificationBannerApproved =
+      "You're verified, start matching!";
+  static const String verificationBannerRejected =
+      'Your verification wasn’t approved, retake your selfie to start matching';
+
   static const String permissionDeniedPhoneCheck =
       'Unable to check for phone number uniqueness due to insufficient permissions.';
 

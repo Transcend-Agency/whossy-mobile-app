@@ -34,72 +34,102 @@ class ImageView extends StatelessWidget {
 
     Size dimensions = AppUtils.getDimensions(index);
 
-    return Stack(
-      children: [
-        if (imageLength > index)
-          Container(
-            height: dimensions.height,
-            width: dimensions.width,
-            clipBehavior: Clip.antiAlias,
-            decoration: editMediaDecoration,
-            child: image.isUrl
-                ? CachedNetworkImage(
-                    imageUrl: image,
-                    imageBuilder: (_, imageProvider) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: fit,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: isDragged ? null : onEditTap,
+      child: Stack(
+        children: [
+          if (imageLength > index)
+            Container(
+              height: dimensions.height,
+              width: dimensions.width,
+              clipBehavior: Clip.antiAlias,
+              decoration: editMediaDecoration,
+              child: image.isUrl
+                  ? CachedNetworkImage(
+                      imageUrl: image,
+                      imageBuilder: (_, imageProvider) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: fit,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    placeholder: (_, __) => const ShimmerWidget.rectangular(),
-                    errorWidget: (_, __, ___) => offline(),
-                  )
-                : Image.file(File(image), fit: BoxFit.cover),
-          )
-        else
-          Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: editMediaDecoration,
-          ),
-        if (!isDragged) ...[
-          Positioned(
-            child: Container(
-              padding: EdgeInsets.only(
-                bottom: 3.5.r,
-                right: 3.5.r,
-              ),
-              decoration: const BoxDecoration(
-                color: AppColors.listTileColor,
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(10),
+                        );
+                      },
+                      placeholder: (_, __) => const ShimmerWidget.rectangular(),
+                      errorWidget: (_, __, ___) => offline(),
+                    )
+                  : Image.file(File(image), fit: BoxFit.cover),
+            )
+          else
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: editMediaDecoration,
+            ),
+          if (!isDragged) ...[
+            Positioned(
+              child: Container(
+                padding: EdgeInsets.only(
+                  bottom: 3.5.r,
+                  right: 3.5.r,
                 ),
-              ),
-              child: SvgPicture.asset(
-                AppAssets.dots,
-                width: 22,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.hintTextColor,
-                  BlendMode.srcIn,
+                decoration: const BoxDecoration(
+                  color: AppColors.listTileColor,
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(10),
+                  ),
+                ),
+                child: SvgPicture.asset(
+                  AppAssets.dots,
+                  width: 22,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.hintTextColor,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            child: SizedBox(
-              height: 50,
-              width: 50,
-              child: GestureDetector(
-                onTap: onEditTap,
-              ),
+            const Positioned(
+              bottom: 6,
+              right: 6,
+              child: EditBadge(),
             ),
-          ),
-        ]
-      ],
+          ]
+        ],
+      ),
+    );
+  }
+}
+
+/// Always-visible affordance telling the user a photo tile is tappable
+/// (opens the edit sheet). Rendered on every filled tile.
+class EditBadge extends StatelessWidget {
+  const EditBadge({super.key, this.icon});
+
+  final String? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 28.r,
+      height: 28.r,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.45),
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white.withOpacity(0.6), width: 1),
+      ),
+      child: SvgPicture.asset(
+        icon ?? AppAssets.edit,
+        width: 14.r,
+        colorFilter: const ColorFilter.mode(
+          Colors.white,
+          BlendMode.srcIn,
+        ),
+      ),
     );
   }
 }
@@ -119,52 +149,47 @@ class EmptyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: editMediaDecoration,
-      child: Stack(
-        children: [
-          if (imagePath != null && !imagePath!.isUrl)
-            Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: editMediaDecoration,
-              child: SizedBox.expand(
-                child: Image.file(File(imagePath!), fit: BoxFit.cover),
-              ),
-            )
-          else if (noConnection)
-            SizedBox.expand(child: offline()),
-          Positioned(
-            child: Container(
-              padding: EdgeInsets.only(
-                bottom: 3.5.r,
-                right: 3.5.r,
-              ),
-              decoration: const BoxDecoration(
-                color: AppColors.listTileColor,
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(10),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onActionTap,
+      child: Container(
+        decoration: editMediaDecoration,
+        child: Stack(
+          children: [
+            if (imagePath != null && !imagePath!.isUrl)
+              Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: editMediaDecoration,
+                child: SizedBox.expand(
+                  child: Image.file(File(imagePath!), fit: BoxFit.cover),
                 ),
-              ),
-              child: SvgPicture.asset(
-                noConnection ? AppAssets.dots : AppAssets.cam1,
-                width: noConnection ? 22 : 26,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.hintTextColor,
-                  BlendMode.srcIn,
+              )
+            else if (noConnection)
+              SizedBox.expand(child: offline()),
+            Positioned(
+              child: Container(
+                padding: EdgeInsets.only(
+                  bottom: 3.5.r,
+                  right: 3.5.r,
+                ),
+                decoration: const BoxDecoration(
+                  color: AppColors.listTileColor,
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(10),
+                  ),
+                ),
+                child: SvgPicture.asset(
+                  noConnection ? AppAssets.dots : AppAssets.cam1,
+                  width: noConnection ? 22 : 26,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.hintTextColor,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            child: SizedBox(
-              height: 50,
-              width: 50,
-              child: GestureDetector(
-                onTap: onActionTap,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

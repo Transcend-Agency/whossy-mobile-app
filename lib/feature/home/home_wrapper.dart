@@ -17,6 +17,7 @@ import 'Tour/view/intro_tour.dart';
 import 'tabs/_.dart';
 import 'tabs/explore/data/state/scroll_visibility_notifier.dart';
 import 'tabs/matching/data/state/location_permission_stream.dart';
+import 'widgets/verification_status_banner.dart';
 
 @RoutePage()
 class HomeWrapper extends StatefulWidget {
@@ -148,9 +149,11 @@ class _HomeWrapperState extends State<HomeWrapper> {
           builder: (context, scrollNotifier, child) {
             return AppScaffold(
               applyTop: false,
-              body: Builder(
-                builder: (_) => _pages.elementAt(
-                  context.watch<TourNotifier>().currentIndex,
+              body: VerificationStatusBanner(
+                child: Builder(
+                  builder: (_) => _pages.elementAt(
+                    context.watch<TourNotifier>().currentIndex,
+                  ),
                 ),
               ),
               bottomNavBar: AnimatedContainer(

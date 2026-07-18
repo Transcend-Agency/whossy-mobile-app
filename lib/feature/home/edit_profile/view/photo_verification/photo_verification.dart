@@ -39,9 +39,11 @@ class _PhotoVerificationState extends State<PhotoVerification> {
   }
 
   // Always fetch a fresh random challenge when this flow is entered, so a
-  // retake never reuses the pose the user just saw.
-  Future<void> _loadChallenge() async {
-    final challenge = await _challengeRepository.getRandomChallenge();
+  // retake never reuses the pose the user just saw. [excludeId] backs the
+  // in-flow "different pose" refresh.
+  Future<void> _loadChallenge({String? excludeId}) async {
+    final challenge =
+        await _challengeRepository.getRandomChallenge(excludeId: excludeId);
 
     if (!mounted) return;
 
@@ -87,6 +89,8 @@ class _PhotoVerificationState extends State<PhotoVerification> {
               TakeSelfie(
                 photoUrl: widget.photoUrl,
                 challenge: _challenge,
+                onRefreshChallenge: () =>
+                    _loadChallenge(excludeId: _challenge?.id),
                 imagePickedNotifier: _imagePickedNotifier,
                 onImagePicked: _onImagePicked, // Pass callback
               ),

@@ -86,6 +86,15 @@ android {
 
             signingConfig signingConfigs.debug // Make sure you're using the debug signing config
         }
+
+        release {
+            // Use the upload keystore when key.properties is present (Play
+            // builds); fall back to debug signing so local release builds
+            // remain installable on test devices without the keystore.
+            signingConfig keystorePropertiesFile.exists()
+                    ? signingConfigs.release
+                    : signingConfigs.debug
+        }
     }
 }
 

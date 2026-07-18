@@ -20,12 +20,14 @@ class TakeSelfie extends StatefulWidget {
     super.key,
     this.photoUrl,
     this.challenge,
+    this.onRefreshChallenge,
     required this.imagePickedNotifier,
     required this.onImagePicked,
   });
 
   final String? photoUrl;
   final VerificationChallenge? challenge;
+  final VoidCallback? onRefreshChallenge;
   final ValueNotifier<bool> imagePickedNotifier;
   final ValueChanged<File?> onImagePicked;
 
@@ -111,7 +113,10 @@ class _TakeSelfieState extends State<TakeSelfie> {
         ),
         addHeight(24),
         if (widget.challenge != null)
-          VerificationChallengeCard(challenge: widget.challenge!),
+          VerificationChallengeCard(
+            challenge: widget.challenge!,
+            onRefresh: widget.onRefreshChallenge,
+          ),
         addHeight(18),
         // Your existing UI components
         Center(
@@ -180,6 +185,42 @@ class _TakeSelfieState extends State<TakeSelfie> {
                         SvgPicture.asset(
                           AppAssets.cam2,
                           width: 32.r,
+                        )
+                      else
+                        Positioned(
+                          bottom: 12.r,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 14.r,
+                              vertical: 8.r,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.55),
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  AppAssets.cam2,
+                                  width: 16.r,
+                                  colorFilter: const ColorFilter.mode(
+                                    Colors.white,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                addWidth(8),
+                                Text(
+                                  'Tap to retake',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                     ],
                   ),
