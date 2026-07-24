@@ -1,10 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/chats_blur_data.dart';
 
@@ -15,232 +13,116 @@ import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/provider.dart';
 
-class ChatRoomBlur extends HookWidget {
+/// Reply-Gated Credits: full-screen gate for the one state where the chat
+/// can't be used at all — a fresh chat the user can't afford to start
+/// (AC 1.6). There is no match prerequisite (removed 2026-07-19).
+/// Everything else (hold pending, connected, expired-with-history) shows the
+/// normal chat with the state banner; history always stays readable (AC 4.4).
+/// Credit deduction no longer happens here — holds and captures are
+/// server-side (`initiateChat` / `onMessageCreated` Cloud Functions).
+class ChatRoomBlur extends StatelessWidget {
   const ChatRoomBlur({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = useState(false);
-
     return Selector<ChatsNotifier, ChatsBlurData>(
       selector: (_, chats) => ChatsBlurData(
         user: chats.userData,
         userName: chats.currentChat!.username,
-        hasChatExpired: chats.chatExpTime?.isInThePast() ?? true,
-        isMutualMatch: chats.isMutualMatch,
+        creditState: chats.creditState,
+        hasMessages: chats.subChat?.lastMessageId != null,
       ),
       builder: (_, data, __) {
-        final isPremiumUser = data.user?.isPremium ?? false;
-        final credits = (data.user?.creditBalance ?? 0);
-        final hasCredits = credits > 0;
+        final broke = !(data.user?.canInitiateChat ?? false);
 
-        if (!data.isMutualMatch) {
-          return Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-              child: Container(
-                color: Colors.black.withValues(alpha: .25),
-                padding: pagePadding,
-                child: Center(
-                  child: Container(
-                    constraints: BoxConstraints(maxWidth: 280.w),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24.w,
-                      vertical: 28.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.r),
-                      boxShadow: [matchButtonShadow],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 56.r,
-                          height: 56.r,
-                          decoration: const BoxDecoration(
-                            gradient: AppColors.matchContainerGradient,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.lock_rounded,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                        ),
-                        addHeight(16),
-                        Text(
-                          "You're not connected yet",
-                          textAlign: TextAlign.center,
-                          style: TextStyles.profileHead.copyWith(
-                            color: AppColors.black,
-                            fontSize: 18,
-                          ),
-                        ),
-                        addHeight(8),
-                        Text(
-                          AppStrings.matchRequired(data.userName),
-                          textAlign: TextAlign.center,
-                          style: TextStyles.bioText.copyWith(
-                            fontSize: 14,
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
+        // Paywall only over chats with no history — once messages exist the
+        // banner + gated send handle it and history stays readable (AC 4.4).
+        if (data.creditState.needsInitiation && broke && !data.hasMessages) {
+          final balance = data.user?.creditBalance ?? 0;
+          final held = data.user?.creditsOnHold ?? 0;
+
+          return _overlay(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'You need 1 credit or Premium\nto start this chat  🔐',
+                  textAlign: TextAlign.center,
+                  style: TextStyles.profileHead.copyWith(
+                    color: AppColors.inputBackGround,
+                    fontSize: 20,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.h),
+                  child: Text(
+                    'Credits are only charged when ${data.userName} replies — '
+                    'no reply within 48 hours and your credit is returned 😍',
+                    textAlign: TextAlign.center,
+                    style: TextStyles.profileHead.copyWith(
+                      color: AppColors.inputBackGround,
+                      fontSize: 16,
                     ),
                   ),
                 ),
-              ),
+                Text(
+                  held > 0
+                      ? '🪙 Balance: $balance · $held on hold'
+                      : '🪙 Balance: $balance',
+                  style: TextStyles.profileHead.copyWith(
+                    color: AppColors.inputBackGround,
+                    fontSize: 18,
+                  ),
+                ),
+                addHeight(20),
+                SizedBox(
+                  width: 160,
+                  child: AppButton(
+                    gradient: AppColors.useCredits,
+                    onPress: () => Nav.push(context, const Credits()),
+                    text: 'Buy Credits',
+                    textStyle: TextStyles.profileHead.copyWith(
+                      color: AppColors.inputBackGround,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                addHeight(15),
+                SizedBox(
+                  width: 230,
+                  child: AppButton(
+                    gradient: AppColors.subscribeToPremium,
+                    onPress: () => Nav.push(
+                      context,
+                      SubscriptionPlans(initialPage: 1),
+                    ),
+                    text: 'Subscribe to Premium',
+                    textStyle: TextStyles.profileHead.copyWith(
+                      color: AppColors.inputBackGround,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         }
 
-        return isPremiumUser
-            ? const SizedBox.shrink()
-            : data.hasChatExpired
-            ? Positioned.fill(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-            child: Container(
-              color: Colors.black.withValues(alpha: .25),
-              padding: pagePadding,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'This chat has not been unlocked   🔐',
-                    style: TextStyles.profileHead.copyWith(
-                      color: AppColors.inputBackGround,
-                      fontSize: 20,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
-                    child: Text(
-                      'Unlock this chat for both of you to connect 😍',
-                      textAlign: TextAlign.center,
-                      style: TextStyles.profileHead.copyWith(
-                        color: AppColors.inputBackGround,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    hasCredits
-                        ? '🪙 Credit balance: $credits'
-                        : 'You have no credits',
-                    style: TextStyles.profileHead.copyWith(
-                      color: AppColors.inputBackGround,
-                      fontSize: 20,
-                    ),
-                  ),
-                  addHeight(20),
-                  SizedBox(
-                    width: 160,
-                    child: AppButton(
-                      gradient: AppColors.useCredits,
-                      onPress: isLoading.value
-                          ? null
-                          : hasCredits
-                          ? () async {
-                        isLoading.value = true;
-                        await useCredit(
-                          isLoading,
-                          context,
-                          data.userName,
-                        );
-                      }
-                          : () => Nav.push(context, const Credits()),
-
-                      text:
-                      hasCredits ? 'Use Credits' : 'Buy Credits',
-                      loading: isLoading.value,
-                      textStyle: TextStyles.profileHead.copyWith(
-                        color: AppColors.inputBackGround,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  addHeight(15),
-                  SizedBox(
-                    width: 230,
-                    child: AppButton(
-                      gradient: AppColors.subscribeToPremium,
-                      onPress: () => Nav.push(
-                        context,
-                        SubscriptionPlans(initialPage: 1),
-                      ),
-                      text: 'Subscribe to Premium',
-                      textStyle: TextStyles.profileHead.copyWith(
-                        color: AppColors.inputBackGround,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        )
-            : const SizedBox.shrink();
+        return const SizedBox.shrink();
       },
     );
   }
 
-  Future<void> useCredit(
-      ValueNotifier<bool> isLoading,
-      BuildContext context,
-      String name,
-      ) async {
-    final chatsNotifier = context.read<ChatsNotifier>();
-
-    if (!chatsNotifier.isMutualMatch) {
-      showSnackbar(AppStrings.matchRequired(name));
-      isLoading.value = false;
-
-      return;
-    }
-
-    bool? result = await showConfirmationDialog(
-      context,
-      title: 'Unlock Chat',
-      content: contentText(AppStrings.unlockChat(name)),
-      yes: 'Unlock',
-      no: 'Cancel',
+  Widget _overlay({required Widget child}) {
+    return Positioned.fill(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+        child: Container(
+          color: Colors.black.withValues(alpha: .25),
+          padding: pagePadding,
+          child: Center(child: child),
+        ),
+      ),
     );
-
-    if (result != true || !context.mounted) {
-      isLoading.value = false;
-
-      return;
-    }
-
-    final editNotifier = context.read<EditProfileNotifier>();
-
-    var creditBalance = editNotifier.coreProfile?.creditBalance ?? 0;
-
-    editNotifier.updateProfile(creditBalance: creditBalance - 1);
-
-    bool success = await editNotifier.saveUserProfile(
-      showSnackbar: showSnackbar,
-    );
-
-    if (success) {
-      chatsNotifier.updateUnlockTime();
-    }
-
-    if (!success) {
-      editNotifier.updateProfile(creditBalance: creditBalance);
-      showSnackbar(AppStrings.addCreditsFailure);
-    }
-
-    isLoading.value = false;
-  }
-
-  showSnackbar(String message) {
-    if (useContext().mounted) {
-      showTopSnackBar(Overlay.of(useContext()), AppSnackbar(text: message));
-    }
   }
 }

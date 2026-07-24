@@ -68,6 +68,26 @@ class Credits extends HookWidget {
                         ),
                       ),
                     ),
+                    addHeight(8),
+                    Selector<EditProfileNotifier, (int, int)>(
+                      selector: (_, edit) => (
+                        edit.coreProfile?.creditBalance ?? 0,
+                        edit.coreProfile?.creditsOnHold ?? 0,
+                      ),
+                      builder: (_, balances, __) {
+                        final (balance, held) = balances;
+                        return Text(
+                          held > 0
+                              ? 'Balance: $balance · $held on hold'
+                              : 'Balance: $balance',
+                          textAlign: TextAlign.center,
+                          style: TextStyles.profileHead.copyWith(
+                            fontSize: AppUtils.scale(12.sp) ?? 15.sp,
+                            color: Colors.black87,
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),

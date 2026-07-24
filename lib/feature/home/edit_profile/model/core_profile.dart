@@ -88,6 +88,11 @@ class CoreProfile {
   @JsonKey(name: "credit_balance")
   int? creditBalance;
 
+  // Reply-Gated Credits: credits reserved by pending chat initiations.
+  // Server-written only (Cloud Functions) — never serialized back on saves.
+  @JsonKey(name: "credits_on_hold", includeToJson: false)
+  int? creditsOnHold;
+
   @JsonKey(name: "current_plan")
   String? currentPlan;
 
@@ -140,6 +145,7 @@ class CoreProfile {
     this.geohash,
     this.isBanned,
     this.creditBalance,
+    this.creditsOnHold,
     this.userSettings,
     this.geography,
     this.faceVerification,
@@ -155,6 +161,15 @@ class CoreProfile {
   Map<String, dynamic> toJson() => _$CoreProfileToJson(this);
 
   bool get premiumUser => isPremium ?? false;
+
+  /// Spendable credits: total minus what pending initiations have reserved.
+  int get availableCredits {
+    final available = (creditBalance ?? 0) - (creditsOnHold ?? 0);
+    return available < 0 ? 0 : available;
+  }
+
+  /// Whether this user can start a chat cycle (premium or ≥ 1 spendable credit).
+  bool get canInitiateChat => premiumUser || availableCredits >= 1;
 
   @override
   String toString() {
@@ -181,6 +196,7 @@ class CoreProfile {
         '  location: ${location != null ? '{ latitude: ${location!.latitude}, longitude: ${location!.longitude} }' : "null"},\n'
         '  geohash: $geohash,\n'
         '  creditBalance: $creditBalance,\n'
+        '  creditsOnHold: $creditsOnHold,\n'
         '  currentPlan: $currentPlan,\n'
         '  userSettings: ${userSettings?.toString() ?? "null"},\n'
         '  geography: ${geography?.toString() ?? "null"},\n'
@@ -216,6 +232,7 @@ class CoreProfile {
         other.paymentPlatform == paymentPlatform &&
         // other.geohash == geohash &&
         other.creditBalance == creditBalance &&
+        other.creditsOnHold == creditsOnHold &&
         other.currentPlan == currentPlan &&
         other.userSettings == userSettings &&
         other.faceVerification == faceVerification;
@@ -239,6 +256,7 @@ class CoreProfile {
       isBanned,
       location,
       creditBalance,
+      creditsOnHold,
       userSettings,
       faceVerification,
       currentPlan,

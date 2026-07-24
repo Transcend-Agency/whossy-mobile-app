@@ -2,18 +2,19 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:developer';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whossy_app/common/utils/app_utils.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/home/tabs/chat/model/chat_credit_state.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/chat_with_user.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/sub_chat.dart';
 
 import '../../../../../../common/utils/services/services.dart';
 import '../../../../edit_profile/model/core_profile.dart';
-import '../../../likes_and_match/data/repository/matches_repository.dart';
 import '../../../matching/model/user_profile.dart';
 import '../../model/current_chat.dart';
 import '../repository/chat_repository.dart';
@@ -23,7 +24,6 @@ class ChatsNotifier extends ChangeNotifier {
   // Internal services and repository
   final _sharedPrefs = SharedPrefsService();
   final _chatRepository = ChatRepository();
-  final _matchesRepository = MatchesRepository();
 
   final _fileService = FileService();
 
@@ -35,15 +35,13 @@ class ChatsNotifier extends ChangeNotifier {
   // Variables to manage state
   CurrentChat? currentChat;
   CoreProfile? _profileData;
-  TimestampWrapper? chatExpTime;
+  SubChat? _subChat;
+  String? _creditEventMessage;
   bool _hasChatRoomOpened = true;
 
   List<String>? _blockedIds; // Variable to store blocked IDs
   bool _isUserConnected = false;
 
-  // Whether the current user and the chat partner have a mutual `matches`
-  // doc. Unrelated to `_isUserConnected` above (see updateConnectivity).
-  bool _isMutualMatch = false;
   Timer? _uploadTimeout;
 
   final Map<String, double> _progressMap = {};
@@ -55,32 +53,45 @@ class ChatsNotifier extends ChangeNotifier {
   Map<String, bool> get isUploadingMap => _isUploadingMap;
   Map<String, bool> get hasUploadFailedMap => _hasUploadFailedMap;
 
-  bool get isMutualMatch => _isMutualMatch;
+  /// Reply-Gated Credits state for the open chat (spec §2). There is no
+  /// match prerequisite (removed 2026-07-19) — premium-or-credits is the
+  /// only initiation gate.
+  ChatCreditState get creditState => deriveChatCreditState(
+        chat: _subChat,
+        currentUid: FirebaseAuth.instance.currentUser?.uid ?? '',
+      );
 
-  bool get viewPermission {
-    // The credit/premium unlock mechanism only kicks in once both users
-    // are mutually matched — see whossy-mobile-app-implementation-plan.md §1.
-    if (!_isMutualMatch) return false;
+  SubChat? get subChat => _subChat;
 
-    // Check if chatExpTime is available and in the past
-    bool? isCreditFinished = chatExpTime?.isInThePast();
+  /// The chat body is always shown now — the match prerequisite was removed
+  /// (2026-07-19); paying/holding is handled by the send gate and blur.
+  bool get viewPermission => true;
 
-    // If isCreditFinished is null (meaning chatExpTime is not available),
-    // assume no permission
-    if (isCreditFinished == null) {
-      return _profileData?.premiumUser ?? false;
-    }
-
-    // If isCreditFinished is false (credit hasn't finished),
-    // return true if user has premium access or if credit is still active
-    bool isPremiumUser = _profileData?.premiumUser ?? false;
-    return isPremiumUser || !isCreditFinished;
+  /// One-shot transition message (connected / hold refunded), consumed by the
+  /// chat room to show a snackbar (AC 3.7, 5.3-adjacent in-app notice).
+  String? takeCreditEvent() {
+    final message = _creditEventMessage;
+    _creditEventMessage = null;
+    return message;
   }
 
   CoreProfile? get userData => _profileData;
 
-  void updateExpirationTime(TimestampWrapper? expTime) {
-    chatExpTime = expTime;
+  void updateSubChat(SubChat? chat) {
+    final previous = creditState;
+    _subChat = chat;
+    final next = creditState;
+
+    if (previous != next) {
+      if (previous.isPending && next == ChatCreditState.connected) {
+        _creditEventMessage =
+            "You're connected 🎉 Chat free for the next 48 hours!";
+      } else if (previous == ChatCreditState.pendingInitiator &&
+          next == ChatCreditState.idle) {
+        _creditEventMessage =
+            "${currentChat?.username ?? 'They'} didn't reply — your credit has been returned.";
+      }
+    }
 
     notifyListeners();
   }
@@ -175,18 +186,68 @@ class ChatsNotifier extends ChangeNotifier {
       isBlocked: isBlocked ?? false,
     );
 
-    _isMutualMatch = false;
-
     notifyListeners();
-
-    _matchesRepository.isMutualMatch(uidUser1, uidUser2).then((isMatch) {
-      _isMutualMatch = isMatch;
-      notifyListeners();
-    });
   }
 
-  Future<void> updateUnlockTime() async =>
-      await _chatRepository.updateUnlockTime(chatId: currentChat?.chatId);
+  /// Pre-send gate for Reply-Gated Credits. Returns true when the message
+  /// may be dispatched. When a new cycle must start (idle/expired):
+  /// non-premium users are asked to confirm the hold via [confirmHold]
+  /// (AC 1.2), broke users get [onNeedsCredits] (AC 1.6), premium users
+  /// initiate silently (AC 6.1). PENDING/CONNECTED sends pass through
+  /// untouched — the recipient's first reply triggers the server-side
+  /// capture on its own (AC 3.3).
+  Future<bool> ensureChatCycle({
+    required Future<bool?> Function() confirmHold,
+    required void Function(String message) onNotice,
+    required VoidCallback onNeedsCredits,
+  }) async {
+    final state = creditState;
+
+    if (!state.needsInitiation) return true;
+
+    final premium = _profileData?.premiumUser ?? false;
+
+    if (!premium && (_profileData?.availableCredits ?? 0) < 1) {
+      onNeedsCredits();
+      return false;
+    }
+
+    if (!premium) {
+      final confirmed = await confirmHold();
+      if (confirmed != true) return false;
+    }
+
+    return _callInitiateChat(onNotice);
+  }
+
+  Future<bool> _callInitiateChat(void Function(String) onNotice) async {
+    final chatId = currentChat?.chatId;
+    if (chatId == null) return false;
+
+    try {
+      await FirebaseFunctions.instance
+          .httpsCallable('initiateChat')
+          .call<Map<String, dynamic>>({'chatId': chatId});
+      return true;
+    } on FirebaseFunctionsException catch (e) {
+      final message = e.message ?? '';
+      if (message.contains('ALREADY_PENDING_BY_OTHER')) {
+        // They initiated first — this reply is free (AC 3.1).
+        return true;
+      }
+      if (message.contains('INSUFFICIENT_CREDITS')) {
+        onNotice('You need 1 credit or Premium to start this chat.');
+      } else {
+        log('initiateChat failed: ${e.code} $message');
+        onNotice("Couldn't start the chat. Please try again.");
+      }
+      return false;
+    } catch (e) {
+      log('initiateChat failed: $e');
+      onNotice("Couldn't start the chat. Please try again.");
+      return false;
+    }
+  }
 
   Stream<List<Message>> messagesStream(int limit) => _chatRepository
       .getChatMessagesStream(limit: limit, chatId: currentChat!.chatId!);
@@ -232,12 +293,12 @@ class ChatsNotifier extends ChangeNotifier {
   void listenToChatUpdates() {
     _chatSubscription =
         _chatRepository.getChatDataStream(currentChat?.chatId).listen((chat) {
-      updateExpirationTime(chat?.expirationTime);
       if (chat != null) {
         if (chat.lastMessageId != _lastMessageId) {
           _lastMessageId = chat.lastMessageId;
         }
       }
+      updateSubChat(chat);
     });
   }
 
@@ -348,11 +409,11 @@ class ChatsNotifier extends ChangeNotifier {
   void reset() {
     currentChat = null;
     _profileData = null;
-    chatExpTime = null;
+    _subChat = null;
+    _creditEventMessage = null;
     _hasChatRoomOpened = true;
     _blockedIds = null;
     _isUserConnected = false;
-    _isMutualMatch = false;
     _lastMessageId = null;
 
     _chatSubscription?.cancel();

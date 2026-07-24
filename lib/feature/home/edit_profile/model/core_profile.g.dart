@@ -34,6 +34,7 @@ CoreProfile _$CoreProfileFromJson(Map<String, dynamic> json) => CoreProfile(
       geohash: json['geohash'] as String?,
       isBanned: json['is_banned'] as bool?,
       creditBalance: (json['credit_balance'] as num?)?.toInt(),
+      creditsOnHold: (json['credits_on_hold'] as num?)?.toInt(),
       userSettings: AppUtils.userSettingsFromJson(
           json['user_settings'] as Map<String, dynamic>?),
       geography: AppUtils.geographyFromJson(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:whossy_app/common/components/components.dart';
 
 import '../../../../../../common/styles/component_style.dart';
@@ -77,7 +78,42 @@ class _ImagePreviewState extends State<ImagePreview> {
     }
   }
 
-  void sendMessage() {
+  void sendMessage() async {
+    // Reply-Gated Credits gate — same cycle handling as the chat room's
+    // composer (hold confirm → initiateChat) for photo sends.
+    final canSend = await _chatsNotifier.ensureChatCycle(
+      confirmHold: () {
+        final name = _chatsNotifier.currentChat?.username ?? 'them';
+        return showConfirmationDialog(
+          context,
+          title: 'Place 1 credit on hold?',
+          content: contentText(
+            "You'll only be charged when $name replies. If they don't reply "
+            'within 48 hours, your credit is returned automatically.',
+          ),
+          yes: 'Hold & send',
+          no: 'Cancel',
+        );
+      },
+      onNotice: (message) {
+        if (mounted) {
+          showTopSnackBar(Overlay.of(context), AppSnackbar(text: message));
+        }
+      },
+      onNeedsCredits: () {
+        if (mounted) {
+          showTopSnackBar(
+            Overlay.of(context),
+            const AppSnackbar(
+              text: 'You need 1 credit or Premium to start this chat.',
+            ),
+          );
+        }
+      },
+    );
+
+    if (!canSend || !mounted) return;
+
     _chatsNotifier.sendMessage(
       messagesController.text.trim(),
       pictures: _images,

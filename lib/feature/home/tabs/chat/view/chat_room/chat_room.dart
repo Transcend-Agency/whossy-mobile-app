@@ -10,6 +10,7 @@ import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/chat_room_data.dart';
 import 'package:whossy_app/feature/home/tabs/chat/view/chat_room/chat_room_blur.dart';
+import 'package:whossy_app/feature/home/tabs/chat/view/chat_room/chat_state_banner.dart';
 import 'package:whossy_app/provider/provider.dart';
 
 import '../../../../../../common/styles/component_style.dart';
@@ -85,12 +86,48 @@ class _ChatRoomState extends State<ChatRoom> {
     }
   }
 
-  void sendMessage() {
+  void sendMessage() async {
+    // Reply-Gated Credits gate: starting a new cycle places a hold via the
+    // `initiateChat` Cloud Function (confirmed by the user first, AC 1.2);
+    // pending/connected sends pass straight through.
+    final canSend = await _chatsNotifier.ensureChatCycle(
+      confirmHold: _confirmHold,
+      onNotice: (message) {
+        if (mounted) showSnackbar(message, context);
+      },
+      onNeedsCredits: () {
+        if (mounted) Nav.push(context, const Credits());
+      },
+    );
+
+    if (!canSend || !mounted) return;
+
     _scrollToBottom();
 
     _chatsNotifier.sendMessage(messagesController.text.trim());
 
     messagesController.clear();
+  }
+
+  Future<bool?> _confirmHold() {
+    final name = _chatsNotifier.currentChat?.username ?? 'them';
+    return showConfirmationDialog(
+      context,
+      title: 'Place 1 credit on hold?',
+      content: contentText(
+        "You'll only be charged when $name replies. If they don't reply "
+        'within 48 hours, your credit is returned automatically.',
+      ),
+      yes: 'Hold & send',
+      no: 'Cancel',
+    );
+  }
+
+  void _onCreditEvent() {
+    final message = _chatsNotifier.takeCreditEvent();
+    if (message != null && mounted) {
+      showSnackbar(message, context);
+    }
   }
 
   void _scrollToBottomIcon() {
@@ -175,6 +212,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
     messagesController.addListener(_updateIcon);
 
+    _chatsNotifier.addListener(_onCreditEvent);
     _chatsNotifier.listenToChatUpdates();
 
     _scrollToBottomIcon();
@@ -186,6 +224,7 @@ class _ChatRoomState extends State<ChatRoom> {
     scrollController.dispose();
     messagesController.dispose();
 
+    _chatsNotifier.removeListener(_onCreditEvent);
     _chatsNotifier.cancelChatUpdates();
 
     super.dispose();
@@ -268,6 +307,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         ],
                       ),
                     ),
+                    const ChatStateBanner(),
                     Selector<EditProfileNotifier, List<String>>(
                       selector: (_, edit) => edit.coreProfile?.blockedIds ?? [],
                       builder: (_, blockedIds, __) {

@@ -1,16 +1,17 @@
 import '../../../edit_profile/model/core_profile.dart';
+import 'chat_credit_state.dart';
 
 class ChatsBlurData {
   final CoreProfile? user;
   final String userName;
-  final bool hasChatExpired;
-  final bool isMutualMatch;
+  final ChatCreditState creditState;
+  final bool hasMessages;
 
   ChatsBlurData({
     required this.user,
     required this.userName,
-    required this.hasChatExpired,
-    required this.isMutualMatch,
+    required this.creditState,
+    required this.hasMessages,
   });
 
   @override
@@ -19,11 +20,10 @@ class ChatsBlurData {
     return other is ChatsBlurData &&
         other.user == user &&
         other.userName == userName &&
-        other.hasChatExpired == hasChatExpired &&
-        other.isMutualMatch == isMutualMatch;
+        other.creditState == creditState &&
+        other.hasMessages == hasMessages;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(user, userName, hasChatExpired, isMutualMatch);
+  int get hashCode => Object.hash(user, userName, creditState, hasMessages);
 }

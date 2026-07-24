@@ -23,6 +23,10 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       expirationTime:
           TimestampWrapper.timestampFromJson(json['expiration_time']),
       isUnlocked: json['is_unlocked'] as bool?,
+      creditStatus: json['credit_status'] as String?,
+      initiatorId: json['initiator_id'] as String?,
+      holdPlacedAt: TimestampWrapper.timestampFromJson(json['hold_placed_at']),
+      creditHeld: json['credit_held'] as bool?,
     );
 
 Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
@@ -44,6 +48,12 @@ Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
       if (instance.isSeenByReceiver case final value?)
         'is_seen_by_receiver': value,
       if (instance.isUnlocked case final value?) 'is_unlocked': value,
+      if (instance.creditStatus case final value?) 'credit_status': value,
+      if (instance.initiatorId case final value?) 'initiator_id': value,
+      if (TimestampWrapper.timestampToJson(instance.holdPlacedAt)
+          case final value?)
+        'hold_placed_at': value,
+      if (instance.creditHeld case final value?) 'credit_held': value,
     };
 
 const _$MessageStatusEnumMap = {

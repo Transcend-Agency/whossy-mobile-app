@@ -82,22 +82,9 @@ class ChatRepository {
     }
   }
 
-  Future<void> updateUnlockTime({String? chatId}) async {
-    if (chatId == null) return;
-
-    await _chats.doc(chatId).set(
-      {
-        'is_unlocked': true,
-        'unlock_time': FieldValue.serverTimestamp(),
-        'expiration_time': Timestamp.fromDate(
-          DateTime.now().add(
-            const Duration(hours: 48),
-          ),
-        ),
-      },
-      SetOptions(merge: true),
-    );
-  }
+  // Reply-Gated Credits: chat unlock state (credit_status/expiration_time)
+  // is written exclusively by Cloud Functions now — the legacy client-side
+  // updateUnlockTime() write was removed with the v2 re-engineering.
 
   Future<String> sendMessage(
     String content, {

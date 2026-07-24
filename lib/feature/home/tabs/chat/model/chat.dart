@@ -57,6 +57,23 @@ class Chat {
   @JsonKey(name: 'is_unlocked')
   final bool? isUnlocked;
 
+  // Reply-Gated Credits (spec §4) — server-written only.
+  @JsonKey(name: 'credit_status')
+  final String? creditStatus;
+
+  @JsonKey(name: 'initiator_id')
+  final String? initiatorId;
+
+  @JsonKey(
+    name: 'hold_placed_at',
+    fromJson: TimestampWrapper.timestampFromJson,
+    toJson: TimestampWrapper.timestampToJson,
+  )
+  final TimestampWrapper? holdPlacedAt;
+
+  @JsonKey(name: 'credit_held')
+  final bool? creditHeld;
+
   Chat({
     this.id,
     required this.participants,
@@ -68,6 +85,10 @@ class Chat {
     this.unlockTime,
     this.expirationTime,
     this.isUnlocked,
+    this.creditStatus,
+    this.initiatorId,
+    this.holdPlacedAt,
+    this.creditHeld,
   })  : lastSenderUserId = FirebaseAuth.instance.currentUser!.uid,
         isSeenByInitiator = true;
 

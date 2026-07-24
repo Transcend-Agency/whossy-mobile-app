@@ -22,6 +22,7 @@ dependencies:
   firebase_crashlytics: ^4.3.5
   firebase_app_check: ^0.3.2+5
   firebase_messaging: ^15.2.5
+  cloud_functions: ^5.5.0
   google_sign_in: ^6.3.0
   connectivity_plus: ^6.0.4
   internet_connection_checker: ^1.0.0+1
