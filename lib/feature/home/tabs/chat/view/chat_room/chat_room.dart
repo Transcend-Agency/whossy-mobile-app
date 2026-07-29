@@ -87,6 +87,22 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   void sendMessage() async {
+    // Block sending until the sender's selfie is verified (covers reaching
+    // this chat room via an existing conversation, bypassing the gated
+    // entry points in MatchingProfilePreview).
+    final isApproved =
+        context.read<EditProfileNotifier>().profileData.isUserVerified;
+    if (!isApproved) {
+      if (mounted) {
+        showSnackbar(
+          AppStrings.disAbleUnapproved('Messaging'),
+          context,
+          snackBarType: SnackbarType.warning,
+        );
+      }
+      return;
+    }
+
     // Reply-Gated Credits gate: starting a new cycle places a hold via the
     // `initiateChat` Cloud Function (confirmed by the user first, AC 1.2);
     // pending/connected sends pass straight through.
