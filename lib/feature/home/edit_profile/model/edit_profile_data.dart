@@ -11,6 +11,9 @@ class EditProfileData extends ProfileDataFooter {
 
   EditProfileData(this.profile, this.preferences);
 
+  // This is the viewer's own profile preview (Edit Profile → Preview), not
+  // another user's card — always-online-for-self is correct here, not the
+  // hardcode C1 fixes elsewhere. See UserProfile.isOnline for the real check.
   @override
   bool get isOnline => true;
 

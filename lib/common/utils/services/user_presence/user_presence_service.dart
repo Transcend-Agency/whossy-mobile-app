@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,12 @@ class UserPresenceService {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
 
   late DatabaseReference connectedRef;
+
+  // Refreshes lastSeen while connected, so "online" reflects genuine recent
+  // activity rather than only the last connect/reconnect event (pre-launch
+  // plan C1) — onDisconnect can lag or never fire on a force-quit.
+  static const _heartbeatInterval = Duration(seconds: 90);
+  Timer? _heartbeatTimer;
 
   UserPresenceService() {
     // Initialize connectedRef in the constructor
@@ -36,6 +43,16 @@ class UserPresenceService {
           'online': false,
           'lastSeen': ServerValue.timestamp,
         });
+
+        _heartbeatTimer?.cancel();
+        _heartbeatTimer = Timer.periodic(_heartbeatInterval, (_) {
+          _userRef(user.uid).update({
+            'online': true,
+            'lastSeen': ServerValue.timestamp,
+          });
+        });
+      } else {
+        _heartbeatTimer?.cancel();
       }
     });
   }

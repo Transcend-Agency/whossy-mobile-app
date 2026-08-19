@@ -20,7 +20,7 @@ class UserProfile implements ProfileDataFooter {
   }
 
   @override
-  bool get isOnline => user.status?.online ?? false;
+  bool get isOnline => user.status?.isRecentlyOnline(Timestamp.now()) ?? false;
 
   @override
   bool get newUser {

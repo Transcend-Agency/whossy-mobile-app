@@ -27,6 +27,14 @@ class UserStatus {
 
   Map<String, dynamic> toJson() => _$UserStatusToJson(this);
 
+  static const Duration recencyWindow = Duration(minutes: 5);
+
+  bool isRecentlyOnline(Timestamp currentTime) {
+    final seen = lastSeen;
+    if (!online || seen == null) return false;
+    return currentTime.toDate().difference(seen.toDate()) < recencyWindow;
+  }
+
   @override
   String toString() {
     return 'online: $online, lastSeen: ${lastSeen?.toDate()}';
