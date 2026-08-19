@@ -44,8 +44,13 @@ class UserProfile implements ProfileDataFooter {
   @override
   List<String> get pictures => preferences.profilePics ?? [];
 
+  // No viewer-location context at this layer to compute a real distance
+  // (this model doesn't carry the viewer's own coordinates) — null is
+  // honest about that; the fixed 22.0 this replaces was not (C3). The real
+  // computed distance for display lives in ProfileFooterScaffold, which
+  // does have the viewer's location via EditProfileNotifier.
   @override
-  double? get distance => 22.0; // Replace with actual calculation if needed
+  double? get distance => null;
 
   @override
   List<String> get userInterests => preferences.ticks ?? [];

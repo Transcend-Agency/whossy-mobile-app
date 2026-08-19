@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geoflutterfire2/geoflutterfire2.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../../../../../common/utils/utils.dart';
@@ -13,8 +13,6 @@ class MatchRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
-  final _geo = GeoFlutterFire();
-  final double radiusInKm = 50; // Default radius in kilometers
 
   final _matchFilterSettings = const ExcludeSettings(
     excludeIncompleteOnboarding: true,
@@ -24,6 +22,12 @@ class MatchRepository {
     excludePublicSearch: true,
   );
 
+  /// C6: no geo bound here — reach is unlimited by default (this used to
+  /// hard-cap via a geoflutterfire `within(center, radius, ...)` query,
+  /// exactly the cap the plan wants gone, contrary to its own assumption
+  /// that only web's swipe deck capped by distance). Distance only ranks
+  /// results below, when both parties have coordinates — nobody is
+  /// excluded for lacking them or being far away.
   Stream<List<UserProfile>> fetchProfilesStream({
     int limit = 20,
     double? longitude,
@@ -32,21 +36,8 @@ class MatchRepository {
     OtherPreferences? preferences,
     CorePreferences? corePreferences,
     required List<String> interests,
-  }) 
-  
-  {
+  }) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
-
-    if (latitude == null || longitude == null) {
-      return Stream.value([]);
-    }
-
-    double radius = preferences?.distance?.toDouble() ?? radiusInKm;
-    if (preferences?.outreach == true) {
-      radius = 300;
-    }
-
-    final center = _geo.point(latitude: latitude, longitude: longitude);
 
     Stream<Set<String>> blacklistStream = Rx.combineLatest2(
       _likes.where('liker_id', isEqualTo: uid).snapshots().map(
@@ -61,74 +52,69 @@ class MatchRepository {
       (likes, dislikes) => likes.union(dislikes),
     );
 
-    var geoQueryStream = _geo
-        .collection(collectionRef: _profiles)
-        .within(center: center, radius: radius, field: 'geography');
+    // C5: has_completed_onboarding pushed server-side (it wasn't filtered
+    // at all before) so the batch this query returns is cleaner going into
+    // the client-side exclusion pass below, rather than relying entirely
+    // on post-fetch filtering to catch it.
+    Query profilesQuery =
+        _profiles.where('has_completed_onboarding', isEqualTo: true);
+    if (preferences != null || corePreferences != null) {
+      profilesQuery = QueryHelper.applyFilters(
+        QueryHelper.buildFilters(
+          preferences,
+          corePreferences,
+          userInterests: [
+            ...interests,
+            ...(preferences?.interests ?? []),
+          ],
+        ),
+        profilesQuery,
+      );
+    }
+    profilesQuery = profilesQuery.limit(limit);
 
-    // Combine geoQueryStream with blacklistStream
     return Rx.combineLatest2(
-      geoQueryStream,
+      profilesQuery.snapshots(),
       blacklistStream,
-      (List<DocumentSnapshot> geoSnapshots, Set<String> blacklist) {
-        if (geoSnapshots.isEmpty) return Stream.value([]);
+      (QuerySnapshot querySnapshot, Set<String> blacklist) {
+        final ranked = querySnapshot.docs
+            .where((doc) {
+              final profile =
+                  UserProfile.fromJson(doc.data() as Map<String, dynamic>);
+              return !AppUtils.excludeProfile(
+                    profile,
+                    uid,
+                    blockedIds,
+                    settings: _matchFilterSettings,
+                  ) &&
+                  !blacklist.contains(profile.user.uid);
+            })
+            .map((doc) {
+              final profile =
+                  UserProfile.fromJson(doc.data() as Map<String, dynamic>);
+              final geo = profile.user.geography?.geopoint;
+              final distanceKm = (latitude != null &&
+                      longitude != null &&
+                      geo != null)
+                  ? Geolocator.distanceBetween(
+                        latitude,
+                        longitude,
+                        geo.latitude,
+                        geo.longitude,
+                      ) /
+                      1000
+                  : null;
+              return MapEntry(profile, distanceKm);
+            })
+            .toList()
+          ..sort((a, b) {
+            final da = a.value ?? double.infinity;
+            final db = b.value ?? double.infinity;
+            return da.compareTo(db);
+          });
 
-        // Reactive profiles query based on preferences
-        Query profilesQuery = _profiles;
-        if (preferences != null || corePreferences != null) {
-          profilesQuery = QueryHelper.applyFilters(
-            QueryHelper.buildFilters(
-              preferences,
-              corePreferences,
-              userInterests: [
-                ...interests,
-                ...(preferences?.interests ?? []),
-              ],
-            ),
-            profilesQuery,
-          );
-        }
-
-        // Transform geoSnapshots and profilesQuery into a stream of List<UserProfile>
-        return profilesQuery.snapshots().map(
-          (querySnapshot) {
-            final filteredIds = querySnapshot.docs.map((doc) => doc.id).toSet();
-
-            final userProfiles = geoSnapshots
-                .where((doc) {
-                  final profile =
-                      UserProfile.fromJson(doc.data() as Map<String, dynamic>);
-
-                  // final distance = (Geolocator.distanceBetween(
-                  //             latitude,
-                  //             longitude,
-                  //             profile.user.geography!.geopoint!.latitude,
-                  //             profile.user.geography!.geopoint!.longitude) /
-                  //         1000)
-                  //     .floor();
-
-                  // log('${profile.name} and distance is $distance -- Search radius $radius');
-
-                  return !AppUtils.excludeProfile(
-                        profile,
-                        uid,
-                        blockedIds,
-                        settings: _matchFilterSettings,
-                      ) &&
-                      !blacklist.contains(profile.user.uid) &&
-                      filteredIds.contains(doc.id);
-                     // && radius.toInt() >= distance;
-                })
-                .map((doc) {
-                  return UserProfile.fromJson(
-                      doc.data() as Map<String, dynamic>);
-                })
-                .take(limit)
-                .toList();
-
-            return userProfiles;
-          },
-        );
+        return ranked.map((entry) => entry.key).toList();
       },
-    ).switchMap((stream) => stream.cast<List<UserProfile>>());
+    );
   }
 }

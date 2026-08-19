@@ -39,6 +39,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       geohash: json['geohash'] as String?,
       geography: AppUtils.geographyFromJson(
           json['geography'] as Map<String, dynamic>?),
+      popularityScore30d: json['popularity_score_30d'] as num?,
       creditBalance: (json['credit_balance'] as num?)?.toInt() ?? 0,
       currentPlan: json['current_plan'] as String?,
       paymentPlatform: paymentPlatformFromJson(json['payment_platform']),
