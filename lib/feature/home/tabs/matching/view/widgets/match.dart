@@ -56,7 +56,24 @@ class _MatchState extends State<Match> {
 
   void _onPageChange(int page) => setState(() => _activePage = page);
 
-  void like() {
+  // Returns false when blocked, so handleSwipe can snap the card back
+  // instead of letting it animate away for a like that was never recorded.
+  //
+  // A3: the swipe gesture is a separate entry point from the tap-button in
+  // MatchingProfilePreview and was missing this gate entirely — a
+  // right-swipe could like someone with no verification check at all.
+  bool like() {
+    final isApproved =
+        context.read<EditProfileNotifier>().profileData.isUserVerified;
+    if (!isApproved) {
+      showSnackbar(
+        AppStrings.disAbleUnapproved('Liking'),
+        context,
+        snackBarType: SnackbarType.warning,
+      );
+      return false;
+    }
+
     if (profileQueue.getBottom() != null) {
       matchNotifier.addLike(
         profileQueue.getBottom()!.user.uid!,
@@ -66,6 +83,7 @@ class _MatchState extends State<Match> {
         },
       );
     }
+    return true;
   }
 
   void dislike() {
@@ -93,7 +111,7 @@ class _MatchState extends State<Match> {
     }
 
     if (direction == CardSwiperDirection.right) {
-      like();
+      if (!like()) return false;
     }
 
     if (direction == CardSwiperDirection.left) {

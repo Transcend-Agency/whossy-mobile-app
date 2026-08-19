@@ -39,13 +39,32 @@ class UserRepository {
   Future<void> addUserToken() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     String token = await NotificationService().getToken();
+    if (token.isEmpty) return;
 
     await _users.doc(userId).update({
       'tokens': FieldValue.arrayUnion([token])
     });
   }
 
+  // B1: this used to only invalidate the token client-side
+  // (NotificationService().deleteToken()) without ever removing it from
+  // Firestore's `tokens` array — stale tokens accumulated on every account
+  // indefinitely. Read the token first (deleting it first would make it
+  // unreadable) and arrayRemove that exact value before invalidating it.
   Future<void> removeUserToken() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+
+    try {
+      final token = await NotificationService().getToken();
+      if (userId != null && token.isNotEmpty) {
+        await _users.doc(userId).update({
+          'tokens': FieldValue.arrayRemove([token])
+        });
+      }
+    } catch (e) {
+      log('Error removing user token from Firestore: $e');
+    }
+
     await NotificationService().deleteToken().timeout(
       const Duration(seconds: 3),
       onTimeout: () {
@@ -324,7 +343,10 @@ class UserRepository {
         }
       }
 
-      // await addUserToken(tokens: appUser?.tokens);
+      // B1: re-register on login too, not just at signup — otherwise a
+      // rotated or reinstalled-app token never reaches Firestore for a
+      // returning user, and every push to them silently no-ops.
+      await addUserToken();
 
       onAuthenticate();
     } else {

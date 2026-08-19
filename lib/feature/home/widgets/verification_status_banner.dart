@@ -170,8 +170,20 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
           color: const Color(0xFFFDECEC),
           foreground: AppColors.primaryColor,
           icon: Icons.error_outline,
-          text: AppStrings.verificationBannerRejected,
+          text: verification?.rejectionReason != null
+              ? 'Your verification wasn’t approved: ${verification!.rejectionReason}'
+              : AppStrings.verificationBannerRejected,
           actionLabel: 'Retake',
+          onAction: _startVerification,
+        );
+
+      case FaceVerificationStatus.revoked:
+        return _banner(
+          color: const Color(0xFFFDECEC),
+          foreground: AppColors.primaryColor,
+          icon: Icons.error_outline,
+          text: AppStrings.verificationBannerRevoked,
+          actionLabel: 'Re-verify',
           onAction: _startVerification,
         );
 

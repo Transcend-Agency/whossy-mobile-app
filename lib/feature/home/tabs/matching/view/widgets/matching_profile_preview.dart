@@ -130,22 +130,18 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Passing is never gated on verification (A3) — declining
+                // someone is harmless and gating it just makes the app feel
+                // broken to an unverified user.
                 if (widget.showCancel && _isDislikeVisible) ...[
-                  Selector<EditProfileNotifier, bool>(
-                    selector: (_, edit) =>
-                        edit.coreProfile?.isApproved ?? false,
-                    builder: (_, isApproved, __) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.h),
-                        child: MatchIconButton(
-                          animateOnTap: isApproved,
-                          onTap: () => onDisLikeTap(context),
-                          assetPath: AppAssets.cancel,
-                          onAnimationComplete:
-                              isApproved ? _onDislikeTapComplete : null,
-                        ),
-                      );
-                    },
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.h),
+                    child: MatchIconButton(
+                      animateOnTap: true,
+                      onTap: () => onDisLikeTap(context),
+                      assetPath: AppAssets.cancel,
+                      onAnimationComplete: _onDislikeTapComplete,
+                    ),
                   ),
                 ],
                 if (widget.showMessaging) ...[
@@ -186,18 +182,6 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
   }
 
   void onDisLikeTap(BuildContext context) {
-    var isApproved =
-        context.read<EditProfileNotifier>().profileData.isUserVerified;
-
-    if (!isApproved) {
-      showSnackbar(
-        AppStrings.disAbleUnapproved('Disliking'),
-        context,
-        snackBarType: SnackbarType.warning,
-      );
-      return;
-    }
-
     swipeAndMatch.addDislike(
       widget.userProfile.user.uid!,
       addAction: false,

@@ -188,6 +188,25 @@ class EditProfileNotifier extends ChangeNotifier {
     return diff.containsKey('photos');
   }
 
+  // A4: whether saving right now would revoke verification — the pending
+  // edit changes the main photo specifically, and the user is currently
+  // approved. Lets the save button confirm before it happens.
+  bool get pendingSaveRevokesVerification {
+    if (!isChangingPhotos) return false;
+
+    final oldMain = _staticCoreProfile?.profilePics?.isNotEmpty == true
+        ? _staticCoreProfile!.profilePics!.first
+        : null;
+    final newMain = _dynCoreProfile?.profilePics?.isNotEmpty == true
+        ? _dynCoreProfile!.profilePics!.first
+        : null;
+    final isCurrentlyApproved =
+        _staticCoreProfile?.faceVerification?.getVerificationStatus() ==
+            FaceVerificationStatus.complete;
+
+    return newMain != oldMain && isCurrentlyApproved;
+  }
+
   Future<void> getUserData({
     required void Function(String) showSnackbar,
   }) async {
@@ -263,16 +282,15 @@ class EditProfileNotifier extends ChangeNotifier {
     try {
       final corePrefsDiff = _dynCorePrefs?.diff(_staticCorePrefs!) ?? {};
       final coreProfileDiff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
-      bool hasPicUploads = false;
 
       // log('Core Prefs Diff: ${jsonEncode(corePrefsDiff)}');
       // log('Core Profile Diff: ${jsonEncode(coreProfileDiff)}');
 
       if (corePrefsDiff.isEmpty && coreProfileDiff.isEmpty) return true;
 
-      // Process profile photos if available
-      hasPicUploads =
-          await _processProfilePhotos(coreProfileDiff, showSnackbar);
+      // Process profile photos if available (may add is_approved/
+      // face_verification to the diff itself — see _processProfilePhotos)
+      await _processProfilePhotos(coreProfileDiff, showSnackbar);
 
       // Process face verification if available
       await _processFaceVerification(coreProfileDiff);
@@ -281,7 +299,6 @@ class EditProfileNotifier extends ChangeNotifier {
         corePrefData: {...corePrefsDiff},
         coreProfileData: {...coreProfileDiff},
         updateUserDeletePic: _didUserDeletePic,
-        hasPicUploads: hasPicUploads,
       );
 
       // Sync static profile with the latest changes
@@ -344,11 +361,15 @@ class EditProfileNotifier extends ChangeNotifier {
     _staticCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
   }
 
-  Future<bool> _processProfilePhotos(
+  Future<void> _processProfilePhotos(
     Map<String, dynamic> coreProfileDiff,
     void Function(String) showSnackbar,
   ) async {
-    if (coreProfileDiff["photos"] is! List<String>) return false;
+    if (coreProfileDiff["photos"] is! List<String>) return;
+
+    final oldMainPhoto = _staticCoreProfile?.profilePics?.isNotEmpty == true
+        ? _staticCoreProfile!.profilePics!.first
+        : null;
 
     final updatedPhotos = await FileService().processPhotos(
       coreProfileDiff["photos"],
@@ -357,7 +378,24 @@ class EditProfileNotifier extends ChangeNotifier {
 
     coreProfileDiff["photos"] = updatedPhotos.photos;
     _dynCoreProfile?.update(profilePics: updatedPhotos.photos);
-    return updatedPhotos.hasUploads;
+
+    final newMainPhoto =
+        updatedPhotos.photos.isNotEmpty ? updatedPhotos.photos.first : null;
+    final isCurrentlyApproved =
+        _staticCoreProfile?.faceVerification?.getVerificationStatus() ==
+            FaceVerificationStatus.complete;
+
+    // A4: only an actual main-photo change revokes, and only when there's
+    // an approved badge to revoke — adding/removing/reordering any other
+    // photo doesn't touch verification at all.
+    if (newMainPhoto != oldMainPhoto && isCurrentlyApproved) {
+      coreProfileDiff['is_approved'] = false;
+      final currentFv = _staticCoreProfile?.faceVerification;
+      coreProfileDiff['face_verification'] = {
+        if (currentFv != null) ...currentFv.toJson(),
+        'status': 'revoked',
+      };
+    }
   }
 
   Future<void> _processFaceVerification(
@@ -380,17 +418,19 @@ class EditProfileNotifier extends ChangeNotifier {
     );
 
     final photoUrl = photoUrls.isNotEmpty ? photoUrls.first : null;
+    if (photoUrl == null) return;
     final challenge = _pendingVerificationChallenge;
+    final mainPhoto = _dynCoreProfile?.profilePics?.isNotEmpty == true
+        ? _dynCoreProfile!.profilePics!.first
+        : null;
 
-    coreProfileDiff["face_verification"] = {
-      ...coreProfileDiff["face_verification"] as Map<String, dynamic>,
-      'photo': photoUrl,
-      'updated_at': FieldValue.serverTimestamp(),
-      'challenge_id': challenge?.id,
-      'challenge_image_url': challenge?.imageUrl,
-      'status': 'pending_review',
-      'retake_photo': false,
-    };
+    coreProfileDiff["face_verification"] = FaceVerification.submission(
+      photo: photoUrl,
+      challengeId: challenge?.id,
+      challengeImageUrl: challenge?.imageUrl,
+      mainPhoto: mainPhoto,
+    ).toJson()
+      ..['updated_at'] = FieldValue.serverTimestamp();
 
     _dynCoreProfile?.update(photoVerificationUrl: photoUrl);
     _pendingVerificationChallenge = null;

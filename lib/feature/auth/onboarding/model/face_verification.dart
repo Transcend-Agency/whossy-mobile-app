@@ -23,14 +23,14 @@ class FaceVerification {
   // Which verification_challenges doc was shown for this submission, and a
   // denormalized copy of its image so admin review stays stable even if the
   // challenge pool changes later. Written by the client; admin-only fields
-  // below are written by the (Retool) admin tooling.
+  // below are written by the (Retool) admin tooling via reviewVerification.
   @JsonKey(name: 'challenge_id')
   String? challengeId;
 
   @JsonKey(name: 'challenge_image_url')
   String? challengeImageUrl;
 
-  // 'pending_review' | 'approved' | 'rejected'
+  // 'pending_review' | 'approved' | 'rejected' | 'revoked'
   @JsonKey(name: 'status')
   String? status;
 
@@ -44,6 +44,16 @@ class FaceVerification {
   )
   Timestamp? reviewedAt;
 
+  // Main profile photo at the moment of submission — what the reviewer
+  // actually approves against. reviewVerification re-checks this against
+  // the current main photo before granting a badge.
+  @JsonKey(name: 'profile_photo_snapshot')
+  String? profilePhotoSnapshot;
+
+  // Set by the reviewer on rejection so the user knows what to correct.
+  @JsonKey(name: 'rejection_reason')
+  String? rejectionReason;
+
   FaceVerification({
     this.photo, // Directly use this.photo instead of verificationPic
     this.updatedAt,
@@ -53,7 +63,31 @@ class FaceVerification {
     this.status,
     this.reviewedBy,
     this.reviewedAt,
+    this.profilePhotoSnapshot,
+    this.rejectionReason,
   });
+
+  /// The single builder for a verification submission, shared by onboarding
+  /// and the edit-profile retake flow — matches the shared backend rules
+  /// (a fresh submission always sets status back to pending_review, clears
+  /// rejection_reason, and snapshots the current main photo).
+  factory FaceVerification.submission({
+    required String photo,
+    String? challengeId,
+    String? challengeImageUrl,
+    String? mainPhoto,
+  }) {
+    return FaceVerification(
+      photo: photo,
+      updatedAt: Timestamp.now(),
+      retakePhoto: false,
+      challengeId: challengeId,
+      challengeImageUrl: challengeImageUrl,
+      status: 'pending_review',
+      profilePhotoSnapshot: mainPhoto,
+      rejectionReason: null,
+    );
+  }
 
   factory FaceVerification.fromJson(Map<String, dynamic> json) =>
       _$FaceVerificationFromJson(json);
@@ -85,7 +119,9 @@ class FaceVerification {
         other.challengeImageUrl == challengeImageUrl &&
         other.status == status &&
         other.reviewedBy == reviewedBy &&
-        other.reviewedAt == reviewedAt;
+        other.reviewedAt == reviewedAt &&
+        other.profilePhotoSnapshot == profilePhotoSnapshot &&
+        other.rejectionReason == rejectionReason;
   }
 
   @override
@@ -99,6 +135,8 @@ class FaceVerification {
       status,
       reviewedBy,
       reviewedAt,
+      profilePhotoSnapshot,
+      rejectionReason,
     );
   }
 
@@ -109,6 +147,8 @@ class FaceVerification {
         return FaceVerificationStatus.complete;
       case 'rejected':
         return FaceVerificationStatus.notCompleteAndDeclined;
+      case 'revoked':
+        return FaceVerificationStatus.revoked;
       case 'pending_review':
         return FaceVerificationStatus.pending;
     }
@@ -134,7 +174,9 @@ class FaceVerification {
         '     challengeImageUrl: $challengeImageUrl,\n'
         '     status: $status,\n'
         '     reviewedBy: $reviewedBy,\n'
-        '     reviewedAt: ${reviewedAt != null ? AppUtils.timestampToJson(reviewedAt) : "null"}\n'
+        '     reviewedAt: ${reviewedAt != null ? AppUtils.timestampToJson(reviewedAt) : "null"},\n'
+        '     profilePhotoSnapshot: $profilePhotoSnapshot,\n'
+        '     rejectionReason: $rejectionReason\n'
         ' )';
   }
 }

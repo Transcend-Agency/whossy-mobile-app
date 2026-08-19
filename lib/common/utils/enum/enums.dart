@@ -297,6 +297,7 @@ enum NotificationType {
   like('New Like'),
   match('It\'s a Match!'),
   message('New Message'),
+  verification('Verification Update'),
   unknown('New Notification');
 
   const NotificationType(this.value);
@@ -308,7 +309,8 @@ enum FaceVerificationStatus {
   pending('Pending'),
   notCompleteAndDeclined('Not Complete, Declined'),
   notComplete('Not Complete'),
-  complete('Complete');
+  complete('Complete'),
+  revoked('Not Complete, Re-verification needed');
 
   final String name;
   const FaceVerificationStatus(this.name);

@@ -73,11 +73,11 @@ class OnboardingNotifier extends ChangeNotifier {
       // Create FaceVerification instance only if there is a verification photo
       FaceVerification? faceVerification;
       if (photoVerificationUrl.isNotEmpty) {
-        faceVerification = FaceVerification(
+        faceVerification = FaceVerification.submission(
           photo: photoVerificationUrl.first,
           challengeId: _userPreferences.verificationChallenge?.id,
           challengeImageUrl: _userPreferences.verificationChallenge?.imageUrl,
-          status: 'pending_review',
+          mainPhoto: urls.isNotEmpty ? urls.first : null,
         );
       }
 

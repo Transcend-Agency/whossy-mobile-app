@@ -194,7 +194,7 @@ class AppStrings {
   static const String uploadTimeout =
       "Failed to upload profile pictures. Please check your network and try again.";
   static const String minPicsRequired =
-      'You need at least 3 photos to save your profile.';
+      'You need at least 2 photos to save your profile.';
 
   static const String mission =
       'Our mission is to help you connect with new people in a safe and enjoyable environment. Your safety is our top priority, and we have put together this guide to help you navigate the online dating world securely and confidently.';
@@ -239,6 +239,8 @@ class AppStrings {
       "You're verified, start matching!";
   static const String verificationBannerRejected =
       'Your verification wasn’t approved, retake your selfie to start matching';
+  static const String verificationBannerRevoked =
+      'Your verified badge was revoked after a profile photo change. Re-verify to like and message again';
 
   static const String permissionDeniedPhoneCheck =
       'Unable to check for phone number uniqueness due to insufficient permissions.';
