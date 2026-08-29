@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../common/utils/utils.dart';
@@ -11,11 +12,6 @@ class AppNotification {
   final String id;
   final bool seen;
 
-  // Machine-readable discriminant written by the Cloud Function triggers
-  // (functions/src/notifications.ts, shared with web) — 'like' | 'match' |
-  // 'message' | 'verification'. Falls back to parsing `title` only for
-  // documents that predate this field (there shouldn't be any live ones,
-  // since nothing wrote to this collection before those triggers existed).
   @JsonKey(name: 'type')
   final String? type;
 
@@ -97,16 +93,12 @@ class AppNotification {
     this.rejectionReason,
   });
 
-  /// Factory method to create an instance from JSON
   factory AppNotification.fromJson(Map<String, dynamic> json) =>
       _$AppNotificationFromJson(json);
 
-  /// Method to convert the instance into JSON
   Map<String, dynamic> toJson() => _$AppNotificationToJson(this);
 
-  /// **Determines the notification type** — reads the `type` field written
-  /// by the Cloud Function triggers; falls back to the title heuristic only
-  /// for a document with no `type` at all.
+
   NotificationType get notificationType {
     switch (type) {
       case 'like':
@@ -131,18 +123,14 @@ class AppNotification {
     }
   }
 
-  /// **Returns the ID of the person interacting with the user**
-  ///
-  /// - **Like Notification** → `likerId`
-  /// - **Match Notification** → `user1Id`
-  /// - **Message Notification** → `senderId`
-  /// - **Verification** → `null` (not about another user)
   String? get interactingUserId {
     switch (notificationType) {
       case NotificationType.like:
         return likerId;
       case NotificationType.match:
-        return user1Id;
+        final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+        if (currentUserId == null) return null;
+        return currentUserId == user1Id ? user2Id : user1Id;
       case NotificationType.message:
         return senderId;
       case NotificationType.verification:

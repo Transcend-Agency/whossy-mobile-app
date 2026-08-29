@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../../../../common/components/components.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../common/utils/utils.dart';
+import '../../../../../../common/utils/verification_gate.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/provider.dart';
 import '../../../../edit_profile/view/widgets/edit/image_view.dart';
@@ -56,21 +57,11 @@ class _MatchState extends State<Match> {
 
   void _onPageChange(int page) => setState(() => _activePage = page);
 
-  // Returns false when blocked, so handleSwipe can snap the card back
-  // instead of letting it animate away for a like that was never recorded.
-  //
-  // A3: the swipe gesture is a separate entry point from the tap-button in
-  // MatchingProfilePreview and was missing this gate entirely — a
-  // right-swipe could like someone with no verification check at all.
   bool like() {
     final isApproved =
         context.read<EditProfileNotifier>().profileData.isUserVerified;
     if (!isApproved) {
-      showSnackbar(
-        AppStrings.disAbleUnapproved('Liking'),
-        context,
-        snackBarType: SnackbarType.warning,
-      );
+      showVerificationGateDialog(context, action: 'Liking');
       return false;
     }
 

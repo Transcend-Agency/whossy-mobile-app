@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'router.gr.dart';
 
+final appRouter = AppRouter();
+
 @AutoRouterConfig()
 class AppRouter extends RootStackRouter {
   @override

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../../../common/components/components.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../common/utils/utils.dart';
+import '../../../../../../common/utils/verification_gate.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/provider.dart';
 import '../../../../../auth/onboarding/model/preferences.dart';
@@ -130,9 +131,7 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Passing is never gated on verification (A3) — declining
-                // someone is harmless and gating it just makes the app feel
-                // broken to an unverified user.
+
                 if (widget.showCancel && _isDislikeVisible) ...[
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.h),
@@ -194,11 +193,7 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
         context.read<EditProfileNotifier>().profileData.isUserVerified;
 
     if (!isApproved) {
-      showSnackbar(
-        AppStrings.disAbleUnapproved('Liking'),
-        context,
-        snackBarType: SnackbarType.warning,
-      );
+      showVerificationGateDialog(context, action: 'Liking');
       return;
     }
 
@@ -219,11 +214,7 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
         context.read<EditProfileNotifier>().profileData.isUserVerified;
 
     if (!isApproved) {
-      showSnackbar(
-        AppStrings.disAbleUnapproved('Messaging'),
-        context,
-        snackBarType: SnackbarType.warning,
-      );
+      showVerificationGateDialog(context, action: 'Messaging');
       return;
     }
 

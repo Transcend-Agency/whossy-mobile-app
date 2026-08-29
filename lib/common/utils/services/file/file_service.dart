@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -34,10 +35,9 @@ class FileService {
   // lb
   {
     final fName = p.basenameWithoutExtension(file.path);
+    final uid = FirebaseAuth.instance.currentUser?.uid;
     final storageRef =
-        _storage.ref().child(AppStrings.chatPicsPath(fName, chatId));
-    // Byte-based `putData` (not `putFile`) to avoid the iOS Simulator upload
-    // hang — see the note in `UserRepository.uploadPictures`.
+        _storage.ref().child(AppStrings.chatPicsPath(uid, fName, chatId));
     final bytes = await file.readAsBytes();
     final uploadTask = storageRef.putData(
       bytes,

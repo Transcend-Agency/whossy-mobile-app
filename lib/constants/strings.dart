@@ -210,8 +210,8 @@ class AppStrings {
     return 'users/$uid/face_verification/$fileName';
   }
 
-  static String chatPicsPath(String fileName, String chatId) {
-    return 'chats/$chatId/$fileName';
+  static String chatPicsPath(String? uid, String fileName, String chatId) {
+    return 'users/$uid/chat_images/${chatId}_$fileName';
   }
 
   static String blockUser(String name) =>

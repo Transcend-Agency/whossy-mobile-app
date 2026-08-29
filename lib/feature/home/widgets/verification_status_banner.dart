@@ -1,16 +1,13 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:whossy_app/common/utils/router/router.gr.dart';
 
-import '../../../common/components/components.dart';
 import '../../../common/utils/services/services.dart';
 import '../../../common/utils/utils.dart';
+import '../../../common/utils/verification_gate.dart';
 import '../../../constants/index.dart';
 import '../../../provider/provider.dart';
 
@@ -56,47 +53,6 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
   void _acknowledgeApproval(int reviewedAt) {
     _sharedPrefs.setVerificationApprovalAck(_uid, reviewedAt);
     setState(() => _approvalAck = reviewedAt);
-  }
-
-  Future<void> _startVerification() async {
-    final profile = context.read<EditProfileNotifier>();
-
-    final image = await context.router.push<File?>(
-      PhotoVerification(
-        photoUrl: profile.coreProfile?.faceVerification?.photo,
-      ),
-    );
-
-    if (image == null || !mounted) return;
-
-    profile.updateProfile(photoVerificationUrl: image.path);
-
-    // Auto-save immediately, mirroring the edit-profile entry point: taking a
-    // verification selfie is a complete discrete action.
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
-    );
-
-    String? errorMsg;
-    final success = await profile.saveUserProfile(
-      showSnackbar: (msg) => errorMsg = msg,
-    );
-
-    if (!mounted) return;
-    Navigator.of(context, rootNavigator: true).pop();
-
-    if (!mounted) return;
-    if (errorMsg != null) {
-      showSnackbar(errorMsg!, context);
-    } else if (success) {
-      showSnackbar(
-        AppStrings.faceVerificationSubmitted,
-        context,
-        snackBarType: SnackbarType.success,
-      );
-    }
   }
 
   @override
@@ -174,7 +130,7 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
               ? 'Your verification wasn’t approved: ${verification!.rejectionReason}'
               : AppStrings.verificationBannerRejected,
           actionLabel: 'Retake',
-          onAction: _startVerification,
+          onAction: () => startFaceVerificationFlow(context),
         );
 
       case FaceVerificationStatus.revoked:
@@ -184,7 +140,7 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
           icon: Icons.error_outline,
           text: AppStrings.verificationBannerRevoked,
           actionLabel: 'Re-verify',
-          onAction: _startVerification,
+          onAction: () => startFaceVerificationFlow(context),
         );
 
       case FaceVerificationStatus.notComplete:
@@ -196,7 +152,7 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
           icon: Icons.photo_camera_front_outlined,
           text: AppStrings.verificationBannerPrompt,
           actionLabel: 'Take selfie',
-          onAction: _startVerification,
+          onAction: () => startFaceVerificationFlow(context),
           onDismiss: () =>
               setState(() => _promptDismissedThisSession = true),
         );
