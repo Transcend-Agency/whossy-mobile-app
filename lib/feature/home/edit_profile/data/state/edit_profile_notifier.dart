@@ -188,11 +188,12 @@ class EditProfileNotifier extends ChangeNotifier {
     return diff.containsKey('photos');
   }
 
-  // A4: whether saving right now would revoke verification — the pending
-  // edit changes the main photo specifically, and the user is currently
-  // approved. Lets the save button confirm before it happens.
-  bool get pendingSaveRevokesVerification {
-    if (!isChangingPhotos) return false;
+  // A4: what saving right now would do to verification — the pending edit
+  // changes the main photo specifically, and there's a live approved badge
+  // or in-flight review that the change would invalidate. Lets the save
+  // button confirm before it happens, with copy matched to which case it is.
+  MainPhotoChangeConsequence get pendingMainPhotoChangeConsequence {
+    if (!isChangingPhotos) return MainPhotoChangeConsequence.none;
 
     final oldMain = _staticCoreProfile?.profilePics?.isNotEmpty == true
         ? _staticCoreProfile!.profilePics!.first
@@ -200,11 +201,16 @@ class EditProfileNotifier extends ChangeNotifier {
     final newMain = _dynCoreProfile?.profilePics?.isNotEmpty == true
         ? _dynCoreProfile!.profilePics!.first
         : null;
-    final isCurrentlyApproved =
-        _staticCoreProfile?.faceVerification?.getVerificationStatus() ==
-            FaceVerificationStatus.complete;
+    if (newMain == oldMain) return MainPhotoChangeConsequence.none;
 
-    return newMain != oldMain && isCurrentlyApproved;
+    switch (_staticCoreProfile?.faceVerification?.getVerificationStatus()) {
+      case FaceVerificationStatus.complete:
+        return MainPhotoChangeConsequence.revokesApproval;
+      case FaceVerificationStatus.pending:
+        return MainPhotoChangeConsequence.cancelsPendingReview;
+      default:
+        return MainPhotoChangeConsequence.none;
+    }
   }
 
   Future<void> getUserData({
@@ -381,20 +387,47 @@ class EditProfileNotifier extends ChangeNotifier {
 
     final newMainPhoto =
         updatedPhotos.photos.isNotEmpty ? updatedPhotos.photos.first : null;
-    final isCurrentlyApproved =
-        _staticCoreProfile?.faceVerification?.getVerificationStatus() ==
-            FaceVerificationStatus.complete;
 
-    // A4: only an actual main-photo change revokes, and only when there's
-    // an approved badge to revoke — adding/removing/reordering any other
-    // photo doesn't touch verification at all.
-    if (newMainPhoto != oldMainPhoto && isCurrentlyApproved) {
-      coreProfileDiff['is_approved'] = false;
-      final currentFv = _staticCoreProfile?.faceVerification;
-      coreProfileDiff['face_verification'] = {
-        if (currentFv != null) ...currentFv.toJson(),
-        'status': 'revoked',
-      };
+    // A4: only an actual main-photo change touches verification at all —
+    // adding/removing/reordering any other photo doesn't.
+    if (newMainPhoto != oldMainPhoto) {
+      switch (_staticCoreProfile?.faceVerification?.getVerificationStatus()) {
+        case FaceVerificationStatus.complete:
+          // Revoke: there's a badge, and it was approved against the photo
+          // that's about to change.
+          coreProfileDiff['is_approved'] = false;
+          final currentFv = _staticCoreProfile?.faceVerification;
+          coreProfileDiff['face_verification'] = {
+            if (currentFv != null) ...currentFv.toJson(),
+            'status': 'revoked',
+          };
+          break;
+        case FaceVerificationStatus.pending:
+          // Cancel: no badge exists yet, so there's nothing to revoke, but
+          // the pending submission was captured against the old photo and
+          // is no longer trustworthy. Left alone, a reviewer approving it
+          // later would hit the server's own stale-photo backstop
+          // (functions/src/verification.ts) and land on `revoked` — correct
+          // behavior for that backstop, but confusing copy for someone who
+          // was never actually approved. Clearing it back to
+          // never-submitted here avoids ever reaching that state and
+          // re-surfaces the normal "verify your photo" prompt instead.
+          //
+          // Skipped if a fresh selfie is already staged in this same save
+          // (e.g. a retake whose own auto-save previously failed) — that
+          // submission should supersede the stale one below in
+          // _processFaceVerification, not be discarded by it.
+          final stagedSelfie = _dynCoreProfile?.faceVerification?.photo;
+          final hasFreshSelfieStaged =
+              stagedSelfie != null && !stagedSelfie.isUrl;
+          if (!hasFreshSelfieStaged) {
+            _dynCoreProfile?.faceVerification = null;
+            coreProfileDiff['face_verification'] = null;
+          }
+          break;
+        default:
+          break;
+      }
     }
   }
 

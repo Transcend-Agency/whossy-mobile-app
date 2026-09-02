@@ -69,15 +69,23 @@ class _EditProfileState extends State<EditProfile>
       return await onValidateSave();
     }
 
-    if (_profileNotifier.pendingSaveRevokesVerification) {
+    final consequence = _profileNotifier.pendingMainPhotoChangeConsequence;
+    if (consequence != MainPhotoChangeConsequence.none) {
+      final isRevoke = consequence == MainPhotoChangeConsequence.revokesApproval;
       final confirmed = await showConfirmationDialog(
         context,
-        title: 'Change your main photo?',
+        title: isRevoke
+            ? 'Change your main photo?'
+            : 'Cancel your pending review?',
         content: contentText(
-          "Your verified badge was approved against your current main "
-          "photo. Changing it will remove your verified badge and stop "
-          "liking and messaging until a reviewer approves your profile "
-          "again.",
+          isRevoke
+              ? "Your verified badge was approved against your current main "
+                  "photo. Changing it will remove your verified badge and "
+                  "stop liking and messaging until a reviewer approves your "
+                  "profile again."
+              : "Your selfie is still under review against your current "
+                  "main photo. Changing it now will cancel that review — "
+                  "you'll need to retake your selfie to verify again.",
         ),
         yes: 'Change photo',
         no: 'Cancel',
