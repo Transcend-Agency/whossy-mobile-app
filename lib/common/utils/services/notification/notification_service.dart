@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/router/router.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
+import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 import 'package:whossy_app/provider/provider.dart';
 
 class NotificationService {
@@ -66,6 +67,12 @@ class NotificationService {
     _messaging.getInitialMessage().then(handleInitialMessage);
     FirebaseMessaging.onMessageOpenedApp.listen(handleForegroundMessage);
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
+
+    _messaging.onTokenRefresh.listen((_) {
+      if (FirebaseAuth.instance.currentUser != null) {
+        UserRepository().addUserToken();
+      }
+    });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
       final notification = event.notification;
