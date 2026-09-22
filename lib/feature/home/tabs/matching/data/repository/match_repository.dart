@@ -13,6 +13,11 @@ class MatchRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
+  static const _kPageSize = 20;
+  final _pageSize = BehaviorSubject<int>.seeded(_kPageSize);
+  void resetPaging() => _pageSize.add(_kPageSize);
+
+  void loadMore() => _pageSize.add(_pageSize.value + _kPageSize);
 
   final _matchFilterSettings = const ExcludeSettings(
     excludeIncompleteOnboarding: true,
@@ -29,7 +34,6 @@ class MatchRepository {
   /// results below, when both parties have coordinates — nobody is
   /// excluded for lacking them or being far away.
   Stream<List<UserProfile>> fetchProfilesStream({
-    int limit = 20,
     double? longitude,
     double? latitude,
     required List<String> blockedIds,
@@ -71,10 +75,28 @@ class MatchRepository {
         profilesQuery,
       );
     }
-    profilesQuery = profilesQuery.limit(limit);
+
+    // Growing the limit re-runs the whole query each time rather than
+    // cursoring — safe and correct as long as ordering is stable across
+    // calls, which requires an explicit orderBy (Firestore's default order
+    // isn't guaranteed stable). That orderBy must match whichever field (if
+    // any) carries the query's own inequality filter — age min/max both
+    // target date_of_birth, hasBio targets bio, and Firestore allows at
+    // most one inequality field per query, so there's never ambiguity in
+    // picking between them. Same constraint ExploreRepository already
+    // navigates for its own filters.
+    final orderByField = preferences?.ageRange != null
+        ? 'date_of_birth'
+        : preferences?.hasBio == true
+            ? 'bio'
+            : 'created_at';
+
+    final Stream<QuerySnapshot> queryStream = _pageSize.stream.switchMap(
+      (size) => profilesQuery.orderBy(orderByField).limit(size).snapshots(),
+    );
 
     return Rx.combineLatest2(
-      profilesQuery.snapshots(),
+      queryStream,
       blacklistStream,
       (QuerySnapshot querySnapshot, Set<String> blacklist) {
         final ranked = querySnapshot.docs

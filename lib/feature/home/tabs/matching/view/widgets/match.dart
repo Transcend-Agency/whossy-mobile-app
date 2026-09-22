@@ -158,7 +158,15 @@ class _MatchState extends State<Match> {
     }
   }
 
+  static const _kLowStockThreshold = 5;
+
   Widget buildCardSwiper(List<UserProfile> profiles) {
+    if (profiles.length <= _kLowStockThreshold) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        matchNotifier.loadMore();
+      });
+    }
+
     return Stack(
       key: const ValueKey('data'),
       children: [
