@@ -33,6 +33,15 @@ class SignUpNotifier extends ChangeNotifier {
   }) async {
     final uid = userCredential!.user!.uid;
 
+    // Apple only returns the email on first authorisation and Google/phone
+    // sign-in succeed for existing accounts, so "sign up" can land on an
+    // account that already has a profile. Writing the defaults below over it
+    // would reset its credits, premium, ban and verification state.
+    if (await _userRepository.getUserData() != null) {
+      await FirebaseAuth.instance.signOut();
+      throw RegisteredEmailException(AppStrings.registeredEmail);
+    }
+
     updateAppUser(uid: uid, email: email, authProvider: authMethod);
 
     await _userRepository.setUserData(data: {
@@ -102,12 +111,14 @@ class SignUpNotifier extends ChangeNotifier {
       userCredential = await _authRepository.handlePhoneAuthentication(cred);
 
       // Update data in firebase
-      setBaseData(phone: phone, authMethod: AuthMethod.phone);
+      await setBaseData(phone: phone, authMethod: AuthMethod.phone);
 
       // Account creation successful, handle accordingly
       onAuthenticate();
     } on FirebaseException catch (e) {
       handleFirebaseAuthError(e, showSnackbar);
+    } on RegisteredEmailException catch (e) {
+      showSnackbar(e.message);
     } catch (e) {
       showSnackbar(AppStrings.errorUnknown);
       log(e.toString());
@@ -128,7 +139,7 @@ class SignUpNotifier extends ChangeNotifier {
       userCredential = await _authRepository.createUser(email, password);
 
       // Update data in firebase
-      setBaseData(email: email);
+      await setBaseData(email: email);
 
       // Account creation successful, handle accordingly
       onAuthenticate();
@@ -154,7 +165,7 @@ class SignUpNotifier extends ChangeNotifier {
           await _authRepository.handleGoogleAuthentication(isLogin: false);
 
       // Update data in firebase
-      setBaseData(
+      await setBaseData(
         authMethod: AuthMethod.google,
         email: userCredential!.user!.email,
       );
@@ -183,7 +194,7 @@ class SignUpNotifier extends ChangeNotifier {
       userCredential = await _authRepository.handleAppleAuthentication();
 
       // Update data in firebase
-      setBaseData(
+      await setBaseData(
         authMethod: AuthMethod.apple,
         email: userCredential!.user!.email,
       );
