@@ -17,6 +17,7 @@ import 'Tour/view/intro_tour.dart';
 import 'tabs/_.dart';
 import 'tabs/explore/data/state/scroll_visibility_notifier.dart';
 import 'tabs/matching/data/state/location_permission_stream.dart';
+import 'widgets/account_gate.dart';
 import 'widgets/verification_status_banner.dart';
 
 @RoutePage()
@@ -140,6 +141,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    return AccountGate(child: _home(context));
+  }
+
+  Widget _home(BuildContext context) {
     return StreamProvider<LocationPermission>(
       create: (_) => createLifecycleAwarePermissionStream(),
       initialData: LocationPermission.denied,
