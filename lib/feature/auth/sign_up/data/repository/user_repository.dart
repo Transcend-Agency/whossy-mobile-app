@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as p;
@@ -102,6 +103,12 @@ class UserRepository {
     bool exists = false,
   }) async {
     try {
+      // The number can only be looked up once signed in. On the screens that
+      // ask before sign-in this passes, and the real check happens right
+      // after the code is confirmed (login: requireExistingProfile; signup:
+      // signUpWithPhone).
+      if (FirebaseAuth.instance.currentUser == null) return {'isEmpty': true};
+
       bool isEmpty = await isPhoneUnique(phone);
 
       return {
@@ -197,14 +204,6 @@ class UserRepository {
       }
     }
     return profiles;
-  }
-
-  Future<bool> doesEmailExist(String email) async {
-    var result = await _users
-        .where('email', isEqualTo: email)
-        .get(const GetOptions(source: Source.server));
-
-    return result.docs.isNotEmpty;
   }
 
   /// Maps a file extension to its image MIME type. `putData` (unlike
@@ -357,28 +356,11 @@ class UserRepository {
     }
   }
 
-  Future<void> deleteUserData(String userId) async {
-    try {
-      // 🔹 Delete all notifications at once
-      final notificationsRef = _users.doc(userId).collection("notifications");
-
-      final notificationsSnap = await notificationsRef.get(
-        const GetOptions(source: Source.server),
-      );
-
-      final batch = FirebaseFirestore.instance.batch();
-
-      for (var doc in notificationsSnap.docs) {
-        batch.delete(doc.reference);
-      }
-      await batch.commit(); // Commit the batch delete
-
-      // 🔹 Now delete the user document
-      await _users.doc(userId).delete();
-    } catch (e) {
-      log("Error deleting user data: $e");
-      rethrow;
-    }
+  /// Deletes the account and everything tied to it, server-side. The
+  /// function refuses unless the sign-in is recent, so reauthenticate first.
+  Future<void> deleteAccount() async {
+    await FirebaseAuth.instance.currentUser?.getIdToken(true);
+    await FirebaseFunctions.instance.httpsCallable('deleteAccount').call();
   }
 
   Future<void> signOut() async {

@@ -110,6 +110,15 @@ class SignUpNotifier extends ChangeNotifier {
 
       userCredential = await _authRepository.handlePhoneAuthentication(cred);
 
+      // Checked here, signed in, because the pre-sign-in screen no longer
+      // can: the number may belong to an account that signs in another way.
+      if (await _userRepository.getUserData() == null &&
+          !await _userRepository.isPhoneUnique(phone)) {
+        await userCredential?.user?.delete();
+        throw RegisteredEmailException(
+            'Already registered with another account');
+      }
+
       // Update data in firebase
       await setBaseData(phone: phone, authMethod: AuthMethod.phone);
 
@@ -191,7 +200,8 @@ class SignUpNotifier extends ChangeNotifier {
     try {
       spinnerState = true;
 
-      userCredential = await _authRepository.handleAppleAuthentication();
+      userCredential =
+          await _authRepository.handleAppleAuthentication(isLogin: false);
 
       // Update data in firebase
       await setBaseData(
