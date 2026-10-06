@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,12 +33,32 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
   bool _ackLoaded = false;
   Timer? _autoDismissTimer;
 
+  // Set by the server on accounts approved without a selfie: they keep
+  // working until this date and must verify by it. Read straight from the
+  // user document because the profile model does not carry it.
+  DateTime? _reverifyBy;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _deadlineSub;
+
   String? get _uid => FirebaseAuth.instance.currentUser?.uid;
 
   @override
   void initState() {
     super.initState();
     _loadAck();
+
+    final uid = _uid;
+    if (uid != null) {
+      _deadlineSub = FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .snapshots()
+          .listen((snap) {
+        final deadline = (snap.data()?['reverify_by'] as Timestamp?)?.toDate();
+        if (mounted && deadline != _reverifyBy) {
+          setState(() => _reverifyBy = deadline);
+        }
+      });
+    }
   }
 
   Future<void> _loadAck() async {
@@ -86,6 +107,25 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
     final verification = coreProfile.faceVerification;
     final status = verification?.getVerificationStatus() ??
         FaceVerificationStatus.notComplete;
+
+    final deadline = _reverifyBy;
+    if (deadline != null &&
+        status != FaceVerificationStatus.pending &&
+        status != FaceVerificationStatus.complete) {
+      const months = [
+        'January', 'February', 'March', 'April', 'May', 'June', 'July',
+        'August', 'September', 'October', 'November', 'December',
+      ];
+      return _banner(
+        color: const Color(0xFFFFF7E6),
+        foreground: const Color(0xFF9A6B00),
+        icon: Icons.camera_alt_outlined,
+        text: 'Verify your photo by ${deadline.day} '
+            '${months[deadline.month - 1]} to keep liking and messaging',
+        actionLabel: 'Take selfie',
+        onAction: () => startFaceVerificationFlow(context),
+      );
+    }
 
     switch (status) {
       case FaceVerificationStatus.complete:
@@ -235,6 +275,7 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
 
   @override
   void dispose() {
+    _deadlineSub?.cancel();
     _autoDismissTimer?.cancel();
     super.dispose();
   }
