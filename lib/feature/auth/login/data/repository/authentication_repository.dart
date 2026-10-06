@@ -24,7 +24,12 @@ class AuthenticationRepository {
     // Sent without first checking the email is registered: that check ran
     // signed out, which the security rules do not allow, and it told anyone
     // which emails have accounts.
-    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      // An unknown email gets the same answer as a known one.
+      if (e.code != 'user-not-found') rethrow;
+    }
 
     return ResetResponse(
       isSuccess: true,
