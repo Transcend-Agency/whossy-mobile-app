@@ -237,6 +237,13 @@ class ChatsNotifier extends ChangeNotifier {
       }
       if (message.contains('INSUFFICIENT_CREDITS')) {
         onNotice('You need 1 credit or Premium to start this chat.');
+      } else if (message.contains('NOT_VERIFIED')) {
+        onNotice('Verify your photo to start chatting.');
+      } else if (message.contains('BLOCKED') ||
+          message.contains('RECIPIENT_UNAVAILABLE')) {
+        onNotice("You can't message this person.");
+      } else if (message.contains('ACCOUNT_BANNED')) {
+        onNotice('Your account has been suspended.');
       } else {
         log('initiateChat failed: ${e.code} $message');
         onNotice("Couldn't start the chat. Please try again.");

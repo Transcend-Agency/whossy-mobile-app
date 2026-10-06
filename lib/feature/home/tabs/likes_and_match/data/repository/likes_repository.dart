@@ -9,7 +9,6 @@ import '../../../explore/model/liked_user_profile.dart';
 class LikesRepository {
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
-  final _matches = FirebaseFirestore.instance.collection('matches');
   final _userRepo = UserRepository();
 
   final excludeSettings = const ExcludeSettings(
@@ -36,32 +35,17 @@ class LikesRepository {
 
     await _setLike(uid, likerId, likedId);
 
-    final isMatch = await _checkForMatch(likedId, likerId);
-
-    if (isMatch) {
-      await _createMatch(uid, likerId, likedId);
-      return 'match';
-    }
-
-    return 'like';
+    // Only to tell the user it is a match. The match document itself is
+    // written by the server from the two likes.
+    return await _likedMeBack(likedId, likerId) ? 'match' : 'like';
   }
 
-  Future<bool> _checkForMatch(String likedId, String likerId) async {
-    final existingLikeDoc = await _likes
-        .where('uid', isEqualTo: '${likedId}_$likerId')
-        .limit(1)
-        .get();
-    return existingLikeDoc.docs.isNotEmpty;
+  // Read by id: the rules only let a user query likes on their own
+  // liker_id/liked_id, and a lookup by id is allowed for either party.
+  Future<bool> _likedMeBack(String likedId, String likerId) async {
+    final theirLike = await _likes.doc('${likedId}_$likerId').get();
+    return theirLike.exists;
   }
-
-Future<void> _createMatch(String uid, String likerId, String likedId) async {
-  final matchData = {
-    'user1_id': likerId,
-    'user2_id': likedId,
-    'timestamp': FieldValue.serverTimestamp(),
-  };
-  await _matches.doc(uid).set(matchData);
-}
 
   Future<void> _setLike(String uid, String likerId, String likedId) async {
     final likeData = {
