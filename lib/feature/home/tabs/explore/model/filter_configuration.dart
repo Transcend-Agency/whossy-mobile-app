@@ -9,19 +9,24 @@ class FilterConfig {
   const FilterConfig(this.firestoreKey, this.apply);
 }
 
-// Define filter configurations for each filter
+// Define filter configurations for each filter. Filters.similarInterest,
+// Filters.outsideMyCountry and Filters.popularInMyArea are deliberately
+// absent — all three need handling ExploreRepository does explicitly (C2):
+// "similar interest" needs to skip the query entirely (and surface why)
+// when the viewer has no interests recorded, since Firestore's
+// arrayContainsAny rejects an empty list outright; "outside my country"
+// needs a client-side check since Firestore's isNotEqualTo drops documents
+// missing the field; "popular in my area" needs a real geo-bounded query
+// sorted by popularity, not a single where() clause.
 final Map<Filters, FilterConfig> filterConfigs = {
   Filters.discover: FilterConfig(
     'uid',
     (query, value) => query,
   ),
-  Filters.similarInterest: FilterConfig(
-    'interests',
-    (query, value) => query.where('interests', arrayContainsAny: value as List),
-  ),
   Filters.online: FilterConfig(
-    'status.online',
-    (query, value) => query.where('status.online', isEqualTo: value),
+    'status.lastSeen',
+    (query, value) =>
+        query.where('status.lastSeen', isGreaterThanOrEqualTo: value as int),
   ),
   Filters.newMembers: FilterConfig(
     'created_at',
@@ -29,16 +34,6 @@ final Map<Filters, FilterConfig> filterConfigs = {
       'created_at',
       isGreaterThanOrEqualTo: Timestamp.fromDate(value as DateTime),
     ),
-  ),
-  Filters.outsideMyCountry: FilterConfig(
-    'country_of_origin',
-    (query, value) =>
-        query.where('country_of_origin', isNotEqualTo: value as String),
-  ),
-  Filters.popularInMyArea: FilterConfig(
-    'country_of_origin',
-    (query, value) =>
-        query.where('country_of_origin', isEqualTo: value as String),
   ),
   Filters.lookingToDate: FilterConfig(
     'preference',

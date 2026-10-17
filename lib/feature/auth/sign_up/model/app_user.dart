@@ -95,6 +95,11 @@ class AppUser {
   @JsonKey(name: "geohash")
   final String? geohash;
 
+  // C2 — rolling 30-day like count, maintained by functions/src/popularity.ts
+  // (web repo, shared backend). Client-readable, never client-written.
+  @JsonKey(name: "popularity_score_30d", includeToJson: false)
+  final num? popularityScore30d;
+
   @JsonKey(name: "credit_balance")
   final int? creditBalance;
 
@@ -142,6 +147,7 @@ class AppUser {
     this.location,
     this.geohash,
     this.geography,
+    this.popularityScore30d,
     this.creditBalance = 0,
     this.currentPlan,
     this.purchaseToken,

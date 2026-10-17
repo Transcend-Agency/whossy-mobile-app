@@ -32,7 +32,8 @@ class NotificationTile extends HookWidget {
 
     String? imageUrl1 = notification.user1Pic;
     String? imageUrl2 = notification.user2Pic;
-    String? profilePic = notification.likerProfilePicture;
+    String? profilePic =
+        notification.likerProfilePicture ?? notification.senderProfilePicture;
 
     // Effect to update notification when tile becomes visible
     useEffect(() {
@@ -137,14 +138,26 @@ class NotificationTile extends HookWidget {
                               )
                           ],
                         )
-                      : Transform.rotate(
-                          angle: 10 * pi / 180,
-                          child: RectangleAppAvatar(
-                            imageUrl: profilePic ?? "",
-                            width: 46,
-                            height: 46,
-                          ),
-                        ),
+                      : notification.notificationType ==
+                              NotificationType.verification
+                          ? Icon(
+                              notification.verificationStatus == 'approved'
+                                  ? Icons.verified
+                                  : Icons.error_outline,
+                              color: notification.verificationStatus ==
+                                      'approved'
+                                  ? const Color(0xFF1E7A46)
+                                  : AppColors.primaryColor,
+                              size: 32.r,
+                            )
+                          : Transform.rotate(
+                              angle: 10 * pi / 180,
+                              child: RectangleAppAvatar(
+                                imageUrl: profilePic ?? "",
+                                width: 46,
+                                height: 46,
+                              ),
+                            ),
                 ),
                 addHeight(8),
                 Padding(
@@ -185,7 +198,14 @@ class NotificationTile extends HookWidget {
         return 'You have a new match with ${notification.user1Name ?? notification.user2Name}';
 
       case NotificationType.message:
-        return 'You received a new message from ${notification.likerName ?? notification.user1Name}';
+        return notification.body ??
+            'You received a new message from ${notification.senderName ?? "someone"}';
+
+      case NotificationType.verification:
+        return notification.body ??
+            (notification.verificationStatus == 'approved'
+                ? "You're verified — start matching!"
+                : "Your selfie wasn't approved. Please retake it.");
 
       default:
         return '';

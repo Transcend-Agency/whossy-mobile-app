@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../common/components/components.dart';
 import '../../../../../../common/styles/text_style.dart';
+import '../../../../../../common/utils/discovery_error.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
@@ -60,8 +61,10 @@ class Likes extends HookWidget {
         height: profile.premiumUser ? height.r : 150.h,
       );
     } else if (snapshot.hasError) {
-      return const BadNetworkDialog(
-        subtitle: AppStrings.deviceOffline,
+      final info = discoveryErrorInfo(snapshot.error);
+      return BadNetworkDialog(
+        title: info.title,
+        subtitle: info.subtitle,
       );
     } else if (snapshot.hasData) {
       final data = snapshot.data!;

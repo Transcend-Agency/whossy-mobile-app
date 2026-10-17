@@ -41,28 +41,13 @@ class InputFormatter {
     ];
   }
 
-  // Creates a formatter for years with a range from current year to 100 years back
+  // Creates a formatter for years. The range is not enforced here: a year
+  // the field silently refuses leaves the user with no idea why, so the age
+  // screen checks the whole date and says what is wrong.
   static List<TextInputFormatter> year() {
     return [
       FilteringTextInputFormatter.digitsOnly,
       LengthLimitingTextInputFormatter(4),
-      TextInputFormatter.withFunction(
-        (oldValue, newValue) {
-          if (newValue.text.isEmpty) {
-            return newValue;
-          }
-          final int currentYear = DateTime.now().year;
-          final int minYear = currentYear - 100;
-          final int value = int.tryParse(newValue.text) ?? 0;
-
-          if (newValue.text.length < 4 ||
-              (value >= minYear && value <= (currentYear - 18))) {
-            return newValue;
-          }
-
-          return oldValue;
-        },
-      ),
     ];
   }
 }

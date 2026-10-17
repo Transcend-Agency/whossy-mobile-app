@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:auto_route/annotations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/components/components.dart';
@@ -77,10 +78,7 @@ class NotificationScreen extends StatelessWidget {
 
           return NotificationTile(
             notification: tile,
-            onTap: () => onTileTap(
-              context,
-              tile.interactingUserId,
-            ),
+            onTap: () => onTileTap(context, tile),
           );
         },
       );
@@ -98,7 +96,37 @@ class NotificationScreen extends StatelessWidget {
     }
   }
 
-  void onTileTap(BuildContext context, String? id) {
-    if (id != null) Nav.push(context, NotificationProfilePreview(id: id));
+  // B3: each notification type routes to its own subject instead of only
+  // like/match opening a profile preview and everything else being a no-op.
+  void onTileTap(BuildContext context, AppNotification notification) {
+    switch (notification.notificationType) {
+      case NotificationType.like:
+      case NotificationType.match:
+        final id = notification.interactingUserId;
+        if (id != null) Nav.push(context, NotificationProfilePreview(id: id));
+        return;
+
+      case NotificationType.message:
+        final senderId = notification.senderId;
+        final currentUser = FirebaseAuth.instance.currentUser?.uid;
+        if (senderId == null || currentUser == null) return;
+
+        context.read<ChatsNotifier>().setCurrentChat(
+              username: notification.senderName ?? 'User',
+              uidUser1: currentUser,
+              uidUser2: senderId,
+              profilePicUrl: notification.senderProfilePicture,
+              oppIndex: 1,
+            );
+        Nav.push(context, const ChatRoom());
+        return;
+
+      case NotificationType.verification:
+        Nav.push(context, const EditProfile());
+        return;
+
+      case NotificationType.unknown:
+        return;
+    }
   }
 }

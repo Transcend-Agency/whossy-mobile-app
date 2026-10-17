@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../common/components/components.dart';
+import '../../../../../../common/utils/discovery_error.dart';
 import '../../../../../../constants/index.dart';
 
 Widget buildLoadingIndicator() {
@@ -11,9 +12,11 @@ Widget buildLoadingIndicator() {
 }
 
 Widget buildErrorWidget(Object? error) {
-  return Center(
+  final info = discoveryErrorInfo(error);
+  return BadNetworkDialog(
     key: const ValueKey('error'),
-    child: Text('Error: $error'),
+    title: info.title,
+    subtitle: info.subtitle,
   );
 }
 

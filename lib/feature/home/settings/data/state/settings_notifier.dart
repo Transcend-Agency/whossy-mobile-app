@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -82,7 +83,10 @@ class SettingsNotifier extends ChangeNotifier {
         return false;
       }
 
-      bool reAuth = false;
+      // Phone sign-ins cannot be re-confirmed in place. The server refuses
+      // the deletion if the session is not recent, and that case is reported
+      // below.
+      bool reAuth = provider == "phone";
 
       // **Reauthentication Handling**
       if (provider == "password" && context.mounted) {
@@ -94,8 +98,6 @@ class SettingsNotifier extends ChangeNotifier {
 
         if (password == null) return null; // User canceled password input
         reAuth = await _authRepository.reAuthenticateWithEmail(password);
-      } else if (provider == "phone") {
-        // reAuth = await _authRepository.reauthenticateWithPhone(user.phoneNumber!);
       } else if (provider == "google.com") {
         reAuth = await _authRepository.reAuthenticateWithGoogle();
       } else if (provider == "apple.com") {
@@ -107,16 +109,19 @@ class SettingsNotifier extends ChangeNotifier {
         return false;
       }
 
-      // **Delete User Data**
-      await _userRepository.deleteUserData(user.uid);
-
-      // **Delete Firebase User**
-      await user.delete();
+      // Everything, including the login itself, is removed server-side.
+      await _userRepository.deleteAccount();
 
       // **Sign Out**
       await signOut(showSnackbar);
 
       return true; // Deletion successful
+    } on FirebaseFunctionsException catch (e) {
+      log("Delete Account Error: ${e.code} ${e.message}");
+      showSnackbar((e.message ?? '').contains('RECENT_LOGIN_REQUIRED')
+          ? 'For your security, log out, sign in again, then delete your account.'
+          : "We couldn't delete your account. Nothing was removed; please try again.");
+      return false;
     } catch (e) {
       log("Delete Account Error: $e");
       showSnackbar("Failed to delete account. Please try again.");

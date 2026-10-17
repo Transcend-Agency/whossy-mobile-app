@@ -39,6 +39,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
   final formKey3 = GlobalKey<FormState>();
 
   final shakeState1 = GlobalKey<ShakeState>();
+  final shakeState2 = GlobalKey<ShakeState>();
   final shakeState3 = GlobalKey<ShakeState>();
 
   late bool _passwordVisible;
@@ -94,18 +95,15 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
     final password = myPasswordController.text;
 
     setState(() {
-      _validationStates[0] = password.length >= 8;
-      _validationStates[1] = RegExp(r'[a-z]').hasMatch(password) &&
-          RegExp(r'[A-Z]').hasMatch(password);
-      _validationStates[2] = RegExp(r'\d').hasMatch(password);
-      _validationStates[3] =
-          RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+      for (var i = 0; i < passwordRules.length; i++) {
+        _validationStates[i] = passwordRules[i].hasMatch(password);
+      }
     });
   }
 
   void validate() {
     final isEmailValid = formKey1.currentState?.validate() ?? false;
-    final isPasswordValid = myPasswordController.text.validatePassword();
+    final isPasswordValid = formKey2.currentState?.validate() ?? false;
     final isConPasswordValid = formKey3.currentState?.validate() ?? false;
 
     if (isEmailValid && isPasswordValid && isConPasswordValid) {
@@ -114,6 +112,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
     }
 
     if (!isEmailValid) shakeState1.currentState?.shake();
+    if (!isPasswordValid) shakeState2.currentState?.shake();
     if (!isConPasswordValid) shakeState3.currentState?.shake();
   }
 
@@ -172,12 +171,11 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool useScroll = ScreenUtil().screenHeight < 853;
     return AppScaffold(
       back: true,
       padding: pagePadding,
-      useScrollView: useScroll, // useScroll,
-      resizeToAvoidBottomInset: true, // False
+      fillViewportAndScroll: true,
+      resizeToAvoidBottomInset: true,
       body: Selector<SignUpNotifier, bool>(
         selector: (_, auth) => auth.spinnerState,
         builder: (_, spinner, __) {
@@ -219,16 +217,20 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
               ),
               Form(
                 key: formKey2,
-                child: AppTextField(
-                  focusNode: passwordFocusNode,
-                  textController: myPasswordController,
-                  hintText: AppStrings.passwordHint,
-                  enabled: !spinner,
-                  obscureText: _passwordVisible,
-                  onFieldSubmitted: (password) => {},
-                  suffixIcon: IconButton(
-                    icon: visibilityIcon(_passwordVisible, passwordColor),
-                    onPressed: togglePasswordVisibility,
+                child: Shake(
+                  key: shakeState2,
+                  child: AppTextField(
+                    focusNode: passwordFocusNode,
+                    textController: myPasswordController,
+                    hintText: AppStrings.passwordHint,
+                    enabled: !spinner,
+                    obscureText: _passwordVisible,
+                    validation: (password) => password.validateNewPassword(),
+                    onFieldSubmitted: (password) => {},
+                    suffixIcon: IconButton(
+                      icon: visibilityIcon(_passwordVisible, passwordColor),
+                      onPressed: togglePasswordVisibility,
+                    ),
                   ),
                 ),
               ),
@@ -318,9 +320,9 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
                   ),
                 ),
               ),
-              useScroll ? addHeight(60) : const Spacer(),
+              addHeight(24),
+              const Spacer(),
               const PrivacyText(
-              
                 text: AppStrings.createAgreement,
               )
             ],

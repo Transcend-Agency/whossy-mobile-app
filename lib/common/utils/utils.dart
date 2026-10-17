@@ -1,5 +1,6 @@
 // components.dart
 export 'app_utils.dart';
+export 'birth_date.dart';
 export 'debouncer.dart';
 export 'enum/enum_conversions.dart';
 export 'enum/enums.dart';

@@ -8,6 +8,16 @@ import 'package:intl/intl.dart';
 import 'app_utils.dart';
 import 'enum/enums.dart';
 
+/// One rule per line of the sign-up checklist (`AppStrings.requirements`).
+/// The checklist and the submit check both read this list, so a password
+/// that ticks every box is never rejected on submit.
+final passwordRules = <RegExp>[
+  RegExp(r'.{8,}'),
+  RegExp(r'^(?=.*[a-z])(?=.*[A-Z])'),
+  RegExp(r'\d'),
+  RegExp(r'[^A-Za-z0-9\s]'),
+];
+
 extension StringExtention on String? {
   /// Validate the email input (checks if it's a valid email format)
   String? validateEmail() {
@@ -31,18 +41,14 @@ extension StringExtention on String? {
     return null;
   }
 
-  bool validatePassword() {
-    final requirements = [
-      RegExp(r'.{8,}'),
-      RegExp(r'^(?=.*[a-z])(?=.*[A-Z])'),
-      RegExp(r'(?=.*\d)'),
-      RegExp(r'(?=.*[@$!%*?&])'),
-    ];
-
-    for (var regex in requirements) {
-      if (!regex.hasMatch(this!)) return false;
+  String? validateNewPassword() {
+    if (this == null || this!.isEmpty) {
+      return 'Password is required';
     }
-    return true;
+    if (!passwordRules.every((rule) => rule.hasMatch(this!))) {
+      return 'Password must meet every requirement below';
+    }
+    return null;
   }
 
   String? validateConfirmPassword(TextEditingController password) {
@@ -98,37 +104,15 @@ extension StringExtention on String? {
     return '$countryCode$cleanNumber';
   }
 
-  /// Validate if the string is not empty, has more than 4 characters, and does not contain special characters
+  /// The country of origin is filled from the country picker, so its name is
+  /// never typed: only check that one was chosen. Length and character rules
+  /// rejected real names (Togo, Cuba, Côte d'Ivoire, Guinea-Bissau).
   String? validateCountry() {
     final value = this?.trim();
     if (value == null || value.isEmpty) {
-      return 'Cannot be empty';
-    } else if (value.length <= 4) {
-      return 'Must be more than 4 characters';
-    } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-      return 'Cannot contain special characters';
+      return 'Select your country';
     }
-    return null; // Return null if the country name is valid
-  }
-
-  // Validate if the string represents a valid month
-  bool isValidMonth() {
-    final int? value = int.tryParse(this!);
-    return value != null && value >= 1 && value <= 12;
-  }
-
-  // Validate if the string represents a valid day
-  bool isValidDay() {
-    final int? value = int.tryParse(this!);
-    return value != null && value >= 1 && value <= 31;
-  }
-
-  // Validate if the string represents a valid year within the range of the current year to 100 years back
-  bool isValidYear() {
-    final int? value = int.tryParse(this!);
-    final int currentYear = DateTime.now().year;
-    final int minYear = currentYear - 100;
-    return value != null && value >= minYear && value <= currentYear - 18;
+    return null;
   }
 
   // Validate if the string represents a valid university name

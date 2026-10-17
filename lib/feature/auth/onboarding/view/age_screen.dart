@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../common/components/components.dart';
+import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/utils.dart';
 import '../data/state/onboarding_notifier.dart';
 
@@ -28,12 +29,21 @@ class _AgeScreenState extends State<AgeScreen>
   final dayFocusNode = FocusNode();
   final yearFocusNode = FocusNode();
 
+  String? _error;
+
   void _update() {
     final year = yearController.text;
     final month = monthController.text;
     final day = dayController.text;
 
-    if (year.isValidYear() && month.isValidMonth() && day.isValidDay()) {
+    final error = birthDateError(year: year, month: month, day: day);
+
+    // Only say what is wrong once the whole date has been typed.
+    final entered = year.length == 4 && month.isNotEmpty && day.isNotEmpty;
+    final shown = entered ? error : null;
+    if (shown != _error) setState(() => _error = shown);
+
+    if (error == null) {
       onboardingProvider.select(widget.pageIndex);
 
       onboardingProvider.updateUserProfile(
@@ -108,6 +118,15 @@ class _AgeScreenState extends State<AgeScreen>
             ],
           ),
         ),
+        if (_error != null)
+          Padding(
+            padding: EdgeInsets.only(top: 16.h),
+            child: Text(
+              _error!,
+              textAlign: TextAlign.center,
+              style: TextStyles.errorStyle,
+            ),
+          ),
         const Spacer(),
       ],
     );

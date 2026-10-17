@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../../../common/components/components.dart';
+import '../../../../../../../../common/utils/discovery_error.dart';
 
 class ErrorGrid extends StatelessWidget {
   final Object? error;
@@ -8,8 +9,11 @@ class ErrorGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const BadNetworkDialog(
-      key: ValueKey('error'),
+    final info = discoveryErrorInfo(error);
+    return BadNetworkDialog(
+      key: const ValueKey('error'),
+      title: info.title,
+      subtitle: info.subtitle,
     );
   }
 }

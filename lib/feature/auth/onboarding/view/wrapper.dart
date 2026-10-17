@@ -113,6 +113,30 @@ class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
     }
   }
 
+  // Skipping the selfie step (the last page) is the one that actually skips
+  // verification entirely — that must be a deliberate, informed choice, not
+  // a quiet skip (A2). Other skippable pages just move on.
+  Future<void> _handleSkip() async {
+    if (_activePage != _pages.length - 1) {
+      _handleContinueButton();
+      return;
+    }
+
+    final confirmed = await showConfirmationDialog(
+      context,
+      title: 'Skip verification for now?',
+      content: contentText(
+        "You can still browse Whossy without verifying, but you won't be "
+        "able to like or message anyone until a reviewer approves your "
+        "photo. You can come back and verify any time from your profile.",
+      ),
+      yes: 'Skip for now',
+      no: 'Verify now',
+    );
+
+    if (confirmed == true) _handleContinueButton();
+  }
+
   goToNext() {
     _onboardingNotifier.reset();
 
@@ -217,7 +241,7 @@ class _WrapperState extends State<Wrapper> with SingleTickerProviderStateMixin {
             padding: EdgeInsets.only(top: 38.h, left: 14.w),
             child: SkipButton(
               page: _activePage,
-              onTap: () => _handleContinueButton(),
+              onTap: _handleSkip,
             ),
           ),
         ],

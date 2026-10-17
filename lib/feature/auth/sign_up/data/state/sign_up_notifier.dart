@@ -26,12 +26,66 @@ class SignUpNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The Auth account and the profile are created in two calls, so a failure
+  /// between them leaves an account with no profile — which login refuses as
+  /// unregistered and sign-up refuses as already in use. When the rollback in
+  /// [_discardProfilelessUser] could not reach the server either, signing up
+  /// again with the same email and password picks that account back up.
+  Future<UserCredential> _createOrReclaimUser(
+    String email,
+    String password,
+  ) async {
+    try {
+      return await _authRepository.createUser(email, password);
+    } on FirebaseAuthException catch (e) {
+      if (e.code != 'email-already-in-use') rethrow;
+
+      final UserCredential credential;
+      try {
+        credential = await _authRepository.handleEmailLogin(email, password);
+      } on FirebaseAuthException {
+        throw e;
+      }
+
+      try {
+        if (await _userRepository.getUserData() == null) return credential;
+      } catch (_) {
+        await FirebaseAuth.instance.signOut();
+        rethrow;
+      }
+
+      await FirebaseAuth.instance.signOut();
+      rethrow;
+    }
+  }
+
+  Future<void> _discardProfilelessUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    try {
+      await user.delete();
+    } catch (e) {
+      log('Could not remove the account after its profile failed: $e');
+      await FirebaseAuth.instance.signOut();
+    }
+  }
+
   Future<void> setBaseData({
     String? email,
     String? phone,
     AuthMethod? authMethod = AuthMethod.local,
   }) async {
     final uid = userCredential!.user!.uid;
+
+    // Apple only returns the email on first authorisation and Google/phone
+    // sign-in succeed for existing accounts, so "sign up" can land on an
+    // account that already has a profile. Writing the defaults below over it
+    // would reset its credits, premium, ban and verification state.
+    if (await _userRepository.getUserData() != null) {
+      await FirebaseAuth.instance.signOut();
+      throw RegisteredEmailException(AppStrings.registeredEmail);
+    }
 
     updateAppUser(uid: uid, email: email, authProvider: authMethod);
 
@@ -101,13 +155,24 @@ class SignUpNotifier extends ChangeNotifier {
 
       userCredential = await _authRepository.handlePhoneAuthentication(cred);
 
+      // Checked here, signed in, because the pre-sign-in screen no longer
+      // can: the number may belong to an account that signs in another way.
+      if (await _userRepository.getUserData() == null &&
+          !await _userRepository.isPhoneUnique(phone)) {
+        await userCredential?.user?.delete();
+        throw RegisteredEmailException(
+            'Already registered with another account');
+      }
+
       // Update data in firebase
-      setBaseData(phone: phone, authMethod: AuthMethod.phone);
+      await setBaseData(phone: phone, authMethod: AuthMethod.phone);
 
       // Account creation successful, handle accordingly
       onAuthenticate();
     } on FirebaseException catch (e) {
       handleFirebaseAuthError(e, showSnackbar);
+    } on RegisteredEmailException catch (e) {
+      showSnackbar(e.message);
     } catch (e) {
       showSnackbar(AppStrings.errorUnknown);
       log(e.toString());
@@ -125,12 +190,15 @@ class SignUpNotifier extends ChangeNotifier {
     try {
       spinnerState = true;
 
-      userCredential = await _authRepository.createUser(email, password);
+      userCredential = await _createOrReclaimUser(email, password);
 
-      // Update data in firebase
-      setBaseData(email: email);
+      try {
+        await setBaseData(email: email);
+      } catch (_) {
+        await _discardProfilelessUser();
+        rethrow;
+      }
 
-      // Account creation successful, handle accordingly
       onAuthenticate();
     } on FirebaseException catch (e) {
       // Respond accordingly
@@ -154,7 +222,7 @@ class SignUpNotifier extends ChangeNotifier {
           await _authRepository.handleGoogleAuthentication(isLogin: false);
 
       // Update data in firebase
-      setBaseData(
+      await setBaseData(
         authMethod: AuthMethod.google,
         email: userCredential!.user!.email,
       );
@@ -180,10 +248,11 @@ class SignUpNotifier extends ChangeNotifier {
     try {
       spinnerState = true;
 
-      userCredential = await _authRepository.handleAppleAuthentication();
+      userCredential =
+          await _authRepository.handleAppleAuthentication(isLogin: false);
 
       // Update data in firebase
-      setBaseData(
+      await setBaseData(
         authMethod: AuthMethod.apple,
         email: userCredential!.user!.email,
       );

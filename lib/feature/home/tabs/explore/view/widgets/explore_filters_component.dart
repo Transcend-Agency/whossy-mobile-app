@@ -9,6 +9,7 @@ import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/provider.dart';
+import '../../../../../auth/sign_up/model/user_status.dart';
 import '../../model/explore_filters.dart';
 
 class ExploreFiltersComponent extends HookWidget {
@@ -95,15 +96,21 @@ class ExploreFiltersComponent extends HookWidget {
   dynamic _getFilterValue(Filters filter, CoreProfile? profileData) {
     switch (filter) {
       case Filters.similarInterest:
-        return profileData?.interests ?? [""];
+        return profileData?.interests ?? [];
       case Filters.outsideMyCountry:
         return profileData?.countryOfOrigin;
       case Filters.popularInMyArea:
-        return profileData?.countryOfOrigin;
+        // Handled entirely inside ExploreRepository (needs the viewer's own
+        // coordinates for a real geo-bounded query) — no value needed here.
+        return '';
       case Filters.newMembers:
-        return DateTime.now().subtract(const Duration(days: 7));
+        return DateTime.now().subtract(kNewMemberWindow);
       case Filters.online:
-        return true;
+        // C1/C2: online means online AND seen recently, not just the raw
+        // flag — matches UserStatus.isRecentlyOnline's window.
+        return DateTime.now()
+            .subtract(UserStatus.recencyWindow)
+            .millisecondsSinceEpoch;
       case Filters.lookingToDate:
         return Preference.lookingToDate.index;
       case Filters.advancedSearch:

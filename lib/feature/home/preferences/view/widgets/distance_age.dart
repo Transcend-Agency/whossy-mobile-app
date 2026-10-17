@@ -85,42 +85,11 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                             ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14.r),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: FractionallySizedBox(
-                            widthFactor: 0.8,
-                            child: Text(
-                              'Show people outside my distance radius and country for better reach',
-                              style: TextStyles.prefText
-                                  .copyWith(color: AppColors.hintTextColor),
-                            ),
-                          ),
-                        ),
-                        AppAnimatedSwitcher(
-                          child: prefs == null
-                              ? Padding(
-                                  key: const ValueKey(false),
-                                  padding: EdgeInsets.symmetric(vertical: 13.r)
-                                      .copyWith(right: 11.r),
-                                  child: const ShimmerSwitch(),
-                                )
-                              : Transform.scale(
-                                  key: const ValueKey("data"),
-                                  scale: 0.7,
-                                  child: Switch.adaptive(
-                                    value: prefs.outreach ?? true,
-                                    onChanged: (value) => notifier
-                                        .updatePreferences(outreach: value),
-                                  ),
-                                ),
-                        )
-                      ],
-                    ),
-                  ),
+                  // C6: "outreach" toggle removed — MatchRepository no longer
+                  // caps reach by radius at all (distance is a ranking signal,
+                  // not a cutoff), so a toggle promising to bypass a cap that
+                  // no longer exists would be its own new instance of exactly
+                  // the bug this plan exists to fix.
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 14.r, vertical: 12.h),

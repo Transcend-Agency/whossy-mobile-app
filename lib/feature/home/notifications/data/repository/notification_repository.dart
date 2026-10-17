@@ -21,7 +21,9 @@ class NotificationRepository {
     return path().orderBy('timestamp', descending: true).snapshots().map(
           (snapshot) => snapshot.docs
               .map(
-                (doc) => AppNotification.fromJson(doc.data()),
+                // The model needs an id; fall back to the document's own
+                // when a notification was written without one.
+                (doc) => AppNotification.fromJson({'id': doc.id, ...doc.data()}),
               )
               .toList(),
         );

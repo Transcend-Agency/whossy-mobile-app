@@ -85,7 +85,7 @@ class _PictureScreenState extends State<PictureScreen>
             }
 
             // Update the onboarding state
-            final valid = _images.length >= 3;
+            final valid = _images.length >= 2;
             if (onboarding.isSelected(widget.pageIndex) != valid) {
               onboarding.select(widget.pageIndex, value: valid);
             }
@@ -142,7 +142,7 @@ class _PictureScreenState extends State<PictureScreen>
       children: [
         const OnboardingHeaderText(
           title: "Share a snapshot of you",
-          subtitle: "Add at least 3 recent photos of yourself 🤗",
+          subtitle: "Add at least 2 recent photos of yourself 🤗",
           skip: true,
         ),
         addHeight(8),

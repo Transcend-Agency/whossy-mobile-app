@@ -16,6 +16,8 @@ FaceVerification _$FaceVerificationFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String?,
       reviewedBy: json['reviewed_by'] as String?,
       reviewedAt: AppUtils.timestampFromJson(json['reviewed_at']),
+      profilePhotoSnapshot: json['profile_photo_snapshot'] as String?,
+      rejectionReason: json['rejection_reason'] as String?,
     );
 
 Map<String, dynamic> _$FaceVerificationToJson(FaceVerification instance) =>
@@ -31,4 +33,7 @@ Map<String, dynamic> _$FaceVerificationToJson(FaceVerification instance) =>
       if (instance.reviewedBy case final value?) 'reviewed_by': value,
       if (AppUtils.timestampToJson(instance.reviewedAt) case final value?)
         'reviewed_at': value,
+      if (instance.profilePhotoSnapshot case final value?)
+        'profile_photo_snapshot': value,
+      if (instance.rejectionReason case final value?) 'rejection_reason': value,
     };

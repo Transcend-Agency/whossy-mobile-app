@@ -27,12 +27,7 @@ class EditProfileRepository {
     required Map<String, dynamic> coreProfileData,
     required Map<String, dynamic> corePrefData,
     required bool updateUserDeletePic,
-    required bool hasPicUploads,
   }) async {
-    if (hasPicUploads) {
-      coreProfileData['is_approved'] = false;
-    }
-
     if (coreProfileData.isNotEmpty) {
       await _userRepository.setUserData(
         data: {

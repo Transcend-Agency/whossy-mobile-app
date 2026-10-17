@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../../../../common/components/components.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../common/utils/utils.dart';
+import '../../../../../../common/utils/verification_gate.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/provider.dart';
 import '../../../../edit_profile/view/widgets/edit/image_view.dart';
@@ -56,7 +57,14 @@ class _MatchState extends State<Match> {
 
   void _onPageChange(int page) => setState(() => _activePage = page);
 
-  void like() {
+  bool like() {
+    final isApproved =
+        context.read<EditProfileNotifier>().profileData.isUserVerified;
+    if (!isApproved) {
+      showVerificationGateDialog(context, action: 'Liking');
+      return false;
+    }
+
     if (profileQueue.getBottom() != null) {
       matchNotifier.addLike(
         profileQueue.getBottom()!.user.uid!,
@@ -66,6 +74,7 @@ class _MatchState extends State<Match> {
         },
       );
     }
+    return true;
   }
 
   void dislike() {
@@ -93,7 +102,7 @@ class _MatchState extends State<Match> {
     }
 
     if (direction == CardSwiperDirection.right) {
-      like();
+      if (!like()) return false;
     }
 
     if (direction == CardSwiperDirection.left) {
@@ -149,7 +158,15 @@ class _MatchState extends State<Match> {
     }
   }
 
+  static const _kLowStockThreshold = 5;
+
   Widget buildCardSwiper(List<UserProfile> profiles) {
+    if (profiles.length <= _kLowStockThreshold) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        matchNotifier.loadMore();
+      });
+    }
+
     return Stack(
       key: const ValueKey('data'),
       children: [

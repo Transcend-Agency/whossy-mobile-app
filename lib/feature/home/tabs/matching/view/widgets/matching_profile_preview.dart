@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../../../common/components/components.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../common/utils/utils.dart';
+import '../../../../../../common/utils/verification_gate.dart';
 import '../../../../../../constants/index.dart';
 import '../../../../../../provider/provider.dart';
 import '../../../../../auth/onboarding/model/preferences.dart';
@@ -130,22 +131,16 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+
                 if (widget.showCancel && _isDislikeVisible) ...[
-                  Selector<EditProfileNotifier, bool>(
-                    selector: (_, edit) =>
-                        edit.coreProfile?.isApproved ?? false,
-                    builder: (_, isApproved, __) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.h),
-                        child: MatchIconButton(
-                          animateOnTap: isApproved,
-                          onTap: () => onDisLikeTap(context),
-                          assetPath: AppAssets.cancel,
-                          onAnimationComplete:
-                              isApproved ? _onDislikeTapComplete : null,
-                        ),
-                      );
-                    },
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.h),
+                    child: MatchIconButton(
+                      animateOnTap: true,
+                      onTap: () => onDisLikeTap(context),
+                      assetPath: AppAssets.cancel,
+                      onAnimationComplete: _onDislikeTapComplete,
+                    ),
                   ),
                 ],
                 if (widget.showMessaging) ...[
@@ -186,18 +181,6 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
   }
 
   void onDisLikeTap(BuildContext context) {
-    var isApproved =
-        context.read<EditProfileNotifier>().profileData.isUserVerified;
-
-    if (!isApproved) {
-      showSnackbar(
-        AppStrings.disAbleUnapproved('Disliking'),
-        context,
-        snackBarType: SnackbarType.warning,
-      );
-      return;
-    }
-
     swipeAndMatch.addDislike(
       widget.userProfile.user.uid!,
       addAction: false,
@@ -210,11 +193,7 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
         context.read<EditProfileNotifier>().profileData.isUserVerified;
 
     if (!isApproved) {
-      showSnackbar(
-        AppStrings.disAbleUnapproved('Liking'),
-        context,
-        snackBarType: SnackbarType.warning,
-      );
+      showVerificationGateDialog(context, action: 'Liking');
       return;
     }
 
@@ -235,11 +214,7 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
         context.read<EditProfileNotifier>().profileData.isUserVerified;
 
     if (!isApproved) {
-      showSnackbar(
-        AppStrings.disAbleUnapproved('Messaging'),
-        context,
-        snackBarType: SnackbarType.warning,
-      );
+      showVerificationGateDialog(context, action: 'Messaging');
       return;
     }
 

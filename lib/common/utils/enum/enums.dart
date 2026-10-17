@@ -297,6 +297,7 @@ enum NotificationType {
   like('New Like'),
   match('It\'s a Match!'),
   message('New Message'),
+  verification('Verification Update'),
   unknown('New Notification');
 
   const NotificationType(this.value);
@@ -308,11 +309,22 @@ enum FaceVerificationStatus {
   pending('Pending'),
   notCompleteAndDeclined('Not Complete, Declined'),
   notComplete('Not Complete'),
-  complete('Complete');
+  complete('Complete'),
+  revoked('Not Complete, Re-verification needed');
 
   final String name;
   const FaceVerificationStatus(this.name);
 }
+
+// A4: what a pending main-photo change would do to the user's verification
+// state, if saved. `complete` is the only status that has a badge to
+// revoke; `pending` has no badge yet, but the review in flight was captured
+// against the *old* main photo and goes stale the moment it changes — left
+// alone, a reviewer approving it later would silently land on `revoked`
+// (implying a badge was lost, when none ever existed) rather than
+// `approved`. `rejected`/`notComplete` have nothing live to invalidate: any
+// future resubmission captures a fresh snapshot at that time regardless.
+enum MainPhotoChangeConsequence { none, revokesApproval, cancelsPendingReview }
 
 enum TransactionErrorType {
   noInternetConnection('Network unavailable. Please try again later.'),

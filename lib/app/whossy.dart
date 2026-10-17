@@ -29,6 +29,8 @@ class _WhossyState extends State<Whossy> with WidgetsBindingObserver {
     _initIAP();
 
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => consumePendingNotificationLaunch());
   }
 
   Future<void> _initIAP() async {
@@ -72,8 +74,6 @@ class _WhossyState extends State<Whossy> with WidgetsBindingObserver {
     }
   }
 
-  final _appRouter = AppRouter();
-
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -85,7 +85,7 @@ class _WhossyState extends State<Whossy> with WidgetsBindingObserver {
         theme: AppTheme().theme(),
         themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
-        routerConfig: _appRouter.config(),
+        routerConfig: appRouter.config(),
       ),
     );
   }

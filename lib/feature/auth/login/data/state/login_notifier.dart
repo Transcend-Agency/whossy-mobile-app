@@ -31,7 +31,7 @@ class LoginNotifier extends ChangeNotifier {
     required VoidCallback onAuthenticate,
     required VoidCallback toCreateAccount,
     required VoidCallback toOnboarding,
-    required void Function(UserCredential) showEmailSnackbar,
+    required void Function(UserCredential) onEmailUnverified,
   }) async {
     try {
       spinnerState = true;
@@ -46,7 +46,7 @@ class LoginNotifier extends ChangeNotifier {
         onAuthenticate: onAuthenticate,
         toCreateAccount: toCreateAccount,
         toOnboarding: toOnboarding,
-        showEmailSnackbar: showEmailSnackbar,
+        onEmailUnverified: onEmailUnverified,
       );
     } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e, showSnackbar);
@@ -63,7 +63,7 @@ class LoginNotifier extends ChangeNotifier {
     required VoidCallback onAuthenticate,
     required VoidCallback toCreateAccount,
     required VoidCallback toOnboarding,
-    required void Function(UserCredential) showEmailSnackbar,
+    required void Function(UserCredential) onEmailUnverified,
   }) async {
     try {
       userCredential = await _authRepository.handleAppleAuthentication();
@@ -75,7 +75,7 @@ class LoginNotifier extends ChangeNotifier {
         toOnboarding: toOnboarding,
         onAuthenticate: onAuthenticate,
         toCreateAccount: toCreateAccount,
-        showEmailSnackbar: showEmailSnackbar,
+        onEmailUnverified: onEmailUnverified,
       );
     } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e, showSnackbar);
@@ -101,7 +101,7 @@ class LoginNotifier extends ChangeNotifier {
     required VoidCallback onAuthenticate,
     required VoidCallback toCreateAccount,
     required VoidCallback toOnboarding,
-    required void Function(UserCredential) showEmailSnackbar,
+    required void Function(UserCredential) onEmailUnverified,
   }) async {
     try {
       userCredential = await _authRepository.handleGoogleAuthentication();
@@ -113,7 +113,7 @@ class LoginNotifier extends ChangeNotifier {
         toOnboarding: toOnboarding,
         onAuthenticate: onAuthenticate,
         toCreateAccount: toCreateAccount,
-        showEmailSnackbar: showEmailSnackbar,
+        onEmailUnverified: onEmailUnverified,
       );
     } on FirebaseAuthException catch (e) {
       handleFirebaseAuthError(e, showSnackbar);
@@ -148,6 +148,10 @@ class LoginNotifier extends ChangeNotifier {
       final cred = AuthParams.withIdAndCode(id, code);
 
       userCredential = await _authRepository.handlePhoneAuthentication(cred);
+      await _authRepository.requireExistingProfile(
+        userCredential,
+        message: 'Phone number not registered',
+      );
 
       await _userRepo.accountCheck(
         userCred: userCredential,
@@ -160,6 +164,8 @@ class LoginNotifier extends ChangeNotifier {
       );
     } on FirebaseException catch (e) {
       handleFirebaseAuthError(e, showSnackbar);
+    } on UnregisteredEmailException catch (e) {
+      showSnackbar(e.message);
     } catch (e) {
       showSnackbar(AppStrings.errorUnknown);
       log(e.toString());

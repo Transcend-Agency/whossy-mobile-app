@@ -11,6 +11,8 @@ AppNotification _$AppNotificationFromJson(Map<String, dynamic> json) =>
       title: json['title'] as String,
       id: json['id'] as String,
       seen: json['seen'] as bool,
+      type: json['type'] as String?,
+      body: json['body'] as String?,
       timestamp: AppUtils.timestampFromJson(json['timestamp']),
       likerName: json['likerName'] as String?,
       likerProfilePicture: json['likerProfilePicture'] as String?,
@@ -22,6 +24,12 @@ AppNotification _$AppNotificationFromJson(Map<String, dynamic> json) =>
       user2Id: json['user2_id'] as String?,
       user2Name: json['user2_name'] as String?,
       user2Pic: json['user2_pic'] as String?,
+      chatId: json['chatId'] as String?,
+      senderId: json['senderId'] as String?,
+      senderName: json['senderName'] as String?,
+      senderProfilePicture: json['senderProfilePicture'] as String?,
+      verificationStatus: json['verificationStatus'] as String?,
+      rejectionReason: json['rejectionReason'] as String?,
     );
 
 Map<String, dynamic> _$AppNotificationToJson(AppNotification instance) =>
@@ -29,6 +37,8 @@ Map<String, dynamic> _$AppNotificationToJson(AppNotification instance) =>
       'title': instance.title,
       'id': instance.id,
       'seen': instance.seen,
+      if (instance.type case final value?) 'type': value,
+      if (instance.body case final value?) 'body': value,
       if (AppUtils.timestampToJson(instance.timestamp) case final value?)
         'timestamp': value,
       if (instance.likerName case final value?) 'likerName': value,
@@ -42,4 +52,12 @@ Map<String, dynamic> _$AppNotificationToJson(AppNotification instance) =>
       if (instance.user2Id case final value?) 'user2_id': value,
       if (instance.user2Name case final value?) 'user2_name': value,
       if (instance.user2Pic case final value?) 'user2_pic': value,
+      if (instance.chatId case final value?) 'chatId': value,
+      if (instance.senderId case final value?) 'senderId': value,
+      if (instance.senderName case final value?) 'senderName': value,
+      if (instance.senderProfilePicture case final value?)
+        'senderProfilePicture': value,
+      if (instance.verificationStatus case final value?)
+        'verificationStatus': value,
+      if (instance.rejectionReason case final value?) 'rejectionReason': value,
     };
