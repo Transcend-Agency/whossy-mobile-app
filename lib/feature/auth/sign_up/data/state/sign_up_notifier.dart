@@ -26,6 +26,51 @@ class SignUpNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The Auth account and the profile are created in two calls, so a failure
+  /// between them leaves an account with no profile — which login refuses as
+  /// unregistered and sign-up refuses as already in use. When the rollback in
+  /// [_discardProfilelessUser] could not reach the server either, signing up
+  /// again with the same email and password picks that account back up.
+  Future<UserCredential> _createOrReclaimUser(
+    String email,
+    String password,
+  ) async {
+    try {
+      return await _authRepository.createUser(email, password);
+    } on FirebaseAuthException catch (e) {
+      if (e.code != 'email-already-in-use') rethrow;
+
+      final UserCredential credential;
+      try {
+        credential = await _authRepository.handleEmailLogin(email, password);
+      } on FirebaseAuthException {
+        throw e;
+      }
+
+      try {
+        if (await _userRepository.getUserData() == null) return credential;
+      } catch (_) {
+        await FirebaseAuth.instance.signOut();
+        rethrow;
+      }
+
+      await FirebaseAuth.instance.signOut();
+      rethrow;
+    }
+  }
+
+  Future<void> _discardProfilelessUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    try {
+      await user.delete();
+    } catch (e) {
+      log('Could not remove the account after its profile failed: $e');
+      await FirebaseAuth.instance.signOut();
+    }
+  }
+
   Future<void> setBaseData({
     String? email,
     String? phone,
@@ -145,12 +190,15 @@ class SignUpNotifier extends ChangeNotifier {
     try {
       spinnerState = true;
 
-      userCredential = await _authRepository.createUser(email, password);
+      userCredential = await _createOrReclaimUser(email, password);
 
-      // Update data in firebase
-      await setBaseData(email: email);
+      try {
+        await setBaseData(email: email);
+      } catch (_) {
+        await _discardProfilelessUser();
+        rethrow;
+      }
 
-      // Account creation successful, handle accordingly
       onAuthenticate();
     } on FirebaseException catch (e) {
       // Respond accordingly
