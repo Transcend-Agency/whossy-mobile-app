@@ -115,26 +115,6 @@ extension StringExtention on String? {
     return null;
   }
 
-  // Validate if the string represents a valid month
-  bool isValidMonth() {
-    final int? value = int.tryParse(this!);
-    return value != null && value >= 1 && value <= 12;
-  }
-
-  // Validate if the string represents a valid day
-  bool isValidDay() {
-    final int? value = int.tryParse(this!);
-    return value != null && value >= 1 && value <= 31;
-  }
-
-  // Validate if the string represents a valid year within the range of the current year to 100 years back
-  bool isValidYear() {
-    final int? value = int.tryParse(this!);
-    final int currentYear = DateTime.now().year;
-    final int minYear = currentYear - 100;
-    return value != null && value >= minYear && value <= currentYear - 18;
-  }
-
   // Validate if the string represents a valid university name
   bool isValidUniversity() {
     final value = this?.trim();
