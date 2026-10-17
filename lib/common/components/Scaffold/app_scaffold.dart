@@ -9,6 +9,12 @@ class AppScaffold extends StatelessWidget {
   final bool back;
   final bool applyTop;
   final bool useScrollView;
+
+  /// Lays the body out at least as tall as the visible area, so a `Spacer`
+  /// still pushes content down, and scrolls once the body is taller — such
+  /// as when the keyboard is up. Needs `resizeToAvoidBottomInset: true` to
+  /// see the keyboard, and a body without lazily built lists.
+  final bool fillViewportAndScroll;
   final Widget? bottomNavBar;
   final PreferredSizeWidget? appBar;
 
@@ -19,6 +25,7 @@ class AppScaffold extends StatelessWidget {
     this.padding,
     this.back = false,
     this.useScrollView = false,
+    this.fillViewportAndScroll = false,
     this.bottomNavBar,
     this.appBar,
     this.applyTop = true,
@@ -35,11 +42,25 @@ class AppScaffold extends StatelessWidget {
         backgroundColor: Colors.white,
         body: SafeArea(
           top: applyTop,
-          child: useScrollView
-              ? SingleChildScrollView(
-                  child: content(context: context, finalPadding: finalPadding),
+          child: fillViewportAndScroll
+              ? LayoutBuilder(
+                  builder: (context, constraints) => SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints:
+                          BoxConstraints(minHeight: constraints.maxHeight),
+                      child: IntrinsicHeight(
+                        child: content(
+                            context: context, finalPadding: finalPadding),
+                      ),
+                    ),
+                  ),
                 )
-              : content(context: context, finalPadding: finalPadding),
+              : useScrollView
+                  ? SingleChildScrollView(
+                      child:
+                          content(context: context, finalPadding: finalPadding),
+                    )
+                  : content(context: context, finalPadding: finalPadding),
         ),
         bottomNavigationBar: bottomNavBar,
       ),

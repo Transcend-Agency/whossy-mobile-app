@@ -190,9 +190,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool useScroll = ScreenUtil().screenHeight < 756;
     return AppScaffold(
-      useScrollView: useScroll,
+      fillViewportAndScroll: true,
+      resizeToAvoidBottomInset: true,
       padding: pagePadding,
       body: Selector<LoginNotifier, bool>(
         selector: (_, auth) => auth.spinnerState,
@@ -330,7 +330,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              useScroll ? addHeight(60) : const Spacer(),
+              addHeight(24),
+              const Spacer(),
               const PrivacyText(
                 text: AppStrings.loginAgreement,
               )

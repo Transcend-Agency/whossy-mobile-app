@@ -172,12 +172,11 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool useScroll = ScreenUtil().screenHeight < 853;
     return AppScaffold(
       back: true,
       padding: pagePadding,
-      useScrollView: useScroll, // useScroll,
-      resizeToAvoidBottomInset: true, // False
+      fillViewportAndScroll: true,
+      resizeToAvoidBottomInset: true,
       body: Selector<SignUpNotifier, bool>(
         selector: (_, auth) => auth.spinnerState,
         builder: (_, spinner, __) {
@@ -318,9 +317,9 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
                   ),
                 ),
               ),
-              useScroll ? addHeight(60) : const Spacer(),
+              addHeight(24),
+              const Spacer(),
               const PrivacyText(
-              
                 text: AppStrings.createAgreement,
               )
             ],
