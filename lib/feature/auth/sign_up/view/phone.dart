@@ -130,6 +130,13 @@ class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
 
     _userRepository = UserRepository();
 
+    // The field shows a flag and dial code, so one has to actually be set:
+    // before this, "US" was displayed while nothing was selected and the
+    // number was refused with "Select a country code".
+    final deviceCountry =
+        WidgetsBinding.instance.platformDispatcher.locale.countryCode;
+    country = Country.tryParse(deviceCountry ?? '') ?? Country.parse('US');
+
     phoneController.addListener(_onPhoneNumberChanged);
 
     super.initState();
