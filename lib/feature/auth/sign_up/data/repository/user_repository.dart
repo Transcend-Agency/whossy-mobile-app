@@ -315,7 +315,7 @@ class UserRepository {
     required VoidCallback onAuthenticate,
     required VoidCallback toCreateAccount,
     required VoidCallback toOnboarding,
-    void Function(UserCredential)? showEmailSnackbar,
+    void Function(UserCredential)? onEmailUnverified,
     UserCredential? userCred,
   }) async {
     if (user == null) {
@@ -349,9 +349,9 @@ class UserRepository {
 
       onAuthenticate();
     } else {
-      // Email is not verified, show the Snackbar
-      if (showEmailSnackbar != null && userCred != null) {
-        showEmailSnackbar(userCred);
+      // Email is not verified: send them to verify it
+      if (onEmailUnverified != null && userCred != null) {
+        onEmailUnverified(userCred);
       }
     }
   }
