@@ -25,6 +25,15 @@ class _DistanceScreenState extends State<DistanceScreen>
   void initState() {
     super.initState();
     onboardingProvider = context.read<OnboardingNotifier>();
+
+    // The slider starts at a value that is shown as chosen, so store it and
+    // count the page as answered; otherwise Continue stays disabled until the
+    // slider is moved.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      onboardingProvider
+        ..updateUserProfile(search: distance.toInt())
+        ..select(widget.pageIndex);
+    });
   }
 
   double distance = 50;
