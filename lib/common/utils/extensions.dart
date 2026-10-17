@@ -104,17 +104,15 @@ extension StringExtention on String? {
     return '$countryCode$cleanNumber';
   }
 
-  /// Validate if the string is not empty, has more than 4 characters, and does not contain special characters
+  /// The country of origin is filled from the country picker, so its name is
+  /// never typed: only check that one was chosen. Length and character rules
+  /// rejected real names (Togo, Cuba, Côte d'Ivoire, Guinea-Bissau).
   String? validateCountry() {
     final value = this?.trim();
     if (value == null || value.isEmpty) {
-      return 'Cannot be empty';
-    } else if (value.length <= 4) {
-      return 'Must be more than 4 characters';
-    } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-      return 'Cannot contain special characters';
+      return 'Select your country';
     }
-    return null; // Return null if the country name is valid
+    return null;
   }
 
   // Validate if the string represents a valid month
