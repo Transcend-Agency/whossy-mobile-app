@@ -8,6 +8,16 @@ import 'package:intl/intl.dart';
 import 'app_utils.dart';
 import 'enum/enums.dart';
 
+/// One rule per line of the sign-up checklist (`AppStrings.requirements`).
+/// The checklist and the submit check both read this list, so a password
+/// that ticks every box is never rejected on submit.
+final passwordRules = <RegExp>[
+  RegExp(r'.{8,}'),
+  RegExp(r'^(?=.*[a-z])(?=.*[A-Z])'),
+  RegExp(r'\d'),
+  RegExp(r'[^A-Za-z0-9\s]'),
+];
+
 extension StringExtention on String? {
   /// Validate the email input (checks if it's a valid email format)
   String? validateEmail() {
@@ -31,18 +41,14 @@ extension StringExtention on String? {
     return null;
   }
 
-  bool validatePassword() {
-    final requirements = [
-      RegExp(r'.{8,}'),
-      RegExp(r'^(?=.*[a-z])(?=.*[A-Z])'),
-      RegExp(r'(?=.*\d)'),
-      RegExp(r'(?=.*[@$!%*?&])'),
-    ];
-
-    for (var regex in requirements) {
-      if (!regex.hasMatch(this!)) return false;
+  String? validateNewPassword() {
+    if (this == null || this!.isEmpty) {
+      return 'Password is required';
     }
-    return true;
+    if (!passwordRules.every((rule) => rule.hasMatch(this!))) {
+      return 'Password must meet every requirement below';
+    }
+    return null;
   }
 
   String? validateConfirmPassword(TextEditingController password) {
