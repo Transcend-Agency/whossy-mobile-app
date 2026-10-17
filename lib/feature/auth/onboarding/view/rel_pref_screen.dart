@@ -1,0 +1,69 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../common/components/components.dart';
+import '../../../../common/utils/utils.dart';
+import '../data/source/preference_data.dart';
+import '../data/state/onboarding_notifier.dart';
+
+class RelPrefScreen extends StatefulWidget {
+  final int pageIndex;
+
+  const RelPrefScreen({
+    super.key,
+    required this.pageIndex,
+  });
+
+  @override
+  State<RelPrefScreen> createState() => _RelPrefScreenState();
+}
+
+class _RelPrefScreenState extends State<RelPrefScreen>
+    with AutomaticKeepAliveClientMixin<RelPrefScreen> {
+  Preference? _pref;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const OnboardingHeaderText(
+          title: "Specify your relationship preference",
+          subtitle:
+              'Everyone has a choice, feel free to choose. You can can always change later.',
+        ),
+        addHeight(24),
+        Expanded(
+          child: Consumer<OnboardingNotifier>(
+            builder: (_, onboarding, __) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: preferenceData.map((data) {
+                    return RadioTile(
+                      leadingAsset: data.leadingAsset,
+                      value: data.value,
+                      groupValue: _pref,
+                      onChanged: (pref) {
+                        setState(() => _pref = pref);
+                        onboarding.select(widget.pageIndex);
+                        onboarding.updateUserProfile(
+                            relationshipPref: pref?.index);
+                      },
+                      title: data.title,
+                      subtitle: data.subtitle,
+                    );
+                  }).toList(),
+                ),
+              );
+            },
+          ),
+        ),
+        addHeight(80),
+      ],
+    );
+  }
+}

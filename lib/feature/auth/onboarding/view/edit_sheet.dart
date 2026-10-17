@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+
+import '../../../../common/components/components.dart';
+import '../../../../common/styles/component_style.dart';
+import '../../../../common/styles/text_style.dart';
+import '../../../../common/utils/utils.dart';
+import '../../../../constants/index.dart';
+
+class EditSheet extends StatelessWidget {
+  final VoidCallback onDelete;
+  final Future<bool> Function() onReUpload;
+
+  const EditSheet({
+    super.key,
+    required this.onDelete,
+    required this.onReUpload,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppSheetScaffold(
+      title: 'Edit photo',
+      topPadding: 16,
+      bottomPadding: 6,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: pagePadding,
+            child: OutlinedAppButton(
+              onPress: () async {
+                onReUpload().then((success) {
+                  if (success) Navigator.pop(context);
+                });
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Transform.scale(
+                    scale: 1.1,
+                    child: SvgPicture.asset(AppAssets.upload),
+                  ),
+                  addWidth(12),
+                  Text(
+                    "Re-upload",
+                    style: TextStyles.buttonText.copyWith(
+                      color: AppColors.hintTextColor,
+                      fontSize: AppUtils.scale(17),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 14.w),
+            child: OutlinedAppButton(
+              onPress: () {
+                onDelete();
+                Navigator.pop(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Transform.scale(
+                    scale: 1.1,
+                    child: SvgPicture.asset(AppAssets.bin),
+                  ),
+                  addWidth(10),
+                  Text(
+                    "Delete Photo",
+                    style: TextStyles.buttonText.copyWith(
+                      color: AppColors.hintTextColor,
+                      fontSize: AppUtils.scale(17),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Future<void> showEditPhotoSheet(
+  BuildContext context, {
+  required VoidCallback onDelete,
+  required Future<bool> Function() onReUpload,
+}) async {
+  await showModalBottomSheet<void>(
+    clipBehavior: Clip.hardEdge,
+    context: context,
+    shape: roundedTop,
+    builder: (_) => EditSheet(
+      onDelete: onDelete,
+      onReUpload: onReUpload,
+    ),
+  );
+}

@@ -1,0 +1,348 @@
+import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+import '../../../feature/home/preferences/model/generic_enum.dart';
+
+enum SubscriptionProductIds implements GenericEnum {
+  month1('premium_1month'),
+  month3('premium_3month'),
+  month6('premium_6month'),
+  year1('premium_1year'),
+  ;
+
+  const SubscriptionProductIds(this.name);
+
+  @override
+  final String name;
+}
+
+enum CreditBundleIds implements GenericEnum {
+  credit1('1credit'),
+  credit5('5credit'),
+  credit10('10credit'),
+  credit20('20credit'),
+  credit50('50credit'),
+  credit100('100credit'),
+  ;
+
+  const CreditBundleIds(this.name);
+
+  @override
+  final String name;
+}
+
+enum CoreSettings implements GenericEnum {
+  publicSearch('Public Search',
+      'Your profile will be visible to others for swiping and matching.'),
+  onlineStatus(
+      'Online Status', 'Your online activity won’t be visible to others.'),
+  readReceipts('Read Receipts',
+      'Matches won’t be able to see when you have read their messages and you won’t be able to see theirs.');
+
+  const CoreSettings(this.name, this.subtitle);
+
+  @override
+  final String name;
+  final String subtitle;
+}
+
+enum RangeType {
+  height('Height', [140, 220], RangeValues(160, 200)),
+  weight('Weight', [40, 140], RangeValues(60, 120));
+
+  const RangeType(this.name, this.feasibleRange, this.placeholder);
+
+  final String name;
+  final List<double> feasibleRange;
+  final RangeValues placeholder;
+}
+
+enum Meet {
+  men('Male'),
+  women('Female'),
+  everyone('Everyone');
+
+  const Meet(this.name);
+
+  final String name;
+}
+
+enum Preference implements GenericEnum {
+  lookingToDate('Looking to date', 'Seeking casual dating experience'),
+  chattingAndConnecting('Chatting and connecting',
+      'Open to conversations and getting to know new people'),
+  readyForCommitment('Ready for commitment',
+      'For those who are looking for a serious, committed relationship'),
+  justForFun('Just for fun',
+      'Seeking fun and carefree connections without long term plans'),
+  undecidedOrExploring('Undecided or exploring',
+      'Not sure what you\'re looking for? Discover what feels right for you');
+
+  const Preference(this.name, this.subtitle);
+
+  @override
+  final String name;
+  final String subtitle;
+}
+
+enum School implements GenericEnum {
+  notInSchool('Not In School'),
+  currentlySchooling('Currently Schooling');
+
+  const School(this.name);
+
+  @override
+  final String name;
+}
+
+enum Zodiac implements GenericEnum {
+  aries('Aries', 'March 21 - April 19'),
+  taurus('Taurus', 'April 20 - May 20'),
+  gemini('Gemini', 'May 21 - June 20'),
+  cancer('Cancer', 'June 21 - July 22'),
+  leo('Leo', 'July 23 - August 22'),
+  virgo('Virgo', 'August 23 - September 22'),
+  libra('Libra', 'September 23 - October 22'),
+  scorpio('Scorpio', 'October 23 - November 21'),
+  sagittarius('Sagittarius', 'November 22 - December 21'),
+  capricorn('Capricorn', 'December 22 - January 19'),
+  aquarius('Aquarius', 'January 20 - February 18'),
+  pisces('Pisces', 'February 19 - March 20');
+
+  const Zodiac(this.name, this.dateRange);
+
+  @override
+  final String name;
+  final String dateRange;
+}
+
+enum Drink implements GenericEnum {
+  mindful('Mindful Drinking'),
+  sober('100% Sober'),
+  special('Special moments only'),
+  regular('Regular nights out'),
+  no('Not my thing');
+
+  const Drink(this.name);
+
+  @override
+  final String name;
+}
+
+enum Smoke implements GenericEnum {
+  working('Working on quitting'),
+  dAndS('Drinks and smoke'),
+  occasional('Occasional smoker'),
+  frequent('Frequent smoker'),
+  no('Doesn\'t smoke');
+
+  const Smoke(this.name);
+
+  @override
+  final String name;
+}
+
+enum LoveLanguage implements GenericEnum {
+  givingAndReceivingGifts('Giving and receiving gifts'),
+  touchAndHugs('Touch and hugs'),
+  heartfeltCompliments('Heartfelt compliments'),
+  doingThingsForEachOther('Doing things for each other'),
+  spendingTimeTogether('Spending time together');
+
+  const LoveLanguage(this.name);
+
+  @override
+  final String name;
+}
+
+enum CommunicationStyle implements GenericEnum {
+  directAndToThePoint('Direct and to the point'),
+  friendlyAndOpen('Friendly and open'),
+  reservedAndThoughtful('Reserved and thoughtful'),
+  humorousAndLighthearted('Humorous and lighthearted'),
+  detailedAndDescriptive('Detailed and descriptive');
+
+  const CommunicationStyle(this.name);
+
+  @override
+  final String name;
+}
+
+enum FutureFamilyPlans implements GenericEnum {
+  wantsChildren('I want children'),
+  notSureYet('Not sure yet'),
+  notInterestedForNow('Not interested for now'),
+  doesntWantChildren('I don’t want children'),
+  hasChildren('I have children'),
+  wantsMoreChildren('I want more');
+
+  const FutureFamilyPlans(this.name);
+
+  @override
+  final String name;
+}
+
+enum Religion implements GenericEnum {
+  christianity('Christianity'),
+  islam('Islam'),
+  judaism('Judaism'),
+  hinduism('Hinduism'),
+  buddhism('Buddhism'),
+  sikhism('Sikhism'),
+  atheism('Atheism'),
+  agnosticism('Agnosticism'),
+  other('Other');
+
+  const Religion(this.name);
+
+  @override
+  final String name;
+}
+
+enum Dietary implements GenericEnum {
+  vegetarian('Vegetarian'),
+  vegan('Vegan'),
+  pescatarian('Pescatarian'),
+  halal('Halal'),
+  carnivore('Carnivore'),
+  omnivore('Omnivore'),
+  other('Other');
+
+  const Dietary(this.name);
+
+  @override
+  final String name;
+}
+
+enum MaritalStatus implements GenericEnum {
+  single('Single'),
+  taken('Taken'),
+  open('Open');
+
+  const MaritalStatus(this.name);
+
+  @override
+  final String name;
+}
+
+enum WorkOut implements GenericEnum {
+  yes('Yes, regularly'),
+  occasionally('Occasionally'),
+  weekends('Only on weekends'),
+  rarely('Rarely'),
+  no('Not at all');
+
+  const WorkOut(this.name);
+
+  @override
+  final String name;
+}
+
+enum Gender implements GenericEnum {
+  male('Male', Icons.male_rounded),
+  female('Female', Icons.female_rounded);
+
+  const Gender(this.name, this.icon);
+
+  @override
+  final String name;
+  final IconData icon;
+
+  static Gender? fromString(String name) {
+    for (Gender gender in Gender.values) {
+      if (gender.name.toLowerCase() == name.toLowerCase()) {
+        return gender;
+      }
+    }
+    return null;
+  }
+}
+
+enum Picture { photo, gallery }
+
+enum PetOwner implements GenericEnum {
+  dog('🐕 Dog'),
+  cat('🐈 Cat'),
+  reptile('🐍 Reptile'),
+  amphibian('🐸 Amphibian'),
+  bird('🦜 Bird'),
+  fish('🐟 Fish'),
+  dontLikePets('😩 Don’t like pets'),
+  rabbits('🐇 Rabbits'),
+  mouse('🐀 Mouse'),
+  planningOnGetting('😉 Planning on getting'),
+  allergic('🤮 Allergic'),
+  other('🐎 Other'),
+  wantAPet('🙃 Want a pet');
+
+  const PetOwner(this.name);
+
+  @override
+  final String name;
+}
+
+enum MessageStatus {
+  sent('sent'),
+  seen('seen'),
+  undelivered('undelivered');
+
+  const MessageStatus(this.value);
+
+  final String value;
+}
+
+enum AuthMethod { local, google, phone, apple }
+
+enum NotificationType {
+  like('New Like'),
+  match('It\'s a Match!'),
+  message('New Message'),
+  unknown('New Notification');
+
+  const NotificationType(this.value);
+
+  final String value;
+}
+
+enum FaceVerificationStatus {
+  pending('Pending'),
+  notCompleteAndDeclined('Not Complete, Declined'),
+  notComplete('Not Complete'),
+  complete('Complete');
+
+  final String name;
+  const FaceVerificationStatus(this.name);
+}
+
+enum TransactionErrorType {
+  noInternetConnection('Network unavailable. Please try again later.'),
+  paymentCancelled('The payment was cancelled by the user.'),
+  unexpectedError('An unknown error occurred. Please try again later.'),
+  transactionFailed(
+      'The transaction failed. Please contact support or try again.'),
+  paymentTimeout(
+      'The payment request timed out. Please check your connection and try again.'); // New value
+
+  const TransactionErrorType(this.message);
+
+  final String message;
+}
+
+enum PaymentPlatform {
+  @JsonValue('web')
+  web,
+
+  @JsonValue('mobile')
+  mobile,
+}
+
+PaymentPlatform? paymentPlatformFromJson(Object? value) {
+  switch (value) {
+    case 'web':
+      return PaymentPlatform.web;
+    case 'mobile':
+      return PaymentPlatform.mobile;
+    default:
+      return null;
+  }
+}

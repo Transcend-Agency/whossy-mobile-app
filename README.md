@@ -1,6 +1,6 @@
-# whossy_mobile_app
+# whossy_app
 
-The mobile app for Whossy
+The mobile app for whossy
 
 ## Getting Started
 

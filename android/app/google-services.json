@@ -1,18 +1,48 @@
 {
   "project_info": {
     "project_number": "332139466657",
+    "firebase_url": "https://whossy-app-default-rtdb.firebaseio.com",
     "project_id": "whossy-app",
     "storage_bucket": "whossy-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:332139466657:android:4c6b0b30b85aa8ac2d05e0",
+        "mobilesdk_app_id": "1:332139466657:android:51356c8ce9a7890c2d05e0",
         "android_client_info": {
-          "package_name": "com.transcend.whossy_mobile_app"
+          "package_name": "com.whossy.whossy_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "332139466657-2v9vkrff4o5d40egl6dh8nkcf0pacamo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whossy.whossy_app",
+            "certificate_hash": "2d4c1e040004d6e57a11a41dcfc7dd4b290a7323"
+          }
+        },
+        {
+          "client_id": "332139466657-840tjb94cu79755jfesc37il6o1rssqi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whossy.whossy_app",
+            "certificate_hash": "e7baa736bc7e13072bedd3800f7bd7c0365473ab"
+          }
+        },
+        {
+          "client_id": "332139466657-9v0tmm6dggiqvosdicre0nn85rgvjrhb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whossy.whossy_app",
+            "certificate_hash": "5754559577bb7e4ded6cee44f2c52dc2e6988367"
+          }
+        },
+        {
+          "client_id": "332139466657-jf3p239ic82afjmajov9b9as4tpbveje.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA3qDpFpJYWJ_KmSw-6E9tnIfV0VLvw_gQ"
@@ -20,7 +50,20 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "332139466657-jf3p239ic82afjmajov9b9as4tpbveje.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "332139466657-c21jgtvcnoocprd4n68pgus5rb89miet.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.whossy.whossyApp",
+                "app_store_id": "6670343949"
+              }
+            }
+          ]
         }
       }
     }

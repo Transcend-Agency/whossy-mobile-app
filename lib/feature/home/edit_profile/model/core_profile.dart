@@ -1,0 +1,269 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:whossy_app/feature/auth/onboarding/model/preferences.dart';
+
+import '../../../../common/utils/utils.dart';
+import '../../../auth/onboarding/model/face_verification.dart';
+import '../../../auth/sign_up/model/geography.dart';
+import '../../settings/model/user_settings.dart';
+
+part 'core_profile.g.dart';
+part 'core_profile_utils.dart';
+
+@JsonSerializable()
+class CoreProfile {
+  @JsonKey(name: 'first_name')
+  String? firstName;
+
+  @JsonKey(name: 'last_name')
+  String? lastName;
+
+  @JsonKey(
+    name: 'date_of_birth',
+    fromJson: Preferences.dateTimeFromJson,
+    toJson: Preferences.dateTimeToJson,
+  )
+  DateTime? dateOfBirth;
+
+  String? gender;
+
+  String? email;
+
+  double? weight;
+
+  double? height;
+
+  @JsonKey(name: 'phone_number')
+  String? phoneNumber;
+
+  @JsonKey(name: 'photos')
+  List<String>? profilePics;
+
+  String? bio;
+
+  int? meet;
+
+  List<String>? interests;
+
+  @JsonKey(name: 'country_of_origin')
+  String? countryOfOrigin;
+
+  @JsonKey(name: "is_premium")
+  bool? isPremium;
+
+  @JsonKey(name: "is_approved")
+  bool? isApproved;
+
+  @JsonKey(name: 'is_banned')
+  bool? isBanned;
+
+  @JsonKey(name: "blockedIds")
+  List<String>? blockedIds;
+
+  @JsonKey(name: "latitude")
+  double? latitude;
+
+  @JsonKey(name: "longitude")
+  double? longitude;
+
+  @JsonKey(
+    name: "location",
+    toJson: AppUtils.geoPointToJson,
+    fromJson: AppUtils.geoPointFromJson,
+  )
+  GeoPoint? location;
+
+  @JsonKey(name: "geohash")
+  String? geohash;
+
+  @JsonKey(
+    name: 'geography',
+    toJson: AppUtils.geographyToJson,
+    fromJson: AppUtils.geographyFromJson,
+  )
+  Geography? geography;
+
+  @JsonKey(name: "credit_balance")
+  int? creditBalance;
+
+  // Reply-Gated Credits: credits reserved by pending chat initiations.
+  // Server-written only (Cloud Functions) — never serialized back on saves.
+  @JsonKey(name: "credits_on_hold", includeToJson: false)
+  int? creditsOnHold;
+
+  @JsonKey(name: "current_plan")
+  String? currentPlan;
+
+  @JsonKey(
+    name: 'user_settings',
+    fromJson: AppUtils.userSettingsFromJson,
+    toJson: AppUtils.userSettingsToJson,
+  )
+  UserSettings? userSettings;
+
+  @JsonKey(
+    name: "face_verification",
+    fromJson: FaceVerification.faceVerificationFromJson,
+    toJson: FaceVerification.faceVerificationToJson,
+  )
+  FaceVerification? faceVerification;
+
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  String? updatedPhoto;
+
+  @JsonKey(
+    name: "purchase_token",
+    includeFromJson: false,
+  )
+  String? purchaseToken;
+
+  @JsonKey(name: "payment_platform", fromJson: paymentPlatformFromJson)
+  PaymentPlatform? paymentPlatform;
+
+  CoreProfile({
+    this.firstName,
+    this.lastName,
+    this.dateOfBirth,
+    this.gender,
+    this.email,
+    this.phoneNumber,
+    this.profilePics,
+    this.bio,
+    this.meet,
+    this.interests,
+    this.weight,
+    this.height,
+    this.countryOfOrigin,
+    this.isPremium,
+    this.isApproved,
+    this.blockedIds,
+    this.latitude,
+    this.longitude,
+    this.location,
+    this.geohash,
+    this.isBanned,
+    this.creditBalance,
+    this.creditsOnHold,
+    this.userSettings,
+    this.geography,
+    this.faceVerification,
+    this.updatedPhoto,
+    this.currentPlan,
+    this.purchaseToken,
+    this.paymentPlatform,
+  });
+
+  factory CoreProfile.fromJson(Map<String, dynamic> json) =>
+      _$CoreProfileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CoreProfileToJson(this);
+
+  bool get premiumUser => isPremium ?? false;
+
+  /// Spendable credits: total minus what pending initiations have reserved.
+  int get availableCredits {
+    final available = (creditBalance ?? 0) - (creditsOnHold ?? 0);
+    return available < 0 ? 0 : available;
+  }
+
+  /// Whether this user can start a chat cycle (premium or ≥ 1 spendable credit).
+  bool get canInitiateChat => premiumUser || availableCredits >= 1;
+
+  @override
+  String toString() {
+    return 'CoreProfile(\n'
+        '  firstName: $firstName,\n'
+        '  lastName: $lastName,\n'
+        '  dateOfBirth: ${dateOfBirth != null ? DateFormat.yMd().format(dateOfBirth!) : "null"},\n'
+        '  gender: $gender,\n'
+        '  email: $email,\n'
+        '  phoneNumber: $phoneNumber,\n'
+        '  profilePics: ${profilePics?.join(", ") ?? "null"},\n'
+        '  bio: $bio,\n'
+        '  meet: $meet,\n'
+        '  interests: ${interests?.join(", ") ?? "null"},\n'
+        '  weight: $weight,\n'
+        '  height: $height,\n'
+        '  countryOfOrigin: $countryOfOrigin,\n'
+        '  isPremium: $isPremium,\n'
+        '  isApproved: $isApproved,\n'
+        '  isBanned: $isBanned,\n'
+        '  blockedIds: ${blockedIds?.join(", ") ?? "null"},\n'
+        '  latitude: $latitude,\n'
+        '  longitude: $longitude,\n'
+        '  location: ${location != null ? '{ latitude: ${location!.latitude}, longitude: ${location!.longitude} }' : "null"},\n'
+        '  geohash: $geohash,\n'
+        '  creditBalance: $creditBalance,\n'
+        '  creditsOnHold: $creditsOnHold,\n'
+        '  currentPlan: $currentPlan,\n'
+        '  userSettings: ${userSettings?.toString() ?? "null"},\n'
+        '  geography: ${geography?.toString() ?? "null"},\n'
+        '  faceVerification: ${faceVerification?.toString() ?? "null"},\n'
+        '  updatedPhoto: $updatedPhoto,\n'
+        '  paymentPlatform: $paymentPlatform\n'
+        ')';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is CoreProfile &&
+        other.firstName == firstName &&
+        other.lastName == lastName &&
+        other.gender == gender &&
+        //  other.phoneNumber == phoneNumber &&
+        listEquals(other.profilePics, profilePics) &&
+        other.bio == bio &&
+        other.meet == meet &&
+        AppUtils.areListsEqual(other.interests, interests) &&
+        other.weight == weight &&
+        other.height == height &&
+        other.isPremium == isPremium &&
+        other.isApproved == isApproved &&
+        other.isBanned == isBanned &&
+        AppUtils.areListsEqual(other.blockedIds, blockedIds) &&
+        other.latitude == latitude &&
+        other.longitude == longitude &&
+        other.location == location &&
+        other.purchaseToken == purchaseToken &&
+        other.paymentPlatform == paymentPlatform &&
+        // other.geohash == geohash &&
+        other.creditBalance == creditBalance &&
+        other.creditsOnHold == creditsOnHold &&
+        other.currentPlan == currentPlan &&
+        other.userSettings == userSettings &&
+        other.faceVerification == faceVerification;
+  }
+
+  @override
+  int get hashCode {
+    // Removed geohash
+    return Object.hash(
+      firstName,
+      lastName,
+      gender,
+      // email,
+      // phoneNumber,
+      bio,
+      meet,
+      weight,
+      height,
+      isPremium,
+      isApproved,
+      isBanned,
+      location,
+      creditBalance,
+      creditsOnHold,
+      userSettings,
+      faceVerification,
+      currentPlan,
+      purchaseToken,
+      Object.hashAll(profilePics ?? []),
+      Object.hashAll(interests ?? []),
+      Object.hashAll(blockedIds ?? []),
+    );
+  }
+}

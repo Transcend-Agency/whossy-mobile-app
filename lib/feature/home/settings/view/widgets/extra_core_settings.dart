@@ -1,0 +1,48 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:whossy_app/common/components/components.dart';
+
+import '../../../../../../common/styles/component_style.dart';
+import '../../../../../../common/utils/utils.dart';
+import '../../../../../../constants/index.dart';
+
+class ExtraCoreSettings extends StatelessWidget {
+  final String? title;
+  final PageRouteInfo<dynamic>? route;
+  final List<Widget>? customChildren;
+  final Future<bool?>? Function()? onTap;
+
+  const ExtraCoreSettings({
+    super.key,
+    this.title,
+    this.route,
+    this.customChildren,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppDivider(),
+        Container(
+          decoration: const BoxDecoration(color: AppColors.inputBackGround),
+          padding: pagePadding,
+          child: Column(
+            children: [
+              PreferenceTile(
+                text: title,
+                onTap: onTap ?? () => Nav.push(context, route),
+                trailing: '',
+                showDivider: false,
+                customChildren: customChildren,
+              ),
+            ],
+          ),
+        ),
+        const AppDivider(),
+      ],
+    );
+  }
+}

@@ -1,0 +1,350 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+
+import '../../constants/colors.dart';
+import '../styles/text_style.dart';
+import 'utils.dart';
+
+SizedBox addHeight(double height, {bool isRsv = true}) =>
+    SizedBox(height: isRsv ? height.h : height);
+
+SizedBox addWidth(double width, {bool isRsv = true}) =>
+    SizedBox(width: isRsv ? width.w : width);
+
+Widget showImage(String path, {double? height, double? width, BoxFit? fit}) {
+  return Image.file(
+    File(path),
+    fit: fit,
+    height: height,
+    width: width,
+  );
+}
+
+Widget svgIcon(String path, {double? size, Color? color}) {
+  return SvgPicture.asset(
+    path,
+    width: size ?? 22.r,
+    colorFilter: ColorFilter.mode(
+      color ?? Colors.transparent,
+      BlendMode.srcIn,
+    ),
+  );
+}
+
+Widget sendIcon() {
+  return Icon(
+    Icons.send_rounded,
+    size: 24.r,
+    color: Colors.black,
+  );
+}
+
+Widget moreIcon() {
+  return Icon(
+    Icons.more_horiz_rounded,
+    size: 23.r,
+    color: Colors.black,
+  );
+}
+
+Widget voiceIcon() {
+  return Icon(
+    Icons.mic_rounded,
+    size: 24.r,
+    color: Colors.black,
+  );
+}
+
+Icon offline({double size = 32}) {
+  return Icon(
+    Icons.cloud_off_rounded,
+    size: size.r,
+    color: AppColors.outlinedColor,
+  );
+}
+
+Icon user({double size = 32}) {
+  return Icon(
+    Icons.person_outline_rounded,
+    size: size.r,
+    color: AppColors.outlinedColor,
+  );
+}
+
+Icon visibilityIcon(bool isVisible, Color passwordColor) {
+  return Icon(
+    isVisible ? Icons.visibility_off : Icons.visibility,
+    color: passwordColor,
+    size: 20,
+  );
+}
+
+Icon dropDownIcon({double size = 20}) {
+  return Icon(
+    Icons.keyboard_arrow_down_rounded,
+    size: size.r,
+    color: AppColors.hintTextColor,
+  );
+}
+
+Icon fbIcon() {
+  return Icon(
+    Icons.facebook,
+    color: AppColors.faceBookColor,
+    size: 28.r,
+  );
+}
+
+Icon phone() {
+  return Icon(
+    Icons.phone,
+    color: AppColors.black,
+    size: 22.r,
+  );
+}
+
+Icon backIcon() {
+  return const Icon(
+    Icons.arrow_back_ios_new_rounded,
+  );
+}
+
+Icon cancelIcon() {
+  return const Icon(
+    Icons.cancel,
+    color: AppColors.black,
+    size: 23,
+  );
+}
+
+Icon camera({double size = 42, Color color = AppColors.midWay}) {
+  return Icon(
+    Icons.camera_alt_rounded,
+    size: size.r,
+    color: color,
+  );
+}
+
+Icon add({Color color = AppColors.midWay, double size = 26}) {
+  return Icon(
+    Icons.add_circle_rounded,
+    size: size.r,
+    color: color,
+  );
+}
+
+Icon search() {
+  return Icon(
+    Icons.search_rounded,
+    color: AppColors.hintTextColor,
+    size: 18.r,
+  );
+}
+
+Icon checkIcon() {
+  return Icon(
+    Icons.check,
+    color: Colors.black,
+    size: 21.r,
+  );
+}
+
+Widget greenDot() {
+  return Container(
+    width: 8,
+    height: 8,
+    decoration: const BoxDecoration(
+      color: Colors.green,
+      shape: BoxShape.circle,
+    ),
+  );
+}
+
+Widget contentText(String data) {
+  return Text(
+    data,
+    style: TextStyles.bioText.copyWith(
+      fontSize: AppUtils.scale(11.5.sp),
+    ),
+    textAlign: TextAlign.center,
+  );
+}
+
+Widget messageStatus(MessageStatus status, {double? size = 18}) {
+  if (status == MessageStatus.sent) {
+    return singleTick(size: size);
+  } else if (status == MessageStatus.seen) {
+    return seenIcon(size: size);
+  } else {
+    return offlineIcon(size: size); //
+  }
+}
+
+Icon seenIcon({double? size = 18}) {
+  return Icon(
+    Icons.done_all,
+    size: size! + 2,
+    color: AppColors.saveColor,
+  );
+}
+
+Widget singleTick({double? size = 18}) {
+  return Icon(
+    Icons.check,
+    color: Colors.black,
+    size: size,
+  );
+}
+
+Icon offlineIcon({double? size = 18}) {
+  return Icon(
+    Icons.error_outline_outlined,
+    size: size,
+    color: AppColors.primaryColor,
+  );
+}
+
+Row passwordRequirementRow(String text, {required bool checked}) {
+  TextStyle textStyle = ScreenUtil().screenWidth > 500
+      ? TextStyles.hintThemeText
+      : TextStyles.hintText;
+
+  return Row(
+    children: [
+      Icon(
+        Icons.check,
+        color: checked ? Colors.green.shade300 : AppColors.hintTextColor,
+        size: 18,
+      ),
+      addWidth(8),
+      Expanded(
+        child: Text(
+          text,
+          style:
+              textStyle.copyWith(color: checked ? Colors.green.shade300 : null),
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        ),
+      ),
+    ],
+  );
+}
+
+Widget bigCamera() {
+  return Stack(
+    clipBehavior: Clip.none,
+    children: [
+      camera(size: 46, color: Colors.white),
+      camera(),
+      Positioned(
+        right: -3.5,
+        bottom: -3.5,
+        child: Container(
+          height: 29.r,
+          width: 29.r,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
+      Positioned(
+        right: -1.5,
+        bottom: -1.5,
+        child: add(),
+      ),
+    ],
+  );
+}
+
+Widget smallCamera({Color color = AppColors.hintTextColor}) {
+  return Stack(
+    clipBehavior: Clip.none,
+    children: [
+      camera(size: 29, color: Colors.white),
+      camera(color: color, size: 25),
+      Positioned(
+        right: -3.5,
+        bottom: -3.5,
+        child: Container(
+          height: 19.r,
+          width: 19.r,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
+      Positioned(
+        right: -2,
+        bottom: -2,
+        child: add(color: color, size: 16.5),
+      ),
+    ],
+  );
+}
+
+Widget hide({bool visible = false, Widget? child}) {
+  return Visibility(
+    visible: visible,
+    maintainSize: true,
+    maintainAnimation: true,
+    maintainState: true,
+    maintainSemantics: true,
+    maintainInteractivity: false,
+    child: child ?? const SizedBox.shrink(),
+  );
+}
+
+Widget notificationDot(num count) {
+  double dotSize;
+
+  if (count > 99) {
+    dotSize = 8.r;
+  } else if (count > 9) {
+    dotSize = 20.r;
+  } else {
+    dotSize = 16.r;
+  }
+
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      Container(
+        width: dotSize,
+        height: dotSize,
+        decoration: const BoxDecoration(
+          color: AppColors.primaryColor,
+          shape: BoxShape.circle,
+        ),
+      ),
+      if (count < 100)
+        Text(
+          count.toString(),
+          style: TextStyles.notificationCountText,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+    ],
+  );
+}
+
+Widget line(Color color) {
+  return Container(
+    margin: EdgeInsets.only(top: 8.r),
+    height: 1, // Height of the divider
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          color,
+          Colors.white
+        ], // Start with full color, end with transparent
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      ),
+    ),
+  );
+}

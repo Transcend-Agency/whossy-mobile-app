@@ -1,0 +1,44 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../constants/index.dart';
+import '../../utils/utils.dart';
+import '../components.dart';
+
+class CircleAppAvatar extends StatelessWidget {
+  final String? imageUrl;
+  final double radius;
+
+  const CircleAppAvatar({
+    super.key,
+    this.imageUrl,
+    this.radius = 22,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: radius.r,
+      backgroundColor: AppColors.listTileColor,
+      child: imageUrl != null
+          ? CachedNetworkImage(
+              imageUrl: imageUrl!,
+              imageBuilder: (_, imageProvider) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+              placeholder: (context, url) => const ShimmerWidget.circular(),
+              errorWidget: (_, __, ___) => offline(size: radius * 0.65),
+            )
+          : user(size: radius),
+    );
+  }
+}

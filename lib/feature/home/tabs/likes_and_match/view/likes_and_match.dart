@@ -1,0 +1,123 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whossy_app/common/styles/component_style.dart';
+import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/liked_me.dart';
+import 'package:whossy_app/feature/home/tabs/likes_and_match/view/widgets/matches.dart';
+
+import '../../../../../common/components/components.dart';
+import '../../../../../common/styles/text_style.dart';
+import '../../../../../common/utils/router/router.gr.dart';
+import '../../../../../common/utils/utils.dart';
+import '../../../notifications/view/widgets/notification_bell.dart';
+import 'widgets/likes.dart';
+
+class LikesAndMatch extends StatefulWidget {
+  const LikesAndMatch({super.key});
+
+  @override
+  State<LikesAndMatch> createState() => _LikesAndMatchState();
+}
+
+class _LikesAndMatchState extends State<LikesAndMatch>
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  late PageController _pageController;
+  late List<Widget> _pages;
+
+  int _activePage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pageController = PageController();
+
+    _pages = [
+      const LikedMe(),
+      const Matches(),
+      const Likes(),
+    ];
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _pageController.dispose();
+  }
+
+  void _onPageChange(int page) {
+    setState(() => _activePage = page);
+  }
+
+  void _onPageUpdate(int index) {
+    if (index == _activePage) return;
+
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return SizedBox(
+      width: 375.w,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: pagePadding,
+            child: HeaderBar(
+              showFilters: false,
+              customWidget: NotificationBell(
+                onTap: () => Nav.push(context, const NotificationRoute()),
+                rightSpacing: 6,
+              ),
+              child: Row(
+                children: [
+                  _headerText(0, 'Liked Me'),
+                  _headerText(1, 'Matches'),
+                  _headerText(2, 'Likes'),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: _pages.length,
+              onPageChanged: _onPageChange,
+              itemBuilder: (_, index) {
+                return Padding(
+                  padding: EdgeInsets.only(left: 14.r, right: 14.r, top: 16.r),
+                  child: _pages[index],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _headerText(int page, String title) {
+    return GestureDetector(
+      onTap: () => _onPageUpdate(page),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 6,
+        ),
+        child: Text(
+          title,
+          style: TextStyles.customStyle(_activePage == page),
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
