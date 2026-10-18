@@ -139,20 +139,39 @@ class UserRepository {
   /// the Retool admin tooling, which writes directly to this document).
   ///
   /// `is_approved` comes along with it: the server sets both when the review
-  /// passes, and the like and message buttons check `is_approved`.
-  Stream<({FaceVerification? faceVerification, bool? isApproved})>
-      faceVerificationStream() {
+  /// passes, and the like and message buttons check `is_approved`. The plan and
+  /// the credit balance come along too, because the server changes them (a
+  /// purchase, a hold, a refund, a lapsed subscription) while the app is open.
+  Stream<
+      ({
+        FaceVerification? faceVerification,
+        bool? isApproved,
+        bool? isPremium,
+        int? creditBalance,
+        int? creditsOnHold,
+      })> faceVerificationStream() {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
     return _users.doc(uid).snapshots().map((snapshot) {
       final data = snapshot.data();
-      if (data == null) return (faceVerification: null, isApproved: null);
+      if (data == null) {
+        return (
+          faceVerification: null,
+          isApproved: null,
+          isPremium: null,
+          creditBalance: null,
+          creditsOnHold: null,
+        );
+      }
 
       return (
         faceVerification: FaceVerification.faceVerificationFromJson(
           data['face_verification'] as Map<String, dynamic>?,
         ),
         isApproved: data['is_approved'] as bool?,
+        isPremium: data['is_premium'] as bool?,
+        creditBalance: (data['credit_balance'] as num?)?.toInt(),
+        creditsOnHold: (data['credits_on_hold'] as num?)?.toInt(),
       );
     });
   }
