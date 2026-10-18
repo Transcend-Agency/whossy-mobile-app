@@ -86,7 +86,17 @@ class _ChatRoomState extends State<ChatRoom> {
     }
   }
 
+  // Set while a send is waiting on the chat cycle (the initiateChat call can
+  // take a few seconds). A second tap in that time used to send the text once
+  // and then an empty message, because the first send had cleared the field.
+  bool _isSending = false;
+
   void sendMessage() async {
+    if (_isSending) return;
+
+    final text = messagesController.text.trim();
+    if (text.isEmpty) return;
+
     // Block sending until the sender's selfie is verified (covers reaching
     // this chat room via an existing conversation, bypassing the gated
     // entry points in MatchingProfilePreview).
@@ -106,21 +116,27 @@ class _ChatRoomState extends State<ChatRoom> {
     // Reply-Gated Credits gate: starting a new cycle places a hold via the
     // `initiateChat` Cloud Function (confirmed by the user first, AC 1.2);
     // pending/connected sends pass straight through.
-    final canSend = await _chatsNotifier.ensureChatCycle(
-      confirmHold: _confirmHold,
-      onNotice: (message) {
-        if (mounted) showSnackbar(message, context);
-      },
-      onNeedsCredits: () {
-        if (mounted) Nav.push(context, const Credits());
-      },
-    );
+    _isSending = true;
+    final bool canSend;
+    try {
+      canSend = await _chatsNotifier.ensureChatCycle(
+        confirmHold: _confirmHold,
+        onNotice: (message) {
+          if (mounted) showSnackbar(message, context);
+        },
+        onNeedsCredits: () {
+          if (mounted) Nav.push(context, const Credits());
+        },
+      );
+    } finally {
+      _isSending = false;
+    }
 
     if (!canSend || !mounted) return;
 
     _scrollToBottom();
 
-    _chatsNotifier.sendMessage(messagesController.text.trim());
+    _chatsNotifier.sendMessage(text);
 
     messagesController.clear();
   }
