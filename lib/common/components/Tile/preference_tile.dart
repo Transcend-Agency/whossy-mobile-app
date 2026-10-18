@@ -10,6 +10,10 @@ class PreferenceTile extends StatelessWidget {
   final String? text;
   final String? trailing;
   final VoidCallback? onTap;
+
+  /// Shows a clear (x) button next to a chosen value. Not shown while the row
+  /// still reads 'Choose'.
+  final VoidCallback? onClear;
   final TextStyle? textStyle;
   final Color? iconColor;
   final bool showDivider;
@@ -20,6 +24,7 @@ class PreferenceTile extends StatelessWidget {
     super.key,
     required this.text,
     this.onTap,
+    this.onClear,
     this.textStyle,
     this.iconColor,
     this.showDivider = true,
@@ -83,6 +88,23 @@ class PreferenceTile extends StatelessWidget {
                                     key: const ValueKey<bool>(false),
                                   ),
                           ),
+                          if (onClear != null &&
+                              hasTrailing &&
+                              trailing != 'Choose') ...[
+                            addWidth(6),
+                            GestureDetector(
+                              onTap: onClear,
+                              behavior: HitTestBehavior.opaque,
+                              child: Padding(
+                                padding: EdgeInsets.all(4.r),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  color: iconColor ?? AppColors.hintTextColor,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ],
                           if (onTap != null && showTrailingIcon) ...[
                             addWidth(6),
                             Icon(

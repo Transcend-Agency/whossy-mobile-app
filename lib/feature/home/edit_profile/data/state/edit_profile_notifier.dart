@@ -60,8 +60,14 @@ class EditProfileNotifier extends ChangeNotifier {
     _pendingVerificationChallenge = value;
   }
 
-  StreamSubscription<({FaceVerification? faceVerification, bool? isApproved})>?
-      _faceVerificationSub;
+  StreamSubscription<
+      ({
+        FaceVerification? faceVerification,
+        bool? isApproved,
+        bool? isPremium,
+        int? creditBalance,
+        int? creditsOnHold,
+      })>? _faceVerificationSub;
   bool _hasSeenFirstFaceVerificationSnapshot = false;
 
   /// Watches `users/{uid}.face_verification` so the app reflects an admin's
@@ -101,6 +107,19 @@ class EditProfileNotifier extends ChangeNotifier {
         _dynCoreProfile?.isApproved = update.isApproved;
         _staticCoreProfile?.isApproved = update.isApproved;
       }
+
+      // Same for the plan and credits, which the server changes on a purchase,
+      // a chat hold or refund, or when a subscription lapses. Without this the
+      // chat gate treated a lapsed premium account as premium (no hold prompt)
+      // and the Credits screen showed an old balance until a restart.
+      if (update.isPremium != null) {
+        _dynCoreProfile?.isPremium = update.isPremium;
+        _staticCoreProfile?.isPremium = update.isPremium;
+      }
+      _dynCoreProfile?.creditBalance = update.creditBalance ?? 0;
+      _staticCoreProfile?.creditBalance = update.creditBalance ?? 0;
+      _dynCoreProfile?.creditsOnHold = update.creditsOnHold ?? 0;
+      _staticCoreProfile?.creditsOnHold = update.creditsOnHold ?? 0;
 
       if (!isFirstSnapshot &&
           previousStatus != 'rejected' &&

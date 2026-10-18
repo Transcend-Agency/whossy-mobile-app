@@ -40,6 +40,7 @@ class ExtrasComponent<T extends SearchPreferencesNotifier>
                       return PreferenceTile(
                         key: ValueKey(index),
                         text: item.header,
+                        onClear: () => notifier.clearValue(item.type),
                         onTap: () async {
                           final value = await showCustomModalBottomSheet(
                             selectedItem: notifier.getSelected(item.type),
@@ -59,6 +60,7 @@ class ExtrasComponent<T extends SearchPreferencesNotifier>
                   ),
                   PreferenceTile(
                     text: 'Country of Residence',
+                    onClear: () => notifier.clearOther(country: true),
                     onTap: () => showPicker(
                       showCode: false,
                       onSelect: (country) =>
@@ -70,6 +72,7 @@ class ExtrasComponent<T extends SearchPreferencesNotifier>
                   ),
                   PreferenceTile(
                     text: 'City of Residence',
+                    onClear: () => notifier.clearOther(city: true),
                     onTap: () async {
                       final city = await showCitySheet(
                         context: context,
@@ -85,6 +88,7 @@ class ExtrasComponent<T extends SearchPreferencesNotifier>
                   ),
                   PreferenceTile(
                     text: 'Height',
+                    onClear: () => notifier.clearOther(height: true),
                     onTap: () async {
                       final height = await showRangeSheet(
                         context: context,
@@ -105,6 +109,7 @@ class ExtrasComponent<T extends SearchPreferencesNotifier>
                   ),
                   PreferenceTile(
                     text: 'Weight',
+                    onClear: () => notifier.clearOther(weight: true),
                     onTap: () async {
                       final weight = await showRangeSheet(
                         context: context,
@@ -133,6 +138,7 @@ class ExtrasComponent<T extends SearchPreferencesNotifier>
                       return PreferenceTile(
                         key: ValueKey(index),
                         text: item.header,
+                        onClear: () => notifier.clearValue(item.type),
                         onTap: () async {
                           final value = await showCustomModalBottomSheet(
                             selectedItem: notifier.getSelected(item.type),

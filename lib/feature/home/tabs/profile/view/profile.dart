@@ -33,6 +33,10 @@ class Profile extends StatelessWidget {
               padding: pagePadding,
               child: Selector<EditProfileNotifier, CoreProfile?>(
                 selector: (_, profile) => profile.staticProfile,
+                // The profile is changed in place (a credit purchase or hold,
+                // an approval), so the same object comes back and the default
+                // would never rebuild: the credit count and badge stayed stale.
+                shouldRebuild: (_, __) => true,
                 builder: (_, data, __) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
