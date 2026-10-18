@@ -11,6 +11,11 @@ import '../../../../../common/styles/text_style.dart';
 import '../../../../../constants/index.dart';
 import '../../../../../provider/provider.dart';
 
+/// Shown when no age range has been saved. The search applies no age limit
+/// in that case, so the slider reads as its full span rather than a 25-35
+/// that was never applied.
+const RangeValues _kAnyAge = RangeValues(18, 70);
+
 class DistanceAgeComponent<T extends SearchPreferencesNotifier>
     extends HookWidget {
   const DistanceAgeComponent({super.key});
@@ -114,7 +119,7 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                               : AppChip(
                                   key: const ValueKey('data'),
                                   data:
-                                      '${prefs.toAgeRange()?.start.round() ?? 25} - ${prefs.toAgeRange()?.end.round() ?? 35}',
+                                      '${prefs.toAgeRange()?.start.round() ?? _kAnyAge.start.round()} - ${prefs.toAgeRange()?.end.round() ?? _kAnyAge.end.round()}',
                                   isSelected: false,
                                   outlined: false,
                                 ),
@@ -142,9 +147,8 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                                   maxAge: values.end.toInt(),
                                 );
                               },
-                              values: prefs.toAgeRange() ??
-                                  const RangeValues(25, 35),
-                              range: const RangeValues(18, 70),
+                              values: prefs.toAgeRange() ?? _kAnyAge,
+                              range: _kAnyAge,
                             ),
                     ),
                   ),
