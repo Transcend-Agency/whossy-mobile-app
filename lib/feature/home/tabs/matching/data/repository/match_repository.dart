@@ -99,25 +99,22 @@ class MatchRepository {
       queryStream,
       blacklistStream,
       (QuerySnapshot querySnapshot, Set<String> blacklist) {
-        final ranked = querySnapshot.docs
-            .where((doc) {
-              final profile =
-                  UserProfile.fromJson(doc.data() as Map<String, dynamic>);
-              return !AppUtils.excludeProfile(
-                    profile,
-                    uid,
-                    blockedIds,
-                    settings: _matchFilterSettings,
-                  ) &&
-                  !blacklist.contains(profile.user.uid);
-            })
-            .map((doc) {
-              final profile =
-                  UserProfile.fromJson(doc.data() as Map<String, dynamic>);
-              final geo = profile.user.geography?.geopoint;
-              final distanceKm = (latitude != null &&
-                      longitude != null &&
-                      geo != null)
+        final ranked = querySnapshot.docs.where((doc) {
+          final profile =
+              UserProfile.fromJson(doc.data() as Map<String, dynamic>);
+          return !AppUtils.excludeProfile(
+                profile,
+                uid,
+                blockedIds,
+                settings: _matchFilterSettings,
+              ) &&
+              !blacklist.contains(profile.user.uid);
+        }).map((doc) {
+          final profile =
+              UserProfile.fromJson(doc.data() as Map<String, dynamic>);
+          final geo = profile.user.geography?.geopoint;
+          final distanceKm =
+              (latitude != null && longitude != null && geo != null)
                   ? Geolocator.distanceBetween(
                         latitude,
                         longitude,
@@ -126,9 +123,8 @@ class MatchRepository {
                       ) /
                       1000
                   : null;
-              return MapEntry(profile, distanceKm);
-            })
-            .toList()
+          return MapEntry(profile, distanceKm);
+        }).toList()
           ..sort((a, b) {
             final da = a.value ?? double.infinity;
             final db = b.value ?? double.infinity;

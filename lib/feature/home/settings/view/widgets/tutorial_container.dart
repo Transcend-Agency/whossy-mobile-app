@@ -48,14 +48,13 @@ class TutorialComponent extends HookWidget {
                   fontSize: AppUtils.scale(14.sp) ?? 16.sp,
                 ),
               ),
-
-              if(step != null)
-              Text(
-                step!,
-                style: TextStyles.prefText.copyWith(
-                  fontWeight: FontWeight.w500,
+              if (step != null)
+                Text(
+                  step!,
+                  style: TextStyles.prefText.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
             ],
           ),
           addHeight(12),
