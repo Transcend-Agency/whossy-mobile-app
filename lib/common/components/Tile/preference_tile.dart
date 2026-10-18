@@ -59,7 +59,11 @@ class PreferenceTile extends StatelessWidget {
                       text!,
                       style: textStyle ?? TextStyles.prefText,
                     ),
-                    Container(
+                    // Flexible so a long value (for example 'Not Complete,
+                    // Re-verification needed') shrinks and ellipsizes instead
+                    // of overflowing the row.
+                    Flexible(
+                        child: Container(
                       margin: EdgeInsets.only(
                         top: hasTrailing ? 13.r : 16.r,
                         bottom: hasTrailing ? 13.r : 16.r,
@@ -68,7 +72,8 @@ class PreferenceTile extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          AppAnimatedSwitcher(
+                          Flexible(
+                              child: AppAnimatedSwitcher(
                             child: hasTrailing
                                 ? Text(
                                     trailing!,
@@ -77,6 +82,8 @@ class PreferenceTile extends StatelessWidget {
                                       color: AppColors.hintTextColor,
                                     ),
                                     textAlign: TextAlign.right,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                     key: const ValueKey('data'),
                                   )
                                 : ShimmerWidget.rectangular(
@@ -87,7 +94,7 @@ class PreferenceTile extends StatelessWidget {
                                     ),
                                     key: const ValueKey<bool>(false),
                                   ),
-                          ),
+                          )),
                           if (onClear != null &&
                               hasTrailing &&
                               trailing != 'Choose') ...[
@@ -115,7 +122,7 @@ class PreferenceTile extends StatelessWidget {
                           ],
                         ],
                       ),
-                    )
+                    ))
                   ],
                 ),
                 if (showDivider) const AppDivider(),
