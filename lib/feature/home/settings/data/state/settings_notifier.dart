@@ -10,7 +10,7 @@ import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/login/data/repository/authentication_repository.dart';
 import '../../../../auth/sign_up/data/repository/user_repository.dart';
-import '../../../edit_profile/view/widgets/sheets/name_sheet.dart';
+import '../../../edit_profile/view/widgets/sheets/password_sheet.dart';
 import '../../../tabs/matching/model/user_profile.dart';
 import '../../model/user_settings.dart';
 
@@ -90,9 +90,8 @@ class SettingsNotifier extends ChangeNotifier {
 
       // **Reauthentication Handling**
       if (provider == "password" && context.mounted) {
-        String? password = await showNameSheet(
+        String? password = await showPasswordSheet(
           context: context,
-          name: '',
           title: "Enter Password",
         );
 
