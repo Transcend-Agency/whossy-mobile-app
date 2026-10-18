@@ -48,7 +48,9 @@ class ExploreFiltersComponent extends HookWidget {
           return Padding(
             padding: EdgeInsets.only(
               left: index == 0 ? 16.0 : 4.0, // Extra padding for the first item
-              right: index == Filters.values.length - 1 ? 16.0 : 4.0, // Extra padding for the last item
+              right: index == Filters.values.length - 1
+                  ? 16.0
+                  : 4.0, // Extra padding for the last item
             ),
             child: ChoiceChip(
               padding: const EdgeInsets.all(7),
@@ -62,9 +64,10 @@ class ExploreFiltersComponent extends HookWidget {
               ),
               avatar: filter.avatar != null
                   ? svgIcon(
-                filter.avatar!,
-                color: isSelected ? Colors.white : AppColors.hintTextColor,
-              )
+                      filter.avatar!,
+                      color:
+                          isSelected ? Colors.white : AppColors.hintTextColor,
+                    )
                   : null,
               selected: isSelected,
               showCheckmark: false,

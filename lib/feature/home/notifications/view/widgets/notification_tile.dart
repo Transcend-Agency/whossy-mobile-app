@@ -144,10 +144,10 @@ class NotificationTile extends HookWidget {
                               notification.verificationStatus == 'approved'
                                   ? Icons.verified
                                   : Icons.error_outline,
-                              color: notification.verificationStatus ==
-                                      'approved'
-                                  ? const Color(0xFF1E7A46)
-                                  : AppColors.primaryColor,
+                              color:
+                                  notification.verificationStatus == 'approved'
+                                      ? const Color(0xFF1E7A46)
+                                      : AppColors.primaryColor,
                               size: 32.r,
                             )
                           : Transform.rotate(
@@ -225,8 +225,7 @@ class NotificationTile extends HookWidget {
   Future<void> _updateNotificationStatus(
     ValueNotifier<bool> isUpdating,
     BuildContext context,
-  ) async
-  {
+  ) async {
     isUpdating.value = true;
 
     await Future.delayed(const Duration(seconds: 2));

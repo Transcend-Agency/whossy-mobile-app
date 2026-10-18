@@ -12,7 +12,6 @@ import '../../../common/utils/verification_gate.dart';
 import '../../../constants/index.dart';
 import '../../../provider/provider.dart';
 
-
 class VerificationStatusBanner extends StatefulWidget {
   const VerificationStatusBanner({super.key, required this.child});
   final Widget child;
@@ -113,8 +112,18 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
         status != FaceVerificationStatus.pending &&
         status != FaceVerificationStatus.complete) {
       const months = [
-        'January', 'February', 'March', 'April', 'May', 'June', 'July',
-        'August', 'September', 'October', 'November', 'December',
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
       ];
       return _banner(
         color: const Color(0xFFFFF7E6),
@@ -129,7 +138,6 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
 
     switch (status) {
       case FaceVerificationStatus.complete:
-
         final reviewedAt = verification?.reviewedAt?.millisecondsSinceEpoch ??
             verification?.updatedAt?.millisecondsSinceEpoch ??
             1;
@@ -193,8 +201,7 @@ class _VerificationStatusBannerState extends State<VerificationStatusBanner> {
           text: AppStrings.verificationBannerPrompt,
           actionLabel: 'Take selfie',
           onAction: () => startFaceVerificationFlow(context),
-          onDismiss: () =>
-              setState(() => _promptDismissedThisSession = true),
+          onDismiss: () => setState(() => _promptDismissedThisSession = true),
         );
     }
   }

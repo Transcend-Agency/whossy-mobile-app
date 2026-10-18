@@ -55,32 +55,41 @@ class IAPService {
   }
 
   Future<void> updateAvailableProducts() async {
+    if (!await _iap.isAvailable()) return;
+
     final response = await _iap.queryProductDetails(_kIds);
 
-    if (response.notFoundIDs.isEmpty) {
-      // Sort all products by price ascending first
-      final sortedProducts = response.productDetails.toList()
-        ..sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
-
-      // Filter products for credits
-      creditProducts = sortedProducts
-          .where((product) => credits.any((c) => c.productId == product.id))
-          .toSet();
-
-      // Filter products for subscriptions
-      subscriptionProducts = sortedProducts
-          .where((product) =>
-              subscriptionPlans.any((s) => s.productId == product.id))
-          .toSet();
+    // Keep whatever the store returned. Waiting for every id to be found meant
+    // one missing product (say a subscription not yet set up in the Play
+    // Console) emptied the credit packs too.
+    if (response.notFoundIDs.isNotEmpty) {
+      log('Store products not found: ${response.notFoundIDs}');
     }
+
+    // Sort all products by price ascending first
+    final sortedProducts = response.productDetails.toList()
+      ..sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
+
+    // Filter products for credits
+    creditProducts = sortedProducts
+        .where((product) => credits.any((c) => c.productId == product.id))
+        .toSet();
+
+    // Filter products for subscriptions
+    subscriptionProducts = sortedProducts
+        .where((product) =>
+            subscriptionPlans.any((s) => s.productId == product.id))
+        .toSet();
   }
 
-  Future<void> buyConsumableProduct(String productId) async {
+  /// Whether the purchase flow started. False when the store could not find
+  /// the product or threw, so the caller can tell the user.
+  Future<bool> buyConsumableProduct(String productId) async {
     try {
       final response = await _iap.queryProductDetails({productId});
       if (response.notFoundIDs.isNotEmpty) {
         log('Product not found: $productId');
-        return;
+        return false;
       }
 
       final product = response.productDetails.first;
@@ -88,12 +97,13 @@ class IAPService {
 
       final purchaseParam = PurchaseParam(productDetails: product);
 
-      await _iap.buyConsumable(
+      return await _iap.buyConsumable(
         purchaseParam: purchaseParam,
         autoConsume: true,
       );
     } catch (e) {
       log('Error buying consumable: $e');
+      return false;
     }
   }
 

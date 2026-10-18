@@ -71,7 +71,8 @@ class _EditProfileState extends State<EditProfile>
 
     final consequence = _profileNotifier.pendingMainPhotoChangeConsequence;
     if (consequence != MainPhotoChangeConsequence.none) {
-      final isRevoke = consequence == MainPhotoChangeConsequence.revokesApproval;
+      final isRevoke =
+          consequence == MainPhotoChangeConsequence.revokesApproval;
       final confirmed = await showConfirmationDialog(
         context,
         title: isRevoke

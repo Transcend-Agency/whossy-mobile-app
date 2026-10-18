@@ -79,7 +79,8 @@ class ExploreRepository {
     // every batch relied entirely on the post-fetch removeWhere below,
     // which (combined with the old fixed limit) meant a page could shrink
     // well under what was requested with no backfill.
-    Query baseQuery = _profiles.where('has_completed_onboarding', isEqualTo: true);
+    Query baseQuery =
+        _profiles.where('has_completed_onboarding', isEqualTo: true);
 
     filters.filters.forEach((filter, value) {
       // Outside my country needs client-side handling (below) — Firestore's
@@ -127,8 +128,9 @@ class ExploreRepository {
     // isn't guaranteed stable). Must match whichever field carries the
     // active range filter, if any — Firestore requires the first orderBy to
     // be the inequality's own field.
-    final orderByField =
-        filters.filters.containsKey(Filters.online) ? 'status.lastSeen' : 'created_at';
+    final orderByField = filters.filters.containsKey(Filters.online)
+        ? 'status.lastSeen'
+        : 'created_at';
 
     final Stream<QuerySnapshot> queryStream = paginated
         ? _pageSize.stream.switchMap(
@@ -217,8 +219,8 @@ class ExploreRepository {
 
     return Rx.combineLatest2(geoStream, likedIdsStream, (docs, likedIds) {
       final profiles = docs
-          .map((doc) =>
-              UserProfile.fromJson(doc.data() as Map<String, dynamic>))
+          .map(
+              (doc) => UserProfile.fromJson(doc.data() as Map<String, dynamic>))
           .where((profile) => !AppUtils.excludeProfile(
                 profile,
                 uid,

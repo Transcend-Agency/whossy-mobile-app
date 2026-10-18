@@ -92,11 +92,15 @@ class Profile extends StatelessWidget {
                           ),
                           padding: EdgeInsets.symmetric(
                               vertical: 6.r, horizontal: 12.r),
-                          child: Text(
-                            '20% complete',
-                            style: TextStyles.hintText.copyWith(
-                              fontSize: AppUtils.scale(10.sp),
-                              color: Colors.white,
+                          child: Selector<EditProfileNotifier, int>(
+                            selector: (_, profile) =>
+                                profile.profileCompletionPercent,
+                            builder: (_, percent, __) => Text(
+                              '$percent% complete',
+                              style: TextStyles.hintText.copyWith(
+                                fontSize: AppUtils.scale(10.sp),
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
@@ -134,7 +138,6 @@ class Profile extends StatelessWidget {
                         padding: EdgeInsets.symmetric(vertical: 10.h),
                         child: const WhossySafetyGuide(),
                       ),
-
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -166,7 +169,6 @@ class Profile extends StatelessWidget {
                 },
               ),
             ),
-
             Padding(
               padding: EdgeInsets.symmetric(vertical: 12.h),
               child: SingleChildScrollView(

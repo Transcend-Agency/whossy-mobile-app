@@ -98,7 +98,6 @@ class AppNotification {
 
   Map<String, dynamic> toJson() => _$AppNotificationToJson(this);
 
-
   NotificationType get notificationType {
     switch (type) {
       case 'like':

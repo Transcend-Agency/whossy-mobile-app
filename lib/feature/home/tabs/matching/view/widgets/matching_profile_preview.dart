@@ -131,7 +131,6 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 if (widget.showCancel && _isDislikeVisible) ...[
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.h),
