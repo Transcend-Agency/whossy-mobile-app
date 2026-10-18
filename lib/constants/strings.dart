@@ -32,7 +32,7 @@ class AppStrings {
   // Reset Password Screen
   static const String resetPasswordTitle = 'Reset your password';
   static const String resetPasswordSubtitle =
-      'Enter your email to receive otp code.';
+      'Enter your email and we will send you a link to reset your password.';
   static const String sendLinkButton = 'Send link';
 
   // Sign Up Screen
