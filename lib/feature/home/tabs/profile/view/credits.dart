@@ -19,6 +19,16 @@ class Credits extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final selectedProductId = useState<String?>(null);
+    final products = useState(IAPService.instance.creditProducts);
+
+    // Products load once at launch; ask the store again when the screen opens
+    // in case that came back empty or late.
+    useEffect(() {
+      IAPService.instance.updateAvailableProducts().then((_) {
+        products.value = IAPService.instance.creditProducts;
+      }).catchError((_) {});
+      return null;
+    }, const []);
 
     return AppScaffold(
       appBar: CustomAppBar(
@@ -94,36 +104,46 @@ class Credits extends HookWidget {
             ),
             addHeight(20),
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: IAPService.instance.creditProducts.map((product) {
-                    return GenericTile(
-                      unselectedBorderColor: AppColors.outlinedColor,
-                      tileColor: Colors.white,
-                      bottom: 14.r,
-                      value: product.id,
-                      groupValue: selectedProductId.value,
-                      onChanged: (id) => selectedProductId.value = id,
-                      title: '${product.id.creditQty} Credits',
-                      subtitle: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          addHeight(3),
-                          Text(
-                            formatPrice(product.rawPrice, product.currencyCode),
-                            style: TextStyles.profileHead.copyWith(
-                              fontSize: AppUtils.scale(12.sp) ?? 16,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ],
+              child: products.value.isEmpty
+                  ? Center(
+                      child: Text(
+                        'Credit packs are not available right now. '
+                        'Check your connection and try again later.',
+                        textAlign: TextAlign.center,
+                        style: TextStyles.hintThemeText,
                       ),
-                    );
-                  }).toList(),
-                ),
-              ),
+                    )
+                  : SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: products.value.map((product) {
+                          return GenericTile(
+                            unselectedBorderColor: AppColors.outlinedColor,
+                            tileColor: Colors.white,
+                            bottom: 14.r,
+                            value: product.id,
+                            groupValue: selectedProductId.value,
+                            onChanged: (id) => selectedProductId.value = id,
+                            title: '${product.id.creditQty} Credits',
+                            subtitle: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                addHeight(3),
+                                Text(
+                                  formatPrice(
+                                      product.rawPrice, product.currencyCode),
+                                  style: TextStyles.profileHead.copyWith(
+                                    fontSize: AppUtils.scale(12.sp) ?? 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
             ),
             PayButton(productId: selectedProductId.value),
           ],
@@ -152,8 +172,16 @@ class PayButton extends StatelessWidget {
             onPressed: productId == null
                 ? null
                 : isConnected
-                    ? () async => await IAPService.instance
-                        .buyConsumableProduct(productId!)
+                    ? () async {
+                        final started = await IAPService.instance
+                            .buyConsumableProduct(productId!);
+                        if (!started && context.mounted) {
+                          showSnackbar(
+                            'Could not start the purchase. Try again.',
+                            context,
+                          );
+                        }
+                      }
                     : () => showSnackbar(AppStrings.deviceOffline, context),
           ),
         );
