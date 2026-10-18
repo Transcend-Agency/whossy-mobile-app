@@ -30,6 +30,17 @@ abstract class SearchPreferencesNotifier {
   // Abstract method to set a value
   void setValue(GenericEnum value);
 
+  // Abstract method to empty the choice of one enum type
+  void clearValue(Type type);
+
+  // Abstract method to empty country, city, height or weight
+  void clearOther({
+    bool country = false,
+    bool city = false,
+    bool height = false,
+    bool weight = false,
+  });
+
   // Abstract method to get a value
   String getValue(Type type);
 

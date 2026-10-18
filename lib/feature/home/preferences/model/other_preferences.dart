@@ -92,6 +92,19 @@ class OtherPreferences {
     this.outreach = outreach ?? this.outreach;
   }
 
+  /// Empties the chosen fields so the search stops filtering on them.
+  void clear({
+    bool country = false,
+    bool city = false,
+    bool height = false,
+    bool weight = false,
+  }) {
+    if (country) this.country = null;
+    if (city) this.city = null;
+    if (height) heightRange = null;
+    if (weight) weightRange = null;
+  }
+
   RangeValues? toAgeRange() => ageRange?.toRangeValues();
   RangeValues? toHeightRange() => heightRange?.toRangeValues();
   RangeValues? toWeightRange() => weightRange?.toRangeValues();

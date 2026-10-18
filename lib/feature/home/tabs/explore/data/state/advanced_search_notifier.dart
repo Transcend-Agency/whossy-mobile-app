@@ -46,6 +46,28 @@ class AdvancedSearchNotifier extends ChangeNotifier
   }
 
   @override
+  void clearValue(Type type) {
+    _dynCorePrefs?.clearValue(type);
+    notifyListeners();
+  }
+
+  @override
+  void clearOther({
+    bool country = false,
+    bool city = false,
+    bool height = false,
+    bool weight = false,
+  }) {
+    _dynOtherPrefs?.clear(
+      country: country,
+      city: city,
+      height: height,
+      weight: weight,
+    );
+    notifyListeners();
+  }
+
+  @override
   void setValue(GenericEnum value) {
     _dynCorePrefs?.setValue(value);
     notifyListeners();
