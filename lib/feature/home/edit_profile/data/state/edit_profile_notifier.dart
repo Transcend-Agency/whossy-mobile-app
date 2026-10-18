@@ -22,6 +22,7 @@ import '../../../../auth/sign_up/data/repository/user_repository.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
 import '../../../../auth/sign_up/model/geography.dart';
 import '../../../preferences/model/core_preferences.dart';
+import '../../model/profile_completion.dart' as completion;
 import '../../../preferences/model/generic_enum.dart';
 import '../../model/core_profile.dart';
 import '../../model/edit_profile_data.dart';
@@ -138,6 +139,8 @@ class EditProfileNotifier extends ChangeNotifier {
   CoreProfile? get coreProfile => _dynCoreProfile;
   CoreProfile? get staticProfile => _staticCoreProfile;
   CorePreferences? get corePrefs => _dynCorePrefs;
+  int get profileCompletionPercent =>
+      completion.profileCompletionPercent(_staticCoreProfile, _staticCorePrefs);
   EditProfileData get profileData => EditProfileData(
         _dynCoreProfile!,
         _dynCorePrefs!,
