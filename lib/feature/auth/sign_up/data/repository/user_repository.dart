@@ -137,15 +137,22 @@ class UserRepository {
   /// Watches the current user's `face_verification` field, so the app can
   /// react when an admin approves/rejects a submitted selfie (reviewed via
   /// the Retool admin tooling, which writes directly to this document).
-  Stream<FaceVerification?> faceVerificationStream() {
+  ///
+  /// `is_approved` comes along with it: the server sets both when the review
+  /// passes, and the like and message buttons check `is_approved`.
+  Stream<({FaceVerification? faceVerification, bool? isApproved})>
+      faceVerificationStream() {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
     return _users.doc(uid).snapshots().map((snapshot) {
       final data = snapshot.data();
-      if (data == null) return null;
+      if (data == null) return (faceVerification: null, isApproved: null);
 
-      return FaceVerification.faceVerificationFromJson(
-        data['face_verification'] as Map<String, dynamic>?,
+      return (
+        faceVerification: FaceVerification.faceVerificationFromJson(
+          data['face_verification'] as Map<String, dynamic>?,
+        ),
+        isApproved: data['is_approved'] as bool?,
       );
     });
   }

@@ -59,7 +59,8 @@ class EditProfileNotifier extends ChangeNotifier {
     _pendingVerificationChallenge = value;
   }
 
-  StreamSubscription<FaceVerification?>? _faceVerificationSub;
+  StreamSubscription<({FaceVerification? faceVerification, bool? isApproved})>?
+      _faceVerificationSub;
   bool _hasSeenFirstFaceVerificationSnapshot = false;
 
   /// Watches `users/{uid}.face_verification` so the app reflects an admin's
@@ -75,7 +76,8 @@ class EditProfileNotifier extends ChangeNotifier {
     _hasSeenFirstFaceVerificationSnapshot = false;
 
     _faceVerificationSub =
-        _userRepository.faceVerificationStream().listen((faceVerification) {
+        _userRepository.faceVerificationStream().listen((update) {
+      final faceVerification = update.faceVerification;
       final previousStatus = _dynCoreProfile?.faceVerification?.status;
       final isFirstSnapshot = !_hasSeenFirstFaceVerificationSnapshot;
       _hasSeenFirstFaceVerificationSnapshot = true;
@@ -90,6 +92,14 @@ class EditProfileNotifier extends ChangeNotifier {
       _staticCoreProfile?.faceVerification = faceVerification == null
           ? null
           : FaceVerification.fromJson(faceVerification.toJson());
+
+      // Without this the like and message gate kept the is_approved value read
+      // at launch, so a user approved while the app was open stayed blocked
+      // until they restarted it.
+      if (update.isApproved != null) {
+        _dynCoreProfile?.isApproved = update.isApproved;
+        _staticCoreProfile?.isApproved = update.isApproved;
+      }
 
       if (!isFirstSnapshot &&
           previousStatus != 'rejected' &&
