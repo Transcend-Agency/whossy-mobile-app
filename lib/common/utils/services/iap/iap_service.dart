@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:whossy_app/common/utils/utils.dart';
 import 'package:whossy_app/feature/home/tabs/profile/model/subscription_plan.dart';
 
 import '../../../../feature/home/tabs/profile/model/credit.dart';
-import 'purchase_handler.dart';
+import 'purchase_verifier.dart';
 
 class IAPService {
   IAPService._();
@@ -18,7 +17,8 @@ class IAPService {
   final _iap = InAppPurchase.instance;
   late StreamSubscription<List<PurchaseDetails>> _purchasesSubscription;
 
-  IAPPurchaseHandler? _handler;
+  /// Replaced in tests. Purchases are only honoured after this says granted.
+  PurchaseVerifier verifier = FunctionsPurchaseVerifier();
 
   // ✅ Cache for product metadata
   final Map<String, ProductDetails> _productDetailsMap = {};
@@ -27,10 +27,6 @@ class IAPService {
     ...credits.map((c) => c.productId),
     ...subscriptionPlans.map((s) => s.productId),
   };
-
-  void configure({required IAPPurchaseHandler handler}) {
-    _handler = handler;
-  }
 
   Set<ProductDetails> creditProducts = {};
 
@@ -163,15 +159,23 @@ class IAPService {
 
           case PurchaseStatus.purchased:
           case PurchaseStatus.restored:
-            final isValid = await _verifyPurchase(purchase);
-            if (isValid) {
-              await _deliverProduct(purchase);
-            } else {
-              log('Invalid purchase detected for ${purchase.productID}');
-            }
+            // The server checks the purchase with Google and grants it. The
+            // app does not give itself anything.
+            final result = await verifier.verify(
+              productId: purchase.productID,
+              purchaseToken: purchase.verificationData.serverVerificationData,
+            );
 
-            if (purchase.pendingCompletePurchase) {
-              await _iap.completePurchase(purchase);
+            if (shouldCompletePurchase(result)) {
+              if (purchase.pendingCompletePurchase) {
+                await _iap.completePurchase(purchase);
+              }
+            } else {
+              // Left pending on purpose: the store hands it back on the next
+              // launch, so a purchase the server could not confirm yet (no
+              // network, Google unreachable) is retried and one that was paid
+              // for is never consumed without being granted.
+              log('Purchase ${purchase.productID} not granted yet: $result');
             }
             break;
 
@@ -189,45 +193,12 @@ class IAPService {
     }
   }
 
-  Future<void> _deliverProduct(PurchaseDetails purchase) async {
-    final productId = purchase.productID;
-    final product = _productDetailsMap[productId];
-    final purchaseToken = purchase.verificationData.serverVerificationData;
-
-    if (productId.startsWith('credits_')) {
-      final quantity = productId.creditQty;
-
-      if (quantity != null && _handler != null && product != null) {
-        final double amount = product.rawPrice;
-        final String currency = product.currencyCode;
-
-        await _handler!.grantCredits(
-          quantity,
-          amount: amount,
-          currency: currency,
-        );
-      }
-    } else if (productId.startsWith('subscription_')) {
-      if (_handler != null) {
-        await _handler!.markUserSubscribed(
-          planId: productId,
-          purchaseToken: purchaseToken,
-        );
-      }
-    }
-  }
-
   Future<void> restorePurchase() async {
     try {
       await _iap.restorePurchases();
     } catch (error) {
       log('Error: $error');
     }
-  }
-
-  Future<bool> _verifyPurchase(PurchaseDetails purchase) async {
-    // TODO: Optionally verify purchase via backend or signature check
-    return true;
   }
 
   void dispose() {

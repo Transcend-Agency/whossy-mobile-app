@@ -511,62 +511,6 @@ class EditProfileNotifier extends ChangeNotifier {
     }
   }
 
-  Future<bool> addCreditsAfterPurchase({
-    required int credits,
-    void Function(String message)? onSnackbar,
-    required double amount,
-    required String currency,
-  }) async {
-    final previousCredit = coreProfile?.creditBalance ?? 0;
-
-    updateProfile(
-      creditBalance: previousCredit + credits,
-    );
-
-    final success = await saveUserProfile(
-      showSnackbar: (msg) {},
-    );
-
-    if (!success) {
-      updateProfile(
-        creditBalance: previousCredit,
-      );
-      onSnackbar?.call(AppStrings.addCreditsFailure);
-      return false;
-    }
-
-    onSnackbar?.call('Payment completed successfully!');
-    return true;
-  }
-
-  Future<bool> updateSubscription({
-    required String planId,
-    required String purchaseToken,
-  }) async {
-    final isPremiumUser = coreProfile?.isPremium ?? false;
-    final currentPlan = coreProfile?.currentPlan;
-    final paymentPlatform = coreProfile?.paymentPlatform;
-
-    updateProfile(
-      isPremium: true,
-      currentPlan: planId,
-      purchaseToken: purchaseToken,
-      paymentPlatform: PaymentPlatform.mobile,
-    );
-
-    final success = await saveUserProfile(showSnackbar: (msg) {});
-
-    if (!success) {
-      updateProfile(
-        isPremium: isPremiumUser,
-        currentPlan: currentPlan,
-        paymentPlatform: paymentPlatform,
-      );
-    }
-
-    return success;
-  }
-
   void reset() {
     _dynCoreProfile = null;
     _staticCoreProfile = null;
