@@ -263,10 +263,9 @@ class _MatchState extends State<Match> {
           opacity: (!_isSwiping || thresholdX < 0) ? 1 : 0,
           duration: const Duration(milliseconds: 300),
           child: MatchIconButton(
-            onTap: () {
-              controller.swipe(CardSwiperDirection.left);
-              dislike();
-            },
+            // handleSwipe records the dislike; calling dislike() here too
+            // sent it twice.
+            onTap: () => controller.swipe(CardSwiperDirection.left),
             assetPath: AppAssets.cancel,
           ),
         ),
@@ -275,10 +274,10 @@ class _MatchState extends State<Match> {
           opacity: (!_isSwiping || thresholdX > 0) ? 1 : 0,
           duration: const Duration(milliseconds: 300),
           child: MatchIconButton(
-            onTap: () {
-              controller.swipe(CardSwiperDirection.right);
-              like();
-            },
+            // handleSwipe runs like(), which either records the like or shows
+            // the verification dialog and cancels the swipe. Calling like()
+            // here as well sent the like twice and stacked two dialogs.
+            onTap: () => controller.swipe(CardSwiperDirection.right),
             assetPath: AppAssets.like,
           ),
         ),
