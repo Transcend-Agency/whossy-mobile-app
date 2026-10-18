@@ -33,6 +33,9 @@ class IAPService {
   }
 
   Set<ProductDetails> creditProducts = {};
+
+  /// Why the last product load came back short, for the credits screen.
+  String? productLoadIssue;
   Set<ProductDetails> subscriptionProducts = {};
 
   Future<void> initialize() async {
@@ -55,9 +58,22 @@ class IAPService {
   }
 
   Future<void> updateAvailableProducts() async {
-    if (!await _iap.isAvailable()) return;
+    if (!await _iap.isAvailable()) {
+      productLoadIssue =
+          'The app store is not available on this device. Make sure you are '
+          'signed in to the Play Store / App Store and try again.';
+      return;
+    }
 
     final response = await _iap.queryProductDetails(_kIds);
+    productLoadIssue = response.error != null
+        ? 'The store returned an error: ${response.error!.message}'
+        : response.productDetails.isEmpty
+            ? 'The store has no credit packs for this build. Install the app '
+                'from the Play Store / TestFlight (not a local build) with a '
+                'tester account.'
+            : null;
+    if (response.error != null) log('Store query error: ${response.error}');
 
     // Keep whatever the store returned. Waiting for every id to be found meant
     // one missing product (say a subscription not yet set up in the Play

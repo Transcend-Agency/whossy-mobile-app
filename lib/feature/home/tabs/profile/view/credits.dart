@@ -20,13 +20,21 @@ class Credits extends HookWidget {
   Widget build(BuildContext context) {
     final selectedProductId = useState<String?>(null);
     final products = useState(IAPService.instance.creditProducts);
+    final isLoading = useState(false);
+
+    Future<void> reload() async {
+      isLoading.value = true;
+      try {
+        await IAPService.instance.updateAvailableProducts();
+      } catch (_) {}
+      products.value = IAPService.instance.creditProducts;
+      isLoading.value = false;
+    }
 
     // Products load once at launch; ask the store again when the screen opens
     // in case that came back empty or late.
     useEffect(() {
-      IAPService.instance.updateAvailableProducts().then((_) {
-        products.value = IAPService.instance.creditProducts;
-      }).catchError((_) {});
+      reload();
       return null;
     }, const []);
 
@@ -106,12 +114,24 @@ class Credits extends HookWidget {
             Expanded(
               child: products.value.isEmpty
                   ? Center(
-                      child: Text(
-                        'Credit packs are not available right now. '
-                        'Check your connection and try again later.',
-                        textAlign: TextAlign.center,
-                        style: TextStyles.hintThemeText,
-                      ),
+                      child: isLoading.value
+                          ? const CircularProgressIndicator()
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Credit packs are not available right now.\n'
+                                  '${IAPService.instance.productLoadIssue ?? 'Check your connection and try again.'}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyles.hintThemeText,
+                                ),
+                                addHeight(12),
+                                TextButton(
+                                  onPressed: reload,
+                                  child: const Text('Try again'),
+                                ),
+                              ],
+                            ),
                     )
                   : SingleChildScrollView(
                       child: Column(
@@ -145,7 +165,10 @@ class Credits extends HookWidget {
                       ),
                     ),
             ),
-            PayButton(productId: selectedProductId.value),
+            PayButton(
+              productId: selectedProductId.value,
+              hasProducts: products.value.isNotEmpty,
+            ),
           ],
         ),
       ),
@@ -155,8 +178,9 @@ class Credits extends HookWidget {
 
 class PayButton extends StatelessWidget {
   final String? productId;
+  final bool hasProducts;
 
-  const PayButton({super.key, this.productId});
+  const PayButton({super.key, this.productId, this.hasProducts = true});
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +194,12 @@ class PayButton extends StatelessWidget {
             color: AppColors.buttonColor,
             textColor: Colors.white,
             onPressed: productId == null
-                ? null
+                ? () => showSnackbar(
+                      hasProducts
+                          ? 'Select a credit pack first.'
+                          : 'Credit packs are not available right now.',
+                      context,
+                    )
                 : isConnected
                     ? () async {
                         final started = await IAPService.instance
