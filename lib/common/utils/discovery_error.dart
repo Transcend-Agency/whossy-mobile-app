@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// C4 — every discovery-surface error used to render the same
@@ -17,6 +19,9 @@ const _genericError = DiscoveryErrorInfo(
 );
 
 DiscoveryErrorInfo discoveryErrorInfo(Object? error) {
+  // A failed-precondition message carries the console link that creates the
+  // missing index, so keep it visible instead of only the generic copy.
+  log('Discovery query failed: $error');
   if (error is FirebaseException &&
       (error.code == 'unavailable' || error.code == 'deadline-exceeded')) {
     return const DiscoveryErrorInfo(

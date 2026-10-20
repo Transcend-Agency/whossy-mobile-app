@@ -305,16 +305,20 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
             // Navigate back on success
             if (context.mounted) Navigator.pop(context);
 
-            reportNotifier.reportUser(
+            reportNotifier
+                .reportUser(
               report,
               showSnackbar: (msg) => showSnackbar(msg, this.context),
-            );
-
-            showSnackbar(
-              AppStrings.reportUser,
-              this.context,
-              snackBarType: SnackbarType.success,
-            );
+            )
+                .then((saved) {
+              if (saved && this.context.mounted) {
+                showSnackbar(
+                  AppStrings.reportUser,
+                  this.context,
+                  snackBarType: SnackbarType.success,
+                );
+              }
+            });
           },
         );
       },

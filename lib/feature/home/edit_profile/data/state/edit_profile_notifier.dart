@@ -24,6 +24,7 @@ import '../../../../auth/sign_up/model/geography.dart';
 import '../../../preferences/model/core_preferences.dart';
 import '../../model/profile_completion.dart' as completion;
 import '../../../preferences/model/generic_enum.dart';
+import '../../../settings/model/user_settings.dart';
 import '../../model/core_profile.dart';
 import '../../model/edit_profile_data.dart';
 
@@ -389,6 +390,15 @@ class EditProfileNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Mirrors a setting that was saved on its own, so the profile does not
+  /// later read as changed (or revert it) when the profile itself is saved.
+  void syncUserSetting(CoreSettings setting, bool value) {
+    for (final profile in [_dynCoreProfile, _staticCoreProfile]) {
+      if (profile == null) continue;
+      (profile.userSettings ??= UserSettings()).updateSwitch(setting, value);
+    }
+  }
+
   void _updateCoreProfile(AppUser user) {
     _dynCoreProfile = CoreProfile.fromJson(user.toJson());
     _staticCoreProfile = CoreProfile.fromJson(_dynCoreProfile!.toJson());
@@ -509,62 +519,6 @@ class EditProfileNotifier extends ChangeNotifier {
           e is FailedUploadException ? (e).message : AppStrings.errorUnknown);
       log(e.toString());
     }
-  }
-
-  Future<bool> addCreditsAfterPurchase({
-    required int credits,
-    void Function(String message)? onSnackbar,
-    required double amount,
-    required String currency,
-  }) async {
-    final previousCredit = coreProfile?.creditBalance ?? 0;
-
-    updateProfile(
-      creditBalance: previousCredit + credits,
-    );
-
-    final success = await saveUserProfile(
-      showSnackbar: (msg) {},
-    );
-
-    if (!success) {
-      updateProfile(
-        creditBalance: previousCredit,
-      );
-      onSnackbar?.call(AppStrings.addCreditsFailure);
-      return false;
-    }
-
-    onSnackbar?.call('Payment completed successfully!');
-    return true;
-  }
-
-  Future<bool> updateSubscription({
-    required String planId,
-    required String purchaseToken,
-  }) async {
-    final isPremiumUser = coreProfile?.isPremium ?? false;
-    final currentPlan = coreProfile?.currentPlan;
-    final paymentPlatform = coreProfile?.paymentPlatform;
-
-    updateProfile(
-      isPremium: true,
-      currentPlan: planId,
-      purchaseToken: purchaseToken,
-      paymentPlatform: PaymentPlatform.mobile,
-    );
-
-    final success = await saveUserProfile(showSnackbar: (msg) {});
-
-    if (!success) {
-      updateProfile(
-        isPremium: isPremiumUser,
-        currentPlan: currentPlan,
-        paymentPlatform: paymentPlatform,
-      );
-    }
-
-    return success;
   }
 
   void reset() {
