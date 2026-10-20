@@ -90,6 +90,14 @@ class UserRepository {
     }
   }
 
+  /// Writes one `user_settings` flag, leaving the others as they are.
+  Future<void> updateUserSetting(String key, bool value) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) throw StateError('Not signed in');
+
+    await _users.doc(uid).update({'user_settings.$key': value});
+  }
+
   Future<bool> isPhoneUnique(String phone) async {
     var result = await _users
         .where('phone_number', isEqualTo: phone)

@@ -39,9 +39,34 @@ class SettingsNotifier extends ChangeNotifier {
     );
   }
 
-  void updateSwitch(CoreSettings setting, bool newValue) {
+  /// Copies the saved settings in, so the switches open on what the account
+  /// actually has rather than on the defaults. Does not notify: it runs
+  /// before the settings screen's first build.
+  void loadFrom(UserSettings? saved) {
+    for (final setting in CoreSettings.values) {
+      _settings.updateSwitch(setting, saved?.getValue(setting) ?? true);
+    }
+  }
+
+  Future<void> updateSwitch(
+    CoreSettings setting,
+    bool newValue, {
+    void Function(String)? showSnackbar,
+    void Function(CoreSettings, bool)? onSaved,
+  }) async {
+    final previous = _settings.getValue(setting) ?? true;
     _settings.updateSwitch(setting, newValue);
     notifyListeners();
+
+    try {
+      await _userRepository.updateUserSetting(setting.key, newValue);
+      onSaved?.call(setting, newValue);
+    } catch (e) {
+      log('Error saving ${setting.key}: $e');
+      _settings.updateSwitch(setting, previous);
+      notifyListeners();
+      showSnackbar?.call("We couldn't save that setting. Please try again.");
+    }
   }
 
   Future<void> signOut(void Function(String) showSnackbar) async {

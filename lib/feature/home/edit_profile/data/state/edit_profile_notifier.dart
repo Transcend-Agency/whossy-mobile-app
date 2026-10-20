@@ -24,6 +24,7 @@ import '../../../../auth/sign_up/model/geography.dart';
 import '../../../preferences/model/core_preferences.dart';
 import '../../model/profile_completion.dart' as completion;
 import '../../../preferences/model/generic_enum.dart';
+import '../../../settings/model/user_settings.dart';
 import '../../model/core_profile.dart';
 import '../../model/edit_profile_data.dart';
 
@@ -387,6 +388,15 @@ class EditProfileNotifier extends ChangeNotifier {
       paymentPlatform: paymentPlatform,
     );
     notifyListeners();
+  }
+
+  /// Mirrors a setting that was saved on its own, so the profile does not
+  /// later read as changed (or revert it) when the profile itself is saved.
+  void syncUserSetting(CoreSettings setting, bool value) {
+    for (final profile in [_dynCoreProfile, _staticCoreProfile]) {
+      if (profile == null) continue;
+      (profile.userSettings ??= UserSettings()).updateSwitch(setting, value);
+    }
   }
 
   void _updateCoreProfile(AppUser user) {

@@ -29,6 +29,9 @@ class _SettingsState extends State<Settings> {
   @override
   void initState() {
     authRepo = AuthenticationRepository();
+    context.read<SettingsNotifier>().loadFrom(
+          context.read<EditProfileNotifier>().coreProfile?.userSettings,
+        );
     super.initState();
   }
 

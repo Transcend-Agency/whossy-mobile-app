@@ -32,17 +32,20 @@ enum CreditBundleIds implements GenericEnum {
 }
 
 enum CoreSettings implements GenericEnum {
-  publicSearch('Public Search',
+  publicSearch('Public Search', 'public_search',
       'Your profile will be visible to others for swiping and matching.'),
-  onlineStatus(
-      'Online Status', 'Your online activity won’t be visible to others.'),
-  readReceipts('Read Receipts',
+  onlineStatus('Online Status', 'online_status',
+      'Your online activity won’t be visible to others.'),
+  readReceipts('Read Receipts', 'read_receipts',
       'Matches won’t be able to see when you have read their messages and you won’t be able to see theirs.');
 
-  const CoreSettings(this.name, this.subtitle);
+  const CoreSettings(this.name, this.key, this.subtitle);
 
   @override
   final String name;
+
+  /// The field under `user_settings` in the user's document.
+  final String key;
   final String subtitle;
 }
 
