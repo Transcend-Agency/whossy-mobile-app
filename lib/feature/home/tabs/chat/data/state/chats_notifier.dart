@@ -14,6 +14,7 @@ import 'package:whossy_app/feature/home/tabs/chat/model/message.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/sub_chat.dart';
 
 import '../../../../../../common/utils/services/services.dart';
+import '../../../../../../common/utils/enum/enums.dart';
 import '../../../../edit_profile/model/core_profile.dart';
 import '../../../matching/model/user_profile.dart';
 import '../../model/current_chat.dart';
@@ -287,8 +288,19 @@ class ChatsNotifier extends ChangeNotifier {
     }
   }
 
+  /// Read receipts are mutual: with them off you neither tell the sender a
+  /// message was read nor see when yours were.
+  bool get readReceiptsOn => _profileData?.userSettings?.readReceipts ?? true;
+
+  /// The status to show on your own messages; a read message shows as sent
+  /// while your read receipts are off.
+  MessageStatus visibleStatus(MessageStatus status) =>
+      status == MessageStatus.seen && !readReceiptsOn
+          ? MessageStatus.sent
+          : status;
+
   Future<void> updateMessageStatus(Message message) async {
-    if (viewPermission) {
+    if (viewPermission && readReceiptsOn) {
       return _chatRepository.updateMessageStatus(
         message: message,
         chatId: currentChat?.chatId,

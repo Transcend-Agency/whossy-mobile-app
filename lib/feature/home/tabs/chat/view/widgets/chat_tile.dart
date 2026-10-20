@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:whossy_app/provider/provider.dart';
 import 'package:whossy_app/feature/home/tabs/chat/data/source/extensions.dart';
 
 import '../../../../../../common/components/components.dart';
@@ -90,7 +92,11 @@ class ChatTile extends StatelessWidget {
                   children: [
                     if (data.lastSenderUserId ==
                         FirebaseAuth.instance.currentUser!.uid)
-                      messageStatus(data.lastMessageStatus!),
+                      messageStatus(
+                        context
+                            .read<ChatsNotifier>()
+                            .visibleStatus(data.lastMessageStatus!),
+                      ),
                     addWidth(4),
                   ],
                 ),
