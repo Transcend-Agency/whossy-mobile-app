@@ -298,6 +298,11 @@ class ChatsNotifier extends ChangeNotifier {
   }
 
   void listenToChatUpdates() {
+    // Drop the previous room's state so the first snapshot here isn't read as
+    // a transition from that chat (it surfaced a bogus "credit returned" banner).
+    _subChat = null;
+    _creditEventMessage = null;
+    _chatSubscription?.cancel();
     _chatSubscription =
         _chatRepository.getChatDataStream(currentChat?.chatId).listen((chat) {
       if (chat != null) {
@@ -312,6 +317,7 @@ class ChatsNotifier extends ChangeNotifier {
   void cancelChatUpdates() {
     _chatSubscription?.cancel();
     _chatSubscription = null;
+    _subChat = null;
     _lastMessageId == null;
   }
 
