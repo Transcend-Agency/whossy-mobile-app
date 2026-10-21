@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:whossy_app/common/utils/utils.dart';
 import 'package:whossy_app/feature/home/tabs/profile/model/subscription_plan.dart';
 
 import '../../../../feature/home/tabs/profile/model/credit.dart';
-import 'purchase_handler.dart';
+import 'purchase_verifier.dart';
 
 class IAPService {
   IAPService._();
@@ -18,7 +17,8 @@ class IAPService {
   final _iap = InAppPurchase.instance;
   late StreamSubscription<List<PurchaseDetails>> _purchasesSubscription;
 
-  IAPPurchaseHandler? _handler;
+  /// Replaced in tests. Purchases are only honoured after this says granted.
+  PurchaseVerifier verifier = FunctionsPurchaseVerifier();
 
   // ✅ Cache for product metadata
   final Map<String, ProductDetails> _productDetailsMap = {};
@@ -28,11 +28,10 @@ class IAPService {
     ...subscriptionPlans.map((s) => s.productId),
   };
 
-  void configure({required IAPPurchaseHandler handler}) {
-    _handler = handler;
-  }
-
   Set<ProductDetails> creditProducts = {};
+
+  /// Why the last product load came back short, for the credits screen.
+  String? productLoadIssue;
   Set<ProductDetails> subscriptionProducts = {};
 
   Future<void> initialize() async {
@@ -55,32 +54,54 @@ class IAPService {
   }
 
   Future<void> updateAvailableProducts() async {
-    final response = await _iap.queryProductDetails(_kIds);
-
-    if (response.notFoundIDs.isEmpty) {
-      // Sort all products by price ascending first
-      final sortedProducts = response.productDetails.toList()
-        ..sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
-
-      // Filter products for credits
-      creditProducts = sortedProducts
-          .where((product) => credits.any((c) => c.productId == product.id))
-          .toSet();
-
-      // Filter products for subscriptions
-      subscriptionProducts = sortedProducts
-          .where((product) =>
-              subscriptionPlans.any((s) => s.productId == product.id))
-          .toSet();
+    if (!await _iap.isAvailable()) {
+      productLoadIssue =
+          'The app store is not available on this device. Make sure you are '
+          'signed in to the Play Store / App Store and try again.';
+      return;
     }
+
+    final response = await _iap.queryProductDetails(_kIds);
+    productLoadIssue = response.error != null
+        ? 'The store returned an error: ${response.error!.message}'
+        : response.productDetails.isEmpty
+            ? 'The store has no credit packs for this build. Install the app '
+                'from the Play Store / TestFlight (not a local build) with a '
+                'tester account.'
+            : null;
+    if (response.error != null) log('Store query error: ${response.error}');
+
+    // Keep whatever the store returned. Waiting for every id to be found meant
+    // one missing product (say a subscription not yet set up in the Play
+    // Console) emptied the credit packs too.
+    if (response.notFoundIDs.isNotEmpty) {
+      log('Store products not found: ${response.notFoundIDs}');
+    }
+
+    // Sort all products by price ascending first
+    final sortedProducts = response.productDetails.toList()
+      ..sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
+
+    // Filter products for credits
+    creditProducts = sortedProducts
+        .where((product) => credits.any((c) => c.productId == product.id))
+        .toSet();
+
+    // Filter products for subscriptions
+    subscriptionProducts = sortedProducts
+        .where((product) =>
+            subscriptionPlans.any((s) => s.productId == product.id))
+        .toSet();
   }
 
-  Future<void> buyConsumableProduct(String productId) async {
+  /// Whether the purchase flow started. False when the store could not find
+  /// the product or threw, so the caller can tell the user.
+  Future<bool> buyConsumableProduct(String productId) async {
     try {
       final response = await _iap.queryProductDetails({productId});
       if (response.notFoundIDs.isNotEmpty) {
         log('Product not found: $productId');
-        return;
+        return false;
       }
 
       final product = response.productDetails.first;
@@ -88,12 +109,13 @@ class IAPService {
 
       final purchaseParam = PurchaseParam(productDetails: product);
 
-      await _iap.buyConsumable(
+      return await _iap.buyConsumable(
         purchaseParam: purchaseParam,
         autoConsume: true,
       );
     } catch (e) {
       log('Error buying consumable: $e');
+      return false;
     }
   }
 
@@ -137,15 +159,23 @@ class IAPService {
 
           case PurchaseStatus.purchased:
           case PurchaseStatus.restored:
-            final isValid = await _verifyPurchase(purchase);
-            if (isValid) {
-              await _deliverProduct(purchase);
-            } else {
-              log('Invalid purchase detected for ${purchase.productID}');
-            }
+            // The server checks the purchase with Google and grants it. The
+            // app does not give itself anything.
+            final result = await verifier.verify(
+              productId: purchase.productID,
+              purchaseToken: purchase.verificationData.serverVerificationData,
+            );
 
-            if (purchase.pendingCompletePurchase) {
-              await _iap.completePurchase(purchase);
+            if (shouldCompletePurchase(result)) {
+              if (purchase.pendingCompletePurchase) {
+                await _iap.completePurchase(purchase);
+              }
+            } else {
+              // Left pending on purpose: the store hands it back on the next
+              // launch, so a purchase the server could not confirm yet (no
+              // network, Google unreachable) is retried and one that was paid
+              // for is never consumed without being granted.
+              log('Purchase ${purchase.productID} not granted yet: $result');
             }
             break;
 
@@ -163,45 +193,12 @@ class IAPService {
     }
   }
 
-  Future<void> _deliverProduct(PurchaseDetails purchase) async {
-    final productId = purchase.productID;
-    final product = _productDetailsMap[productId];
-    final purchaseToken = purchase.verificationData.serverVerificationData;
-
-    if (productId.startsWith('credits_')) {
-      final quantity = productId.creditQty;
-
-      if (quantity != null && _handler != null && product != null) {
-        final double amount = product.rawPrice;
-        final String currency = product.currencyCode;
-
-        await _handler!.grantCredits(
-          quantity,
-          amount: amount,
-          currency: currency,
-        );
-      }
-    } else if (productId.startsWith('subscription_')) {
-      if (_handler != null) {
-        await _handler!.markUserSubscribed(
-          planId: productId,
-          purchaseToken: purchaseToken,
-        );
-      }
-    }
-  }
-
   Future<void> restorePurchase() async {
     try {
       await _iap.restorePurchases();
     } catch (error) {
       log('Error: $error');
     }
-  }
-
-  Future<bool> _verifyPurchase(PurchaseDetails purchase) async {
-    // TODO: Optionally verify purchase via backend or signature check
-    return true;
   }
 
   void dispose() {

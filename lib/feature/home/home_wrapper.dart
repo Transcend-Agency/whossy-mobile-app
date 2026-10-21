@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +16,7 @@ import 'Tour/view/intro_tour.dart';
 import 'tabs/_.dart';
 import 'tabs/explore/data/state/scroll_visibility_notifier.dart';
 import 'tabs/matching/data/state/location_permission_stream.dart';
+import 'widgets/account_gate.dart';
 import 'widgets/verification_status_banner.dart';
 
 @RoutePage()
@@ -140,6 +140,14 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    return AccountGate(child: _home(context));
+  }
+
+  Widget _home(BuildContext context) {
+    // Read the inset here: the fixed-height nav box below would otherwise
+    // lose its own padding to the system buttons (3-button navigation).
+    final systemBottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    final navHeight = kFloatingNavHeight + 16 + systemBottomInset;
     return StreamProvider<LocationPermission>(
       create: (_) => createLifecycleAwarePermissionStream(),
       initialData: LocationPermission.denied,
@@ -158,11 +166,21 @@ class _HomeWrapperState extends State<HomeWrapper> {
               ),
               bottomNavBar: AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
-                height: scrollNotifier.isVisible ? 76.h : 0,
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-                  child: Wrap(
-                    children: [CustomBottomAppBar(items: bottomNavItems)],
+                height: scrollNotifier.isVisible ? navHeight : 0,
+                child: ClipRect(
+                  child: OverflowBox(
+                    alignment: Alignment.topCenter,
+                    minHeight: navHeight,
+                    maxHeight: navHeight,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        16,
+                        6,
+                        16,
+                        systemBottomInset + 10,
+                      ),
+                      child: CustomBottomAppBar(items: bottomNavItems),
+                    ),
                   ),
                 ),
               ),

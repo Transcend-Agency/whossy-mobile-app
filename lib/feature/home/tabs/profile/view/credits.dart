@@ -19,6 +19,24 @@ class Credits extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final selectedProductId = useState<String?>(null);
+    final products = useState(IAPService.instance.creditProducts);
+    final isLoading = useState(false);
+
+    Future<void> reload() async {
+      isLoading.value = true;
+      try {
+        await IAPService.instance.updateAvailableProducts();
+      } catch (_) {}
+      products.value = IAPService.instance.creditProducts;
+      isLoading.value = false;
+    }
+
+    // Products load once at launch; ask the store again when the screen opens
+    // in case that came back empty or late.
+    useEffect(() {
+      reload();
+      return null;
+    }, const []);
 
     return AppScaffold(
       appBar: CustomAppBar(
@@ -94,38 +112,63 @@ class Credits extends HookWidget {
             ),
             addHeight(20),
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: IAPService.instance.creditProducts.map((product) {
-                    return GenericTile(
-                      unselectedBorderColor: AppColors.outlinedColor,
-                      tileColor: Colors.white,
-                      bottom: 14.r,
-                      value: product.id,
-                      groupValue: selectedProductId.value,
-                      onChanged: (id) => selectedProductId.value = id,
-                      title: '${product.id.creditQty} Credits',
-                      subtitle: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          addHeight(3),
-                          Text(
-                            formatPrice(product.rawPrice, product.currencyCode),
-                            style: TextStyles.profileHead.copyWith(
-                              fontSize: AppUtils.scale(12.sp) ?? 16,
-                              color: Colors.black87,
+              child: products.value.isEmpty
+                  ? Center(
+                      child: isLoading.value
+                          ? const CircularProgressIndicator()
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Credit packs are not available right now.\n'
+                                  '${IAPService.instance.productLoadIssue ?? 'Check your connection and try again.'}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyles.hintThemeText,
+                                ),
+                                addHeight(12),
+                                TextButton(
+                                  onPressed: reload,
+                                  child: const Text('Try again'),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                    )
+                  : SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: products.value.map((product) {
+                          return GenericTile(
+                            unselectedBorderColor: AppColors.outlinedColor,
+                            tileColor: Colors.white,
+                            bottom: 14.r,
+                            value: product.id,
+                            groupValue: selectedProductId.value,
+                            onChanged: (id) => selectedProductId.value = id,
+                            title: '${product.id.creditQty} Credits',
+                            subtitle: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                addHeight(3),
+                                Text(
+                                  formatPrice(
+                                      product.rawPrice, product.currencyCode),
+                                  style: TextStyles.profileHead.copyWith(
+                                    fontSize: AppUtils.scale(12.sp) ?? 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    );
-                  }).toList(),
-                ),
-              ),
+                    ),
             ),
-            PayButton(productId: selectedProductId.value),
+            PayButton(
+              productId: selectedProductId.value,
+              hasProducts: products.value.isNotEmpty,
+            ),
           ],
         ),
       ),
@@ -135,8 +178,9 @@ class Credits extends HookWidget {
 
 class PayButton extends StatelessWidget {
   final String? productId;
+  final bool hasProducts;
 
-  const PayButton({super.key, this.productId});
+  const PayButton({super.key, this.productId, this.hasProducts = true});
 
   @override
   Widget build(BuildContext context) {
@@ -150,10 +194,23 @@ class PayButton extends StatelessWidget {
             color: AppColors.buttonColor,
             textColor: Colors.white,
             onPressed: productId == null
-                ? null
+                ? () => showSnackbar(
+                      hasProducts
+                          ? 'Select a credit pack first.'
+                          : 'Credit packs are not available right now.',
+                      context,
+                    )
                 : isConnected
-                    ? () async => await IAPService.instance
-                        .buyConsumableProduct(productId!)
+                    ? () async {
+                        final started = await IAPService.instance
+                            .buyConsumableProduct(productId!);
+                        if (!started && context.mounted) {
+                          showSnackbar(
+                            'Could not start the purchase. Try again.',
+                            context,
+                          );
+                        }
+                      }
                     : () => showSnackbar(AppStrings.deviceOffline, context),
           ),
         );

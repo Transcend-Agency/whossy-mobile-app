@@ -8,6 +8,11 @@ import '../../../provider/provider.dart';
 import '../../styles/text_style.dart';
 import '../../utils/utils.dart';
 
+/// Height of the floating pill itself, excluding its outer margins.
+const double kFloatingNavHeight = 64;
+
+const Duration kNavSlideDuration = Duration(milliseconds: 280);
+
 class BottomNavItem {
   final String assetPath;
   final String label;
@@ -48,11 +53,47 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
       },
     );
 
-    return BottomAppBar(
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: items,
+    return Container(
+      height: kFloatingNavHeight,
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(kFloatingNavHeight),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final tabWidth = constraints.maxWidth / widget.items.length;
+          return Stack(
+            children: [
+              // One highlight shared by all tabs, so it glides to the newly
+              // selected tab instead of each tab fading on and off.
+              AnimatedPositioned(
+                duration: kNavSlideDuration,
+                curve: Curves.easeOutCubic,
+                left: tabWidth * selectedIndex + 2,
+                top: 0,
+                bottom: 0,
+                width: tabWidth - 4,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color:
+                        AppColors.selectedTabIconColor.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(kFloatingNavHeight),
+                  ),
+                ),
+              ),
+              Row(children: items),
+            ],
+          );
+        },
       ),
     );
   }
@@ -63,7 +104,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
     ValueChanged<int>? onPressed,
     required bool isSelected,
   }) {
-    Color? color = isSelected
+    final Color color = isSelected
         ? AppColors.selectedTabIconColor
         : AppColors.unSelectedTabIconColor;
 
@@ -87,33 +128,44 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
     }
 
     return Expanded(
-      child: SizedBox(
-        child: Material(
-          type: MaterialType.transparency,
-          child: GestureDetector(
-            onTap: () => onPressed!(index),
-            child: Padding(
-              padding: EdgeInsets.all(1.r),
-              child: Column(
-                key: currentKey,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => onPressed!(index),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          alignment: Alignment.center,
+          child: TweenAnimationBuilder<Color?>(
+            tween: ColorTween(end: color),
+            duration: kNavSlideDuration,
+            builder: (context, animatedColor, _) => Column(
+              key: currentKey,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Fixed box so icons of different shapes (the heart is taller)
+                // line up across tabs.
+                SizedBox.square(
+                  dimension: 24,
+                  child: SvgPicture.asset(
                     item.assetPath,
-                    height: 23,
-                    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                    fit: BoxFit.contain,
+                    colorFilter: ColorFilter.mode(
+                        animatedColor ?? color, BlendMode.srcIn),
                   ),
-                  addHeight(4),
-                  Text(
+                ),
+                addHeight(3),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
                     item.label,
+                    maxLines: 1,
                     style: TextStyles.prefText.copyWith(
-                      color: color,
+                      color: animatedColor ?? color,
                       fontWeight: FontWeight.w500,
                       fontSize: AppUtils.scale(9.sp) ?? 11.5,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

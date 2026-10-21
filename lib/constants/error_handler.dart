@@ -43,6 +43,10 @@ void handleFirebaseAuthError(
     case 'account-exists-with-different-credential':
       showSnackbar(AppStrings.differentCredentials);
       break;
+    // Firestore's code, raised when the profile write after sign-up fails.
+    case 'unavailable':
+      showSnackbar(AppStrings.deviceOffline);
+      break;
 
     default:
       showSnackbar(AppStrings.errorUnknown);

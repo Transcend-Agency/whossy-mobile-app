@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import 'package:whossy_app/constants/strings.dart';
-import 'package:whossy_app/feature/home/edit_profile/data/state/edit_profile_notifier.dart';
 
-import '../common/utils/services/iap/purchase_handler.dart';
 import '../common/utils/services/services.dart';
 import '../common/utils/utils.dart';
 
@@ -29,15 +26,11 @@ class _WhossyState extends State<Whossy> with WidgetsBindingObserver {
     _initIAP();
 
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => consumePendingNotificationLaunch());
   }
 
   Future<void> _initIAP() async {
-    IAPService.instance.configure(
-      handler: AppPurchaseHandler(
-        context.read<EditProfileNotifier>(),
-      ),
-    );
-
     await IAPService.instance.initialize();
   }
 
@@ -72,8 +65,6 @@ class _WhossyState extends State<Whossy> with WidgetsBindingObserver {
     }
   }
 
-  final _appRouter = AppRouter();
-
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -85,7 +76,7 @@ class _WhossyState extends State<Whossy> with WidgetsBindingObserver {
         theme: AppTheme().theme(),
         themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
-        routerConfig: _appRouter.config(),
+        routerConfig: appRouter.config(),
       ),
     );
   }

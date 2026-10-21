@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as p;
@@ -39,13 +40,32 @@ class UserRepository {
   Future<void> addUserToken() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     String token = await NotificationService().getToken();
+    if (token.isEmpty) return;
 
     await _users.doc(userId).update({
       'tokens': FieldValue.arrayUnion([token])
     });
   }
 
+  // B1: this used to only invalidate the token client-side
+  // (NotificationService().deleteToken()) without ever removing it from
+  // Firestore's `tokens` array — stale tokens accumulated on every account
+  // indefinitely. Read the token first (deleting it first would make it
+  // unreadable) and arrayRemove that exact value before invalidating it.
   Future<void> removeUserToken() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+
+    try {
+      final token = await NotificationService().getToken();
+      if (userId != null && token.isNotEmpty) {
+        await _users.doc(userId).update({
+          'tokens': FieldValue.arrayRemove([token])
+        });
+      }
+    } catch (e) {
+      log('Error removing user token from Firestore: $e');
+    }
+
     await NotificationService().deleteToken().timeout(
       const Duration(seconds: 3),
       onTimeout: () {
@@ -70,6 +90,14 @@ class UserRepository {
     }
   }
 
+  /// Writes one `user_settings` flag, leaving the others as they are.
+  Future<void> updateUserSetting(String key, bool value) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) throw StateError('Not signed in');
+
+    await _users.doc(uid).update({'user_settings.$key': value});
+  }
+
   Future<bool> isPhoneUnique(String phone) async {
     var result = await _users
         .where('phone_number', isEqualTo: phone)
@@ -83,6 +111,12 @@ class UserRepository {
     bool exists = false,
   }) async {
     try {
+      // The number can only be looked up once signed in. On the screens that
+      // ask before sign-in this passes, and the real check happens right
+      // after the code is confirmed (login: requireExistingProfile; signup:
+      // signUpWithPhone).
+      if (FirebaseAuth.instance.currentUser == null) return {'isEmpty': true};
+
       bool isEmpty = await isPhoneUnique(phone);
 
       return {
@@ -111,15 +145,41 @@ class UserRepository {
   /// Watches the current user's `face_verification` field, so the app can
   /// react when an admin approves/rejects a submitted selfie (reviewed via
   /// the Retool admin tooling, which writes directly to this document).
-  Stream<FaceVerification?> faceVerificationStream() {
+  ///
+  /// `is_approved` comes along with it: the server sets both when the review
+  /// passes, and the like and message buttons check `is_approved`. The plan and
+  /// the credit balance come along too, because the server changes them (a
+  /// purchase, a hold, a refund, a lapsed subscription) while the app is open.
+  Stream<
+      ({
+        FaceVerification? faceVerification,
+        bool? isApproved,
+        bool? isPremium,
+        int? creditBalance,
+        int? creditsOnHold,
+      })> faceVerificationStream() {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
     return _users.doc(uid).snapshots().map((snapshot) {
       final data = snapshot.data();
-      if (data == null) return null;
+      if (data == null) {
+        return (
+          faceVerification: null,
+          isApproved: null,
+          isPremium: null,
+          creditBalance: null,
+          creditsOnHold: null,
+        );
+      }
 
-      return FaceVerification.faceVerificationFromJson(
-        data['face_verification'] as Map<String, dynamic>?,
+      return (
+        faceVerification: FaceVerification.faceVerificationFromJson(
+          data['face_verification'] as Map<String, dynamic>?,
+        ),
+        isApproved: data['is_approved'] as bool?,
+        isPremium: data['is_premium'] as bool?,
+        creditBalance: (data['credit_balance'] as num?)?.toInt(),
+        creditsOnHold: (data['credits_on_hold'] as num?)?.toInt(),
       );
     });
   }
@@ -178,14 +238,6 @@ class UserRepository {
       }
     }
     return profiles;
-  }
-
-  Future<bool> doesEmailExist(String email) async {
-    var result = await _users
-        .where('email', isEqualTo: email)
-        .get(const GetOptions(source: Source.server));
-
-    return result.docs.isNotEmpty;
   }
 
   /// Maps a file extension to its image MIME type. `putData` (unlike
@@ -297,7 +349,7 @@ class UserRepository {
     required VoidCallback onAuthenticate,
     required VoidCallback toCreateAccount,
     required VoidCallback toOnboarding,
-    void Function(UserCredential)? showEmailSnackbar,
+    void Function(UserCredential)? onEmailUnverified,
     UserCredential? userCred,
   }) async {
     if (user == null) {
@@ -324,39 +376,25 @@ class UserRepository {
         }
       }
 
-      // await addUserToken(tokens: appUser?.tokens);
+      // B1: re-register on login too, not just at signup — otherwise a
+      // rotated or reinstalled-app token never reaches Firestore for a
+      // returning user, and every push to them silently no-ops.
+      await addUserToken();
 
       onAuthenticate();
     } else {
-      // Email is not verified, show the Snackbar
-      if (showEmailSnackbar != null && userCred != null) {
-        showEmailSnackbar(userCred);
+      // Email is not verified: send them to verify it
+      if (onEmailUnverified != null && userCred != null) {
+        onEmailUnverified(userCred);
       }
     }
   }
 
-  Future<void> deleteUserData(String userId) async {
-    try {
-      // 🔹 Delete all notifications at once
-      final notificationsRef = _users.doc(userId).collection("notifications");
-
-      final notificationsSnap = await notificationsRef.get(
-        const GetOptions(source: Source.server),
-      );
-
-      final batch = FirebaseFirestore.instance.batch();
-
-      for (var doc in notificationsSnap.docs) {
-        batch.delete(doc.reference);
-      }
-      await batch.commit(); // Commit the batch delete
-
-      // 🔹 Now delete the user document
-      await _users.doc(userId).delete();
-    } catch (e) {
-      log("Error deleting user data: $e");
-      rethrow;
-    }
+  /// Deletes the account and everything tied to it, server-side. The
+  /// function refuses unless the sign-in is recent, so reauthenticate first.
+  Future<void> deleteAccount() async {
+    await FirebaseAuth.instance.currentUser?.getIdToken(true);
+    await FirebaseFunctions.instance.httpsCallable('deleteAccount').call();
   }
 
   Future<void> signOut() async {

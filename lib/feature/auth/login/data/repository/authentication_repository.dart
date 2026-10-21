@@ -21,18 +21,39 @@ class AuthenticationRepository {
   }
 
   Future<ResetResponse> resetPassword(String email) async {
-    final emailExists = await _userRepository.doesEmailExist(email);
-
-    if (emailExists) {
+    // Sent without first checking the email is registered: that check ran
+    // signed out, which the security rules do not allow, and it told anyone
+    // which emails have accounts.
+    try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-
-      return ResetResponse(isSuccess: true, message: 'Verification email sent');
+    } on FirebaseAuthException catch (e) {
+      // An unknown email gets the same answer as a known one.
+      if (e.code != 'user-not-found') rethrow;
     }
 
     return ResetResponse(
-      isSuccess: false,
-      message: 'Email is not registered with the app',
+      isSuccess: true,
+      message: 'If that email has an account, a reset link is on its way',
     );
+  }
+
+  /// Logging in must land on an account that has a profile. This runs after
+  /// sign-in because the profile can only be read once signed in; a login
+  /// Firebase created just now for an unregistered user is removed again so
+  /// it does not linger as an empty account.
+  Future<void> requireExistingProfile(
+    UserCredential? credential, {
+    String message = AppStrings.unregisteredEmail,
+  }) async {
+    if (credential?.user == null) return;
+    if (await _userRepository.getUserData() != null) return;
+
+    if (credential!.additionalUserInfo?.isNewUser ?? false) {
+      await credential.user!.delete();
+    } else {
+      await FirebaseAuth.instance.signOut();
+    }
+    throw UnregisteredEmailException(message);
   }
 
   Future<UserCredential> handleEmailLogin(String email, String password) async {
@@ -115,16 +136,13 @@ class AuthenticationRepository {
       idToken: googleAuth.idToken,
     );
 
-    final emailExists = await _userRepository.doesEmailExist(googleUser.email);
+    final result = await _signInOrLink(credential);
+    // Signing up onto an existing profile is refused by setBaseData.
+    if (isLogin) await requireExistingProfile(result);
+    return result;
+  }
 
-    if (emailExists && !isLogin) {
-      throw RegisteredEmailException(AppStrings.registeredEmail);
-    }
-
-    if (!emailExists && isLogin) {
-      throw UnregisteredEmailException(AppStrings.unregisteredEmail);
-    }
-
+  Future<UserCredential> _signInOrLink(AuthCredential credential) async {
     final user = FirebaseAuth.instance.currentUser;
 
     try {
@@ -141,7 +159,8 @@ class AuthenticationRepository {
     }
   }
 
-  Future<UserCredential?> handleAppleAuthentication() async {
+  Future<UserCredential?> handleAppleAuthentication(
+      {bool isLogin = true}) async {
     final appleCredential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
@@ -154,28 +173,9 @@ class AuthenticationRepository {
       accessToken: appleCredential.authorizationCode,
     );
 
-    final emailExists = appleCredential.email != null
-        ? await _userRepository.doesEmailExist(appleCredential.email!)
-        : false;
-
-    if (emailExists) {
-      throw RegisteredEmailException(AppStrings.registeredEmail);
-    }
-
-    final user = FirebaseAuth.instance.currentUser;
-
-    try {
-      return user != null
-          ? await user.linkWithCredential(credential)
-          : await FirebaseAuth.instance.signInWithCredential(credential);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'provider-already-linked' ||
-          e.code == 'credential-already-in-use') {
-        return await FirebaseAuth.instance.signInWithCredential(credential);
-      } else {
-        rethrow;
-      }
-    }
+    final result = await _signInOrLink(credential);
+    if (isLogin) await requireExistingProfile(result);
+    return result;
   }
 
   /// Re-authenticate with Google

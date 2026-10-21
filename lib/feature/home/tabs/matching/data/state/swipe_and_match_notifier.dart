@@ -45,9 +45,7 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     _otherPreferences = otherPrefs;
     _corePreferences = corePrefs;
     notifyListeners();
-
-    //log('Other Preferences \n ${otherPrefs.toString()}');
-
+    _matchRepository.resetPaging();
     fetchProfiles();
   }
 
@@ -94,6 +92,8 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     hasTakenTutorial =
         !await _sharedPrefs.isFirstTimeOpened(HomeWrapper.tutorial, uid);
   }
+
+  void loadMore() => _matchRepository.loadMore();
 
   // Fetch profiles using Stream
   void fetchProfiles() {
@@ -197,6 +197,7 @@ class SwipeAndMatchNotifier with ChangeNotifier {
     _hasFetchedProfiles = false;
     _hasDeniedLocationPermission = false;
     _hasTakenTutorial = false;
+    _matchRepository.resetPaging();
     notifyListeners();
   }
 }

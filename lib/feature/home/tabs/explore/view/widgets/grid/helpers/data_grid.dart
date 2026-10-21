@@ -10,6 +10,7 @@ import '../../../../../../../../common/components/components.dart';
 import '../../../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../../../common/utils/utils.dart';
 import '../../../../../../../../constants/index.dart';
+import '../../../../data/state/explore_notifier.dart';
 import '../../../../data/state/scroll_visibility_notifier.dart';
 import '../../../../model/liked_user_profile.dart';
 import 'like_icon.dart';
@@ -65,6 +66,12 @@ class _DataGridState extends State<DataGrid> {
     else if (speed < -0.5 && _isAppBarHidden) {
       _isAppBarHidden = false;
       _scrollNotifier.updateVisibility(true);
+    }
+
+    // C5 — top up before the grid runs dry rather than waiting for the
+    // user to hit a hard stop with no indication more might exist.
+    if (_scrollController.position.extentAfter < 400) {
+      context.read<ExploreNotifier>().loadMoreProfiles();
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:whossy_app/common/components/components.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/auth/login/data/repository/authentication_repository.dart';
@@ -28,6 +29,9 @@ class _SettingsState extends State<Settings> {
   @override
   void initState() {
     authRepo = AuthenticationRepository();
+    context.read<SettingsNotifier>().loadFrom(
+          context.read<EditProfileNotifier>().coreProfile?.userSettings,
+        );
     super.initState();
   }
 
@@ -80,6 +84,19 @@ class _SettingsState extends State<Settings> {
     // If result is null, do nothing (user canceled)
   }
 
+  /// Help & Support has no screen of its own, so it opens an email to
+  /// support. Its route was null, which threw when the row was tapped.
+  Future<bool?> contactSupport() async {
+    final opened = await launchUrl(
+      Uri(scheme: 'mailto', path: 'support@whossy.com'),
+    ).catchError((_) => false);
+
+    if (!opened && mounted) {
+      showSnackbar('Email us at support@whossy.com', context);
+    }
+    return null;
+  }
+
   Future<bool?> takeTutorial() async {
     final startTour = await showConfirmationDialog(
       context,
@@ -127,9 +144,11 @@ class _SettingsState extends State<Settings> {
                     child: ExtraCoreSettings(
                       title: data.name,
                       route: data.route,
-                      onTap: data.name == 'Guided Tour'
-                          ? () => takeTutorial()
-                          : null,
+                      onTap: switch (data.name) {
+                        'Guided Tour' => () => takeTutorial(),
+                        'Help & Support' => () => contactSupport(),
+                        _ => null,
+                      },
                     ),
                   );
                 }).toList(),

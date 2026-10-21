@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,7 +10,7 @@ import '../../../../../common/utils/utils.dart';
 import '../../../../../constants/index.dart';
 import '../../../../auth/login/data/repository/authentication_repository.dart';
 import '../../../../auth/sign_up/data/repository/user_repository.dart';
-import '../../../edit_profile/view/widgets/sheets/name_sheet.dart';
+import '../../../edit_profile/view/widgets/sheets/password_sheet.dart';
 import '../../../tabs/matching/model/user_profile.dart';
 import '../../model/user_settings.dart';
 
@@ -38,9 +39,34 @@ class SettingsNotifier extends ChangeNotifier {
     );
   }
 
-  void updateSwitch(CoreSettings setting, bool newValue) {
+  /// Copies the saved settings in, so the switches open on what the account
+  /// actually has rather than on the defaults. Does not notify: it runs
+  /// before the settings screen's first build.
+  void loadFrom(UserSettings? saved) {
+    for (final setting in CoreSettings.values) {
+      _settings.updateSwitch(setting, saved?.getValue(setting) ?? true);
+    }
+  }
+
+  Future<void> updateSwitch(
+    CoreSettings setting,
+    bool newValue, {
+    void Function(String)? showSnackbar,
+    void Function(CoreSettings, bool)? onSaved,
+  }) async {
+    final previous = _settings.getValue(setting) ?? true;
     _settings.updateSwitch(setting, newValue);
     notifyListeners();
+
+    try {
+      await _userRepository.updateUserSetting(setting.key, newValue);
+      onSaved?.call(setting, newValue);
+    } catch (e) {
+      log('Error saving ${setting.key}: $e');
+      _settings.updateSwitch(setting, previous);
+      notifyListeners();
+      showSnackbar?.call("We couldn't save that setting. Please try again.");
+    }
   }
 
   Future<void> signOut(void Function(String) showSnackbar) async {
@@ -82,20 +108,20 @@ class SettingsNotifier extends ChangeNotifier {
         return false;
       }
 
-      bool reAuth = false;
+      // Phone sign-ins cannot be re-confirmed in place. The server refuses
+      // the deletion if the session is not recent, and that case is reported
+      // below.
+      bool reAuth = provider == "phone";
 
       // **Reauthentication Handling**
       if (provider == "password" && context.mounted) {
-        String? password = await showNameSheet(
+        String? password = await showPasswordSheet(
           context: context,
-          name: '',
           title: "Enter Password",
         );
 
         if (password == null) return null; // User canceled password input
         reAuth = await _authRepository.reAuthenticateWithEmail(password);
-      } else if (provider == "phone") {
-        // reAuth = await _authRepository.reauthenticateWithPhone(user.phoneNumber!);
       } else if (provider == "google.com") {
         reAuth = await _authRepository.reAuthenticateWithGoogle();
       } else if (provider == "apple.com") {
@@ -107,16 +133,19 @@ class SettingsNotifier extends ChangeNotifier {
         return false;
       }
 
-      // **Delete User Data**
-      await _userRepository.deleteUserData(user.uid);
-
-      // **Delete Firebase User**
-      await user.delete();
+      // Everything, including the login itself, is removed server-side.
+      await _userRepository.deleteAccount();
 
       // **Sign Out**
       await signOut(showSnackbar);
 
       return true; // Deletion successful
+    } on FirebaseFunctionsException catch (e) {
+      log("Delete Account Error: ${e.code} ${e.message}");
+      showSnackbar((e.message ?? '').contains('RECENT_LOGIN_REQUIRED')
+          ? 'For your security, log out, sign in again, then delete your account.'
+          : "We couldn't delete your account. Nothing was removed; please try again.");
+      return false;
     } catch (e) {
       log("Delete Account Error: $e");
       showSnackbar("Failed to delete account. Please try again.");

@@ -70,7 +70,8 @@ class InterestBioComponent<T extends SearchPreferencesNotifier>
                                 child: Transform.scale(
                                   scale: 0.7,
                                   child: Switch.adaptive(
-                                    value: prefs.similarInterest ?? true,
+                                    // Unset means the search does not filter on interests, so it reads as off.
+                                    value: prefs.similarInterest ?? false,
                                     onChanged: (value) =>
                                         notifier.updatePreferences(
                                             similarInterest: value),

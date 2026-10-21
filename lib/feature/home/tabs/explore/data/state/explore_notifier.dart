@@ -40,8 +40,14 @@ class ExploreNotifier extends ChangeNotifier {
       corePreferences: _corePreferences,
       interests: _profileData?.interests ?? [],
       gender: _profileData?.meet ?? 2,
+      latitude: _profileData?.latitude,
+      longitude: _profileData?.longitude,
     );
   }
+
+  /// C5 — fetch another page for filters that support it; a no-op (capped
+  /// single page) for filters that don't, see ExploreRepository.
+  void loadMoreProfiles() => _exploreRepository.loadMore();
 
   var _filters = ExploreFilters(filters: {});
 
@@ -50,18 +56,21 @@ class ExploreNotifier extends ChangeNotifier {
 
   /// Update filters object entirely
   void updateFilters(ExploreFilters newFilters) {
+    _exploreRepository.resetPaging();
     _filters = newFilters;
     notifyListeners();
   }
 
   /// Add or update a single filter
   void addFilter(Filters filter, dynamic value) {
+    _exploreRepository.resetPaging();
     _filters = _filters.addFilter(filter, value);
     notifyListeners();
   }
 
   /// Remove a filter
   void removeFilter(Filters filter) {
+    _exploreRepository.resetPaging();
     _filters = _filters.removeFilter(filter);
     notifyListeners();
   }

@@ -11,6 +11,11 @@ import '../../../../../common/styles/text_style.dart';
 import '../../../../../constants/index.dart';
 import '../../../../../provider/provider.dart';
 
+/// Shown when no age range has been saved. The search applies no age limit
+/// in that case, so the slider reads as its full span rather than a 25-35
+/// that was never applied.
+const RangeValues _kAnyAge = RangeValues(18, 70);
+
 class DistanceAgeComponent<T extends SearchPreferencesNotifier>
     extends HookWidget {
   const DistanceAgeComponent({super.key});
@@ -85,42 +90,11 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                             ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14.r),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: FractionallySizedBox(
-                            widthFactor: 0.8,
-                            child: Text(
-                              'Show people outside my distance radius and country for better reach',
-                              style: TextStyles.prefText
-                                  .copyWith(color: AppColors.hintTextColor),
-                            ),
-                          ),
-                        ),
-                        AppAnimatedSwitcher(
-                          child: prefs == null
-                              ? Padding(
-                                  key: const ValueKey(false),
-                                  padding: EdgeInsets.symmetric(vertical: 13.r)
-                                      .copyWith(right: 11.r),
-                                  child: const ShimmerSwitch(),
-                                )
-                              : Transform.scale(
-                                  key: const ValueKey("data"),
-                                  scale: 0.7,
-                                  child: Switch.adaptive(
-                                    value: prefs.outreach ?? true,
-                                    onChanged: (value) => notifier
-                                        .updatePreferences(outreach: value),
-                                  ),
-                                ),
-                        )
-                      ],
-                    ),
-                  ),
+                  // C6: "outreach" toggle removed — MatchRepository no longer
+                  // caps reach by radius at all (distance is a ranking signal,
+                  // not a cutoff), so a toggle promising to bypass a cap that
+                  // no longer exists would be its own new instance of exactly
+                  // the bug this plan exists to fix.
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 14.r, vertical: 12.h),
@@ -145,7 +119,7 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                               : AppChip(
                                   key: const ValueKey('data'),
                                   data:
-                                      '${prefs.toAgeRange()?.start.round() ?? 25} - ${prefs.toAgeRange()?.end.round() ?? 35}',
+                                      '${prefs.toAgeRange()?.start.round() ?? _kAnyAge.start.round()} - ${prefs.toAgeRange()?.end.round() ?? _kAnyAge.end.round()}',
                                   isSelected: false,
                                   outlined: false,
                                 ),
@@ -173,9 +147,8 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
                                   maxAge: values.end.toInt(),
                                 );
                               },
-                              values: prefs.toAgeRange() ??
-                                  const RangeValues(25, 35),
-                              range: const RangeValues(18, 70),
+                              values: prefs.toAgeRange() ?? _kAnyAge,
+                              range: _kAnyAge,
                             ),
                     ),
                   ),

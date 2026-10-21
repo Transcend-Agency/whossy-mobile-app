@@ -10,6 +10,10 @@ class PreferenceTile extends StatelessWidget {
   final String? text;
   final String? trailing;
   final VoidCallback? onTap;
+
+  /// Shows a clear (x) button next to a chosen value. Not shown while the row
+  /// still reads 'Choose'.
+  final VoidCallback? onClear;
   final TextStyle? textStyle;
   final Color? iconColor;
   final bool showDivider;
@@ -20,6 +24,7 @@ class PreferenceTile extends StatelessWidget {
     super.key,
     required this.text,
     this.onTap,
+    this.onClear,
     this.textStyle,
     this.iconColor,
     this.showDivider = true,
@@ -54,7 +59,11 @@ class PreferenceTile extends StatelessWidget {
                       text!,
                       style: textStyle ?? TextStyles.prefText,
                     ),
-                    Container(
+                    // Flexible so a long value (for example 'Not Complete,
+                    // Re-verification needed') shrinks and ellipsizes instead
+                    // of overflowing the row.
+                    Flexible(
+                        child: Container(
                       margin: EdgeInsets.only(
                         top: hasTrailing ? 13.r : 16.r,
                         bottom: hasTrailing ? 13.r : 16.r,
@@ -63,7 +72,8 @@ class PreferenceTile extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          AppAnimatedSwitcher(
+                          Flexible(
+                              child: AppAnimatedSwitcher(
                             child: hasTrailing
                                 ? Text(
                                     trailing!,
@@ -72,6 +82,8 @@ class PreferenceTile extends StatelessWidget {
                                       color: AppColors.hintTextColor,
                                     ),
                                     textAlign: TextAlign.right,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                     key: const ValueKey('data'),
                                   )
                                 : ShimmerWidget.rectangular(
@@ -82,7 +94,24 @@ class PreferenceTile extends StatelessWidget {
                                     ),
                                     key: const ValueKey<bool>(false),
                                   ),
-                          ),
+                          )),
+                          if (onClear != null &&
+                              hasTrailing &&
+                              trailing != 'Choose') ...[
+                            addWidth(6),
+                            GestureDetector(
+                              onTap: onClear,
+                              behavior: HitTestBehavior.opaque,
+                              child: Padding(
+                                padding: EdgeInsets.all(4.r),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  color: iconColor ?? AppColors.hintTextColor,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ],
                           if (onTap != null && showTrailingIcon) ...[
                             addWidth(6),
                             Icon(
@@ -93,7 +122,7 @@ class PreferenceTile extends StatelessWidget {
                           ],
                         ],
                       ),
-                    )
+                    ))
                   ],
                 ),
                 if (showDivider) const AppDivider(),

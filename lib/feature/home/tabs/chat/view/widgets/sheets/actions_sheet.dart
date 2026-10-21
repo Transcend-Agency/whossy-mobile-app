@@ -191,7 +191,6 @@ class _ActionsSheetState extends State<ActionsSheet> {
             }
 
             final report = Report(
-              id: chat.chatId,
               message: '$reason $extra'.trim(),
               reportedId: chat.uidUser2,
               reportedName: chat.username,
@@ -202,14 +201,18 @@ class _ActionsSheetState extends State<ActionsSheet> {
             // Navigate back on success
             if (context.mounted) Navigator.pop(context);
 
-            reportNotifier.reportUser(report,
-                showSnackbar: (msg) => showSnackbar(msg, this.context));
-
-            showSnackbar(
-              AppStrings.reportUser,
-              this.context,
-              snackBarType: SnackbarType.success,
-            );
+            reportNotifier
+                .reportUser(report,
+                    showSnackbar: (msg) => showSnackbar(msg, this.context))
+                .then((saved) {
+              if (saved && this.context.mounted) {
+                showSnackbar(
+                  AppStrings.reportUser,
+                  this.context,
+                  snackBarType: SnackbarType.success,
+                );
+              }
+            });
           },
         );
       },

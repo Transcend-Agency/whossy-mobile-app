@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
@@ -86,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
       password: password,
       showSnackbar: showSnackbar,
       onAuthenticate: onAuthenticate,
-      showEmailSnackbar: showEmailSnackbar,
+      onEmailUnverified: onEmailUnverified,
       toCreateAccount: toCreateAccount,
       toOnboarding: toOnboarding,
     );
@@ -99,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .loginWithApple(
           showSnackbar: showSnackbar,
           onAuthenticate: onAuthenticate,
-          showEmailSnackbar: showEmailSnackbar,
+          onEmailUnverified: onEmailUnverified,
           toCreateAccount: toCreateAccount,
           toOnboarding: toOnboarding,
         )
@@ -113,31 +114,26 @@ class _LoginScreenState extends State<LoginScreen> {
         .loginWithGoogle(
           showSnackbar: showSnackbar,
           onAuthenticate: onAuthenticate,
-          showEmailSnackbar: showEmailSnackbar,
+          onEmailUnverified: onEmailUnverified,
           toCreateAccount: toCreateAccount,
           toOnboarding: toOnboarding,
         )
         .whenComplete(() => context.mounted ? Navigator.of(context).pop() : {});
   }
 
-  // Function to show the "Email not verified" Snackbar
-  void showEmailSnackbar(UserCredential credential) {
-    if (mounted) {
-      final user = credential.user!;
-
-      showTopSnackBar(
-        Overlay.of(context),
-        displayDuration: const Duration(seconds: 5),
-        AppSnackbar(
-          text: 'Email not verified',
-          label: 'Verify',
-          onLabelTapped: () async {
-            await user.sendEmailVerification();
-            onVerifyTapped();
-          },
-        ),
-      );
+  // The verification email is only sent at the end of account creation, so
+  // someone who left sign-up early has never had one. Send it now and open
+  // the verification screen, which has resend and a way back to login.
+  Future<void> onEmailUnverified(UserCredential credential) async {
+    try {
+      await credential.user!.sendEmailVerification();
+    } on FirebaseAuthException catch (e) {
+      // Usually too-many-requests from repeated logins; the screen's resend
+      // button covers it.
+      log('Verification email not sent: ${e.code}');
     }
+
+    if (mounted) toVerifyEmail();
   }
 
   showSnackbar(String message) {
@@ -158,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   toOnboarding() => Nav.push(context, const Wrapper());
 
-  void onVerifyTapped() =>
+  void toVerifyEmail() =>
       Nav.push(context, SignUpVerificationRoute(pop: true));
 
   @override
@@ -190,9 +186,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool useScroll = ScreenUtil().screenHeight < 756;
     return AppScaffold(
-      useScrollView: useScroll,
+      fillViewportAndScroll: true,
+      resizeToAvoidBottomInset: true,
       padding: pagePadding,
       body: Selector<LoginNotifier, bool>(
         selector: (_, auth) => auth.spinnerState,
@@ -330,7 +326,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              useScroll ? addHeight(60) : const Spacer(),
+              addHeight(24),
+              const Spacer(),
               const PrivacyText(
                 text: AppStrings.loginAgreement,
               )

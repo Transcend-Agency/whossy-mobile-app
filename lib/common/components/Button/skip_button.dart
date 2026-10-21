@@ -13,7 +13,9 @@ class SkipButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return [4, 5, 6, 7, 8, 9, 10, 11].contains(page)
+    // Page 9 (photos) is deliberately excluded — the photo minimum must be
+    // an actual gate, not a skippable one (A2).
+    return [4, 5, 6, 7, 8, 10, 11].contains(page)
         ? Row(
             mainAxisSize: MainAxisSize.min,
             children: [

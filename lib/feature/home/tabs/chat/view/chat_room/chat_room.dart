@@ -66,8 +66,8 @@ class _ChatRoomState extends State<ChatRoom> {
       if (scrollController.hasClients) {
         scrollController
             .animateTo(0,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.fastOutSlowIn)
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.fastOutSlowIn)
             .then((value) {
           if (scrollController.offset > 20) {
             // If not close to the bottom, trigger the function
@@ -86,7 +86,17 @@ class _ChatRoomState extends State<ChatRoom> {
     }
   }
 
+  // Set while a send is waiting on the chat cycle (the initiateChat call can
+  // take a few seconds). A second tap in that time used to send the text once
+  // and then an empty message, because the first send had cleared the field.
+  bool _isSending = false;
+
   void sendMessage() async {
+    if (_isSending) return;
+
+    final text = messagesController.text.trim();
+    if (text.isEmpty) return;
+
     // Block sending until the sender's selfie is verified (covers reaching
     // this chat room via an existing conversation, bypassing the gated
     // entry points in MatchingProfilePreview).
@@ -106,21 +116,27 @@ class _ChatRoomState extends State<ChatRoom> {
     // Reply-Gated Credits gate: starting a new cycle places a hold via the
     // `initiateChat` Cloud Function (confirmed by the user first, AC 1.2);
     // pending/connected sends pass straight through.
-    final canSend = await _chatsNotifier.ensureChatCycle(
-      confirmHold: _confirmHold,
-      onNotice: (message) {
-        if (mounted) showSnackbar(message, context);
-      },
-      onNeedsCredits: () {
-        if (mounted) Nav.push(context, const Credits());
-      },
-    );
+    _isSending = true;
+    final bool canSend;
+    try {
+      canSend = await _chatsNotifier.ensureChatCycle(
+        confirmHold: _confirmHold,
+        onNotice: (message) {
+          if (mounted) showSnackbar(message, context);
+        },
+        onNeedsCredits: () {
+          if (mounted) Nav.push(context, const Credits());
+        },
+      );
+    } finally {
+      _isSending = false;
+    }
 
     if (!canSend || !mounted) return;
 
     _scrollToBottom();
 
-    _chatsNotifier.sendMessage(messagesController.text.trim());
+    _chatsNotifier.sendMessage(text);
 
     messagesController.clear();
   }
@@ -303,7 +319,7 @@ class _ChatRoomState extends State<ChatRoom> {
           ),
           body: Stack(
             children: [
-             if (data.hasViewPermission)
+              if (data.hasViewPermission)
                 Column(
                   children: [
                     Expanded(
@@ -329,95 +345,95 @@ class _ChatRoomState extends State<ChatRoom> {
                       builder: (_, blockedIds, __) {
                         return blockedIds.contains(data.currentChat.uidUser2)
                             ? GestureDetector(
-                          onTap: unblockUser,
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 10),
-                            height: 50.r,
-                            width: double.infinity,
-                            color: AppColors.inputBackGround
-                                .withValues(alpha: .9),
-                            child: Center(
-                              child: Text(
-                                'UNBLOCK',
-                                style: TextStyles.chatText.copyWith(
-                                  fontSize:
-                                  AppUtils.scale(11.5.sp) ?? 13.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.primaryColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                            : Padding(
-                          padding: chatFieldPadding,
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: onAddPhoto,
-                                child: Padding(
-                                  padding: EdgeInsets.all(4.r)
-                                      .copyWith(right: 10),
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.black,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Icon(
-                                        Icons.add,
-                                        color: Colors.white,
-                                        size: 22.r,
+                                onTap: unblockUser,
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  height: 50.r,
+                                  width: double.infinity,
+                                  color: AppColors.inputBackGround
+                                      .withValues(alpha: .9),
+                                  child: Center(
+                                    child: Text(
+                                      'UNBLOCK',
+                                      style: TextStyles.chatText.copyWith(
+                                        fontSize:
+                                            AppUtils.scale(11.5.sp) ?? 13.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.primaryColor,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-
-                              Expanded(
-                                child: Column(
+                              )
+                            : Padding(
+                                padding: chatFieldPadding,
+                                child: Row(
                                   children: [
-                                    ConstrainedBox(
-                                      constraints: const BoxConstraints(
-                                        maxHeight: 5 * 16 * 1.4,
-                                      ),
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.vertical,
-                                        reverse: true,
-                                        child: MessageTextField(
-                                          node: messagesFocusNode,
-                                          controller: messagesController,
-                                          onPrefixIconTap: onAddPhoto,
-                                          isReplying: false,
+                                    GestureDetector(
+                                      onTap: onAddPhoto,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(4.r)
+                                            .copyWith(right: 10),
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.black,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: 22.r,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ), //
+                                    ),
+
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          ConstrainedBox(
+                                            constraints: const BoxConstraints(
+                                              maxHeight: 5 * 16 * 1.4,
+                                            ),
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.vertical,
+                                              reverse: true,
+                                              child: MessageTextField(
+                                                node: messagesFocusNode,
+                                                controller: messagesController,
+                                                onPrefixIconTap: onAddPhoto,
+                                                isReplying: false,
+                                              ),
+                                            ),
+                                          ), //
+                                        ],
+                                      ),
+                                    ),
+
+                                    addWidth(6),
+
+                                    // Record audio / Send message button
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: typing ? sendMessage : null,
+                                          child: CircleAvatar(
+                                            radius: 21,
+                                            backgroundColor: Colors.white,
+                                            child: typing
+                                                ? sendIcon()
+                                                : voiceIcon(),
+                                          ),
+                                        ),
+                                      ],
+                                    )
                                   ],
                                 ),
-                              ),
-
-                              addWidth(6),
-
-                              // Record audio / Send message button
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  GestureDetector(
-                                    onTap: typing ? sendMessage : null,
-                                    child: CircleAvatar(
-                                      radius: 21,
-                                      backgroundColor: Colors.white,
-                                      child: typing
-                                          ? sendIcon()
-                                          : voiceIcon(),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        );
+                              );
                       },
                     ),
                   ], //

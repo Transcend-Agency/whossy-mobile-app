@@ -37,14 +37,19 @@ class Header extends StatelessWidget {
                       dimension: 140.r,
                       child: Transform.rotate(
                         angle: pi,
-                        child: const CircularProgressIndicator(
-                          value: 0.25,
-                          strokeCap: StrokeCap.round,
-                          strokeWidth: 6,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColors.primaryColor,
+                        child: Selector<EditProfileNotifier, int>(
+                          selector: (_, profile) =>
+                              profile.profileCompletionPercent,
+                          builder: (_, percent, __) =>
+                              CircularProgressIndicator(
+                            value: percent / 100,
+                            strokeCap: StrokeCap.round,
+                            strokeWidth: 6,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              AppColors.primaryColor,
+                            ),
+                            backgroundColor: AppColors.selectedFieldColor,
                           ),
-                          backgroundColor: AppColors.selectedFieldColor,
                         ),
                       ),
                     ),

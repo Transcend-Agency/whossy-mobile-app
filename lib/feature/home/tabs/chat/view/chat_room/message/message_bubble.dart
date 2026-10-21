@@ -180,7 +180,9 @@ class _MessageBubbleState extends State<MessageBubble>
                   padding: EdgeInsets.symmetric(horizontal: 10.w + 4.r),
                   child: MessageDetails(
                     showStatus: widget.data.senderId == currentUser,
-                    status: widget.data.status,
+                    status: widget.data.status == null
+                        ? null
+                        : _chatNotifier.visibleStatus(widget.data.status!),
                     time: widget.data.timestamp?.toTimestamp(),
                   ),
                 ),

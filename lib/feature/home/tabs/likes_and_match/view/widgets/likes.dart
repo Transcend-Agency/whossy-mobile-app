@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../common/components/components.dart';
 import '../../../../../../common/styles/text_style.dart';
+import '../../../../../../common/utils/discovery_error.dart';
 import '../../../../../../common/utils/router/router.gr.dart';
 import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
@@ -60,8 +61,10 @@ class Likes extends HookWidget {
         height: profile.premiumUser ? height.r : 150.h,
       );
     } else if (snapshot.hasError) {
-      return const BadNetworkDialog(
-        subtitle: AppStrings.deviceOffline,
+      final info = discoveryErrorInfo(snapshot.error);
+      return BadNetworkDialog(
+        title: info.title,
+        subtitle: info.subtitle,
       );
     } else if (snapshot.hasData) {
       final data = snapshot.data!;
@@ -86,80 +89,80 @@ class Likes extends HookWidget {
           children: [
             profile.premiumUser
                 ? ProfileView(
-              size: Size(width.r, height.r),
-              child: ProfileViewStack(
-                imageUrl: profile.profilePics![0],
-                likesCount: likesCount,
-                labelText: 'Likes',
-              ),
-            )
+                    size: Size(width.r, height.r),
+                    child: ProfileViewStack(
+                      imageUrl: profile.profilePics![0],
+                      likesCount: likesCount,
+                      labelText: 'Likes',
+                    ),
+                  )
                 : Container(
-              height: 150.h,
-              padding: EdgeInsets.all(8.r),
-              decoration: BoxDecoration(
-                gradient: AppColors.splashGradient,
-                borderRadius: BorderRadius.circular(18.r),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 136.r,
-                    clipBehavior: Clip.antiAlias,
+                    height: 150.h,
+                    padding: EdgeInsets.all(8.r),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14.r),
+                      gradient: AppColors.splashGradient,
+                      borderRadius: BorderRadius.circular(18.r),
                     ),
-                    padding: EdgeInsets.all(3.r),
-                    child: Container(
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: ProfileViewStack(
-                        imageUrl: profile.profilePics![0],
-                        likesCount: likesCount,
-                        labelText: 'Likes',
-                      ),
-                    ),
-                  ),
-                  addWidth(10),
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
                       children: [
-                        Text(
-                          "Upgrade to Premium and Chat with Likes.",
-                          style: TextStyles.title.copyWith(
-                              fontSize: 20, color: Colors.white),
-                          textAlign: TextAlign.left,
-                        ),
-                        addHeight(10),
-                        GestureDetector(
-                          onTap: () => Nav.push(
-                            context,
-                            SubscriptionPlans(initialPage: 1),
+                        Container(
+                          width: 136.r,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14.r),
                           ),
+                          padding: EdgeInsets.all(3.r),
                           child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10.r, vertical: 6.r),
+                            clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
-                              gradient: AppColors.upgradeButtonGradient,
                               borderRadius: BorderRadius.circular(12.r),
                             ),
-                            child: Text(
-                              'UPGRADE',
-                              style: TextStyles.pageHeader
-                                  .copyWith(color: Colors.white),
+                            child: ProfileViewStack(
+                              imageUrl: profile.profilePics![0],
+                              likesCount: likesCount,
+                              labelText: 'Likes',
                             ),
+                          ),
+                        ),
+                        addWidth(10),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Upgrade to Premium and Chat with Likes.",
+                                style: TextStyles.title.copyWith(
+                                    fontSize: 20, color: Colors.white),
+                                textAlign: TextAlign.left,
+                              ),
+                              addHeight(10),
+                              GestureDetector(
+                                onTap: () => Nav.push(
+                                  context,
+                                  SubscriptionPlans(initialPage: 1),
+                                ),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10.r, vertical: 6.r),
+                                  decoration: BoxDecoration(
+                                    gradient: AppColors.upgradeButtonGradient,
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                  child: Text(
+                                    'UPGRADE',
+                                    style: TextStyles.pageHeader
+                                        .copyWith(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
             LikesGridView(pageName: Likes.name, data: data),
           ],
         );

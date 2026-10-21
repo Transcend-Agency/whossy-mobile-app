@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whossy_app/common/styles/component_style.dart';
-import 'package:whossy_app/feature/home/settings/data/state/settings_notifier.dart';
 
 import '../../../../../../constants/index.dart';
 import '../../../../../common/components/components.dart';
+import '../../../../../provider/provider.dart';
 import '../../data/source/core_settings_text_data.dart';
 import 'core_settings_tile.dart';
 
@@ -31,8 +31,12 @@ class CoreSettingsList extends StatelessWidget {
                       subtitle: data.value.subtitle,
                       isPremium: data.isPremium,
                       switchValue: settings.getValue(data.value),
-                      onSwitchChanged: (value) =>
-                          settings.updateSwitch(data.value, value),
+                      onSwitchChanged: (value) => settings.updateSwitch(
+                        data.value,
+                        value,
+                        showSnackbar: (msg) => showSnackbar(msg, context),
+                        onSaved: context.read<EditProfileNotifier>().syncUserSetting,
+                      ),
                     );
                   }).toList(),
                 );

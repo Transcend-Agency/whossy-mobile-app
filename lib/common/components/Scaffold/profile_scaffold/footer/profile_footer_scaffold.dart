@@ -11,6 +11,7 @@ import 'package:readmore/readmore.dart';
 import 'package:whossy_app/feature/home/tabs/matching/model/profile_data_footer.dart';
 
 import '../../../../../constants/index.dart';
+import '../../../../../common/utils/units.dart';
 import '../../../../../provider/provider.dart';
 import '../../../../styles/text_style.dart';
 import '../../../../utils/utils.dart';
@@ -108,16 +109,21 @@ class ProfileFooterScaffold extends StatelessWidget {
                       builder: (_, location, __) {
                         if (location == null) return const SizedBox.shrink();
 
-                        final distance = Geolocator.distanceBetween(
+                        // C3: this computed real kilometres but labelled them
+                        // "mi" — miles is the unit shown everywhere else
+                        // (sliders, preferences), so convert rather than
+                        // relabel.
+                        final distanceKm = Geolocator.distanceBetween(
                               location.latitude,
                               location.longitude,
                               data.location!.latitude,
                               data.location!.longitude,
                             ) /
                             1000;
+                        final distanceMiles = kmToMiles(distanceKm);
 
                         return Text(
-                          "  ~ ${distance.formatDistance()} mi away",
+                          "  ~ ${distanceMiles.formatDistance()} mi away",
                           style: TextStyles.prefText.copyWith(
                             color: Colors.white,
                             fontSize: AppUtils.scale(9.5.sp) ?? 12.sp,

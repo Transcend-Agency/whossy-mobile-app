@@ -60,13 +60,38 @@ class _EditProfileState extends State<EditProfile>
     super.didChangeDependencies();
 
     // Accessing context.watch here is safe
-    _meetsPicCount = context.watch<EditProfileNotifier>().picCount >= 3;
+    _meetsPicCount = context.watch<EditProfileNotifier>().picCount >= 2;
   }
 
   Future<bool> onSaveChanges() async {
     final isChangingPhotos = _profileNotifier.isChangingPhotos;
     if (isChangingPhotos && !_meetsPicCount) {
       return await onValidateSave();
+    }
+
+    final consequence = _profileNotifier.pendingMainPhotoChangeConsequence;
+    if (consequence != MainPhotoChangeConsequence.none) {
+      final isRevoke =
+          consequence == MainPhotoChangeConsequence.revokesApproval;
+      final confirmed = await showConfirmationDialog(
+        context,
+        title: isRevoke
+            ? 'Change your main photo?'
+            : 'Cancel your pending review?',
+        content: contentText(
+          isRevoke
+              ? "Your verified badge was approved against your current main "
+                  "photo. Changing it will remove your verified badge and "
+                  "stop liking and messaging until a reviewer approves your "
+                  "profile again."
+              : "Your selfie is still under review against your current "
+                  "main photo. Changing it now will cancel that review — "
+                  "you'll need to retake your selfie to verify again.",
+        ),
+        yes: 'Change photo',
+        no: 'Cancel',
+      );
+      if (!mounted || confirmed != true) return false;
     }
 
     showLoadingSheet(

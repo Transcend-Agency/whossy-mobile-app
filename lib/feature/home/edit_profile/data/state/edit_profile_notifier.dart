@@ -22,7 +22,9 @@ import '../../../../auth/sign_up/data/repository/user_repository.dart';
 import '../../../../auth/sign_up/model/app_user.dart';
 import '../../../../auth/sign_up/model/geography.dart';
 import '../../../preferences/model/core_preferences.dart';
+import '../../model/profile_completion.dart' as completion;
 import '../../../preferences/model/generic_enum.dart';
+import '../../../settings/model/user_settings.dart';
 import '../../model/core_profile.dart';
 import '../../model/edit_profile_data.dart';
 
@@ -59,7 +61,14 @@ class EditProfileNotifier extends ChangeNotifier {
     _pendingVerificationChallenge = value;
   }
 
-  StreamSubscription<FaceVerification?>? _faceVerificationSub;
+  StreamSubscription<
+      ({
+        FaceVerification? faceVerification,
+        bool? isApproved,
+        bool? isPremium,
+        int? creditBalance,
+        int? creditsOnHold,
+      })>? _faceVerificationSub;
   bool _hasSeenFirstFaceVerificationSnapshot = false;
 
   /// Watches `users/{uid}.face_verification` so the app reflects an admin's
@@ -75,7 +84,8 @@ class EditProfileNotifier extends ChangeNotifier {
     _hasSeenFirstFaceVerificationSnapshot = false;
 
     _faceVerificationSub =
-        _userRepository.faceVerificationStream().listen((faceVerification) {
+        _userRepository.faceVerificationStream().listen((update) {
+      final faceVerification = update.faceVerification;
       final previousStatus = _dynCoreProfile?.faceVerification?.status;
       final isFirstSnapshot = !_hasSeenFirstFaceVerificationSnapshot;
       _hasSeenFirstFaceVerificationSnapshot = true;
@@ -90,6 +100,27 @@ class EditProfileNotifier extends ChangeNotifier {
       _staticCoreProfile?.faceVerification = faceVerification == null
           ? null
           : FaceVerification.fromJson(faceVerification.toJson());
+
+      // Without this the like and message gate kept the is_approved value read
+      // at launch, so a user approved while the app was open stayed blocked
+      // until they restarted it.
+      if (update.isApproved != null) {
+        _dynCoreProfile?.isApproved = update.isApproved;
+        _staticCoreProfile?.isApproved = update.isApproved;
+      }
+
+      // Same for the plan and credits, which the server changes on a purchase,
+      // a chat hold or refund, or when a subscription lapses. Without this the
+      // chat gate treated a lapsed premium account as premium (no hold prompt)
+      // and the Credits screen showed an old balance until a restart.
+      if (update.isPremium != null) {
+        _dynCoreProfile?.isPremium = update.isPremium;
+        _staticCoreProfile?.isPremium = update.isPremium;
+      }
+      _dynCoreProfile?.creditBalance = update.creditBalance ?? 0;
+      _staticCoreProfile?.creditBalance = update.creditBalance ?? 0;
+      _dynCoreProfile?.creditsOnHold = update.creditsOnHold ?? 0;
+      _staticCoreProfile?.creditsOnHold = update.creditsOnHold ?? 0;
 
       if (!isFirstSnapshot &&
           previousStatus != 'rejected' &&
@@ -128,6 +159,8 @@ class EditProfileNotifier extends ChangeNotifier {
   CoreProfile? get coreProfile => _dynCoreProfile;
   CoreProfile? get staticProfile => _staticCoreProfile;
   CorePreferences? get corePrefs => _dynCorePrefs;
+  int get profileCompletionPercent =>
+      completion.profileCompletionPercent(_staticCoreProfile, _staticCorePrefs);
   EditProfileData get profileData => EditProfileData(
         _dynCoreProfile!,
         _dynCorePrefs!,
@@ -186,6 +219,31 @@ class EditProfileNotifier extends ChangeNotifier {
   bool get isChangingPhotos {
     final diff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
     return diff.containsKey('photos');
+  }
+
+  // A4: what saving right now would do to verification — the pending edit
+  // changes the main photo specifically, and there's a live approved badge
+  // or in-flight review that the change would invalidate. Lets the save
+  // button confirm before it happens, with copy matched to which case it is.
+  MainPhotoChangeConsequence get pendingMainPhotoChangeConsequence {
+    if (!isChangingPhotos) return MainPhotoChangeConsequence.none;
+
+    final oldMain = _staticCoreProfile?.profilePics?.isNotEmpty == true
+        ? _staticCoreProfile!.profilePics!.first
+        : null;
+    final newMain = _dynCoreProfile?.profilePics?.isNotEmpty == true
+        ? _dynCoreProfile!.profilePics!.first
+        : null;
+    if (newMain == oldMain) return MainPhotoChangeConsequence.none;
+
+    switch (_staticCoreProfile?.faceVerification?.getVerificationStatus()) {
+      case FaceVerificationStatus.complete:
+        return MainPhotoChangeConsequence.revokesApproval;
+      case FaceVerificationStatus.pending:
+        return MainPhotoChangeConsequence.cancelsPendingReview;
+      default:
+        return MainPhotoChangeConsequence.none;
+    }
   }
 
   Future<void> getUserData({
@@ -263,16 +321,15 @@ class EditProfileNotifier extends ChangeNotifier {
     try {
       final corePrefsDiff = _dynCorePrefs?.diff(_staticCorePrefs!) ?? {};
       final coreProfileDiff = _dynCoreProfile?.diff(_staticCoreProfile!) ?? {};
-      bool hasPicUploads = false;
 
       // log('Core Prefs Diff: ${jsonEncode(corePrefsDiff)}');
       // log('Core Profile Diff: ${jsonEncode(coreProfileDiff)}');
 
       if (corePrefsDiff.isEmpty && coreProfileDiff.isEmpty) return true;
 
-      // Process profile photos if available
-      hasPicUploads =
-          await _processProfilePhotos(coreProfileDiff, showSnackbar);
+      // Process profile photos if available (may add is_approved/
+      // face_verification to the diff itself — see _processProfilePhotos)
+      await _processProfilePhotos(coreProfileDiff, showSnackbar);
 
       // Process face verification if available
       await _processFaceVerification(coreProfileDiff);
@@ -281,7 +338,6 @@ class EditProfileNotifier extends ChangeNotifier {
         corePrefData: {...corePrefsDiff},
         coreProfileData: {...coreProfileDiff},
         updateUserDeletePic: _didUserDeletePic,
-        hasPicUploads: hasPicUploads,
       );
 
       // Sync static profile with the latest changes
@@ -334,6 +390,15 @@ class EditProfileNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Mirrors a setting that was saved on its own, so the profile does not
+  /// later read as changed (or revert it) when the profile itself is saved.
+  void syncUserSetting(CoreSettings setting, bool value) {
+    for (final profile in [_dynCoreProfile, _staticCoreProfile]) {
+      if (profile == null) continue;
+      (profile.userSettings ??= UserSettings()).updateSwitch(setting, value);
+    }
+  }
+
   void _updateCoreProfile(AppUser user) {
     _dynCoreProfile = CoreProfile.fromJson(user.toJson());
     _staticCoreProfile = CoreProfile.fromJson(_dynCoreProfile!.toJson());
@@ -344,11 +409,15 @@ class EditProfileNotifier extends ChangeNotifier {
     _staticCorePrefs = CorePreferences.fromJson(_dynCorePrefs!.toJson());
   }
 
-  Future<bool> _processProfilePhotos(
+  Future<void> _processProfilePhotos(
     Map<String, dynamic> coreProfileDiff,
     void Function(String) showSnackbar,
   ) async {
-    if (coreProfileDiff["photos"] is! List<String>) return false;
+    if (coreProfileDiff["photos"] is! List<String>) return;
+
+    final oldMainPhoto = _staticCoreProfile?.profilePics?.isNotEmpty == true
+        ? _staticCoreProfile!.profilePics!.first
+        : null;
 
     final updatedPhotos = await FileService().processPhotos(
       coreProfileDiff["photos"],
@@ -357,7 +426,51 @@ class EditProfileNotifier extends ChangeNotifier {
 
     coreProfileDiff["photos"] = updatedPhotos.photos;
     _dynCoreProfile?.update(profilePics: updatedPhotos.photos);
-    return updatedPhotos.hasUploads;
+
+    final newMainPhoto =
+        updatedPhotos.photos.isNotEmpty ? updatedPhotos.photos.first : null;
+
+    // A4: only an actual main-photo change touches verification at all —
+    // adding/removing/reordering any other photo doesn't.
+    if (newMainPhoto != oldMainPhoto) {
+      switch (_staticCoreProfile?.faceVerification?.getVerificationStatus()) {
+        case FaceVerificationStatus.complete:
+          // Revoke: there's a badge, and it was approved against the photo
+          // that's about to change.
+          coreProfileDiff['is_approved'] = false;
+          final currentFv = _staticCoreProfile?.faceVerification;
+          coreProfileDiff['face_verification'] = {
+            if (currentFv != null) ...currentFv.toJson(),
+            'status': 'revoked',
+          };
+          break;
+        case FaceVerificationStatus.pending:
+          // Cancel: no badge exists yet, so there's nothing to revoke, but
+          // the pending submission was captured against the old photo and
+          // is no longer trustworthy. Left alone, a reviewer approving it
+          // later would hit the server's own stale-photo backstop
+          // (functions/src/verification.ts) and land on `revoked` — correct
+          // behavior for that backstop, but confusing copy for someone who
+          // was never actually approved. Clearing it back to
+          // never-submitted here avoids ever reaching that state and
+          // re-surfaces the normal "verify your photo" prompt instead.
+          //
+          // Skipped if a fresh selfie is already staged in this same save
+          // (e.g. a retake whose own auto-save previously failed) — that
+          // submission should supersede the stale one below in
+          // _processFaceVerification, not be discarded by it.
+          final stagedSelfie = _dynCoreProfile?.faceVerification?.photo;
+          final hasFreshSelfieStaged =
+              stagedSelfie != null && !stagedSelfie.isUrl;
+          if (!hasFreshSelfieStaged) {
+            _dynCoreProfile?.faceVerification = null;
+            coreProfileDiff['face_verification'] = null;
+          }
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   Future<void> _processFaceVerification(
@@ -380,17 +493,19 @@ class EditProfileNotifier extends ChangeNotifier {
     );
 
     final photoUrl = photoUrls.isNotEmpty ? photoUrls.first : null;
+    if (photoUrl == null) return;
     final challenge = _pendingVerificationChallenge;
+    final mainPhoto = _dynCoreProfile?.profilePics?.isNotEmpty == true
+        ? _dynCoreProfile!.profilePics!.first
+        : null;
 
-    coreProfileDiff["face_verification"] = {
-      ...coreProfileDiff["face_verification"] as Map<String, dynamic>,
-      'photo': photoUrl,
-      'updated_at': FieldValue.serverTimestamp(),
-      'challenge_id': challenge?.id,
-      'challenge_image_url': challenge?.imageUrl,
-      'status': 'pending_review',
-      'retake_photo': false,
-    };
+    coreProfileDiff["face_verification"] = FaceVerification.submission(
+      photo: photoUrl,
+      challengeId: challenge?.id,
+      challengeImageUrl: challenge?.imageUrl,
+      mainPhoto: mainPhoto,
+    ).toJson()
+      ..['updated_at'] = FieldValue.serverTimestamp();
 
     _dynCoreProfile?.update(photoVerificationUrl: photoUrl);
     _pendingVerificationChallenge = null;
@@ -404,62 +519,6 @@ class EditProfileNotifier extends ChangeNotifier {
           e is FailedUploadException ? (e).message : AppStrings.errorUnknown);
       log(e.toString());
     }
-  }
-
-  Future<bool> addCreditsAfterPurchase({
-    required int credits,
-    void Function(String message)? onSnackbar,
-    required double amount,
-    required String currency,
-  }) async {
-    final previousCredit = coreProfile?.creditBalance ?? 0;
-
-    updateProfile(
-      creditBalance: previousCredit + credits,
-    );
-
-    final success = await saveUserProfile(
-      showSnackbar: (msg) {},
-    );
-
-    if (!success) {
-      updateProfile(
-        creditBalance: previousCredit,
-      );
-      onSnackbar?.call(AppStrings.addCreditsFailure);
-      return false;
-    }
-
-    onSnackbar?.call('Payment completed successfully!');
-    return true;
-  }
-
-  Future<bool> updateSubscription({
-    required String planId,
-    required String purchaseToken,
-  }) async {
-    final isPremiumUser = coreProfile?.isPremium ?? false;
-    final currentPlan = coreProfile?.currentPlan;
-    final paymentPlatform = coreProfile?.paymentPlatform;
-
-    updateProfile(
-      isPremium: true,
-      currentPlan: planId,
-      purchaseToken: purchaseToken,
-      paymentPlatform: PaymentPlatform.mobile,
-    );
-
-    final success = await saveUserProfile(showSnackbar: (msg) {});
-
-    if (!success) {
-      updateProfile(
-        isPremium: isPremiumUser,
-        currentPlan: currentPlan,
-        paymentPlatform: paymentPlatform,
-      );
-    }
-
-    return success;
   }
 
   void reset() {

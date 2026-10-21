@@ -82,7 +82,7 @@ class OnlineStatus extends HookWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               )
-            : status.online
+            : status.isRecentlyOnline(Timestamp.now())
                 ? Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [

@@ -124,6 +124,15 @@ class _SignUpVerificationScreenState extends State<SignUpVerificationScreen> {
                     ),
             ],
           ),
+          addHeight(10),
+          // Verification mail from the default Firebase sender often lands in
+          // spam, and without this a new user has no idea where to look.
+          Text(
+            'Can’t find it? Check your spam or junk folder.',
+            style: TextStyles.bioText.copyWith(
+              fontSize: AppUtils.scale(17) ?? 15,
+            ),
+          ),
           const Spacer(),
           Padding(
             padding: const EdgeInsets.only(bottom: 20),

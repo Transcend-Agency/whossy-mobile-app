@@ -31,8 +31,7 @@ class Report {
     this.reporterId,
     String? reporterName,
     TimestampWrapper? timestamp,
-  })  : id = id ??
-            AppUtils.generateCombinedId(reporterId ?? '', reportedId ?? ''),
+  })  : id = id ?? '${reporterId ?? ''}_${reportedId ?? ''}',
         timestamp = timestamp ?? TimestampWrapper(FieldValue.serverTimestamp()),
         reporterName = reporterName ?? '',
         reportedId = reportedId ?? '';

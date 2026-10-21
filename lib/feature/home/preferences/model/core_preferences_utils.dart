@@ -21,6 +21,39 @@ extension CorePreferencesUtils on CorePreferences {
     return selectedValues[type];
   }
 
+  /// Empties the choice of the given enum type so the search stops filtering
+  /// on it.
+  void clearValue(Type type) {
+    switch (type) {
+      case Preference:
+        relationshipPreference = null;
+      case School:
+        education = null;
+      case LoveLanguage:
+        loveLanguage = null;
+      case Zodiac:
+        zodiac = null;
+      case FutureFamilyPlans:
+        futureFamilyPlans = null;
+      case CommunicationStyle:
+        communicationStyle = null;
+      case Smoke:
+        smoker = null;
+      case Drink:
+        drinking = null;
+      case WorkOut:
+        workout = null;
+      case PetOwner:
+        petOwner = null;
+      case Religion:
+        religion = null;
+      case Dietary:
+        dietary = null;
+      case MaritalStatus:
+        maritalStatus = null;
+    }
+  }
+
   void setValue(GenericEnum value) {
     if (value is Preference) {
       relationshipPreference = value;
