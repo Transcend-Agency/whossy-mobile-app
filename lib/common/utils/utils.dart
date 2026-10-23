@@ -10,6 +10,7 @@ export 'exceptions/registered_email.dart';
 export 'exceptions/unregistered_email.dart';
 export 'extensions.dart';
 export 'input_formatter.dart';
+export 'phone_country.dart';
 export 'router/router.dart';
 export 'router/transparent_route.dart';
 export 'theme/theme.dart';
