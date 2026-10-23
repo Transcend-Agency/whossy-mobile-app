@@ -13,7 +13,12 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
         AutoRoute(page: Splash.page, initial: true),
-        AutoRoute(page: SplashRoute.page),
+        // Fades in from the animated splash rather than sliding over it.
+        CustomRoute(
+          page: SplashRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+          duration: const Duration(milliseconds: 450),
+        ),
 
         // LOGIN
         AutoRoute(page: LoginRoute.page),
