@@ -33,6 +33,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   late UserRepository _userRepository;
   Country? country;
   bool isLoading = false;
+  bool _pickedCountry = false;
 
   final formKey1 = GlobalKey<FormState>();
   final shakeState1 = GlobalKey<ShakeState>();
@@ -45,6 +46,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   void updateCountry(Country c) {
     setState(() {
       country = c;
+      _pickedCountry = true;
 
       if (existingPhoneNumber == 'Select a country code') {
         existingPhoneNumber = null;
@@ -61,7 +63,35 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
     }
   }
 
+  /// Switches to the country a number is written for, such as `+234…`, and
+  /// leaves only the rest of the number in the field. True when it did.
+  bool _detectCountry() {
+    final match = detectPhoneCountry(
+      phoneController.text,
+      allowBare: !_pickedCountry,
+    );
+
+    if (match == null) return false;
+
+    setState(() {
+      country = match.country;
+      if (existingPhoneNumber == 'Select a country code') {
+        existingPhoneNumber = null;
+      }
+    });
+
+    // Setting the text runs this listener again on the shortened number.
+    phoneController.value = TextEditingValue(
+      text: match.nationalNumber,
+      selection: TextSelection.collapsed(offset: match.nationalNumber.length),
+    );
+
+    return true;
+  }
+
   _onPhoneNumberChanged() async {
+    if (_detectCountry()) return;
+
     String text = phoneController.text.trim();
 
     if (text.validatePhoneNumberInput()) {
@@ -158,6 +188,12 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
     loginNotifier = context.read<LoginNotifier>();
 
     _userRepository = UserRepository();
+
+    // Start on the device's country, so the flag and dial code shown are a
+    // real selection (the same default as the sign-up phone step).
+    final deviceCountry =
+        WidgetsBinding.instance.platformDispatcher.locale.countryCode;
+    country = Country.tryParse(deviceCountry ?? '') ?? Country.parse('US');
 
     phoneController.addListener(_onPhoneNumberChanged);
     super.initState();

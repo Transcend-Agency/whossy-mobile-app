@@ -100,8 +100,13 @@ extension StringExtention on String? {
   String formatNumber(String countryCode) {
     // Remove all whitespace from the string
     final cleanNumber = this?.replaceAll(RegExp(r'\s+'), '') ?? '';
+    // A leading 0 is the local trunk prefix (0814… in Nigeria) and is not
+    // part of the international number. Italy keeps it.
+    final national = cleanNumber.startsWith('0') && countryCode != '+39'
+        ? cleanNumber.substring(1)
+        : cleanNumber;
     // Concatenate the country code to the front
-    return '$countryCode$cleanNumber';
+    return '$countryCode$national';
   }
 
   /// The country of origin is filled from the country picker, so its name is
