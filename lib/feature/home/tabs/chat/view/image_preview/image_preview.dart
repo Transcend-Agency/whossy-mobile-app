@@ -127,6 +127,7 @@ class _ImagePreviewState extends State<ImagePreview> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      maxContentWidth: null,
       appBar: CustomAppBar(
         addBarHeight: 4,
         color: Colors.white,

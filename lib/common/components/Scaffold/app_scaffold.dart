@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whossy_app/common/utils/utils.dart';
 
+/// Widest a form or list page gets on a large screen.
+const double kMaxContentWidth = 640;
+
 class AppScaffold extends StatelessWidget {
   final Widget body;
   final bool resizeToAvoidBottomInset;
@@ -18,6 +21,11 @@ class AppScaffold extends StatelessWidget {
   final Widget? bottomNavBar;
   final PreferredSizeWidget? appBar;
 
+  /// Widest the body gets before it is centred with space either side, so
+  /// forms and lists keep a phone's proportions on a tablet. Null lets the
+  /// body fill the screen, for pages built around a photo or a grid.
+  final double? maxContentWidth;
+
   const AppScaffold({
     super.key,
     required this.body,
@@ -29,6 +37,7 @@ class AppScaffold extends StatelessWidget {
     this.bottomNavBar,
     this.appBar,
     this.applyTop = true,
+    this.maxContentWidth = kMaxContentWidth,
   });
 
   @override
@@ -42,27 +51,42 @@ class AppScaffold extends StatelessWidget {
         backgroundColor: Colors.white,
         body: SafeArea(
           top: applyTop,
-          child: fillViewportAndScroll
-              ? LayoutBuilder(
-                  builder: (context, constraints) => SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(minHeight: constraints.maxHeight),
-                      child: IntrinsicHeight(
-                        child: content(
-                            context: context, finalPadding: finalPadding),
+          child: _limitWidth(
+            fillViewportAndScroll
+                ? LayoutBuilder(
+                    builder: (context, constraints) => SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: constraints.maxHeight),
+                        child: IntrinsicHeight(
+                          child: content(
+                              context: context, finalPadding: finalPadding),
+                        ),
                       ),
                     ),
-                  ),
-                )
-              : useScrollView
-                  ? SingleChildScrollView(
-                      child:
-                          content(context: context, finalPadding: finalPadding),
-                    )
-                  : content(context: context, finalPadding: finalPadding),
+                  )
+                : useScrollView
+                    ? SingleChildScrollView(
+                        child: content(
+                            context: context, finalPadding: finalPadding),
+                      )
+                    : content(context: context, finalPadding: finalPadding),
+          ),
         ),
         bottomNavigationBar: bottomNavBar,
+      ),
+    );
+  }
+
+  Widget _limitWidth(Widget child) {
+    final max = maxContentWidth;
+    if (max == null) return child;
+
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: max),
+        child: child,
       ),
     );
   }

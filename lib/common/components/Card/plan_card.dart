@@ -15,6 +15,9 @@ class PlanCard extends StatelessWidget {
   final bool showDetails;
   final List<double>? stops;
 
+  /// Defaults to a fixed width; pass one to let cards share a row.
+  final double? width;
+
   const PlanCard({
     super.key,
     required this.containerColor,
@@ -25,6 +28,7 @@ class PlanCard extends StatelessWidget {
     this.onSeeAllFeatures,
     this.showDetails = true,
     this.stops,
+    this.width,
   }) : assert(
           showDetails == false ||
               (benefits != null && onSeeAllFeatures != null),
@@ -34,7 +38,7 @@ class PlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 270.r,
+      width: width ?? 270.r,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [containerShade, Colors.white],
