@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -152,7 +151,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
                         animatedColor ?? color, BlendMode.srcIn),
                   ),
                 ),
-                addHeight(3),
+                const SizedBox(height: 3),
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
@@ -161,7 +160,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
                     style: TextStyles.prefText.copyWith(
                       color: animatedColor ?? color,
                       fontWeight: FontWeight.w500,
-                      fontSize: AppUtils.scale(9.sp) ?? 11.5,
+                      fontSize: 11.5,
                     ),
                   ),
                 ),

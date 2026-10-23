@@ -95,6 +95,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      maxContentWidth: null,
       body: Stack(
         children: [
           IgnorePointer(
