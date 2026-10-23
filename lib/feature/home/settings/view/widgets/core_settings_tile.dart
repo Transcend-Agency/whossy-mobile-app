@@ -34,49 +34,48 @@ class CoreSettingsTile extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyles.prefText,
-                      ),
-                      addWidth(12),
-                      if (isPremium)
-                        Container(
-                          padding: EdgeInsets.only(
-                            bottom: 1.h,
-                            left: 8.w,
-                            right: 8.w,
-                          ),
-                          decoration: const BoxDecoration(
-                            borderRadius: curvySide,
-                            gradient: AppColors.splashVariation,
-                          ),
-                          child: Text(
-                            'Premium',
-                            style: TextStyles.prefText.copyWith(
-                              color: Colors.white,
-                              fontSize: AppUtils.scale(10.5.sp) ?? 12.sp,
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyles.prefText,
+                        ),
+                        addWidth(12),
+                        if (isPremium)
+                          Container(
+                            padding: EdgeInsets.only(
+                              bottom: 1.h,
+                              left: 8.w,
+                              right: 8.w,
                             ),
-                          ),
-                        )
-                    ],
-                  ),
-                  addHeight(8),
-                  SizedBox(
-                    width: ScreenUtil().screenWidth * 0.75,
-                    child: Text(
+                            decoration: const BoxDecoration(
+                              borderRadius: curvySide,
+                              gradient: AppColors.splashVariation,
+                            ),
+                            child: Text(
+                              'Premium',
+                              style: TextStyles.prefText.copyWith(
+                                color: Colors.white,
+                                fontSize: AppUtils.scale(10.5.sp) ?? 12.sp,
+                              ),
+                            ),
+                          )
+                      ],
+                    ),
+                    addHeight(8),
+                    Text(
                       subtitle,
                       style: TextStyles.prefText
                           .copyWith(color: AppColors.hintTextColor),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 3.r),
