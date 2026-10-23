@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,192 +25,203 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: SizedBox(
-        width: 375.w,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: pagePadding,
-              child: Selector<EditProfileNotifier, CoreProfile?>(
-                selector: (_, profile) => profile.staticProfile,
-                // The profile is changed in place (a credit purchase or hold,
-                // an approval), so the same object comes back and the default
-                // would never rebuild: the credit count and badge stayed stale.
-                shouldRebuild: (_, __) => true,
-                builder: (_, data, __) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      HeaderBar(
-                        icon: AppAssets.settings,
-                        iconSize: 24,
-                        onIconTap: () async {
-                          final result = await context.router.push<String>(
-                            const Settings(),
-                          );
+    // 375.w is the full screen width; on a tablet the page keeps a phone's
+    // proportions in the middle of the screen instead.
+    final pageWidth = math.min(375.w, kMaxContentWidth);
+    final wide = 375.w > kMaxContentWidth;
+    // Side by side when there is room, otherwise the swipeable row.
+    final planWidth = (pageWidth - 14.w - 12.w * 2) / 2;
 
-                          if (result == AppStrings.startTour) {
-                            onStartTour();
-                          }
-                        },
-                        showFilters: false,
-                        child: const Logo(),
-                      ),
-                      addHeight(4),
-                      const Header(),
-                      addHeight(8),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${data?.firstName}, ',
-                            style: TextStyles.profileHead.copyWith(
-                              fontSize: AppUtils.scale(16.sp),
+    return SingleChildScrollView(
+      child: Center(
+        child: SizedBox(
+          width: pageWidth,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: pagePadding,
+                child: Selector<EditProfileNotifier, CoreProfile?>(
+                  selector: (_, profile) => profile.staticProfile,
+                  // The profile is changed in place (a credit purchase or hold,
+                  // an approval), so the same object comes back and the default
+                  // would never rebuild: the credit count and badge stayed stale.
+                  shouldRebuild: (_, __) => true,
+                  builder: (_, data, __) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        HeaderBar(
+                          icon: AppAssets.settings,
+                          iconSize: 24,
+                          onIconTap: () async {
+                            final result = await context.router.push<String>(
+                              const Settings(),
+                            );
+
+                            if (result == AppStrings.startTour) {
+                              onStartTour();
+                            }
+                          },
+                          showFilters: false,
+                          child: const Logo(),
+                        ),
+                        addHeight(4),
+                        const Header(),
+                        addHeight(8),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${data?.firstName}, ',
+                              style: TextStyles.profileHead.copyWith(
+                                fontSize: AppUtils.scale(16.sp),
+                              ),
                             ),
-                          ),
-                          Text(
-                            data?.dateOfBirth != null
-                                ? data!.dateOfBirth!.age.toString()
-                                : '',
-                            style: TextStyles.profileHead.copyWith(
-                              fontSize: AppUtils.scale(14.sp) ?? 16.sp,
-                              fontWeight: FontWeight.w400,
+                            Text(
+                              data?.dateOfBirth != null
+                                  ? data!.dateOfBirth!.age.toString()
+                                  : '',
+                              style: TextStyles.profileHead.copyWith(
+                                fontSize: AppUtils.scale(14.sp) ?? 16.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
-                          ),
-                          addWidth(6),
-                          if (data?.isApproved ?? false)
-                            SvgPicture.asset(
-                              AppAssets.tick,
-                              width: 18,
+                            addWidth(6),
+                            if (data?.isApproved ?? false)
+                              SvgPicture.asset(
+                                AppAssets.tick,
+                                width: 18,
+                              ),
+                          ],
+                        ),
+                        addHeight(10),
+                        Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.r),
+                              color: AppColors.black,
                             ),
-                        ],
-                      ),
-                      addHeight(10),
-                      Center(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.r),
-                            color: AppColors.black,
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 6.r, horizontal: 12.r),
-                          child: Selector<EditProfileNotifier, int>(
-                            selector: (_, profile) =>
-                                profile.profileCompletionPercent,
-                            builder: (_, percent, __) => Text(
-                              '$percent% complete',
-                              style: TextStyles.hintText.copyWith(
-                                fontSize: AppUtils.scale(10.sp),
-                                color: Colors.white,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 6.r, horizontal: 12.r),
+                            child: Selector<EditProfileNotifier, int>(
+                              selector: (_, profile) =>
+                                  profile.profileCompletionPercent,
+                              builder: (_, percent, __) => Text(
+                                '$percent% complete',
+                                style: TextStyles.hintText.copyWith(
+                                  fontSize: AppUtils.scale(10.sp),
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      addHeight(16),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: AppColors.optionsSheetDivider,
-                            width: 1,
+                        addHeight(16),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.optionsSheetDivider,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(14.r),
                           ),
-                          borderRadius: BorderRadius.circular(14.r),
+                          padding: EdgeInsets.all(12.r),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset(
+                                AppAssets.alert,
+                                width: 24.r,
+                              ),
+                              addWidth(12),
+                              Flexible(
+                                child: Text(
+                                  AppStrings.profileAddMore,
+                                  style: TextStyles.prefText,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        padding: EdgeInsets.all(12.r),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
+                          child: const WhossySafetyGuide(),
+                        ),
+                        Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SvgPicture.asset(
-                              AppAssets.alert,
-                              width: 24.r,
-                            ),
-                            addWidth(12),
-                            SizedBox(
-                              width: ScreenUtil().screenWidth * 0.75,
-                              child: Text(
-                                AppStrings.profileAddMore,
-                                style: TextStyles.prefText,
-                              ),
+                            // CustomButton(
+                            //   onTap: () => showSnackbar(
+                            //     'This feature is coming soon',
+                            //     context,
+                            //     snackBarType: SnackbarType.warning,
+                            //   ),
+                            //   imagePath: AppAssets.boost,
+                            //   title: 'Profile Boost',
+                            //   subTitle: 'Get Now',
+                            //   containerColor: AppColors.purpleContainer,
+                            //   textColor: AppColors.purpleText,
+                            // ),
+                            // addWidth(10),
+                            CustomButton(
+                              onTap: () => Nav.push(context, const Credits()),
+                              imagePath: AppAssets.credit,
+                              title: '${data?.creditBalance ?? 0} Credits',
+                              subTitle: 'Get Now',
+                              containerColor: AppColors.yellowContainer,
+                              textColor: AppColors.yellowText,
                             ),
                           ],
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.h),
-                        child: const WhossySafetyGuide(),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // CustomButton(
-                          //   onTap: () => showSnackbar(
-                          //     'This feature is coming soon',
-                          //     context,
-                          //     snackBarType: SnackbarType.warning,
-                          //   ),
-                          //   imagePath: AppAssets.boost,
-                          //   title: 'Profile Boost',
-                          //   subTitle: 'Get Now',
-                          //   containerColor: AppColors.purpleContainer,
-                          //   textColor: AppColors.purpleText,
-                          // ),
-                          // addWidth(10),
-                          CustomButton(
-                            onTap: () => Nav.push(context, const Credits()),
-                            imagePath: AppAssets.credit,
-                            title: '${data?.creditBalance ?? 0} Credits',
-                            subTitle: 'Get Now',
-                            containerColor: AppColors.yellowContainer,
-                            textColor: AppColors.yellowText,
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    addWidth(14),
-                    PlanCard(
-                      containerColor: AppColors.premiumContainer,
-                      containerShade: AppColors.premiumContainerShade,
-                      title: 'Premium Plan',
-                      amount: '10',
-                      benefits: AppStrings.premiumPricing,
-                      onSeeAllFeatures: () => Nav.push(
-                        context,
-                        SubscriptionPlans(initialPage: 1),
-                      ),
-                    ),
-                    addWidth(12),
-                    PlanCard(
-                      containerColor: AppColors.freeContainer,
-                      containerShade: AppColors.freeContainerShade,
-                      title: 'Whossy Free Plan',
-                      amount: '0',
-                      benefits: AppStrings.freePricing,
-                      onSeeAllFeatures: () => Nav.push(
-                        context,
-                        SubscriptionPlans(initialPage: 0),
-                      ),
-                    ),
-                    addWidth(12),
-                  ],
+                      ],
+                    );
+                  },
                 ),
               ),
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: wide ? const NeverScrollableScrollPhysics() : null,
+                  child: Row(
+                    children: [
+                      addWidth(14),
+                      PlanCard(
+                        width: wide ? planWidth : null,
+                        containerColor: AppColors.premiumContainer,
+                        containerShade: AppColors.premiumContainerShade,
+                        title: 'Premium Plan',
+                        amount: '10',
+                        benefits: AppStrings.premiumPricing,
+                        onSeeAllFeatures: () => Nav.push(
+                          context,
+                          SubscriptionPlans(initialPage: 1),
+                        ),
+                      ),
+                      addWidth(12),
+                      PlanCard(
+                        width: wide ? planWidth : null,
+                        containerColor: AppColors.freeContainer,
+                        containerShade: AppColors.freeContainerShade,
+                        title: 'Whossy Free Plan',
+                        amount: '0',
+                        benefits: AppStrings.freePricing,
+                        onSeeAllFeatures: () => Nav.push(
+                          context,
+                          SubscriptionPlans(initialPage: 0),
+                        ),
+                      ),
+                      addWidth(12),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

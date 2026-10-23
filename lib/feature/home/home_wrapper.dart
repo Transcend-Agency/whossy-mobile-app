@@ -157,6 +157,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
           builder: (context, scrollNotifier, child) {
             return AppScaffold(
               applyTop: false,
+              maxContentWidth: null,
               body: VerificationStatusBanner(
                 child: Builder(
                   builder: (_) => _pages.elementAt(
@@ -179,7 +180,13 @@ class _HomeWrapperState extends State<HomeWrapper> {
                         16,
                         systemBottomInset + 10,
                       ),
-                      child: CustomBottomAppBar(items: bottomNavItems),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints:
+                              const BoxConstraints(maxWidth: kMaxContentWidth),
+                          child: CustomBottomAppBar(items: bottomNavItems),
+                        ),
+                      ),
                     ),
                   ),
                 ),

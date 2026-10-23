@@ -101,6 +101,7 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
   Widget build(BuildContext context) {
     return AppScaffold(
       applyTop: false,
+      maxContentWidth: null,
       useScrollView: false,
       body: SingleChildScrollView(
         controller: scrollController,

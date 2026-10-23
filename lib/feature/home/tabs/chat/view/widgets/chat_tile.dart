@@ -31,78 +31,99 @@ class ChatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+    // Not a ListTile: its trailing slot is only as tall as the title and
+    // subtitle, so the time badge overflowed once the text scaled up.
+    return InkWell(
       splashColor: Colors.transparent,
       hoverColor: Colors.transparent,
-      contentPadding: EdgeInsets.only(top: 6.h),
-      leading: CircleAppAvatar(
-        radius: 27,
-        imageUrl: (images?.isNotEmpty ?? false) ? images![0] : null,
-      ),
-      horizontalTitleGap: 14,
-      title: Text(
-        name ?? 'Deleted Account',
-        style: TextStyles.profileHead.copyWith(
-          fontSize: AppUtils.scale(12.sp) ?? 17,
-        ),
-      ),
-      subtitle: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          addHeight(3),
-          Text(
-            isUserBlocked ? 'User blocked' : data.lastMessage,
-            style: TextStyles.hintThemeText.copyWith(
-              fontSize: AppUtils.scale(10.sp) ?? 13.5.sp,
-              fontStyle: isUserBlocked ? FontStyle.italic : null,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          addHeight(2),
-        ],
-      ),
-      trailing: isUserBlocked
-          ? null
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                addHeight(4),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(6.r)),
-                    color: AppColors.listTileColor,
-                  ),
-                  child: data.lastMessageTimestamp?.toTimestamp()?.toDate() !=
-                          null
-                      ? Text(
-                          data.lastMessageTimestamp!.toTimestamp()!.toTime(),
-                          style: TextStyles.hintThemeText.copyWith(
-                            color: AppColors.black,
-                            fontSize: AppUtils.scale(9.sp) ?? 12.5.sp,
-                          ),
-                        )
-                      : const SizedBox.shrink(),
+      highlightColor: Colors.transparent,
+      onTap: onTileTap,
+      child: Padding(
+        padding: EdgeInsets.only(top: 6.h),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: CircleAppAvatar(
+                  radius: 27,
+                  imageUrl: (images?.isNotEmpty ?? false) ? images![0] : null,
                 ),
-                const Spacer(),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (data.lastSenderUserId ==
-                        FirebaseAuth.instance.currentUser!.uid)
-                      messageStatus(
-                        context
-                            .read<ChatsNotifier>()
-                            .visibleStatus(data.lastMessageStatus!),
+                    Text(
+                      name ?? 'Deleted Account',
+                      style: TextStyles.profileHead.copyWith(
+                        fontSize: AppUtils.scale(12.sp) ?? 17,
                       ),
-                    addWidth(4),
+                    ),
+                    addHeight(3),
+                    Text(
+                      isUserBlocked ? 'User blocked' : data.lastMessage,
+                      style: TextStyles.hintThemeText.copyWith(
+                        fontSize: AppUtils.scale(10.sp) ?? 13.5.sp,
+                        fontStyle: isUserBlocked ? FontStyle.italic : null,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    addHeight(2),
+                  ],
+                ),
+              ),
+              if (!isUserBlocked) ...[
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(6.r)),
+                        color: AppColors.listTileColor,
+                      ),
+                      child:
+                          data.lastMessageTimestamp?.toTimestamp()?.toDate() !=
+                                  null
+                              ? Text(
+                                  data.lastMessageTimestamp!
+                                      .toTimestamp()!
+                                      .toTime(),
+                                  style: TextStyles.hintThemeText.copyWith(
+                                    color: AppColors.black,
+                                    fontSize: AppUtils.scale(9.sp) ?? 12.5.sp,
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (data.lastSenderUserId ==
+                            FirebaseAuth.instance.currentUser!.uid)
+                          messageStatus(
+                            context
+                                .read<ChatsNotifier>()
+                                .visibleStatus(data.lastMessageStatus!),
+                          ),
+                        addWidth(4),
+                      ],
+                    ),
                   ],
                 ),
               ],
-            ),
-      onTap: onTileTap,
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
