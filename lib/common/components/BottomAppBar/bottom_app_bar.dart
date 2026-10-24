@@ -160,7 +160,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
                     style: TextStyles.prefText.copyWith(
                       color: animatedColor ?? color,
                       fontWeight: FontWeight.w500,
-                      fontSize: 11.5,
+                      fontSize: 10.5,
                     ),
                   ),
                 ),
