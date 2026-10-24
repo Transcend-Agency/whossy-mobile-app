@@ -38,7 +38,13 @@ class EmptyDataGrid extends StatelessWidget {
             addHeight(12),
             Text(
               'No profiles match right now',
-              style: TextStyles.boldPrefText,
+              // Sized against the 12pt filter chips above it: a heading, not
+              // a headline.
+              style: TextStyles.prefText.copyWith(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.black,
+              ),
               textAlign: TextAlign.center,
             ),
             addHeight(6),
@@ -47,6 +53,7 @@ class EmptyDataGrid extends StatelessWidget {
                   ? 'Try widening your age range or relationship preference.'
                   : 'Try a different filter, or check back soon as new people join every day.',
               style: TextStyles.prefText.copyWith(
+                fontSize: 13,
                 color: AppColors.hintTextColor,
               ),
               textAlign: TextAlign.center,
@@ -72,7 +79,9 @@ class EmptyDataGrid extends StatelessWidget {
                 },
                 child: Text(
                   actionLabel,
-                  style: TextStyles.boldPrefText.copyWith(
+                  style: TextStyles.prefText.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                     color: AppColors.buttonColor,
                   ),
                 ),
