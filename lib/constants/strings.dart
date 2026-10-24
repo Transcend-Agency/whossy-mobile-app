@@ -161,6 +161,8 @@ class AppStrings {
   static const String success = 'Successful';
   static const String reset =
       'A link has been sent to your email to reset your password.';
+  static const String resetLinkResent =
+      'We sent another link. Check your inbox and spam folder.';
   static const String startTour = 'Start guided tour';
 
   // Registration Status
