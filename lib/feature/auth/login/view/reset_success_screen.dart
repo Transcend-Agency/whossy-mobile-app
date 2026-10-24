@@ -10,6 +10,7 @@ import '../../../../common/styles/component_style.dart';
 import '../../../../common/styles/text_style.dart';
 import '../../../../common/utils/utils.dart';
 import '../../../../constants/index.dart';
+import '../data/repository/authentication_repository.dart';
 
 @RoutePage()
 class ResetSuccessScreen extends StatefulWidget {
@@ -24,7 +25,10 @@ class ResetSuccessScreen extends StatefulWidget {
 class _ResetSuccessScreenState extends State<ResetSuccessScreen> {
   final _countdownTimerKey = GlobalKey<CountdownTextState>();
 
+  final _authRepository = AuthenticationRepository();
+
   bool activateResend = false;
+  bool resending = false;
   int countDownDuration = 59;
 
   onFinished() {
@@ -33,19 +37,33 @@ class _ResetSuccessScreenState extends State<ResetSuccessScreen> {
     });
   }
 
-  resendEmail() async {
-    if (_countdownTimerKey.currentState != null) {
-      _countdownTimerKey.currentState!.restartTimer();
+  void _showError(String message) => showSnackbar(message, context);
+
+  /// Sends the link again and says whether it went. On success the countdown
+  /// starts over; on failure Resend stays available so the user can try
+  /// again once the problem (no connection, too many requests) clears.
+  Future<void> resendEmail() async {
+    if (resending) return;
+    setState(() => resending = true);
+
+    try {
+      await _authRepository.resetPassword(widget.email);
+      if (!mounted) return;
+      showSnackbar(
+        AppStrings.resetLinkResent,
+        context,
+        snackBarType: SnackbarType.success,
+      );
+      _countdownTimerKey.currentState?.restartTimer();
+      setState(() => activateResend = false);
+    } on FirebaseException catch (e) {
+      handleFirebaseAuthError(e, _showError);
+    } catch (e) {
+      log(e.toString());
+      _showError(AppStrings.errorUnknown);
+    } finally {
+      if (mounted) setState(() => resending = false);
     }
-
-    setState(() {
-      activateResend = false;
-    });
-
-    // Re-send email verification to new user
-    await FirebaseAuth.instance
-        .sendPasswordResetEmail(email: widget.email)
-        .then((_) => log('Sent verification email'));
   }
 
   @override
@@ -112,11 +130,11 @@ class _ResetSuccessScreenState extends State<ResetSuccessScreen> {
                       ],
                     )
                   : GestureDetector(
-                      onTap: () => resendEmail(),
+                      onTap: resending ? null : resendEmail,
                       child: Container(
                         padding: const EdgeInsets.all(3),
                         child: Text(
-                          'Resend',
+                          resending ? 'Sending…' : 'Resend',
                           style: TextStyles.bioText.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppColors.black,
