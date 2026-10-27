@@ -169,6 +169,24 @@ class AppStrings {
   static const String unregisteredEmail =
       'Account not registered, consider signing up instead';
   static const String registeredEmail = 'Account already registered';
+  static const String phoneNotRegistered =
+      'No Whossy account uses this number yet. Sign up, or log in the way you signed up.';
+
+  /// A verified number that is saved on an account which signs in another
+  /// way and never linked the number, so a phone login cannot reach it.
+  /// Naming the method is safe: the person just proved they own the number.
+  static String phoneOnOtherAccount(Object? authProvider) {
+    final method = switch (authProvider) {
+      'google' => 'Google',
+      'apple' => 'Apple',
+      'facebook' => 'Facebook',
+      'local' || 'email' => 'your email and password',
+      _ => null,
+    };
+    return method == null
+        ? 'This number is on an account that signs in another way. Log in the way you signed up.'
+        : 'This number is on an account that signs in with $method. Log in that way instead.';
+  }
   static const String differentCredentials =
       'Account exists with different credential';
 

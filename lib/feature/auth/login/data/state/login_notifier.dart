@@ -148,10 +148,7 @@ class LoginNotifier extends ChangeNotifier {
       final cred = AuthParams.withIdAndCode(id, code);
 
       userCredential = await _authRepository.handlePhoneAuthentication(cred);
-      await _authRepository.requireExistingProfile(
-        userCredential,
-        message: 'Phone number not registered',
-      );
+      await _requirePhoneProfile();
 
       await _userRepo.accountCheck(
         userCred: userCredential,
@@ -197,6 +194,9 @@ class LoginNotifier extends ChangeNotifier {
         final cred = AuthParams.withCredential(credential);
 
         userCredential = await _authRepository.handlePhoneAuthentication(cred);
+        // Android can verify the number without the code being typed. That
+        // path skipped this check and signed in to an empty new account.
+        await _requirePhoneProfile();
 
         await _userRepo.accountCheck(
           userCred: userCredential,
@@ -210,6 +210,8 @@ class LoginNotifier extends ChangeNotifier {
       }
     } on FirebaseException catch (e) {
       handleFirebaseAuthError(e, showSnackbar);
+    } on UnregisteredEmailException catch (e) {
+      showSnackbar(e.message);
     } catch (e) {
       showSnackbar(AppStrings.errorUnknown);
 
@@ -218,6 +220,15 @@ class LoginNotifier extends ChangeNotifier {
       spinnerState = false;
     }
   }
+
+  /// A phone login must reach an existing profile. When it does not, the
+  /// message says why: usually the number is saved on an account that signs
+  /// in another way.
+  Future<void> _requirePhoneProfile() => _authRepository.requireExistingProfile(
+        userCredential,
+        message: AppStrings.phoneNotRegistered,
+        explain: _authRepository.explainUnregisteredPhone,
+      );
 
   Future<void> sendPasswordResetEmail({
     required String email,

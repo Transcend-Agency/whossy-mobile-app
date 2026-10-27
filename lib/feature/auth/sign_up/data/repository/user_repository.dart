@@ -216,11 +216,16 @@ class UserRepository {
             await _users.where(FieldPath.documentId, whereIn: batchIds).get();
 
         // Map Firestore data to `UserProfile` objects
-        List<UserProfile> batchProfiles = userSnapshots.docs.map(
-          (doc) {
-            return UserProfile.fromJson(doc.data());
-          },
-        ).toList();
+        // Parse per document so one malformed profile is skipped rather than
+        // dropping the other nine in its batch.
+        final batchProfiles = <UserProfile>[];
+        for (final doc in userSnapshots.docs) {
+          try {
+            batchProfiles.add(UserProfile.fromJson(doc.data()));
+          } catch (e) {
+            log('Skipping profile ${doc.id}: $e');
+          }
+        }
 
         // Don't filter for the blocked screen
         batchProfiles.removeWhere(

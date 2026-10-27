@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -41,19 +42,50 @@ class AuthenticationRepository {
   /// sign-in because the profile can only be read once signed in; a login
   /// Firebase created just now for an unregistered user is removed again so
   /// it does not linger as an empty account.
+  ///
+  /// [explain] may give a more specific reason; it runs before the login is
+  /// removed, while profiles can still be read.
   Future<void> requireExistingProfile(
     UserCredential? credential, {
     String message = AppStrings.unregisteredEmail,
+    Future<String?> Function(User user)? explain,
   }) async {
     if (credential?.user == null) return;
     if (await _userRepository.getUserData() != null) return;
+
+    final reason = await explain?.call(credential!.user!);
 
     if (credential!.additionalUserInfo?.isNewUser ?? false) {
       await credential.user!.delete();
     } else {
       await FirebaseAuth.instance.signOut();
     }
-    throw UnregisteredEmailException(message);
+    throw UnregisteredEmailException(reason ?? message);
+  }
+
+  /// Why a verified number reaches no profile. The number may be saved on an
+  /// account that signs in with email, Google or Apple and never linked it:
+  /// to Firebase that is a different login, so this sign-in made a new,
+  /// empty one. Returns null when no such account is found.
+  Future<String?> explainUnregisteredPhone(User user) async {
+    final phone = user.phoneNumber;
+    if (phone == null) return null;
+
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('phone_number', isEqualTo: phone)
+          .limit(5)
+          .get();
+
+      for (final doc in snapshot.docs) {
+        final provider = doc.data()['auth_provider'];
+        if (provider != 'phone') return AppStrings.phoneOnOtherAccount(provider);
+      }
+    } catch (e) {
+      log('Could not look up the account for this number: $e');
+    }
+    return null;
   }
 
   Future<UserCredential> handleEmailLogin(String email, String password) async {
