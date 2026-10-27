@@ -156,6 +156,7 @@ class AppStrings {
   static const String disabledAccount = 'Your account has been disabled';
   static const String userNotFound = 'Invalid email or password';
   static const String tooManyRequests = 'Too many requests, try again later';
+  static const String errorInvalidPhone = 'Enter a valid phone number';
 
   // Success
   static const String success = 'Successful';

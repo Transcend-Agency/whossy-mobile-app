@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -95,35 +96,50 @@ class AuthenticationRepository {
     );
   }
 
+  /// Resolves once Firebase has answered (code sent, instant verification or
+  /// failure). `verifyPhoneNumber` itself returns as soon as the request is
+  /// dispatched, so callers would otherwise stop their spinner too early.
   Future<PhoneAuthCredential?> sendOTPCode(
     String phone,
     void Function(String, String, int?) onSend,
     void Function(String) showSnackbar,
     int? resendingToken,
   ) async {
-    PhoneAuthCredential? phoneAuthCredential;
+    final completer = Completer<PhoneAuthCredential?>();
 
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phone,
-      forceResendingToken: resendingToken,
-      timeout: const Duration(seconds: 60),
-      verificationCompleted: (credential) {
-        log('Verification completed $credential');
-        phoneAuthCredential = credential;
-      },
-      verificationFailed: (error) {
-        log('Verification failed: $error');
-        showSnackbar('An error occurred while attempting to send the code');
-      },
-      codeSent: (verificationId, forceResendingToken) {
-        onSend(phone, verificationId, forceResendingToken);
-      },
-      codeAutoRetrievalTimeout: (verificationId) {
-        log('Auto retrieval timeout');
-      },
-    );
+    void finish([PhoneAuthCredential? credential]) {
+      if (!completer.isCompleted) completer.complete(credential);
+    }
 
-    return phoneAuthCredential;
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phone,
+        forceResendingToken: resendingToken,
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: (credential) {
+          log('Verification completed $credential');
+          finish(credential);
+        },
+        verificationFailed: (error) {
+          log('Verification failed: ${error.code} ${error.message}');
+          handleFirebaseAuthError(error, showSnackbar);
+          finish();
+        },
+        codeSent: (verificationId, forceResendingToken) {
+          onSend(phone, verificationId, forceResendingToken);
+          finish();
+        },
+        codeAutoRetrievalTimeout: (verificationId) {
+          log('Auto retrieval timeout');
+          finish();
+        },
+      );
+    } catch (e) {
+      finish();
+      rethrow;
+    }
+
+    return completer.future;
   }
 
   Future<UserCredential?> handlePhoneAuthentication(AuthParams params) async {
