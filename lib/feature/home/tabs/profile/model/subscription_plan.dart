@@ -8,21 +8,11 @@ class SubscriptionPlan {
   });
 }
 
+// One monthly plan, $10, the same as the web. The 3, 6 and 12 month Play
+// products stay in the console for subscribers who already hold one.
 final subscriptionPlans = [
   SubscriptionPlan(
-    discountInfo: "Best for trial",
+    discountInfo: "",
     productId: "subscription_1months",
-  ),
-  SubscriptionPlan(
-    discountInfo: "Save 15%",
-    productId: "subscription_3months_usd",
-  ),
-  SubscriptionPlan(
-    discountInfo: "Save 15%",
-    productId: "subscription_6months_usd",
-  ),
-  SubscriptionPlan(
-    discountInfo: "Save 25%",
-    productId: "subscription_1year_usd",
   ),
 ];
