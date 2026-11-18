@@ -19,6 +19,9 @@ void handleFirebaseAuthError(
     case 'invalid-verification-code':
       showSnackbar(AppStrings.errorInvalidCode);
       break;
+    case 'invalid-phone-number':
+      showSnackbar(AppStrings.errorInvalidPhone);
+      break;
     case 'user-disabled':
       showSnackbar(AppStrings.disabledAccount);
       break;
