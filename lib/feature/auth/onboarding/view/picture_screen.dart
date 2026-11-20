@@ -153,6 +153,14 @@ class _PictureScreenState extends State<PictureScreen>
             fontSize: AppUtils.scale(10.5.sp),
           ),
         ),
+        addHeight(8),
+        Text(
+          AppStrings.onboardingPhotoVerificationNote,
+          style: TextStyles.hintText.copyWith(
+            fontSize: AppUtils.scale(10.5.sp),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         addHeight(42),
         // Todo : Resizing issues in this area
         Center(

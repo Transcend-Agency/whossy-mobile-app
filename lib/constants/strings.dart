@@ -53,6 +53,11 @@ class AppStrings {
   // Onboarding
   static const String distanceSubHeader =
       'Use the slider below to set a radius of how far you want our system to search for matches within your current location. You can always change this later in the settings.';
+  // Shown on the photo step so people know up front that their photos are
+  // what the verification selfie is checked against. Deliberately does not
+  // say which photo.
+  static const String onboardingPhotoVerificationNote =
+      "Your photos will be used to verify that it's really you, so make sure your face is clearly visible. If you change them later, you may need to verify again.";
   static const String onboardingSelfieTitle = "Take a Selfie";
   static const String onboardingSelfieSubtitle =
       "Tap on the camera icon to take a snapshot of yourself for verification. Kindly use a well-lighted background and avoid blurry photos.";
