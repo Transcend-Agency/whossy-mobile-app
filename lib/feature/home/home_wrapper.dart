@@ -49,6 +49,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   // Other UI code
   late List<Widget> _pages;
+  static const _keepAliveTabs = {2, 3};
+  final _visitedKeepAlive = <int>{};
   int selectedIndex = 0;
 
   @override
@@ -160,9 +162,24 @@ class _HomeWrapperState extends State<HomeWrapper> {
               maxContentWidth: null,
               body: VerificationStatusBanner(
                 child: Builder(
-                  builder: (_) => _pages.elementAt(
-                    context.watch<TourNotifier>().currentIndex,
-                  ),
+                  builder: (_) {
+                    final current = context.watch<TourNotifier>().currentIndex;
+                    _visitedKeepAlive.addAll(
+                      _keepAliveTabs.intersection({current}),
+                    );
+                    // Likes/Match and Chat stay mounted once opened so
+                    // switching back doesn't rebuild and reload them; the
+                    // other tabs are still built only while selected.
+                    return IndexedStack(
+                      index: current,
+                      children: [
+                        for (var i = 0; i < _pages.length; i++)
+                          i == current || _visitedKeepAlive.contains(i)
+                              ? _pages[i]
+                              : const SizedBox.shrink(),
+                      ],
+                    );
+                  },
                 ),
               ),
               bottomNavBar: AnimatedContainer(

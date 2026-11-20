@@ -301,6 +301,8 @@ void resetAllNotifiers(BuildContext context) {
   context.read<EditProfileNotifier>().reset();
   context.read<PreferencesNotifier>().reset();
   context.read<LoginNotifier>().reset();
+  context.read<LikesNotifier>().reset();
+  context.read<MatchesNotifier>().reset();
 }
 
 Future<LottieComposition?> customDecoder(List<int> bytes) {
