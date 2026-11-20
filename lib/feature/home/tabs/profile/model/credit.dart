@@ -30,23 +30,13 @@ class Credit {
   }) : productId = 'credits_${quantity}_usd';
 }
 
+// Matches the web prices: 5 for $1, 10 for $2, 50 for $10, 100 for $20,
+// 200 for $30, 1000 for $40. The Play product price must be set to match.
 final credits = [
-  Credit(
-    quantity: 1,
-  ),
-  Credit(
-    quantity: 5,
-  ),
-  Credit(
-    quantity: 10,
-  ),
-  Credit(
-    quantity: 20,
-  ),
-  Credit(
-    quantity: 50,
-  ),
-  Credit(
-    quantity: 100,
-  ),
+  Credit(quantity: 5),
+  Credit(quantity: 10),
+  Credit(quantity: 50),
+  Credit(quantity: 100),
+  Credit(quantity: 200),
+  Credit(quantity: 1000),
 ];
