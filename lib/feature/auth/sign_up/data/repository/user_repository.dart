@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:whossy_app/common/utils/app_utils.dart';
+import 'package:whossy_app/common/utils/enum/enums.dart';
 import 'package:whossy_app/common/utils/exceptions/failed_upload.dart';
 
 import '../../../../../common/utils/services/services.dart';
@@ -157,6 +158,8 @@ class UserRepository {
         bool? isPremium,
         int? creditBalance,
         int? creditsOnHold,
+        String? currentPlan,
+        PaymentPlatform? paymentPlatform,
       })> faceVerificationStream() {
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
@@ -169,6 +172,8 @@ class UserRepository {
           isPremium: null,
           creditBalance: null,
           creditsOnHold: null,
+          currentPlan: null,
+          paymentPlatform: null,
         );
       }
 
@@ -180,6 +185,10 @@ class UserRepository {
         isPremium: data['is_premium'] as bool?,
         creditBalance: (data['credit_balance'] as num?)?.toInt(),
         creditsOnHold: (data['credits_on_hold'] as num?)?.toInt(),
+        // The server writes these on a purchase and deletes them when Play
+        // reports a cancellation, so a missing field means "no plan".
+        currentPlan: data['current_plan'] as String?,
+        paymentPlatform: paymentPlatformFromJson(data['payment_platform']),
       );
     });
   }
