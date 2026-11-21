@@ -68,6 +68,8 @@ class EditProfileNotifier extends ChangeNotifier {
         bool? isPremium,
         int? creditBalance,
         int? creditsOnHold,
+        String? currentPlan,
+        PaymentPlatform? paymentPlatform,
       })>? _faceVerificationSub;
   bool _hasSeenFirstFaceVerificationSnapshot = false;
 
@@ -121,6 +123,16 @@ class EditProfileNotifier extends ChangeNotifier {
       _staticCoreProfile?.creditBalance = update.creditBalance ?? 0;
       _dynCoreProfile?.creditsOnHold = update.creditsOnHold ?? 0;
       _staticCoreProfile?.creditsOnHold = update.creditsOnHold ?? 0;
+
+      // The subscription button reads these. The server sets them when a
+      // purchase is verified and deletes them when Play reports a
+      // cancellation, so null is a real value here. Without this the button
+      // said Subscribe after buying and Cancel Plan after cancelling, until
+      // the app was restarted.
+      _dynCoreProfile?.currentPlan = update.currentPlan;
+      _staticCoreProfile?.currentPlan = update.currentPlan;
+      _dynCoreProfile?.paymentPlatform = update.paymentPlatform;
+      _staticCoreProfile?.paymentPlatform = update.paymentPlatform;
 
       if (!isFirstSnapshot &&
           previousStatus != 'rejected' &&
