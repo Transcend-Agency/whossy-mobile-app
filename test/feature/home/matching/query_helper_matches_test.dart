@@ -48,7 +48,22 @@ void main() {
         QueryHelper.matches(person(dob: DateTime(2001, 6, 16)), filters,
             now: now),
         isFalse);
-    // Older than 30: out.
+    // 30 and a half is still 30: in. This used to be left out.
+    expect(
+        QueryHelper.matches(person(dob: DateTime(1996, 1, 1)), filters,
+            now: now),
+        isTrue);
+    // Turns 31 tomorrow, so still 30: in.
+    expect(
+        QueryHelper.matches(person(dob: DateTime(1995, 6, 16)), filters,
+            now: now),
+        isTrue);
+    // Turned 31 today: out.
+    expect(
+        QueryHelper.matches(person(dob: DateTime(1995, 6, 15)), filters,
+            now: now),
+        isFalse);
+    // Well over 30: out.
     expect(
         QueryHelper.matches(person(dob: DateTime(1990, 1, 1)), filters,
             now: now),

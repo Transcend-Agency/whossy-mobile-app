@@ -89,7 +89,10 @@ final exploreProvider = ChangeNotifierProxyProvider3<EditProfileNotifier,
         advancedSearchPrefs.staticOtherPreferences,
       )
       // "Popular in my area" uses the Preferences radius, like the deck.
-      ..saveSearchRadius(preferences.staticOtherPreferences?.distance);
+      ..saveSearchRadius(preferences.staticOtherPreferences?.distance)
+      // Age is one setting: Advanced Search and "In my age range" use the
+      // Preferences age filter.
+      ..saveAgeFilter(preferences.staticOtherPreferences);
   },
 );
 
