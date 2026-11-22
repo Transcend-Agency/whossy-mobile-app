@@ -18,7 +18,11 @@ const RangeValues _kAnyAge = RangeValues(18, 70);
 
 class DistanceAgeComponent<T extends SearchPreferencesNotifier>
     extends HookWidget {
-  const DistanceAgeComponent({super.key});
+  const DistanceAgeComponent({super.key, this.showDistance = true});
+
+  /// Advanced Search hides the distance slider: its search doesn't use
+  /// distance, so the slider there changed nothing.
+  final bool showDistance;
 
   @override
   Widget build(BuildContext context) {
@@ -39,67 +43,79 @@ class DistanceAgeComponent<T extends SearchPreferencesNotifier>
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14.r),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Distance Radius', style: TextStyles.prefText),
-                        AppAnimatedSwitcher(
-                          child: prefs == null
-                              ? ShimmerWidget.rectangular(
-                                  height: 24.h,
-                                  width: 46.w,
-                                  border: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(6.r),
+                  if (showDistance) ...[
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14.r),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Distance Radius', style: TextStyles.prefText),
+                          AppAnimatedSwitcher(
+                            child: prefs == null
+                                ? ShimmerWidget.rectangular(
+                                    height: 24.h,
+                                    width: 46.w,
+                                    border: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6.r),
+                                    ),
+                                    key: const ValueKey(false),
+                                  )
+                                : AppChip(
+                                    key: const ValueKey('data'),
+                                    data:
+                                        '${(prefs.distance ?? 50).toInt()} mi',
+                                    isSelected: false,
+                                    outlined: false,
                                   ),
-                                  key: const ValueKey(false),
-                                )
-                              : AppChip(
-                                  key: const ValueKey('data'),
-                                  data: '${(prefs.distance ?? 50).toInt()} mi',
-                                  isSelected: false,
-                                  outlined: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.r,
+                        vertical: isAndroid ? 8.h : 4.h,
+                      ),
+                      child: AppAnimatedSwitcher(
+                        child: prefs == null
+                            ? ShimmerWidget.rectangular(
+                                height: 20.h,
+                                border: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4.r),
                                 ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.r,
-                      vertical: isAndroid ? 8.h : 4.h,
-                    ),
-                    child: AppAnimatedSwitcher(
-                      child: prefs == null
-                          ? ShimmerWidget.rectangular(
-                              height: 20.h,
-                              border: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.r),
+                                key: const ValueKey(false),
+                              )
+                            : AppSlider(
+                                key: const ValueKey('data'),
+                                useSliderTheme: true,
+                                value: (prefs.distance ?? 50).toDouble(),
+                                onChanged: (newValue) =>
+                                    notifier.updatePreferences(
+                                  distance: newValue.toInt(),
+                                ),
                               ),
-                              key: const ValueKey(false),
-                            )
-                          : AppSlider(
-                              key: const ValueKey('data'),
-                              useSliderTheme: true,
-                              value: (prefs.distance ?? 50).toDouble(),
-                              onChanged: (newValue) =>
-                                  notifier.updatePreferences(
-                                distance: newValue.toInt(),
-                              ),
-                            ),
+                      ),
                     ),
-                  ),
-                  // C6: "outreach" toggle removed — MatchRepository no longer
-                  // caps reach by radius at all (distance is a ranking signal,
-                  // not a cutoff), so a toggle promising to bypass a cap that
-                  // no longer exists would be its own new instance of exactly
-                  // the bug this plan exists to fix.
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 14.r, vertical: 12.h),
-                    child: const AppDivider(),
-                  ),
+                    // Says what the radius does, so nobody takes it for a
+                    // hard limit on who they can see.
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14.r),
+                      child: Text(
+                        AppStrings.distanceRadiusNote,
+                        style: TextStyles.hintText,
+                      ),
+                    ),
+                    // C6: "outreach" toggle removed — MatchRepository no longer
+                    // caps reach by radius at all (distance is a ranking signal,
+                    // not a cutoff), so a toggle promising to bypass a cap that
+                    // no longer exists would be its own new instance of exactly
+                    // the bug this plan exists to fix.
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 14.r, vertical: 12.h),
+                      child: const AppDivider(),
+                    ),
+                  ],
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 14.r),
                     child: Row(

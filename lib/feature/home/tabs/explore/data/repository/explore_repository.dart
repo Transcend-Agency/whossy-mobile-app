@@ -53,6 +53,7 @@ class ExploreRepository {
     required int gender,
     double? latitude,
     double? longitude,
+    int? searchRadiusMiles,
   }) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -62,7 +63,7 @@ class ExploreRepository {
         blockedIds: blockedIds,
         latitude: latitude,
         longitude: longitude,
-        radiusMiles: preferences?.distance,
+        radiusMiles: searchRadiusMiles,
       );
     }
 
@@ -209,7 +210,17 @@ class ExploreRepository {
 
     final geoStream = _geo
         .collection(collectionRef: onboardedQuery)
-        .within(center: center, radius: radiusKm, field: 'geography');
+        // strictMode drops the matches a geohash area picks up beyond the
+        // radius (its cells are squares, so the corners overshoot): this
+        // filter promises "within your distance". The single-subscription
+        // form also cancels its Firestore listeners when the filter is
+        // closed; plain within() keeps them running.
+        .withinAsSingleStreamSubscription(
+          center: center,
+          radius: radiusKm,
+          field: 'geography',
+          strictMode: true,
+        );
 
     final likedIdsStream = _likes
         .where('liker_id', isEqualTo: uid)
