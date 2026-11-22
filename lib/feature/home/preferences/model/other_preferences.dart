@@ -16,8 +16,16 @@ class OtherPreferences {
   @JsonKey(name: "has_bio")
   bool? hasBio;
 
+  /// The age filter. It's on exactly when this is set: a null range means
+  /// no age filter, which is also how older app versions read it.
   @JsonKey(name: "age_range")
   Map<String, int>? ageRange;
+
+  /// The last age range chosen, kept while the filter is off so switching
+  /// it back on restores it. The "In my age range" Explore filter uses it
+  /// too (see [myAgeRange]).
+  @JsonKey(name: "saved_age_range")
+  Map<String, int>? savedAgeRange;
 
   List<String>? interests;
   int? distance;
@@ -38,6 +46,7 @@ class OtherPreferences {
     this.similarInterest,
     this.hasBio,
     this.ageRange,
+    this.savedAgeRange,
     this.distance,
     this.interests,
     this.outreach,
@@ -71,6 +80,7 @@ class OtherPreferences {
       ageRange ??= {};
       if (minAge != null) ageRange!['min'] = minAge;
       if (maxAge != null) ageRange!['max'] = maxAge;
+      savedAgeRange = Map.of(ageRange!);
     }
 
     if (minHeight != null || maxHeight != null) {
@@ -105,6 +115,29 @@ class OtherPreferences {
     if (weight) weightRange = null;
   }
 
+  bool get isAgeFilterOn => ageRange != null;
+
+  /// The range "In my age range" in Explore uses: the active one, or the one
+  /// chosen before the filter was switched off. Null when none was chosen.
+  Map<String, int>? get myAgeRange => ageRange ?? savedAgeRange;
+
+  /// Switches the age filter on (restoring the last range, or
+  /// [startingRange] the first time) or off (keeping the range for later).
+  void setAgeFilter(bool on, {required RangeValues startingRange}) {
+    if (on) {
+      final range = savedAgeRange ??
+          {
+            'min': startingRange.start.round(),
+            'max': startingRange.end.round(),
+          };
+      ageRange = Map.of(range);
+      savedAgeRange = Map.of(range);
+    } else {
+      if (ageRange != null) savedAgeRange = Map.of(ageRange!);
+      ageRange = null;
+    }
+  }
+
   RangeValues? toAgeRange() => ageRange?.toRangeValues();
   RangeValues? toHeightRange() => heightRange?.toRangeValues();
   RangeValues? toWeightRange() => weightRange?.toRangeValues();
@@ -121,6 +154,7 @@ class OtherPreferences {
         '  similarInterest: $similarInterest,\n'
         '  hasBio: $hasBio,\n'
         '  ageRange: $ageRange,\n'
+        '  savedAgeRange: $savedAgeRange,\n'
         '  interests: $interests,\n'
         '  distance: $distance,\n'
         '  outreach: $outreach,\n'
@@ -140,6 +174,7 @@ class OtherPreferences {
         other.similarInterest == similarInterest &&
         other.hasBio == hasBio &&
         mapEquals(other.ageRange, ageRange) &&
+        mapEquals(other.savedAgeRange, savedAgeRange) &&
         AppUtils.areListsEqual(other.interests, interests) &&
         other.distance == distance &&
         other.outreach == outreach &&
@@ -156,6 +191,7 @@ class OtherPreferences {
       similarInterest,
       hasBio,
       ageRange,
+      savedAgeRange,
       interests,
       distance,
       outreach,

@@ -8,3 +8,7 @@ const kNewMemberWindow = Duration(days: 7);
 /// hasn't set a distance preference. Matches the onboarding slider's
 /// default (distance_screen.dart).
 const kDefaultDiscoveryRadiusMiles = 50.0;
+
+/// When someone first switches the age filter on, the range starts this
+/// many years either side of their own age.
+const kStartingAgeSpread = 5;

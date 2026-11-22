@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show RangeValues;
 import 'package:whossy_app/feature/home/preferences/data/source/extensions.dart';
 import 'package:whossy_app/feature/home/preferences/data/state/search_preferences_notifier.dart';
 
@@ -188,6 +189,13 @@ class PreferencesNotifier extends ChangeNotifier
       maxWeight: maxWeight,
     );
 
+    notifyListeners();
+  }
+
+  /// Switches the age filter on or off. [startingRange] is used the first
+  /// time it's switched on, when there's no earlier range to restore.
+  void setAgeFilter(bool on, {required RangeValues startingRange}) {
+    _dynOtherPrefs?.setAgeFilter(on, startingRange: startingRange);
     notifyListeners();
   }
 
