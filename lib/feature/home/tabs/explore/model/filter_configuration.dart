@@ -10,8 +10,8 @@ class FilterConfig {
 }
 
 // Define filter configurations for each filter. Filters.similarInterest,
-// Filters.outsideMyCountry and Filters.popularInMyArea are deliberately
-// absent — all three need handling ExploreRepository does explicitly (C2):
+// Filters.outsideMyCountry, Filters.popularInMyArea and Filters.inMyAgeRange
+// (which needs the Preferences age range) are deliberately absent — all three need handling ExploreRepository does explicitly (C2):
 // "similar interest" needs to skip the query entirely (and surface why)
 // when the viewer has no interests recorded, since Firestore's
 // arrayContainsAny rejects an empty list outright; "outside my country"

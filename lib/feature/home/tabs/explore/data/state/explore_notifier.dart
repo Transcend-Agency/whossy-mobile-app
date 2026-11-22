@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../../edit_profile/model/core_profile.dart';
 import '../../../../preferences/model/core_preferences.dart';
@@ -19,6 +19,24 @@ class ExploreNotifier extends ChangeNotifier {
   /// The Distance Radius from Preferences (not Advanced Search): it's the
   /// one radius setting, shared with the swipe deck's "nearby first".
   int? _searchRadiusMiles;
+
+  /// The age filter from Preferences: [_ageRange] when it's switched on
+  /// (Advanced Search uses it, so age is one setting in both places), and
+  /// [_myAgeRange] for "In my age range", which also works while the filter
+  /// is off.
+  Map<String, int>? _ageRange;
+  Map<String, int>? _myAgeRange;
+
+  Map<String, int>? get myAgeRange => _myAgeRange;
+
+  void saveAgeFilter(OtherPreferences? preferences) {
+    final active = preferences?.ageRange;
+    final mine = preferences?.myAgeRange;
+    if (mapEquals(active, _ageRange) && mapEquals(mine, _myAgeRange)) return;
+    _ageRange = active == null ? null : Map.of(active);
+    _myAgeRange = mine == null ? null : Map.of(mine);
+    notifyListeners();
+  }
 
   void saveSearchRadius(int? miles) {
     if (_searchRadiusMiles == miles) return;
@@ -53,6 +71,8 @@ class ExploreNotifier extends ChangeNotifier {
       latitude: _profileData?.latitude,
       longitude: _profileData?.longitude,
       searchRadiusMiles: _searchRadiusMiles,
+      ageRange: _ageRange,
+      myAgeRange: _myAgeRange,
     );
   }
 
@@ -100,6 +120,8 @@ class ExploreNotifier extends ChangeNotifier {
     _corePreferences = null;
     _otherPreferences = null;
     _searchRadiusMiles = null;
+    _ageRange = null;
+    _myAgeRange = null;
     _filters = ExploreFilters(filters: {});
     notifyListeners();
   }
