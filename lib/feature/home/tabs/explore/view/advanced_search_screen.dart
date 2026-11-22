@@ -109,7 +109,7 @@ class AdvancedSearchScreen extends HookWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: const DistanceAgeComponent<_Notifier>(),
+              child: const DistanceAgeComponent<_Notifier>(showDistance: false),
             ),
             Padding(
               padding: EdgeInsets.only(bottom: 8.h),

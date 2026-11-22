@@ -51,8 +51,13 @@ class AppStrings {
       'I am very excited to meet new people and make friends. Let’s start with that and see where it takes us 🚀';
 
   // Onboarding
+  // Distance radius. Worded to match what the radius actually does: it
+  // decides who comes first when swiping and bounds "Popular in my area",
+  // but never hides anyone from the rest of the app.
   static const String distanceSubHeader =
-      'Use the slider below to set a radius of how far you want our system to search for matches within your current location. You can always change this later in the settings.';
+      'Set how far away someone can be to count as nearby. When you swipe, we show people within this distance first, then people further away. The "Popular in my area" filter in Explore only shows people within this distance. You can change this later in Preferences.';
+  static const String distanceRadiusNote =
+      'When you swipe, people within this distance are shown first, then people further away. "Popular in my area" in Explore only shows people within this distance.';
   // Shown on the photo step so people know up front that their photos are
   // what the verification selfie is checked against. Deliberately does not
   // say which photo.
@@ -193,6 +198,7 @@ class AppStrings {
         ? 'This number is on an account that signs in another way. Log in the way you signed up.'
         : 'This number is on an account that signs in with $method. Log in that way instead.';
   }
+
   static const String differentCredentials =
       'Account exists with different credential';
 
