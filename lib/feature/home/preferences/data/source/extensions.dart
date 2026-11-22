@@ -67,7 +67,11 @@ extension OtherPreferencesExtension on OtherPreferences {
       updatedFields['has_bio'] = hasBio;
     }
     if (!mapEquals(ageRange, other.ageRange)) {
+      // Null switches the age filter off.
       updatedFields['age_range'] = ageRange;
+    }
+    if (!mapEquals(savedAgeRange, other.savedAgeRange)) {
+      updatedFields['saved_age_range'] = savedAgeRange;
     }
     if (!AppUtils.areListsEqual(interests, other.interests)) {
       updatedFields['interests'] = interests;

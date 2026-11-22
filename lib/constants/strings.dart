@@ -56,6 +56,16 @@ class AppStrings {
   // but never hides anyone from the rest of the app.
   static const String distanceSubHeader =
       'Set how far away someone can be to count as nearby. When you swipe, we show people within this distance first, then people further away. The "Popular in my area" filter in Explore only shows people within this distance. You can change this later in Preferences.';
+  // Age filter, in Preferences and Advanced Search. Off by default: the
+  // note under the switch says what it does before anyone turns it on.
+  static const String ageFilterOffNote =
+      'Turn this on to only see people in a chosen age range when you swipe. You can turn it off anytime here in Preferences.';
+  static const String ageFilterOffNoteAdvancedSearch =
+      "Turn this on to only see people in a chosen age range, here and when you swipe. It's the same setting as in Preferences, and you can turn it off anytime.";
+  static const String ageFilterOnNote =
+      'Only people in this age range are shown when you swipe and in Advanced Search. Turn this off anytime to see everyone.';
+  static const String ageRangeExploreNeedsRange =
+      'Set an age range to see people in it. You can switch the age filter back off afterwards and this filter will keep your range.';
   static const String distanceRadiusNote =
       'When you swipe, people within this distance are shown first, then people further away. "Popular in my area" in Explore only shows people within this distance.';
   // Shown on the photo step so people know up front that their photos are

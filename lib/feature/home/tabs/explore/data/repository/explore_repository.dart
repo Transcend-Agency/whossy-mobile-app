@@ -54,8 +54,11 @@ class ExploreRepository {
     double? latitude,
     double? longitude,
     int? searchRadiusMiles,
+    Map<String, int>? ageRange,
+    Map<String, int>? myAgeRange,
   }) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
+    final inMyAgeRange = filters.filters.containsKey(Filters.inMyAgeRange);
 
     if (filters.filters.containsKey(Filters.popularInMyArea)) {
       return _streamPopularInMyArea(
@@ -76,6 +79,12 @@ class ExploreRepository {
       return Stream.value(<LikedUserProfile>[]);
     }
 
+    // No age range chosen yet: nothing to show, and the empty state says
+    // how to set one.
+    if (inMyAgeRange && myAgeRange == null) {
+      return Stream.value(<LikedUserProfile>[]);
+    }
+
     // has_completed_onboarding wasn't filtered server-side at all before —
     // every batch relied entirely on the post-fetch removeWhere below,
     // which (combined with the old fixed limit) meant a page could shrink
@@ -92,20 +101,31 @@ class ExploreRepository {
       }
     });
 
+    if (inMyAgeRange) {
+      baseQuery = QueryHelper.applyFilters(
+        {'age_min': myAgeRange!['min'], 'age_max': myAgeRange['max']},
+        baseQuery,
+      );
+    }
+
     if (filters.filters.containsKey(Filters.advancedSearch)) {
-      if (preferences != null || corePreferences != null) {
-        baseQuery = QueryHelper.applyFilters(
-          QueryHelper.buildFilters(
-            preferences,
-            corePreferences,
-            userInterests: [
-              ...interests,
-              ...(preferences?.interests ?? []),
-            ],
-          ),
-          baseQuery,
-        );
-      }
+      // Age comes from the Preferences age filter, so it's the same setting
+      // in both places. The age range still stored with the Advanced Search
+      // preferences is ignored.
+      final advancedPreferences =
+          OtherPreferences.fromJson(preferences?.toJson() ?? const {})
+            ..ageRange = ageRange;
+      baseQuery = QueryHelper.applyFilters(
+        QueryHelper.buildFilters(
+          advancedPreferences,
+          corePreferences,
+          userInterests: [
+            ...interests,
+            ...(preferences?.interests ?? []),
+          ],
+        ),
+        baseQuery,
+      );
     } else {
       if (gender == 0) {
         baseQuery = baseQuery.where('gender', isEqualTo: 'Male');
@@ -131,7 +151,9 @@ class ExploreRepository {
     // be the inequality's own field.
     final orderByField = filters.filters.containsKey(Filters.online)
         ? 'status.lastSeen'
-        : 'created_at';
+        : inMyAgeRange
+            ? 'date_of_birth'
+            : 'created_at';
 
     final Stream<QuerySnapshot> queryStream = paginated
         ? _pageSize.stream.switchMap(

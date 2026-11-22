@@ -14,6 +14,9 @@ OtherPreferences _$OtherPreferencesFromJson(Map<String, dynamic> json) =>
       ageRange: (json['age_range'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, (e as num).toInt()),
       ),
+      savedAgeRange: (json['saved_age_range'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, (e as num).toInt()),
+      ),
       distance: (json['distance'] as num?)?.toInt(),
       interests: (json['interests'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -35,6 +38,7 @@ Map<String, dynamic> _$OtherPreferencesToJson(OtherPreferences instance) =>
       if (instance.similarInterest case final value?) 'similar_interest': value,
       if (instance.hasBio case final value?) 'has_bio': value,
       if (instance.ageRange case final value?) 'age_range': value,
+      if (instance.savedAgeRange case final value?) 'saved_age_range': value,
       if (instance.interests case final value?) 'interests': value,
       if (instance.distance case final value?) 'distance': value,
       if (instance.outreach case final value?) 'outreach': value,

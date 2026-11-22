@@ -26,10 +26,9 @@ class PreferenceRepository {
           'distance': data['distance'],
           'outreach': true,
           'has_bio': false,
-          'age_range': {
-            "max": 40,
-            "min": 20,
-          },
+          // No age_range: the age filter starts off. It used to be set to
+          // 20-40 here, which hid everyone else from new accounts without
+          // them ever choosing it.
           'similar_interest': false,
         };
 

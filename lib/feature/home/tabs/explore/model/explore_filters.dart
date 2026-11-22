@@ -28,6 +28,7 @@ enum Filters {
   online('Online'),
   newMembers('New members'),
   popularInMyArea('Popular in my area'),
+  inMyAgeRange('In my age range'),
   lookingToDate('Looking to date'),
   outsideMyCountry('Outside my country'),
   advancedSearch('Advanced search', AppAssets.wwSearch);

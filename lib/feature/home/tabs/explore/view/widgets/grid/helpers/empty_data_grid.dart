@@ -11,7 +11,8 @@ import '../../../../../../../../provider/provider.dart';
 import '../../../../model/explore_filters.dart';
 
 /// Shown when the selected Explore filter finds nobody. Offers the way out
-/// that fits the filter: re-open Advanced search, or go back to Discover.
+/// that fits the filter: re-open Advanced search, set or widen the age range
+/// in Preferences, or go back to Discover.
 class EmptyDataGrid extends StatelessWidget {
   const EmptyDataGrid({super.key});
 
@@ -20,12 +21,28 @@ class EmptyDataGrid extends StatelessWidget {
     final explore = context.read<ExploreNotifier>();
     final isAdvanced = explore.getFilter(Filters.advancedSearch) != null;
     final isDiscover = explore.getFilter(Filters.discover) != null;
+    final isAgeRange = explore.getFilter(Filters.inMyAgeRange) != null;
+    final needsAgeRange = isAgeRange && explore.myAgeRange == null;
 
     final String? actionLabel = isAdvanced
         ? 'Adjust search'
-        : isDiscover
-            ? null
-            : 'Show ${Filters.discover.label}';
+        : isAgeRange
+            ? (needsAgeRange ? 'Set age range' : 'Adjust age range')
+            : isDiscover
+                ? null
+                : 'Show ${Filters.discover.label}';
+
+    final String title = needsAgeRange
+        ? 'Choose an age range first'
+        : 'No profiles match right now';
+
+    final String message = isAdvanced
+        ? 'Try widening your age range or relationship preference.'
+        : needsAgeRange
+            ? AppStrings.ageRangeExploreNeedsRange
+            : isAgeRange
+                ? 'Try widening your age range in Preferences.'
+                : 'Try a different filter, or check back soon as new people join every day.';
 
     return Center(
       key: const ValueKey('empty'),
@@ -37,7 +54,7 @@ class EmptyDataGrid extends StatelessWidget {
             Image.asset(AppAssets.noLikes, height: 100.r),
             addHeight(12),
             Text(
-              'No profiles match right now',
+              title,
               // Sized against the 12pt filter chips above it: a heading, not
               // a headline.
               style: TextStyles.prefText.copyWith(
@@ -49,9 +66,7 @@ class EmptyDataGrid extends StatelessWidget {
             ),
             addHeight(6),
             Text(
-              isAdvanced
-                  ? 'Try widening your age range or relationship preference.'
-                  : 'Try a different filter, or check back soon as new people join every day.',
+              message,
               style: TextStyles.prefText.copyWith(
                 fontSize: 13,
                 color: AppColors.hintTextColor,
@@ -72,6 +87,8 @@ class EmptyDataGrid extends StatelessWidget {
                 onPressed: () {
                   if (isAdvanced) {
                     Nav.push(context, const AdvancedSearchRoute());
+                  } else if (isAgeRange) {
+                    Nav.push(context, const PreferenceRoute());
                   } else {
                     explore.clearFilters();
                     explore.addFilter(Filters.discover, '');

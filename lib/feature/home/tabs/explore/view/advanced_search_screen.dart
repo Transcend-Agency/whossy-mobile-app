@@ -22,12 +22,19 @@ class AdvancedSearchScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final notifier = useMemoized(() => context.read<_Notifier>());
+    // The age section edits the Preferences age filter (one setting in both
+    // places), so this screen saves and discards it with its own changes.
+    final preferences = useMemoized(() => context.read<PreferencesNotifier>());
     final hasSave = useState<bool>(false);
 
+    Future<void> saveAll() async {
+      void onError(String msg) => showSnackbar(msg, context);
+      await notifier.saveFilters(showSnackbar: onError);
+      await preferences.saveFilters(showSnackbar: onError);
+    }
+
     onSaveChanges() async {
-      await notifier.saveFilters(
-        showSnackbar: (msg) => showSnackbar(msg, context),
-      );
+      await saveAll();
 
       if (!context.mounted) return;
 
@@ -61,14 +68,15 @@ class AdvancedSearchScreen extends HookWidget {
 
         if (context.mounted && result) {
           notifier.resetToStatic();
+          // Only when there's something to undo: resetToStatic needs the
+          // preferences to have loaded.
+          if (preferences.hasChanges) preferences.resetToStatic();
           Navigator.of(context).pop();
         }
       }
     }
 
-    void onSaveTap() => notifier.saveFilters(
-          showSnackbar: (msg) => showSnackbar(msg, context),
-        );
+    void onSaveTap() => saveAll();
 
     return PopScope(
       canPop: !hasSave.value,
@@ -79,8 +87,9 @@ class AdvancedSearchScreen extends HookWidget {
           addBarHeight: 4,
           title: 'Advanced search',
           onPop: hasSave.value ? () async => await onPopInvoked(false) : null,
-          action: Selector<_Notifier, bool>(
-            selector: (_, pref) => pref.hasChanges,
+          action: Selector2<_Notifier, PreferencesNotifier, bool>(
+            selector: (_, search, prefs) =>
+                search.hasChanges || prefs.hasChanges,
             builder: (_, save, __) {
               if (hasSave.value != save) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -109,7 +118,7 @@ class AdvancedSearchScreen extends HookWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: const DistanceAgeComponent<_Notifier>(showDistance: false),
+              child: const AgeFilterComponent(standalone: true),
             ),
             Padding(
               padding: EdgeInsets.only(bottom: 8.h),

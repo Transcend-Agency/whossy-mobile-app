@@ -106,6 +106,10 @@ class ExploreFiltersComponent extends HookWidget {
         // Handled entirely inside ExploreRepository (needs the viewer's own
         // coordinates for a real geo-bounded query) — no value needed here.
         return '';
+      case Filters.inMyAgeRange:
+        // Handled inside ExploreRepository, which is handed the current
+        // Preferences age range, so a range changed later still applies.
+        return '';
       case Filters.newMembers:
         return DateTime.now().subtract(kNewMemberWindow);
       case Filters.online:
