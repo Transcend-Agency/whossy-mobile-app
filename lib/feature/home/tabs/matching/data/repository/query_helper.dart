@@ -141,9 +141,9 @@ class QueryHelper {
         case 'age_max':
           if (value is int) {
             final dob = _asDate(data['date_of_birth']);
-            final earliest =
-                DateTime(today.year - value, today.month, today.day);
-            if (dob == null || dob.isBefore(earliest)) return false;
+            if (dob == null || !dob.isAfter(_turnsAgeOn(today, value + 1))) {
+              return false;
+            }
           }
         case 'hasBio':
           if (value == true) {
@@ -165,6 +165,13 @@ class QueryHelper {
     }
     return true;
   }
+
+  /// Birth date of someone turning [age] on [today]. A maximum age of 30
+  /// includes everyone born after the day people turning 31 today were
+  /// born; the bound used to be the 30th birthday, which left out everyone
+  /// in their last year of being 30.
+  static DateTime _turnsAgeOn(DateTime today, int age) =>
+      DateTime(today.year - age, today.month, today.day);
 
   static DateTime? _asDate(dynamic value) {
     if (value is Timestamp) return value.toDate();
@@ -196,11 +203,13 @@ class QueryHelper {
 
   static Query _applyAgeMaxFilter(Query query, dynamic value) {
     if (value is int) {
-      DateTime now = DateTime.now();
-      DateTime maxAgeDate = DateTime(now.year - value, now.month, now.day);
+      // Born after the day someone turning value + 1 today was born, so
+      // people who are [value] years and some months old are included.
       query = query.where(
         'date_of_birth',
-        isGreaterThanOrEqualTo: Timestamp.fromDate(maxAgeDate),
+        isGreaterThan: Timestamp.fromDate(
+          _turnsAgeOn(DateTime.now(), value + 1),
+        ),
       );
     }
     return query;
