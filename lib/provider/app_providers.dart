@@ -78,16 +78,18 @@ final swipeAndMatchProvider = ChangeNotifierProxyProvider2<EditProfileNotifier,
   },
 );
 
-final exploreProvider = ChangeNotifierProxyProvider2<EditProfileNotifier,
-    AdvancedSearchNotifier, ExploreNotifier>(
+final exploreProvider = ChangeNotifierProxyProvider3<EditProfileNotifier,
+    AdvancedSearchNotifier, PreferencesNotifier, ExploreNotifier>(
   create: (_) => ExploreNotifier(),
-  update: (_, profileData, advancedSearchPrefs, explore) {
+  update: (_, profileData, advancedSearchPrefs, preferences, explore) {
     return explore!
       ..saveProfile(profileData.staticProfile)
       ..saveFilters(
         advancedSearchPrefs.staticCorePreferences,
         advancedSearchPrefs.staticOtherPreferences,
-      );
+      )
+      // "Popular in my area" uses the Preferences radius, like the deck.
+      ..saveSearchRadius(preferences.staticOtherPreferences?.distance);
   },
 );
 
