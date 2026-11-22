@@ -16,6 +16,16 @@ class ExploreNotifier extends ChangeNotifier {
   CorePreferences? _corePreferences;
   OtherPreferences? _otherPreferences;
 
+  /// The Distance Radius from Preferences (not Advanced Search): it's the
+  /// one radius setting, shared with the swipe deck's "nearby first".
+  int? _searchRadiusMiles;
+
+  void saveSearchRadius(int? miles) {
+    if (_searchRadiusMiles == miles) return;
+    _searchRadiusMiles = miles;
+    notifyListeners();
+  }
+
   void saveFilters(CorePreferences? corePrefs, OtherPreferences? otherPrefs) {
     if (_otherPreferences == otherPrefs && _corePreferences == corePrefs) {
       return;
@@ -42,6 +52,7 @@ class ExploreNotifier extends ChangeNotifier {
       gender: _profileData?.meet ?? 2,
       latitude: _profileData?.latitude,
       longitude: _profileData?.longitude,
+      searchRadiusMiles: _searchRadiusMiles,
     );
   }
 
@@ -88,6 +99,7 @@ class ExploreNotifier extends ChangeNotifier {
     _profileData = null;
     _corePreferences = null;
     _otherPreferences = null;
+    _searchRadiusMiles = null;
     _filters = ExploreFilters(filters: {});
     notifyListeners();
   }

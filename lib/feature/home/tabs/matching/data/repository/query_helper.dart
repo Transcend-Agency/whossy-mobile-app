@@ -91,6 +91,87 @@ class QueryHelper {
     return query;
   }
 
+  /// Fields whose filter is a plain "equals this enum's index" check, exactly
+  /// as the `_apply*Filter` functions below write them as queries.
+  static const _enumEqualityFields = {
+    'preference',
+    'marital_status',
+    'education',
+    'love_language',
+    'zodiac',
+    'smoke',
+    'drink',
+    'workout',
+    'pets',
+    'religion',
+    'dietary',
+    'family_goal',
+    'communication_style',
+  };
+
+  /// Client-side twin of [applyFilters]: true when the profile document
+  /// [data] would be returned by a query built from the same [filters].
+  ///
+  /// Used for the swipe deck's "nearby" pass, which is a geohash query that
+  /// can't also carry these filters server-side (it would need a composite
+  /// index for every combination, and the age range is a second range
+  /// filter Firestore won't combine with the geohash range).
+  static bool matches(
+    Map<String, dynamic> data,
+    Map<String, dynamic> filters, {
+    DateTime? now,
+  }) {
+    final today = now ?? DateTime.now();
+
+    for (final entry in filters.entries) {
+      final key = entry.key;
+      final value = entry.value;
+
+      switch (key) {
+        case 'meet':
+          final meet = value is int ? value : 2;
+          if (meet == 0 && data['gender'] != 'Male') return false;
+          if (meet == 1 && data['gender'] != 'Female') return false;
+        case 'age_min':
+          if (value is int) {
+            final dob = _asDate(data['date_of_birth']);
+            final latest = DateTime(today.year - value, today.month, today.day);
+            if (dob == null || dob.isAfter(latest)) return false;
+          }
+        case 'age_max':
+          if (value is int) {
+            final dob = _asDate(data['date_of_birth']);
+            final earliest =
+                DateTime(today.year - value, today.month, today.day);
+            if (dob == null || dob.isBefore(earliest)) return false;
+          }
+        case 'hasBio':
+          if (value == true) {
+            final bio = data['bio'];
+            if (bio is! String || bio.isEmpty) return false;
+          }
+        case 'similar_interests':
+          if (value is List<String> && value.isNotEmpty) {
+            final theirs = data['interests'];
+            if (theirs is! List || !theirs.any(value.contains)) return false;
+          }
+        default:
+          if (_enumEqualityFields.contains(key) &&
+              value is Enum &&
+              data[key] != value.index) {
+            return false;
+          }
+      }
+    }
+    return true;
+  }
+
+  static DateTime? _asDate(dynamic value) {
+    if (value is Timestamp) return value.toDate();
+    if (value is DateTime) return value;
+    return null;
+  }
+
   static Query _applyMeetFilter(Query query, dynamic value) {
     int meetValue = value is int ? value : 2; // Default to no restriction
     if (meetValue == 0) {
