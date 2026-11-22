@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../../../../../common/utils/units.dart';
 import '../../../../../../common/utils/utils.dart';
+import '../../../../../../constants/discovery_constants.dart';
 import '../../../../preferences/model/core_preferences.dart';
 import '../../../../preferences/model/other_preferences.dart';
 import '../../model/user_profile.dart';
@@ -13,6 +18,7 @@ class MatchRepository {
   final _profiles = FirebaseFirestore.instance.collection('users');
   final _likes = FirebaseFirestore.instance.collection('likes');
   final _dislikes = FirebaseFirestore.instance.collection('dislikes');
+  final _geo = GeoFlutterFire();
   static const _kPageSize = 20;
   final _pageSize = BehaviorSubject<int>.seeded(_kPageSize);
   void resetPaging() => _pageSize.add(_kPageSize);
@@ -27,15 +33,21 @@ class MatchRepository {
     excludePublicSearch: true,
   );
 
-  /// C6: no geo bound here — reach is unlimited by default (this used to
-  /// hard-cap via a geoflutterfire `within(center, radius, ...)` query,
-  /// exactly the cap the plan wants gone, contrary to its own assumption
-  /// that only web's swipe deck capped by distance). Distance only ranks
-  /// results below, when both parties have coordinates — nobody is
-  /// excluded for lacking them or being far away.
+  /// Nearby first, then everyone (same order as the web swipe deck).
+  ///
+  /// 1. Everyone within the viewer's search radius ([radiusMiles], the
+  ///    Distance Radius preference) who passes the same filters, nearest
+  ///    first.
+  /// 2. Then everyone else, from the normal paged query, nearer first
+  ///    within what has been loaded so far.
+  ///
+  /// Nobody is excluded for being far away or for having no location: the
+  /// radius only decides who comes first. Without the viewer's location
+  /// the first group is empty and the deck is just step 2.
   Stream<List<UserProfile>> fetchProfilesStream({
     double? longitude,
     double? latitude,
+    int? radiusMiles,
     required List<String> blockedIds,
     OtherPreferences? preferences,
     CorePreferences? corePreferences,
@@ -60,20 +72,22 @@ class MatchRepository {
     // at all before) so the batch this query returns is cleaner going into
     // the client-side exclusion pass below, rather than relying entirely
     // on post-fetch filtering to catch it.
+    final Map<String, dynamic> filters =
+        (preferences != null || corePreferences != null)
+            ? QueryHelper.buildFilters(
+                preferences,
+                corePreferences,
+                userInterests: [
+                  ...interests,
+                  ...(preferences?.interests ?? []),
+                ],
+              )
+            : const {};
+
     Query profilesQuery =
         _profiles.where('has_completed_onboarding', isEqualTo: true);
-    if (preferences != null || corePreferences != null) {
-      profilesQuery = QueryHelper.applyFilters(
-        QueryHelper.buildFilters(
-          preferences,
-          corePreferences,
-          userInterests: [
-            ...interests,
-            ...(preferences?.interests ?? []),
-          ],
-        ),
-        profilesQuery,
-      );
+    if (filters.isNotEmpty) {
+      profilesQuery = QueryHelper.applyFilters(filters, profilesQuery);
     }
 
     // Growing the limit re-runs the whole query each time rather than
@@ -95,43 +109,101 @@ class MatchRepository {
       (size) => profilesQuery.orderBy(orderByField).limit(size).snapshots(),
     );
 
-    return Rx.combineLatest2(
+    // Read once per deck load rather than kept live: a live geo query would
+    // re-read every nearby profile each time any of them changes (online
+    // status updates included). Likes and dislikes still drop people out of
+    // it straight away through the blacklist below. If it fails (no
+    // location index, offline), the deck falls back to everyone.
+    final Stream<List<DocumentSnapshot>> nearbyStream = (latitude != null &&
+            longitude != null)
+        ? Stream.fromFuture(
+            _geo
+                .collection(
+                  collectionRef: _profiles.where(
+                    'has_completed_onboarding',
+                    isEqualTo: true,
+                  ),
+                )
+                .withinAsSingleStreamSubscription(
+                  center: _geo.point(
+                    latitude: latitude,
+                    longitude: longitude,
+                  ),
+                  radius: milesToKm(
+                    (radiusMiles ?? kDefaultDiscoveryRadiusMiles).toDouble(),
+                  ),
+                  field: 'geography',
+                  strictMode: true,
+                )
+                .first,
+          ).onErrorReturnWith((error, _) {
+            log('Nearby profiles unavailable, showing everyone: $error');
+            return const <DocumentSnapshot>[];
+          })
+        : Stream.value(const <DocumentSnapshot>[]);
+
+    double? distanceKmTo(UserProfile profile) {
+      final geo = profile.user.geography?.geopoint;
+      if (latitude == null || longitude == null || geo == null) return null;
+      return Geolocator.distanceBetween(
+            latitude,
+            longitude,
+            geo.latitude,
+            geo.longitude,
+          ) /
+          1000;
+    }
+
+    // Unknown distance sorts last.
+    int byDistance(
+      MapEntry<UserProfile, double?> a,
+      MapEntry<UserProfile, double?> b,
+    ) =>
+        (a.value ?? double.infinity).compareTo(b.value ?? double.infinity);
+
+    return Rx.combineLatest3(
+      nearbyStream,
       queryStream,
       blacklistStream,
-      (QuerySnapshot querySnapshot, Set<String> blacklist) {
-        final ranked = querySnapshot.docs.where((doc) {
-          final profile =
-              UserProfile.fromJson(doc.data() as Map<String, dynamic>);
-          return !AppUtils.excludeProfile(
-                profile,
-                uid,
-                blockedIds,
-                settings: _matchFilterSettings,
-              ) &&
-              !blacklist.contains(profile.user.uid);
-        }).map((doc) {
-          final profile =
-              UserProfile.fromJson(doc.data() as Map<String, dynamic>);
-          final geo = profile.user.geography?.geopoint;
-          final distanceKm =
-              (latitude != null && longitude != null && geo != null)
-                  ? Geolocator.distanceBetween(
-                        latitude,
-                        longitude,
-                        geo.latitude,
-                        geo.longitude,
-                      ) /
-                      1000
-                  : null;
-          return MapEntry(profile, distanceKm);
-        }).toList()
-          ..sort((a, b) {
-            final da = a.value ?? double.infinity;
-            final db = b.value ?? double.infinity;
-            return da.compareTo(db);
-          });
+      (
+        List<DocumentSnapshot> nearbyDocs,
+        QuerySnapshot querySnapshot,
+        Set<String> blacklist,
+      ) {
+        bool isEligible(UserProfile profile) =>
+            !AppUtils.excludeProfile(
+              profile,
+              uid,
+              blockedIds,
+              settings: _matchFilterSettings,
+            ) &&
+            !blacklist.contains(profile.user.uid);
 
-        return ranked.map((entry) => entry.key).toList();
+        // The geo query only filters on onboarding, so the viewer's other
+        // preferences (gender, age, ...) are applied here instead.
+        final nearby = <MapEntry<UserProfile, double?>>[];
+        final nearbyIds = <String>{};
+        for (final doc in nearbyDocs) {
+          final data = doc.data() as Map<String, dynamic>?;
+          if (data == null || !QueryHelper.matches(data, filters)) continue;
+          final profile = UserProfile.fromJson(data);
+          final profileUid = profile.user.uid;
+          if (profileUid == null || !isEligible(profile)) continue;
+          if (!nearbyIds.add(profileUid)) continue;
+          nearby.add(MapEntry(profile, distanceKmTo(profile)));
+        }
+        nearby.sort(byDistance);
+
+        final everyoneElse = querySnapshot.docs
+            .map((doc) =>
+                UserProfile.fromJson(doc.data() as Map<String, dynamic>))
+            .where((profile) =>
+                isEligible(profile) && !nearbyIds.contains(profile.user.uid))
+            .map((profile) => MapEntry(profile, distanceKmTo(profile)))
+            .toList()
+          ..sort(byDistance);
+
+        return [...nearby, ...everyoneElse].map((entry) => entry.key).toList();
       },
     );
   }

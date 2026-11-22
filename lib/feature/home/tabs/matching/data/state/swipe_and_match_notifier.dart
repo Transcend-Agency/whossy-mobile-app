@@ -51,14 +51,24 @@ class SwipeAndMatchNotifier with ChangeNotifier {
 
   void saveProfile(CoreProfile? data) {
     if (_profileData == data) return;
+    final hadLocation =
+        _profileData?.latitude != null && _profileData?.longitude != null;
     _profileData = data;
     notifyListeners();
 
     log('User Data \n ${data.toString()}');
 
+    final hasLocation = data?.latitude != null && data?.longitude != null;
+
     if (_profileData != null && !_hasFetchedProfiles) {
       fetchProfiles();
       _hasFetchedProfiles = true;
+    } else if (_hasFetchedProfiles && !hadLocation && hasLocation) {
+      // The deck loaded before the location was saved (first sign-in, or
+      // permission just granted), so it had no "nearby" group. Reload it
+      // now that there is one.
+      _matchRepository.resetPaging();
+      fetchProfiles();
     }
   }
 
@@ -110,6 +120,7 @@ class SwipeAndMatchNotifier with ChangeNotifier {
         blockedIds: _profileData?.blockedIds ?? [],
         longitude: _profileData?.longitude,
         latitude: _profileData?.latitude,
+        radiusMiles: _otherPreferences?.distance,
         preferences: _otherPreferences,
         corePreferences: _corePreferences,
         interests: _profileData?.interests ?? [],
