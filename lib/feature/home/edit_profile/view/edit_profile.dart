@@ -183,7 +183,7 @@ class _EditProfileState extends State<EditProfile>
   Widget build(BuildContext context) {
     return PopScope(
       canPop: !_hasSave,
-      onPopInvoked: onPopInvoked,
+      onPopInvokedWithResult: (didPop, _) => onPopInvoked(didPop),
       child: AppScaffold(
         useScrollView: true,
         appBar: CustomAppBar(

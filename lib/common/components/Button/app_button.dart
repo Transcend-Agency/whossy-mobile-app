@@ -42,7 +42,7 @@ class AppButton extends StatelessWidget {
       shape: circularBorder,
       disabledColor: gradient != null
           ? null
-          : (color ?? AppColors.buttonColor).withOpacity(0.8),
+          : (color ?? AppColors.buttonColor).withValues(alpha: 0.8),
       child: loading
           ? const AppLoader()
           : child ??

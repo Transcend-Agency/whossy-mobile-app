@@ -32,7 +32,7 @@ class ImageCard extends StatelessWidget {
         heightFactor: heightFactor,
         child: Transform(
           transform: Matrix4.identity()
-            ..translate(x, y)
+            ..translateByDouble(x, y, 0, 1)
             ..rotateZ(rotationAngle),
           alignment: Alignment.bottomRight,
           child: Container(

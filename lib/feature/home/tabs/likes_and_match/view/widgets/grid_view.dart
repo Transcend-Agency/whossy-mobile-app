@@ -126,7 +126,7 @@ class LikesGridView extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           child: Material(
             type: MaterialType.transparency,
             child: Text(

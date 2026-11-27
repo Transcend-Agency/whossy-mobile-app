@@ -28,7 +28,7 @@ class FilledBackButton extends StatelessWidget {
               if (isDisabled)
                 Container(
                   decoration: BoxDecoration(
-                    color: AppColors.backButtonColor.withOpacity(0.4),
+                    color: AppColors.backButtonColor.withValues(alpha: 0.4),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                 ),

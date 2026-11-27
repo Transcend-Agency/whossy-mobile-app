@@ -30,7 +30,7 @@ class DialogButton extends StatelessWidget {
       elevation: 0,
       shape: circularBorder, // Assuming this is a globally defined shape
       onPressed: onPressed,
-      disabledColor: color.withOpacity(0.8),
+      disabledColor: color.withValues(alpha: 0.8),
       padding: EdgeInsets.symmetric(vertical: padding ?? 10.h),
       child: Text(
         text,

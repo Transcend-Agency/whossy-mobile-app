@@ -309,7 +309,7 @@ class ProfileFooterScaffold extends StatelessWidget {
                     pageNo: data.pictures.length,
                     height: 4,
                     activeColor: Colors.white,
-                    inActiveColor: Colors.white.withOpacity(0.5),
+                    inActiveColor: Colors.white.withValues(alpha: 0.5),
                   ),
                 )
               else
