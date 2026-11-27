@@ -31,6 +31,9 @@ class ChatsNotifier extends ChangeNotifier {
   final Queue<List<String>> _uploadQueue = Queue();
   bool _isProcessingQueue = false;
   String? _lastMessageId;
+  // The latest message this user's read marker was last moved on for, so the
+  // open room writes it once per new message rather than on every snapshot.
+  String? _readMarkedFor;
   StreamSubscription<SubChat?>? _chatSubscription;
 
   // Variables to manage state
@@ -321,16 +324,31 @@ class ChatsNotifier extends ChangeNotifier {
         if (chat.lastMessageId != _lastMessageId) {
           _lastMessageId = chat.lastMessageId;
         }
+        _markReadIfNeeded(chat);
       }
       updateSubChat(chat);
     });
+  }
+
+  /// While the chat room is open, keep this user's read marker past the
+  /// other person's latest message, whatever the read receipts setting. The
+  /// web app counts a chat as unread until the marker passes it; the other
+  /// person never sees the marker.
+  void _markReadIfNeeded(SubChat chat) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (!shouldMarkChatRead(chat: chat, uid: uid, markedFor: _readMarkedFor)) {
+      return;
+    }
+    _readMarkedFor = chat.lastMessageId;
+    _chatRepository.markChatRead(chatId: currentChat?.chatId, uid: uid!);
   }
 
   void cancelChatUpdates() {
     _chatSubscription?.cancel();
     _chatSubscription = null;
     _subChat = null;
-    _lastMessageId == null;
+    _lastMessageId = null;
+    _readMarkedFor = null;
   }
 
   /// Checks if the chat room has been opened for the first time
@@ -440,6 +458,7 @@ class ChatsNotifier extends ChangeNotifier {
     _blockedIds = null;
     _isUserConnected = false;
     _lastMessageId = null;
+    _readMarkedFor = null;
 
     _chatSubscription?.cancel();
     _chatSubscription = null;

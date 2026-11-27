@@ -9,6 +9,7 @@ part of 'sub_chat.dart';
 SubChat _$SubChatFromJson(Map<String, dynamic> json) => SubChat(
       id: json['id'] as String?,
       lastMessageId: json['last_message_id'] as String?,
+      lastSenderId: json['last_sender_id'] as String?,
       unlockTime: TimestampWrapper.timestampFromJson(json['unlock_time']),
       expirationTime:
           TimestampWrapper.timestampFromJson(json['expiration_time']),
@@ -29,6 +30,7 @@ Map<String, dynamic> _$SubChatToJson(SubChat instance) => <String, dynamic>{
           case final value?)
         'expiration_time': value,
       if (instance.lastMessageId case final value?) 'last_message_id': value,
+      if (instance.lastSenderId case final value?) 'last_sender_id': value,
       if (instance.creditStatus case final value?) 'credit_status': value,
       if (instance.initiatorId case final value?) 'initiator_id': value,
       if (TimestampWrapper.timestampToJson(instance.holdPlacedAt)
