@@ -33,7 +33,7 @@ enum CreditBundleIds implements GenericEnum {
 
 enum CoreSettings implements GenericEnum {
   publicSearch('Public Search', 'public_search',
-      'Your profile will be visible to others for swiping and matching.'),
+      'Others can see your profile in Explore and swiping, and find it by searching your name.'),
   onlineStatus('Online Status', 'online_status',
       'Your online activity won’t be visible to others.'),
   readReceipts('Read Receipts', 'read_receipts',
