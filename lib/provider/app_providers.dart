@@ -35,6 +35,10 @@ final connectivityProvider = ChangeNotifierProvider(
   create: (_) => ConnectivityNotifier(),
 );
 
+final userSearchProvider = ChangeNotifierProvider(
+  create: (_) => UserSearchNotifier(),
+);
+
 final likesProvider = ChangeNotifierProvider(
   create: (_) => LikesNotifier(),
 );
@@ -114,4 +118,5 @@ final appProviders = [
   chatsProvider,
   swipeAndMatchProvider,
   exploreProvider,
+  userSearchProvider,
 ];
