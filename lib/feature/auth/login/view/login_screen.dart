@@ -93,32 +93,54 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> loginWithApple() async {
-    // showAppleDialog(context);
+  Future<void> loginWithApple() => _socialLogin(
+        loginNotifier.loginWithApple,
+        animation: AppAssets.appleLoading,
+      );
 
-    await loginNotifier
-        .loginWithApple(
-          showSnackbar: showSnackbar,
-          onAuthenticate: onAuthenticate,
-          onEmailUnverified: onEmailUnverified,
-          toCreateAccount: toCreateAccount,
-          toOnboarding: toOnboarding,
-        )
-        .whenComplete(() => mounted ? Navigator.of(context).pop() : {});
-  }
+  Future<void> loginWithGoogle() => _socialLogin(
+        loginNotifier.loginWithGoogle,
+        animation: AppAssets.googleLoading,
+      );
 
-  Future<void> loginWithGoogle() async {
-    showLoadingDialog(context);
-
-    await loginNotifier
-        .loginWithGoogle(
-          showSnackbar: showSnackbar,
-          onAuthenticate: onAuthenticate,
-          onEmailUnverified: onEmailUnverified,
-          toCreateAccount: toCreateAccount,
-          toOnboarding: toOnboarding,
-        )
-        .whenComplete(() => mounted ? Navigator.of(context).pop() : {});
+  // Shows the loading dialog for a social sign-in and closes it before the
+  // app moves on: each navigation callback closes it first, and the end of
+  // the attempt (cancelled or failed) closes it too. Closing removes that
+  // dialog only, so it can never take the login screen or the next screen.
+  Future<void> _socialLogin(
+    Future<void> Function({
+      required void Function(String) showSnackbar,
+      required VoidCallback onAuthenticate,
+      required VoidCallback toCreateAccount,
+      required VoidCallback toOnboarding,
+      required void Function(UserCredential) onEmailUnverified,
+    }) login, {
+    required String animation,
+  }) async {
+    final closeDialog = showLoadingDialog(context, animation: animation);
+    try {
+      await login(
+        showSnackbar: showSnackbar,
+        onAuthenticate: () {
+          closeDialog();
+          onAuthenticate();
+        },
+        toCreateAccount: () {
+          closeDialog();
+          toCreateAccount();
+        },
+        toOnboarding: () {
+          closeDialog();
+          toOnboarding();
+        },
+        onEmailUnverified: (credential) {
+          closeDialog();
+          onEmailUnverified(credential);
+        },
+      );
+    } finally {
+      closeDialog();
+    }
   }
 
   // The verification email is only sent at the end of account creation, so
