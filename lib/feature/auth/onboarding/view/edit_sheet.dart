@@ -33,6 +33,7 @@ class EditSheet extends StatelessWidget {
             child: OutlinedAppButton(
               onPress: () async {
                 onReUpload().then((success) {
+                  if (!context.mounted) return;
                   if (success) Navigator.pop(context);
                 });
               },

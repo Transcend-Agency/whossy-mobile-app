@@ -190,6 +190,7 @@ void startGuidedTutorial(BuildContext context) {
   // Set function to start tutorials when tabs change
   tutorialNotifier.setTutorialStarter((context) {
     Future.delayed(const Duration(milliseconds: 300), () {
+      if (!context.mounted) return;
       showTutorialForTab(context, tutorialNotifier.currentIndex);
     });
   });
@@ -228,7 +229,7 @@ void showTutorialForTab(BuildContext context, int tabIndex) {
     hideSkip: true,
     paddingFocus: 0,
     targets: targets,
-    colorShadow: Colors.black.withOpacity(0.2),
+    colorShadow: Colors.black.withValues(alpha: 0.2),
     onSkip: () {
       tutorialNotifier.endTutorial();
 
