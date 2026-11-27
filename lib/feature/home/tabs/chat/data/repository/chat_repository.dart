@@ -154,6 +154,25 @@ class ChatRepository {
     }
   }
 
+  /// Moves this user's own read marker (`last_read_at.<uid>`) on to now.
+  /// It is separate from the read receipt (`status`): it is written whatever
+  /// the read receipts setting and only decides what counts as unread for
+  /// this user. The rules allow only the owner's entry, stamped by the server.
+  Future<void> markChatRead({
+    required String? chatId,
+    required String uid,
+  }) async {
+    if (chatId == null) return;
+
+    try {
+      await _chats
+          .doc(chatId)
+          .update({'last_read_at.$uid': FieldValue.serverTimestamp()});
+    } catch (e) {
+      log('Error marking chat read: $e');
+    }
+  }
+
   Stream<SubChat?> getChatDataStream(String? chatId) {
     return _chats.doc(chatId).snapshots().map(
           (doc) => doc.exists
