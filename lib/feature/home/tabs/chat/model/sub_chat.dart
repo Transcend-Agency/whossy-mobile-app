@@ -25,6 +25,9 @@ class SubChat {
   @JsonKey(name: 'last_message_id')
   final String? lastMessageId;
 
+  @JsonKey(name: 'last_sender_id')
+  final String? lastSenderId;
+
   // Reply-Gated Credits (spec §4) — written exclusively by Cloud Functions.
   // 'idle' | 'pending' | 'connected'. Note: the chat doc's `status` field is
   // message seen-state and is unrelated.
@@ -58,6 +61,7 @@ class SubChat {
   SubChat({
     this.id,
     this.lastMessageId,
+    this.lastSenderId,
     this.unlockTime,
     this.expirationTime,
     this.creditStatus,
@@ -73,3 +77,18 @@ class SubChat {
 
   Map<String, dynamic> toJson() => _$SubChatToJson(this);
 }
+
+/// Whether the open chat room should move this user's read marker on: the
+/// other person sent the latest message, and the marker hasn't been moved
+/// for that message yet (`markedFor`).
+bool shouldMarkChatRead({
+  required SubChat? chat,
+  required String? uid,
+  required String? markedFor,
+}) =>
+    chat != null &&
+    uid != null &&
+    chat.lastMessageId != null &&
+    chat.lastSenderId != null &&
+    chat.lastSenderId != uid &&
+    chat.lastMessageId != markedFor;
