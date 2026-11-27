@@ -17,44 +17,44 @@ import '../data/state/sign_up_notifier.dart';
 class SignupOptions extends StatelessWidget {
   const SignupOptions({super.key});
 
+  // Each flow closes its loading dialog before navigating, and again when
+  // the attempt ends (a no-op if already closed), instead of popping
+  // whatever is on top afterwards.
   signUpWithGoogle(BuildContext context, SignUpNotifier data) async {
-    showLoadingDialog(context);
+    final closeDialog = showLoadingDialog(context);
 
-    await data
-        .signUpWithGoogle(
-          showSnackbar: (message) =>
-              showTopSnackBar(Overlay.of(context), AppSnackbar(text: message)),
-          onAuthenticate: () {
-            Nav.pushAndPopUntil(
-                context, const SignUpNameRoute(), SignUpCreateRoute.name);
-          },
-        )
-        .whenComplete(() => context.mounted ? Navigator.pop(context) : {});
+    try {
+      await data.signUpWithGoogle(
+        showSnackbar: (message) =>
+            showTopSnackBar(Overlay.of(context), AppSnackbar(text: message)),
+        onAuthenticate: () {
+          closeDialog();
+          Nav.pushAndPopUntil(
+              context, const SignUpNameRoute(), SignUpCreateRoute.name);
+        },
+      );
+    } finally {
+      closeDialog();
+    }
   }
 
-  // Future<void> signUpWithApple(BuildContext context) async {
-  //   showLoadingDialog(context, animation: AppAssets.appleLoading);
-  //
-  //   await Future.delayed(const Duration(seconds: 10)); // Simulate delay
-  //
-  //   if (context.mounted) {
-  //     Navigator.pop(context); // Dismiss the loading dialog
-  //   }
-  // }
-
   signUpWithApple(BuildContext context, SignUpNotifier data) async {
-    showLoadingDialog(context, animation: AppAssets.appleLoading);
+    final closeDialog =
+        showLoadingDialog(context, animation: AppAssets.appleLoading);
 
-    await data
-        .signUpWithApple(
-          showSnackbar: (message) =>
-              showTopSnackBar(Overlay.of(context), AppSnackbar(text: message)),
-          onAuthenticate: () {
-            Nav.pushAndPopUntil(
-                context, const SignUpNameRoute(), SignUpCreateRoute.name);
-          },
-        )
-        .whenComplete(() => context.mounted ? Navigator.pop(context) : {});
+    try {
+      await data.signUpWithApple(
+        showSnackbar: (message) =>
+            showTopSnackBar(Overlay.of(context), AppSnackbar(text: message)),
+        onAuthenticate: () {
+          closeDialog();
+          Nav.pushAndPopUntil(
+              context, const SignUpNameRoute(), SignUpCreateRoute.name);
+        },
+      );
+    } finally {
+      closeDialog();
+    }
   }
 
   @override

@@ -58,15 +58,34 @@ class _LoadingDialogState extends State<LoadingDialog>
   }
 }
 
-void showLoadingDialog(
+/// Shows the loading dialog and returns a function that closes it.
+///
+/// The returned function removes this dialog's own route, wherever it sits
+/// in the stack, and does nothing once the dialog is gone, so it is safe to
+/// call more than once. Close it before navigating away rather than popping
+/// afterwards: a pop takes whatever is on top, which by then may be the next
+/// screen or, when no dialog was shown, the screen underneath.
+VoidCallback showLoadingDialog(
   BuildContext context, {
   String animation = AppAssets.googleLoading,
 }) {
-  showDialog(
+  final navigator = Navigator.of(context, rootNavigator: true);
+  final route = DialogRoute<void>(
     context: context,
     barrierDismissible: false,
+    // As showDialog builds it, so the dialog looks the same as before.
+    barrierColor: DialogTheme.of(context).barrierColor ??
+        Theme.of(context).dialogTheme.barrierColor ??
+        Colors.black54,
+    traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop,
+    themes: InheritedTheme.capture(from: context, to: navigator.context),
     builder: (context) => Center(
       child: LoadingDialog(animation: animation),
     ),
   );
+  navigator.push(route);
+
+  return () {
+    if (route.isActive) navigator.removeRoute(route);
+  };
 }
