@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
           toCreateAccount: toCreateAccount,
           toOnboarding: toOnboarding,
         )
-        .whenComplete(() => context.mounted ? Navigator.of(context).pop() : {});
+        .whenComplete(() => mounted ? Navigator.of(context).pop() : {});
   }
 
   Future<void> loginWithGoogle() async {
@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
           toCreateAccount: toCreateAccount,
           toOnboarding: toOnboarding,
         )
-        .whenComplete(() => context.mounted ? Navigator.of(context).pop() : {});
+        .whenComplete(() => mounted ? Navigator.of(context).pop() : {});
   }
 
   // The verification email is only sent at the end of account creation, so

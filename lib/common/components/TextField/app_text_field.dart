@@ -60,7 +60,7 @@ class AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color effectiveTextColor =
-        enabled ? textColor : textColor.withOpacity(0.7);
+        enabled ? textColor : textColor.withValues(alpha: 0.7);
 
     return TextFormField(
       keyboardType: isPhone ? TextInputType.phone : keyboardType,
@@ -100,7 +100,7 @@ class AppTextField extends StatelessWidget {
         border:
             curvierEdges ? inputBorder.copyWith(borderRadius: curvySide) : null,
         isDense: true,
-        fillColor: fillColor ?? AppColors.inputBackGround.withOpacity(0.9),
+        fillColor: fillColor ?? AppColors.inputBackGround.withValues(alpha: 0.9),
         hintText: hintText,
         hintStyle: hintStyle,
         contentPadding: EdgeInsets.all(padding),

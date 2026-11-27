@@ -49,6 +49,7 @@ class NotificationProfilePreview extends HookWidget {
     useEffect(() {
       if (profile.value != null) {
         Future.microtask(() {
+          if (!context.mounted) return;
           Nav.replace(
             context,
             MatchingProfilePreview(

@@ -69,7 +69,7 @@ class PreferenceScreen extends HookWidget {
 
     return PopScope(
       canPop: !hasSave.value,
-      onPopInvoked: onPopInvoked,
+      onPopInvokedWithResult: (didPop, _) => onPopInvoked(didPop),
       child: AppScaffold(
         useScrollView: true,
         appBar: CustomAppBar(

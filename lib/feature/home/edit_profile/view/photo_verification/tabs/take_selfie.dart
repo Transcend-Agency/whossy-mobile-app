@@ -195,7 +195,7 @@ class _TakeSelfieState extends State<TakeSelfie> {
                               vertical: 8.r,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.55),
+                              color: Colors.black.withValues(alpha: 0.55),
                               borderRadius: BorderRadius.circular(20.r),
                             ),
                             child: Row(

@@ -38,7 +38,7 @@ class PreviewPageIndicator extends StatelessWidget {
                 // Apply a darkening effect for non-selected indicators
                 colorFilter: currentPageIndex == index
                     ? null // Normal appearance for selected
-                    : ColorFilter.mode(Colors.black.withOpacity(0.5),
+                    : ColorFilter.mode(Colors.black.withValues(alpha: 0.5),
                         BlendMode.dstATop), // Darken for unselected
               ),
             ),

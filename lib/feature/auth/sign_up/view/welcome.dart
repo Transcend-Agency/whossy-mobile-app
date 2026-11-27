@@ -25,7 +25,7 @@ class WelcomeScreen extends HookWidget {
     }, const []);
 
     return PopScope(
-      onPopInvoked: (_) => signUpNotifier.reset(),
+      onPopInvokedWithResult: (_, __) => signUpNotifier.reset(),
       child: AppScaffold(
         padding: pagePadding,
         body: Column(

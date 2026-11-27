@@ -118,9 +118,9 @@ class EditBadge extends StatelessWidget {
       height: 28.r,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.45),
+        color: Colors.black.withValues(alpha: 0.45),
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.6), width: 1),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.6), width: 1),
       ),
       child: SvgPicture.asset(
         icon ?? AppAssets.edit,

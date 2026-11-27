@@ -29,7 +29,7 @@ class MessageTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color effectiveTextColor =
-        enabled ? textColor : textColor.withOpacity(0.7);
+        enabled ? textColor : textColor.withValues(alpha: 0.7);
 
     return TextFormField(
       style: TextStyles.hintThemeText.copyWith(

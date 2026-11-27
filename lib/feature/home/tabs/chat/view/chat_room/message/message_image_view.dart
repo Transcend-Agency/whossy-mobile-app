@@ -21,7 +21,7 @@ class MessageImageView extends StatelessWidget {
           // Darkened background
           Positioned.fill(
             child: Container(
-              color: Colors.black.withOpacity(0.8),
+              color: Colors.black.withValues(alpha: 0.8),
             ),
           ),
           // Centered image with padding
