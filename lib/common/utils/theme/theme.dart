@@ -62,7 +62,7 @@ class AppTheme {
       inputDecoration: InputDecoration(
         isDense: true,
         filled: true,
-        fillColor: AppColors.inputBackGround.withOpacity(0.6),
+        fillColor: AppColors.inputBackGround.withValues(alpha: 0.6),
         hintStyle: TextStyles.hintThemeText,
         hintText: 'Search country',
         prefixIcon: Padding(

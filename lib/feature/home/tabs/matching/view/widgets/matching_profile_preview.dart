@@ -312,7 +312,7 @@ class _MatchingProfilePreviewState extends State<MatchingProfilePreview> {
               showSnackbar: (msg) => showSnackbar(msg, this.context),
             )
                 .then((saved) {
-              if (saved && this.context.mounted) {
+              if (saved && mounted) {
                 showSnackbar(
                   AppStrings.reportUser,
                   this.context,

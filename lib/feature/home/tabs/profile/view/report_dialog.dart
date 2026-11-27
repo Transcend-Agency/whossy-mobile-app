@@ -80,44 +80,46 @@ class _ReportDialogState extends State<ReportDialog> {
           ],
         ),
         content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ..._reasons.map((reason) {
-                return RadioListTile<String>(
-                  contentPadding: EdgeInsets.zero,
-                  visualDensity: VisualDensity.compact,
-                  title: Text(
-                    reason,
-                    style: TextStyles.buttonText.copyWith(
-                      fontSize: AppUtils.scale(17),
-                      color: Colors.black87,
+          child: RadioGroup<String>(
+            groupValue: _selectedReason,
+            onChanged: (value) {
+              setState(() {
+                _selectedReason = value;
+              });
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ..._reasons.map((reason) {
+                  return RadioListTile<String>(
+                    contentPadding: EdgeInsets.zero,
+                    visualDensity: VisualDensity.compact,
+                    title: Text(
+                      reason,
+                      style: TextStyles.buttonText.copyWith(
+                        fontSize: AppUtils.scale(17),
+                        color: Colors.black87,
+                      ),
                     ),
+                    value: reason,
+                  );
+                }),
+                if (_selectedReason == 'Other') ...[
+                  AppTextField(
+                    focusNode: customMessageNode,
+                    textController: _customMessageController,
+                    hintText: 'Your reason in more details',
+                    hintStyle: TextStyles.buttonText.copyWith(
+                      fontSize: AppUtils.scale(17),
+                      color: Colors.black38,
+                    ),
+                    fillColor: Colors.transparent,
+                    customEnabledBorder: inputBorder,
+                    customFocusedBorder: focusedBorder,
                   ),
-                  value: reason,
-                  groupValue: _selectedReason,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedReason = value;
-                    });
-                  },
-                );
-              }),
-              if (_selectedReason == 'Other') ...[
-                AppTextField(
-                  focusNode: customMessageNode,
-                  textController: _customMessageController,
-                  hintText: 'Your reason in more details',
-                  hintStyle: TextStyles.buttonText.copyWith(
-                    fontSize: AppUtils.scale(17),
-                    color: Colors.black38,
-                  ),
-                  fillColor: Colors.transparent,
-                  customEnabledBorder: inputBorder,
-                  customFocusedBorder: focusedBorder,
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
         actions: [

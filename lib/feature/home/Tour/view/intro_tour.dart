@@ -116,12 +116,13 @@ void startIntroTutorial({
   Future.delayed(
     const Duration(seconds: 5),
     () {
+      if (!context.mounted) return;
       if (!swipeAndMatchNotifier.hasTakenTutorial) {
         TutorialCoachMark(
           hideSkip: true,
           paddingFocus: 0,
           targets: introTourTargets,
-          colorShadow: Colors.black.withOpacity(0.2),
+          colorShadow: Colors.black.withValues(alpha: 0.2),
           onFinish: () => swipeAndMatchNotifier.hasTakenTutorial = true,
         ).show(context: context);
       }

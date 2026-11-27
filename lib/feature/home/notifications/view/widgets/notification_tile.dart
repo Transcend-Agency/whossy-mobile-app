@@ -169,7 +169,7 @@ class NotificationTile extends HookWidget {
             if (!notification.seen)
               Positioned.fill(
                 child: Container(
-                  color: AppColors.primaryColor.withOpacity(0.05),
+                  color: AppColors.primaryColor.withValues(alpha: 0.05),
                 ),
               ),
           ],

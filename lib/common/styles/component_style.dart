@@ -28,7 +28,7 @@ final roundedTop = RoundedRectangleBorder(borderRadius: circularTop);
 final guidelineSheetDecoration = BoxDecoration(
   boxShadow: [
     BoxShadow(
-      color: Colors.black.withOpacity(0.1), // Shadow color
+      color: Colors.black.withValues(alpha: 0.1), // Shadow color
       blurRadius: 10,
       offset: const Offset(0, -4),
     ),
@@ -36,7 +36,7 @@ final guidelineSheetDecoration = BoxDecoration(
 );
 
 final matchButtonShadow = BoxShadow(
-  color: Colors.black.withOpacity(0.1),
+  color: Colors.black.withValues(alpha: 0.1),
   blurRadius: 10,
   offset: const Offset(0, 4),
 );
@@ -70,7 +70,7 @@ final errorBorder = inputBorder.copyWith(
 
 final focusedErrorBorder = inputBorder.copyWith(
   borderSide: BorderSide(
-    color: AppColors.errorBorderColor.withOpacity(0.7),
+    color: AppColors.errorBorderColor.withValues(alpha: 0.7),
     width: 1.5,
   ),
 );

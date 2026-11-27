@@ -44,7 +44,7 @@ class LikesComponent extends StatelessWidget {
                     ),
                     BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                      child: Container(color: Colors.black.withOpacity(0)),
+                      child: Container(color: Colors.black.withValues(alpha: 0)),
                     ),
                     Align(
                       alignment: Alignment.center,

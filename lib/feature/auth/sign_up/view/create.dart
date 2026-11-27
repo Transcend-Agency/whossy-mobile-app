@@ -238,7 +238,7 @@ class _SignUpCreateScreenState extends State<SignUpCreateScreen> {
                   padding: EdgeInsets.all(12.h),
                   margin: EdgeInsets.only(top: 14.h),
                   decoration: BoxDecoration(
-                    color: AppColors.inputBackGround.withOpacity(0.6),
+                    color: AppColors.inputBackGround.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Column(

@@ -87,7 +87,7 @@ class AppColors {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Colors.white.withOpacity(0),
+      Colors.white.withValues(alpha: 0),
       Colors.white,
     ],
     stops: const [0.0, 0.225],
@@ -98,7 +98,7 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [
       Colors.transparent,
-      Colors.black.withOpacity(0.7),
+      Colors.black.withValues(alpha: 0.7),
       Colors.black,
     ],
     stops: const [0.0, 0.5, 1.0],
@@ -109,14 +109,14 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [
       Colors.transparent,
-      Colors.black.withOpacity(0.5),
+      Colors.black.withValues(alpha: 0.5),
     ],
   );
   static LinearGradient profileShade2Inverted = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Colors.black.withOpacity(0.3),
+      Colors.black.withValues(alpha: 0.3),
       Colors.transparent,
     ],
   );
@@ -126,7 +126,7 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [
       Colors.transparent,
-      Colors.black.withOpacity(0.5),
+      Colors.black.withValues(alpha: 0.5),
     ],
   );
 

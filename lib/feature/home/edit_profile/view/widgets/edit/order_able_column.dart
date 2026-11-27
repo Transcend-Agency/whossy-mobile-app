@@ -195,7 +195,7 @@ class _OrderAbleColumnState extends State<OrderAbleColumn> {
                       Positioned.fill(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(10.r),
                           ),
                         ),

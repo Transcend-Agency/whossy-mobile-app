@@ -205,7 +205,7 @@ class _ActionsSheetState extends State<ActionsSheet> {
                 .reportUser(report,
                     showSnackbar: (msg) => showSnackbar(msg, this.context))
                 .then((saved) {
-              if (saved && this.context.mounted) {
+              if (saved && mounted) {
                 showSnackbar(
                   AppStrings.reportUser,
                   this.context,
