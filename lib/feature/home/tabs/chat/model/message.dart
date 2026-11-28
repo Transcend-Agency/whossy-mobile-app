@@ -3,9 +3,12 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:whossy_app/common/utils/utils.dart';
 
+import 'reply_to.dart';
+
 part 'message.g.dart'; // Generated file for JSON serialization
 
-@JsonSerializable()
+// explicitToJson so the nested reply is written as a map, not an object.
+@JsonSerializable(explicitToJson: true)
 class Message {
   final String id;
 
@@ -34,6 +37,14 @@ class Message {
   @JsonKey(name: 'sender_id_blocked')
   final bool isSenderBlocked;
 
+  /// The message this one replies to, if any.
+  @JsonKey(
+    name: 'reply_to',
+    includeIfNull: false,
+    fromJson: ReplyTo.tryFromJson,
+  )
+  final ReplyTo? replyTo;
+
   Message({
     String? id,
     String? senderId,
@@ -43,6 +54,7 @@ class Message {
     this.localPhoto,
     this.status = MessageStatus.undelivered,
     this.isSenderBlocked = false,
+    this.replyTo,
   })  : id = id ?? const Uuid().v4(),
         senderId = senderId ?? FirebaseAuth.instance.currentUser!.uid;
 
@@ -60,6 +72,7 @@ class Message {
     String? localPhoto,
     String? photo,
     MessageStatus? status,
+    ReplyTo? replyTo,
   }) {
     return Message(
       id: id ?? this.id,
@@ -69,6 +82,8 @@ class Message {
       localPhoto: localPhoto ?? this.localPhoto,
       photo: photo ?? this.photo,
       status: status ?? this.status,
+      isSenderBlocked: isSenderBlocked,
+      replyTo: replyTo ?? this.replyTo,
     );
   }
 
@@ -82,7 +97,8 @@ Message {
   timestamp: ${timestamp?.timestamp?.toDate().toString() ?? 'null'},
   localPhotos: $localPhoto ?? 'null'},
   photos: $photo ?? 'null'},
-  status: $status
+  status: $status,
+  replyTo: ${replyTo?.id}
 }''';
   }
 }

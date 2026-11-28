@@ -10,6 +10,7 @@ import '../../../../../../common/styles/text_style.dart';
 import '../../../../../../common/utils/utils.dart';
 import '../../../../../../constants/index.dart';
 import '../../model/chat.dart';
+import 'tick_icon.dart';
 
 class ChatTile extends StatelessWidget {
   const ChatTile({
@@ -109,10 +110,13 @@ class ChatTile extends StatelessWidget {
                       children: [
                         if (data.lastSenderUserId ==
                             FirebaseAuth.instance.currentUser!.uid)
-                          messageStatus(
-                            context
-                                .read<ChatsNotifier>()
-                                .visibleStatus(data.lastMessageStatus!),
+                          TickIcon(
+                            context.read<ChatsNotifier>().tickState(
+                                  data.lastMessageStatus,
+                                  data.lastMessageTimestamp?.toTimestamp(),
+                                  data.deliveredAt[
+                                      data.participants[oppIndex]],
+                                ),
                           ),
                         addWidth(4),
                       ],

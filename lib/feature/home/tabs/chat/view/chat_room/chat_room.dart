@@ -21,7 +21,9 @@ import '../../../../../../constants/index.dart';
 import '../widgets/_.dart';
 import '../widgets/sheets/actions_sheet.dart';
 import '../widgets/sheets/photo_sheet.dart';
+import '../../model/message.dart';
 import 'message/message_image_view.dart';
+import 'reply_bar.dart';
 
 part 'chat_room_helpers.dart';
 
@@ -224,6 +226,17 @@ class _ChatRoomState extends State<ChatRoom> {
     await _handlePermissions(pic: result);
   }
 
+  Message? _replyingTo;
+
+  /// Starting a reply opens the keyboard so you can type straight away.
+  void _focusOnReply() {
+    final replyingTo = _chatsNotifier.replyingTo;
+    if (replyingTo != null && replyingTo != _replyingTo) {
+      messagesFocusNode.requestFocus();
+    }
+    _replyingTo = replyingTo;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -245,6 +258,7 @@ class _ChatRoomState extends State<ChatRoom> {
     messagesController.addListener(_updateIcon);
 
     _chatsNotifier.addListener(_onCreditEvent);
+    _chatsNotifier.addListener(_focusOnReply);
     _chatsNotifier.listenToChatUpdates();
 
     _scrollToBottomIcon();
@@ -257,6 +271,7 @@ class _ChatRoomState extends State<ChatRoom> {
     messagesController.dispose();
 
     _chatsNotifier.removeListener(_onCreditEvent);
+    _chatsNotifier.removeListener(_focusOnReply);
     _chatsNotifier.cancelChatUpdates();
 
     super.dispose();
@@ -368,77 +383,87 @@ class _ChatRoomState extends State<ChatRoom> {
                                   ),
                                 ),
                               )
-                            : Padding(
-                                padding: chatFieldPadding,
-                                child: Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: onAddPhoto,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(4.r)
-                                            .copyWith(right: 10),
-                                        child: Container(
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.black,
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Icon(
-                                              Icons.add,
-                                              color: Colors.white,
-                                              size: 22.r,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          ConstrainedBox(
-                                            // About five lines of text at
-                                            // the chosen chat text size.
-                                            constraints: BoxConstraints(
-                                              maxHeight:
-                                                  5 * messageFontSize * 1.4,
-                                            ),
-                                            child: SingleChildScrollView(
-                                              scrollDirection: Axis.vertical,
-                                              reverse: true,
-                                              child: MessageTextField(
-                                                node: messagesFocusNode,
-                                                controller: messagesController,
-                                                onPrefixIconTap: onAddPhoto,
-                                                isReplying: false,
-                                              ),
-                                            ),
-                                          ), //
-                                        ],
-                                      ),
-                                    ),
-
-                                    addWidth(6),
-
-                                    // Record audio / Send message button
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const ReplyBar(),
+                                  Padding(
+                                    padding: chatFieldPadding,
+                                    child: Row(
                                       children: [
                                         GestureDetector(
-                                          onTap: typing ? sendMessage : null,
-                                          child: CircleAvatar(
-                                            radius: 21,
-                                            backgroundColor: Colors.white,
-                                            child: typing
-                                                ? sendIcon()
-                                                : voiceIcon(),
+                                          onTap: onAddPhoto,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(4.r)
+                                                .copyWith(right: 10),
+                                            child: Container(
+                                              decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.black,
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Icon(
+                                                  Icons.add,
+                                                  color: Colors.white,
+                                                  size: 22.r,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
+
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              ConstrainedBox(
+                                                // About five lines of text at
+                                                // the chosen chat text size.
+                                                constraints: BoxConstraints(
+                                                  maxHeight:
+                                                      5 * messageFontSize * 1.4,
+                                                ),
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.vertical,
+                                                  reverse: true,
+                                                  child: MessageTextField(
+                                                    node: messagesFocusNode,
+                                                    controller:
+                                                        messagesController,
+                                                    onPrefixIconTap: onAddPhoto,
+                                                    isReplying: false,
+                                                  ),
+                                                ),
+                                              ), //
+                                            ],
+                                          ),
+                                        ),
+
+                                        addWidth(6),
+
+                                        // Record audio / Send message button
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            GestureDetector(
+                                              onTap:
+                                                  typing ? sendMessage : null,
+                                              child: CircleAvatar(
+                                                radius: 21,
+                                                backgroundColor: Colors.white,
+                                                child: typing
+                                                    ? sendIcon()
+                                                    : voiceIcon(),
+                                              ),
+                                            ),
+                                          ],
+                                        )
                                       ],
-                                    )
-                                  ],
-                                ),
+                                    ),
+                                  ),
+                                ],
                               );
                       },
                     ),
