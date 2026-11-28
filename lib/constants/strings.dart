@@ -154,6 +154,10 @@ class AppStrings {
   static const String errorNetworkRequestFailed = 'Poor internet connection';
   static const String errorUnknown =
       'An unknown error occurred. Please try again later.';
+  // Firestore refused the write or read. Usually the action no longer
+  // applies (already done, or the account can't do it right now).
+  static const String actionNotAllowed =
+      "That action isn't allowed right now. Please refresh and try again.";
   static const String deviceOffline =
       'Network unavailable. Please try again later.';
   static const String deniedAccess =

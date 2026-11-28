@@ -77,6 +77,9 @@ void handleFirebaseError(
     case 'unavailable':
       showSnackbar(AppStrings.deviceOffline);
       break;
+    case 'permission-denied':
+      showSnackbar(AppStrings.actionNotAllowed);
+      break;
     default:
       showSnackbar(AppStrings.errorUnknown);
   }

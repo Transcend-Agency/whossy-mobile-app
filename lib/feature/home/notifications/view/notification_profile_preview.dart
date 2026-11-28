@@ -22,13 +22,16 @@ class NotificationProfilePreview extends HookWidget {
     final isLoading = useState<bool>(true);
     final hasError = useState<bool>(false);
     final profile = useState<UserProfile?>(null);
+    final isLiked = useState<bool>(false);
 
     useEffect(() {
       Future<void> loadUserProfile() async {
         final notifier = context.read<NotificationNotifier>();
 
         try {
+          final likedLookup = notifier.hasLiked(id).catchError((_) => false);
           final fetchedProfile = await notifier.getProfileData(id);
+          isLiked.value = await likedLookup;
           if (fetchedProfile == null) {
             hasError.value = true;
           } else {
@@ -56,7 +59,9 @@ class NotificationProfilePreview extends HookWidget {
               index: 0,
               userProfile: profile.value!,
               pageName: NotificationScreen.name,
-              isLiked: false,
+              // Hides the like button for someone already liked, e.g. a
+              // like notification opened again after liking back.
+              isLiked: isLiked.value,
               usePageView: true,
             ),
           );
