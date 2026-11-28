@@ -74,6 +74,10 @@ class _MessageBubbleState extends State<MessageBubble>
 
   @override
   Widget build(BuildContext context) {
+    final messageStyle = TextStyles.messageText(
+      context.select<ChatTextSizeNotifier, double>((n) => n.fontSize),
+    );
+
     return VisibilityDetector(
       onVisibilityChanged: updateMessageStatus,
       key: ValueKey(widget.data.id),
@@ -98,9 +102,9 @@ class _MessageBubbleState extends State<MessageBubble>
                   : CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 6.r,
-                    horizontal: 8.r,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 12,
                   ),
                   margin: EdgeInsets.symmetric(vertical: 2, horizontal: 10.w),
                   decoration: bubbleDecoration(
@@ -163,12 +167,12 @@ class _MessageBubbleState extends State<MessageBubble>
                                   trimMode: TrimMode.Line,
                                   textAlign: TextAlign.left,
                                   trimExpandedText: ' show less',
-                                  style: TextStyles.chatText,
-                                  moreStyle: TextStyles.chatText.copyWith(
-                                    color: AppColors.hintTextColor,
+                                  style: messageStyle,
+                                  moreStyle: messageStyle.copyWith(
+                                    color: AppColors.messageMetaColor,
                                   ),
-                                  lessStyle: TextStyles.chatText.copyWith(
-                                    color: AppColors.hintTextColor,
+                                  lessStyle: messageStyle.copyWith(
+                                    color: AppColors.messageMetaColor,
                                   ),
                                 ),
                             ],

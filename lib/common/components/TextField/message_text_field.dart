@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants/index.dart';
 import '../../styles/component_style.dart';
+import '../../../feature/home/tabs/chat/data/state/chat_text_size_notifier.dart';
 import '../../styles/text_style.dart';
 
 class MessageTextField extends StatelessWidget {
@@ -31,10 +33,14 @@ class MessageTextField extends StatelessWidget {
     final Color effectiveTextColor =
         enabled ? textColor : textColor.withValues(alpha: 0.7);
 
+    // Same size and weight as the message bubbles, so what you type looks
+    // like what you send.
+    final style = TextStyles.messageText(
+      context.select<ChatTextSizeNotifier, double>((n) => n.fontSize),
+    );
+
     return TextFormField(
-      style: TextStyles.hintThemeText.copyWith(
-        color: effectiveTextColor,
-      ),
+      style: style.copyWith(color: effectiveTextColor),
       maxLines: null,
       cursorColor: Colors.black,
       focusNode: node,
@@ -47,6 +53,10 @@ class MessageTextField extends StatelessWidget {
         focusedBorder: customBorder(isReplying: isReplying),
         fillColor: AppColors.listTileColor,
         hintText: hintText,
+        hintStyle: style.copyWith(
+          color: AppColors.hintTextColor,
+          fontWeight: FontWeight.w400,
+        ),
       ),
     );
   }

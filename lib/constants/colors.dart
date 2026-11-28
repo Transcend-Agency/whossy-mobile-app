@@ -13,6 +13,10 @@ class AppColors {
   static const Color selectedFieldColor = Color(0xFFD9D9D9);
 
   static const Color hintTextColor = Color(0xFF8a8a8e);
+
+  /// Darker than [hintTextColor] so small text such as message times stays
+  /// readable (about 5:1 contrast on white and on the chat bubbles).
+  static const Color messageMetaColor = Color(0xFF66666B);
   static const Color outlinedColor = Color(0xFFD9D9D9);
   static const Color activeTrackColor = Color(0xFFc4c4c7);
 

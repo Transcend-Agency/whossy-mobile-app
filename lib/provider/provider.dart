@@ -8,6 +8,7 @@ export '/feature/home/notifications/data/state/notification_notifier.dart';
 export '/feature/home/preferences/data/state/preferences_notifier.dart';
 export '/feature/home/preferences/data/state/search_preferences_notifier.dart';
 export '/feature/home/settings/data/state/settings_notifier.dart';
+export '/feature/home/tabs/chat/data/state/chat_text_size_notifier.dart';
 export '/feature/home/tabs/chat/data/state/chats_notifier.dart';
 export '/feature/home/tabs/explore/data/state/advanced_search_notifier.dart';
 export '/feature/home/tabs/explore/data/state/explore_notifier.dart';
