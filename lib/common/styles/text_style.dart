@@ -88,6 +88,30 @@ class TextStyles {
     fontWeight: FontWeight.w400,
   );
 
+  /// Message text in chat bubbles and the message field. The size comes from
+  /// the chat text size setting (16 by default). It is a plain size, not
+  /// `.sp`, so it does not shrink on small screens; the phone's own font
+  /// size setting still scales it.
+  static TextStyle messageText(double fontSize) => TextStyle(
+        fontFamily: 'NeueMontreal',
+        color: AppColors.black,
+        fontSize: fontSize,
+        height: 1.35,
+        letterSpacing: 0,
+        fontWeight: FontWeight.w500,
+      );
+
+  /// Times and date labels around messages: smaller and grey, so the
+  /// messages stand out.
+  static const TextStyle messageMeta = TextStyle(
+    fontFamily: 'NeueMontreal',
+    color: AppColors.messageMetaColor,
+    fontSize: 12,
+    height: 1.3,
+    letterSpacing: 0,
+    fontWeight: FontWeight.w400,
+  );
+
   static TextStyle boldPrefText = text.copyWith(
     fontSize: AppUtils.scale(12.sp) ?? 14.sp,
     fontWeight: FontWeight.w500,

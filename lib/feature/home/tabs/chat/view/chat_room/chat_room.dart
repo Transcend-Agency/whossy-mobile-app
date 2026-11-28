@@ -264,6 +264,9 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
+    final messageFontSize =
+        context.select<ChatTextSizeNotifier, double>((n) => n.fontSize);
+
     return Selector<ChatsNotifier, ChatRoomData>(
       selector: (_, chats) => ChatRoomData(
         currentChat: chats.currentChat!,
@@ -395,8 +398,11 @@ class _ChatRoomState extends State<ChatRoom> {
                                       child: Column(
                                         children: [
                                           ConstrainedBox(
-                                            constraints: const BoxConstraints(
-                                              maxHeight: 5 * 16 * 1.4,
+                                            // About five lines of text at
+                                            // the chosen chat text size.
+                                            constraints: BoxConstraints(
+                                              maxHeight:
+                                                  5 * messageFontSize * 1.4,
                                             ),
                                             child: SingleChildScrollView(
                                               scrollDirection: Axis.vertical,
