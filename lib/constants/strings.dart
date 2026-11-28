@@ -158,6 +158,17 @@ class AppStrings {
   // applies (already done, or the account can't do it right now).
   static const String actionNotAllowed =
       "That action isn't allowed right now. Please refresh and try again.";
+  // Settings → Notifications
+  static const String notificationsOffHint =
+      'Off on this phone. Turn them on to hear about new messages, likes and matches.';
+  static const String notificationsOffHelp =
+      'Notifications for Whossy are turned off on this phone. Open Settings, '
+      'tap Notifications and allow them to hear about new messages, likes '
+      'and matches.';
+  static const String notificationsOnHelp =
+      'To turn notifications off, or choose which ones you get, open '
+      "Whossy's notification settings on your phone.";
+  static const String notificationsTurnedOn = 'Notifications turned on';
   static const String deviceOffline =
       'Network unavailable. Please try again later.';
   static const String deniedAccess =
