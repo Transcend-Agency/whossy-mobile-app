@@ -10,6 +10,8 @@ import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
 import 'package:whossy_app/provider/provider.dart';
 
+import 'notification_access.dart';
+
 class NotificationService {
   static final _instance = NotificationService._internal();
   final _messaging = FirebaseMessaging.instance;
@@ -58,6 +60,16 @@ class NotificationService {
     await initPushNotifications();
     await initLocalNotifications();
   }
+
+  /// Read through Firebase Messaging rather than permission_handler, whose
+  /// iOS notification check is compiled out (the Podfile doesn't enable it).
+  Future<NotificationAccess> access() async => notificationAccessFrom(
+      (await _messaging.getNotificationSettings()).authorizationStatus);
+
+  /// Shows the system prompt when the phone still allows it; otherwise
+  /// returns the current state without showing anything.
+  Future<NotificationAccess> requestAccess() async => notificationAccessFrom(
+      (await _messaging.requestPermission()).authorizationStatus);
 
   Future<String> getToken() async => (await _messaging.getToken()) ?? '';
 
