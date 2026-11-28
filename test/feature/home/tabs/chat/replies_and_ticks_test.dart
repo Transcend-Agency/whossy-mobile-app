@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:readmore/readmore.dart';
 import 'package:whossy_app/common/utils/enum/enums.dart';
 import 'package:whossy_app/constants/colors.dart';
 import 'package:whossy_app/feature/home/tabs/chat/model/chat.dart';
@@ -363,5 +364,61 @@ void main() {
 
     expect(find.text('Ola'), findsOneWidget);
     expect(find.text('Coffee this weekend?'), findsOneWidget);
+  });
+
+  group('ReplyQuote.naturalWidth', () {
+    double width(String preview) => ReplyQuote.naturalWidth(
+          name: 'Ola',
+          preview: preview,
+          fontSize: 16,
+          textScaler: TextScaler.noScaling,
+        );
+
+    test('a longer quote needs more room', () {
+      expect(width('ok'), lessThan(width('Coffee this weekend, maybe?')));
+    });
+
+    test('includes the bar and padding', () {
+      expect(width(''), greaterThan(24));
+    });
+  });
+
+  // A reply bubble once failed to lay out at all: an IntrinsicWidth asked
+  // ReadMoreText (built on a LayoutBuilder) for its natural width. The
+  // bubble now sizes a SizedBox from measured widths, as here.
+  testWidgets('a quote above ReadMoreText lays out and shows both',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 240,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: const [
+                  ReplyQuote(
+                    name: 'You',
+                    preview: 'can you see me now?',
+                    isOwn: true,
+                    fontSize: 16,
+                    expand: true,
+                  ),
+                  ReadMoreText('Yes I can see it', trimLines: 5),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('can you see me now?'), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.byType(ReplyQuote)).dx,
+      tester.getTopLeft(find.byType(ReadMoreText)).dx,
+    );
   });
 }

@@ -42,6 +42,7 @@ class ReplyBar extends StatelessWidget {
                 isOwn: _isOwn(replyingTo),
                 fontSize: fontSize,
                 background: AppColors.listTileColor,
+                expand: true,
                 trailing: IconButton(
                   key: const ValueKey('cancel_reply'),
                   tooltip: 'Cancel reply',

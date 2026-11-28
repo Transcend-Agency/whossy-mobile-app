@@ -137,78 +137,85 @@ class _MessageBubbleState extends State<MessageBubble>
                                 maxWidth:
                                     MediaQuery.sizeOf(context).width * 0.75,
                               ),
-                              child: _fitToQuote(Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: widget.isSender
-                                    ? CrossAxisAlignment.end
-                                    : CrossAxisAlignment.start,
-                                children: [
-                                  // The message this one replies to.
-                                  if (reply != null) ...[
-                                    ReplyQuote(
-                                      key: const ValueKey('reply_quote'),
-                                      name: reply.senderId == currentUser
-                                          ? 'You'
-                                          : _chatNotifier
-                                                  .currentChat?.username ??
-                                              '',
-                                      preview: reply.preview,
-                                      isOwn: reply.senderId == currentUser,
-                                      fontSize: messageStyle.fontSize!,
-                                    ),
-                                    const SizedBox(height: 6),
-                                  ],
-                                  // Image Grid Section (if any photos exist)
-                                  if ((widget.data.localPhoto?.isNotEmpty ??
-                                          false) ||
-                                      (widget.data.photo?.isNotEmpty ?? false))
-                                    Container(
-                                      constraints: BoxConstraints(
-                                        maxHeight: 270,
-                                        maxWidth:
-                                            MediaQuery.sizeOf(context).width *
-                                                0.75,
-                                      ),
-                                      child: ImageGrid(
-                                        localPhotos:
-                                            widget.data.localPhoto != null &&
-                                                    widget.data.localPhoto!
-                                                        .isNotEmpty
-                                                ? [widget.data.localPhoto!]
-                                                : [],
-                                        photos: widget.data.photo != null &&
-                                                widget.data.photo!.isNotEmpty
-                                            ? [widget.data.photo!]
-                                            : [],
-                                        messageId: widget.data.id,
-                                      ),
-                                    ),
-
-                                  if (((widget.data.localPhoto?.isNotEmpty ??
+                              child: _sizeToQuote(
+                                  messageStyle,
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    // A reply's parts all start at the bubble's
+                                    // left edge, with the quote spanning it.
+                                    crossAxisAlignment: reply != null
+                                        ? CrossAxisAlignment.stretch
+                                        : widget.isSender
+                                            ? CrossAxisAlignment.end
+                                            : CrossAxisAlignment.start,
+                                    children: [
+                                      // The message this one replies to.
+                                      if (reply != null) ...[
+                                        ReplyQuote(
+                                          key: const ValueKey('reply_quote'),
+                                          name: _quoteName(reply.senderId),
+                                          preview: reply.preview,
+                                          isOwn: reply.senderId == currentUser,
+                                          fontSize: messageStyle.fontSize!,
+                                          expand: true,
+                                        ),
+                                        const SizedBox(height: 6),
+                                      ],
+                                      // Image Grid Section (if any photos exist)
+                                      if ((widget.data.localPhoto?.isNotEmpty ??
                                               false) ||
                                           (widget.data.photo?.isNotEmpty ??
-                                              false)) &&
-                                      widget.data.message != null)
-                                    addHeight(6),
-                                  // Message Section (if a message exists)
-                                  if (widget.data.message != null &&
-                                      widget.data.message!.isNotEmpty)
-                                    ReadMoreText(
-                                      widget.data.message!,
-                                      trimLines: 5,
-                                      trimMode: TrimMode.Line,
-                                      textAlign: TextAlign.left,
-                                      trimExpandedText: ' show less',
-                                      style: messageStyle,
-                                      moreStyle: messageStyle.copyWith(
-                                        color: AppColors.messageMetaColor,
-                                      ),
-                                      lessStyle: messageStyle.copyWith(
-                                        color: AppColors.messageMetaColor,
-                                      ),
-                                    ),
-                                ],
-                              )),
+                                              false))
+                                        Container(
+                                          constraints: BoxConstraints(
+                                            maxHeight: 270,
+                                            maxWidth: MediaQuery.sizeOf(context)
+                                                    .width *
+                                                0.75,
+                                          ),
+                                          child: ImageGrid(
+                                            localPhotos:
+                                                widget.data.localPhoto !=
+                                                            null &&
+                                                        widget.data.localPhoto!
+                                                            .isNotEmpty
+                                                    ? [widget.data.localPhoto!]
+                                                    : [],
+                                            photos: widget.data.photo != null &&
+                                                    widget
+                                                        .data.photo!.isNotEmpty
+                                                ? [widget.data.photo!]
+                                                : [],
+                                            messageId: widget.data.id,
+                                          ),
+                                        ),
+
+                                      if (((widget.data.localPhoto
+                                                      ?.isNotEmpty ??
+                                                  false) ||
+                                              (widget.data.photo?.isNotEmpty ??
+                                                  false)) &&
+                                          widget.data.message != null)
+                                        addHeight(6),
+                                      // Message Section (if a message exists)
+                                      if (widget.data.message != null &&
+                                          widget.data.message!.isNotEmpty)
+                                        ReadMoreText(
+                                          widget.data.message!,
+                                          trimLines: 5,
+                                          trimMode: TrimMode.Line,
+                                          textAlign: TextAlign.left,
+                                          trimExpandedText: ' show less',
+                                          style: messageStyle,
+                                          moreStyle: messageStyle.copyWith(
+                                            color: AppColors.messageMetaColor,
+                                          ),
+                                          lessStyle: messageStyle.copyWith(
+                                            color: AppColors.messageMetaColor,
+                                          ),
+                                        ),
+                                    ],
+                                  )),
                             )
                           : const SizedBox.shrink(),
                     ),
@@ -235,10 +242,56 @@ class _MessageBubbleState extends State<MessageBubble>
     );
   }
 
-  /// A reply's bubble is as wide as its widest part, so the quote spans the
-  /// whole bubble instead of only its own text.
-  Widget _fitToQuote(Widget content) =>
-      widget.data.replyTo == null ? content : IntrinsicWidth(child: content);
+  String _quoteName(String senderId) => senderId == currentUser
+      ? 'You'
+      : _chatNotifier.currentChat?.username ?? '';
+
+  /// Makes a reply's content as wide as the wider of the quote and the
+  /// message, so the quote spans the bubble and the text lines up under it.
+  /// The widths are measured directly: the message text can't report a
+  /// natural width to Flutter's intrinsic sizing, which is what made an
+  /// IntrinsicWidth here fail to lay out at all.
+  Widget _sizeToQuote(TextStyle messageStyle, Widget content) {
+    final reply = widget.data.replyTo;
+    if (reply == null) return content;
+
+    return LayoutBuilder(builder: (context, constraints) {
+      final maxWidth = constraints.maxWidth;
+      final hasPhoto = (widget.data.localPhoto?.isNotEmpty ?? false) ||
+          (widget.data.photo?.isNotEmpty ?? false);
+      if (hasPhoto || !maxWidth.isFinite) {
+        return SizedBox(
+            width: maxWidth.isFinite ? maxWidth : null, child: content);
+      }
+
+      final textScaler = MediaQuery.textScalerOf(context);
+      final quoteWidth = ReplyQuote.naturalWidth(
+        name: _quoteName(reply.senderId),
+        preview: reply.preview,
+        fontSize: messageStyle.fontSize!,
+        textScaler: textScaler,
+      );
+
+      var textWidth = 0.0;
+      final text = widget.data.message;
+      if (text != null && text.isNotEmpty) {
+        final painter = TextPainter(
+          text: TextSpan(text: text, style: messageStyle),
+          textDirection: TextDirection.ltr,
+          textScaler: textScaler,
+        )..layout(maxWidth: maxWidth);
+        // As wide as the text needs, or the whole bubble once it wraps.
+        textWidth =
+            painter.maxIntrinsicWidth > maxWidth ? maxWidth : painter.width;
+        painter.dispose();
+      }
+
+      final width = (quoteWidth > textWidth ? quoteWidth : textWidth)
+          .ceilToDouble()
+          .clamp(0.0, maxWidth);
+      return SizedBox(width: width, child: content);
+    });
+  }
 
   void _startReply() {
     _chatNotifier.startReply(widget.data);
