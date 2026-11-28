@@ -3,4 +3,5 @@ export 'blocked_contacts_tile.dart';
 export 'core_settings_list.dart';
 export 'core_settings_tile.dart';
 export 'extra_core_settings.dart';
+export 'notifications_tile.dart';
 export 'tutorial_container.dart';

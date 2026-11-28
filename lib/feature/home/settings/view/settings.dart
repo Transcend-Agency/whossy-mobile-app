@@ -133,6 +133,10 @@ class _SettingsState extends State<Settings> {
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 8.h),
+                child: const NotificationsTile(),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
                 child: const BlockedContactsTile(),
               ),
               ListView(

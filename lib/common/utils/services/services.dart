@@ -2,6 +2,7 @@ export 'crashlytics/crashlytics_service.dart';
 export 'file/file_service.dart';
 export 'iap/iap_service.dart';
 export 'location/location_service.dart';
+export 'notification/notification_access.dart';
 export 'notification/notification_service.dart';
 export 'permission/permission_service.dart';
 export 'shared_preferences/shared_prefs_service.dart';
