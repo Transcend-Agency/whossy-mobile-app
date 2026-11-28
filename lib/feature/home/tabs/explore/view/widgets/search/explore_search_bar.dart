@@ -44,7 +44,15 @@ class ExploreSearchBar extends HookWidget {
               decoration: InputDecoration(
                 hintText: 'Search people by name',
                 hintStyle: TextStyles.hintThemeText.copyWith(color: AppColors.hintTextColor),
+                // The app theme fills form fields and gives them rounded
+                // enabled/focused borders; `border` alone doesn't override
+                // those, which drew a tinted box inside the pill.
+                filled: false,
                 border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
                 isDense: true,
                 counterText: '',
               ),
