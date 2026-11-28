@@ -17,6 +17,10 @@ class AppColors {
   /// Darker than [hintTextColor] so small text such as message times stays
   /// readable (about 5:1 contrast on white and on the chat bubbles).
   static const Color messageMetaColor = Color(0xFF66666B);
+
+  /// Two blue ticks: the other person has read your message. About 3.7:1 on
+  /// white, enough for an icon.
+  static const Color readTickColor = Color(0xFF1E88E5);
   static const Color outlinedColor = Color(0xFFD9D9D9);
   static const Color activeTrackColor = Color(0xFFc4c4c7);
 

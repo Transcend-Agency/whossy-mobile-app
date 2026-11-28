@@ -4,6 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../../common/utils/utils.dart';
 import 'current_chat.dart';
+import 'delivery.dart';
 import 'message.dart';
 
 part 'chat.g.dart';
@@ -74,6 +75,14 @@ class Chat {
   @JsonKey(name: 'credit_held')
   final bool? creditHeld;
 
+  /// When each participant's phone last received this chat's messages.
+  @JsonKey(
+    name: 'delivered_at',
+    fromJson: timestampMapFromJson,
+    includeToJson: false,
+  )
+  final Map<String, Timestamp> deliveredAt;
+
   Chat({
     this.id,
     required this.participants,
@@ -89,7 +98,12 @@ class Chat {
     this.initiatorId,
     this.holdPlacedAt,
     this.creditHeld,
-  })  : lastSenderUserId = FirebaseAuth.instance.currentUser!.uid,
+    this.deliveredAt = const {},
+    // Read from the chat doc. It used to be always the signed-in user, so
+    // the chat list showed your ticks on chats the other person wrote last.
+    String? lastSenderUserId,
+  })  : lastSenderUserId =
+            lastSenderUserId ?? FirebaseAuth.instance.currentUser!.uid,
         isSeenByInitiator = true;
 
   factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);

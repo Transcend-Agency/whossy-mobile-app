@@ -4,18 +4,20 @@ import 'package:whossy_app/feature/home/tabs/chat/data/source/extensions.dart';
 
 import '../../../../../../../common/styles/text_style.dart';
 import '../../../../../../../common/utils/utils.dart';
+import '../../../model/delivery.dart';
+import '../../widgets/tick_icon.dart';
 
 class MessageDetails extends StatelessWidget {
   const MessageDetails({
     super.key,
-    required this.status,
     required this.time,
-    required this.showStatus,
+    this.tick,
   });
 
-  final MessageStatus? status;
   final Timestamp? time;
-  final bool showStatus;
+
+  /// Ticks to show after the time; null for the other person's messages.
+  final TickState? tick;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +30,9 @@ class MessageDetails extends StatelessWidget {
             time.toTime(),
             style: TextStyles.messageMeta,
           ),
-          if (showStatus) ...[
+          if (tick != null) ...[
             addWidth(6),
-            messageStatus(status!, size: 16),
+            TickIcon(tick!),
           ],
         ],
       ),
