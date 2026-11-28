@@ -139,6 +139,10 @@ class _SettingsState extends State<Settings> {
                 padding: EdgeInsets.only(bottom: 8.h),
                 child: const BlockedContactsTile(),
               ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: const ChatTextSizeTile(),
+              ),
               ListView(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,

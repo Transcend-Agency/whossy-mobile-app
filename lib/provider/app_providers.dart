@@ -58,6 +58,14 @@ final reportProvider = ChangeNotifierProvider(
 final tourProvider = ChangeNotifierProvider(
   create: (_) => TourNotifier(),
 );
+
+// Not lazy, so the saved size is read at launch and the first chat opened
+// already shows it.
+final chatTextSizeProvider = ChangeNotifierProvider(
+  lazy: false,
+  create: (_) => ChatTextSizeNotifier(),
+);
+
 // Proxy Providers
 final chatsProvider = ChangeNotifierProxyProvider2<EditProfileNotifier,
     ConnectivityNotifier, ChatsNotifier>(
@@ -115,6 +123,7 @@ final appProviders = [
   notificationProvider,
   reportProvider,
   tourProvider,
+  chatTextSizeProvider,
   chatsProvider,
   swipeAndMatchProvider,
   exploreProvider,

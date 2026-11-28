@@ -168,7 +168,7 @@ class _MessageStreamState extends State<MessageStream> {
                 addHeight(12),
                 Text(
                   "Conversation started $formattedDate",
-                  style: TextStyles.chatText,
+                  style: TextStyles.messageMeta.copyWith(fontSize: 13),
                 ),
                 addHeight(14),
               ],
@@ -185,8 +185,10 @@ class _MessageStreamState extends State<MessageStream> {
                   ),
                   child: Text(
                     dateLabel,
-                    style: TextStyles.chatText.copyWith(
-                      fontSize: AppUtils.scale(9.sp) ?? 11.5.sp,
+                    style: TextStyles.messageMeta.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.black,
                     ),
                   ),
                 ),
