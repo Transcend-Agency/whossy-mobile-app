@@ -1,5 +1,6 @@
 export 'crashlytics/crashlytics_service.dart';
 export 'file/file_service.dart';
+export 'firebase/firebase_setup.dart';
 export 'iap/iap_service.dart';
 export 'location/location_service.dart';
 export 'notification/notification_access.dart';

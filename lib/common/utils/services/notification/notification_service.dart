@@ -8,8 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:whossy_app/common/utils/router/router.dart';
 import 'package:whossy_app/common/utils/router/router.gr.dart';
 import 'package:whossy_app/feature/auth/sign_up/data/repository/user_repository.dart';
+import 'package:whossy_app/feature/home/tabs/chat/data/repository/chat_repository.dart';
 import 'package:whossy_app/provider/provider.dart';
 
+import '../firebase/firebase_setup.dart';
 import 'notification_access.dart';
 
 class NotificationService {
@@ -195,7 +197,34 @@ void consumePendingNotificationLaunch() {
 
 @pragma('vm:entry-point')
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
-  debugPrint('Background message detected');
+  await acknowledgeMessageDelivery(message.data);
+}
+
+/// A new-message push reached this phone while the app was in the
+/// background, so tell the sender it was delivered (two grey ticks). Runs in
+/// the push handler's own isolate, which has to start Firebase itself.
+///
+/// Android runs this handler for every push. iOS runs it only for pushes
+/// marked content-available, so on iPhone delivery is mostly acknowledged
+/// when the app next opens.
+Future<void> acknowledgeMessageDelivery(Map<String, dynamic> data) async {
+  final chatId = data['chatId'];
+  if (data['type'] != 'message' || chatId is! String || chatId.isEmpty) {
+    return;
+  }
+
+  try {
+    await initFirebase();
+    final user = FirebaseAuth.instance.currentUser ??
+        await FirebaseAuth.instance
+            .authStateChanges()
+            .first
+            .timeout(const Duration(seconds: 5));
+    if (user == null) return;
+    await ChatRepository().markDelivered(chatId: chatId, uid: user.uid);
+  } catch (e) {
+    debugPrint('Could not acknowledge message delivery: $e');
+  }
 }
 
 @pragma('vm:entry-point')

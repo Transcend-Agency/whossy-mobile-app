@@ -19,6 +19,11 @@ SubChat _$SubChatFromJson(Map<String, dynamic> json) => SubChat(
       connectedAt: TimestampWrapper.timestampFromJson(json['connected_at']),
       creditHeld: json['credit_held'] as bool?,
       isUnlocked: json['is_unlocked'] as bool?,
+      lastMessageTimestamp:
+          TimestampWrapper.timestampFromJson(json['last_message_timestamp']),
+      deliveredAt: json['delivered_at'] == null
+          ? const {}
+          : timestampMapFromJson(json['delivered_at']),
     );
 
 Map<String, dynamic> _$SubChatToJson(SubChat instance) => <String, dynamic>{
@@ -41,4 +46,7 @@ Map<String, dynamic> _$SubChatToJson(SubChat instance) => <String, dynamic>{
         'connected_at': value,
       if (instance.creditHeld case final value?) 'credit_held': value,
       if (instance.isUnlocked case final value?) 'is_unlocked': value,
+      if (TimestampWrapper.timestampToJson(instance.lastMessageTimestamp)
+          case final value?)
+        'last_message_timestamp': value,
     };

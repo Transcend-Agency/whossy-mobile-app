@@ -27,12 +27,17 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       initiatorId: json['initiator_id'] as String?,
       holdPlacedAt: TimestampWrapper.timestampFromJson(json['hold_placed_at']),
       creditHeld: json['credit_held'] as bool?,
+      deliveredAt: json['delivered_at'] == null
+          ? const {}
+          : timestampMapFromJson(json['delivered_at']),
+      lastSenderUserId: json['last_sender_id'] as String?,
     );
 
 Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
       if (instance.id case final value?) 'id': value,
       'participants': instance.participants,
       'last_message': instance.lastMessage,
+      'last_sender_id': instance.lastSenderUserId,
       if (TimestampWrapper.timestampToJson(instance.lastMessageTimestamp)
           case final value?)
         'last_message_timestamp': value,

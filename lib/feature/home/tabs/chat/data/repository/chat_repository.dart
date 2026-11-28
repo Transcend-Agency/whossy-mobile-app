@@ -10,6 +10,7 @@ import '../../model/chat.dart';
 import '../../model/chat_with_user.dart';
 import '../../model/current_chat.dart';
 import '../../model/message.dart';
+import '../../model/reply_to.dart';
 import '../../model/sub_chat.dart';
 import '../source/extensions.dart';
 
@@ -93,6 +94,7 @@ class ChatRepository {
     required bool isConnected,
     required CurrentChat currentChat,
     required bool isSenderBlocked,
+    ReplyTo? replyTo,
   }) async
   // lb
   {
@@ -104,6 +106,7 @@ class ChatRepository {
           (pictures != null && pictures.isNotEmpty) ? pictures[0].path : null,
       status: isConnected ? MessageStatus.sent : MessageStatus.undelivered,
       isSenderBlocked: isSenderBlocked,
+      replyTo: replyTo,
     );
 
     batch.set(
@@ -170,6 +173,25 @@ class ChatRepository {
           .update({'last_read_at.$uid': FieldValue.serverTimestamp()});
     } catch (e) {
       log('Error marking chat read: $e');
+    }
+  }
+
+  /// Tells the sender this phone has received the chat's messages, by moving
+  /// this user's `delivered_at` time on to now. Everything they sent up to
+  /// then shows two ticks. Only the time is stored, so this is one small
+  /// write per chat, not one per message.
+  Future<void> markDelivered({
+    required String? chatId,
+    required String uid,
+  }) async {
+    if (chatId == null) return;
+
+    try {
+      await _chats
+          .doc(chatId)
+          .update({'delivered_at.$uid': FieldValue.serverTimestamp()});
+    } catch (e) {
+      log('Error marking chat delivered: $e');
     }
   }
 

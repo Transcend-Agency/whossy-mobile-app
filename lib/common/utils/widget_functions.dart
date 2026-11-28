@@ -173,32 +173,6 @@ Widget contentText(String data) {
   );
 }
 
-Widget messageStatus(MessageStatus status, {double? size = 18}) {
-  if (status == MessageStatus.sent) {
-    return singleTick(size: size);
-  } else if (status == MessageStatus.seen) {
-    return seenIcon(size: size);
-  } else {
-    return offlineIcon(size: size); //
-  }
-}
-
-Icon seenIcon({double? size = 18}) {
-  return Icon(
-    Icons.done_all,
-    size: size! + 2,
-    color: AppColors.saveColor,
-  );
-}
-
-Widget singleTick({double? size = 18}) {
-  return Icon(
-    Icons.check,
-    color: Colors.black,
-    size: size,
-  );
-}
-
 Icon offlineIcon({double? size = 18}) {
   return Icon(
     Icons.error_outline_outlined,

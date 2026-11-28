@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../../common/utils/utils.dart';
+import 'delivery.dart';
 
 part 'sub_chat.g.dart';
 
@@ -58,6 +60,21 @@ class SubChat {
   @JsonKey(name: 'is_unlocked')
   final bool? isUnlocked;
 
+  @JsonKey(
+    name: 'last_message_timestamp',
+    fromJson: TimestampWrapper.timestampFromJson,
+    toJson: TimestampWrapper.timestampToJson,
+  )
+  final TimestampWrapper? lastMessageTimestamp;
+
+  /// When each participant's phone last received this chat's messages.
+  @JsonKey(
+    name: 'delivered_at',
+    fromJson: timestampMapFromJson,
+    includeToJson: false,
+  )
+  final Map<String, Timestamp> deliveredAt;
+
   SubChat({
     this.id,
     this.lastMessageId,
@@ -70,6 +87,8 @@ class SubChat {
     this.connectedAt,
     this.creditHeld,
     this.isUnlocked,
+    this.lastMessageTimestamp,
+    this.deliveredAt = const {},
   });
 
   factory SubChat.fromJson(Map<String, dynamic> json) =>

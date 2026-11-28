@@ -16,6 +16,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       status: $enumDecodeNullable(_$MessageStatusEnumMap, json['status']) ??
           MessageStatus.undelivered,
       isSenderBlocked: json['sender_id_blocked'] as bool? ?? false,
+      replyTo: ReplyTo.tryFromJson(json['reply_to']),
     );
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
@@ -30,6 +31,7 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       if (_$MessageStatusEnumMap[instance.status] case final value?)
         'status': value,
       'sender_id_blocked': instance.isSenderBlocked,
+      if (instance.replyTo?.toJson() case final value?) 'reply_to': value,
     };
 
 const _$MessageStatusEnumMap = {

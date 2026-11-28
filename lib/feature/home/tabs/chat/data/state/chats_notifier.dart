@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,8 @@ import '../../../../../../common/utils/enum/enums.dart';
 import '../../../../edit_profile/model/core_profile.dart';
 import '../../../matching/model/user_profile.dart';
 import '../../model/current_chat.dart';
+import '../../model/delivery.dart';
+import '../../model/reply_to.dart';
 import '../repository/chat_repository.dart';
 import '../source/extensions.dart';
 
@@ -35,6 +38,11 @@ class ChatsNotifier extends ChangeNotifier {
   // open room writes it once per new message rather than on every snapshot.
   String? _readMarkedFor;
   StreamSubscription<SubChat?>? _chatSubscription;
+  // The latest message, per chat, this phone has already sent a delivery
+  // acknowledgement for, so each new message is acknowledged once.
+  final Map<String, String> _deliveryAckedFor = {};
+  // The message being replied to in the open chat, shown above the input.
+  Message? _replyingTo;
 
   // Variables to manage state
   CurrentChat? currentChat;
@@ -127,7 +135,11 @@ class ChatsNotifier extends ChangeNotifier {
   }
 
   // Chat stream getter
-  Stream<List<ChatWithUser>> get chatStream => _chatRepository.getChatsStream();
+  Stream<List<ChatWithUser>> get chatStream =>
+      _chatRepository.getChatsStream().map((chats) {
+        acknowledgeDelivery(chats);
+        return chats;
+      });
 
   Stream<UserProfile?> chatterDataStream(String id) {
     return _chatRepository.getChatterDataStream(id).map((userProfile) {
@@ -271,8 +283,23 @@ class ChatsNotifier extends ChangeNotifier {
     final isSenderBlocked =
         _blockedIds?.contains(currentChat!.uidUser1) ?? false;
 
+    final replyTo = _replyingTo == null
+        ? null
+        : ReplyTo.quoting(
+            id: _replyingTo!.id,
+            senderId: _replyingTo!.senderId,
+            message: _replyingTo!.message,
+            photo: _replyingTo!.photo,
+            localPhoto: _replyingTo!.localPhoto,
+          );
+    if (_replyingTo != null) {
+      _replyingTo = null;
+      notifyListeners();
+    }
+
     String messageId = await _chatRepository.sendMessage(
       content,
+      replyTo: replyTo,
       chatId: currentChat!.chatId!,
       pictures: pictures,
       isConnected: _isUserConnected,
@@ -295,12 +322,76 @@ class ChatsNotifier extends ChangeNotifier {
   /// message was read nor see when yours were.
   bool get readReceiptsOn => _profileData?.userSettings?.readReceipts ?? true;
 
-  /// The status to show on your own messages; a read message shows as sent
-  /// while your read receipts are off.
-  MessageStatus visibleStatus(MessageStatus status) =>
-      status == MessageStatus.seen && !readReceiptsOn
-          ? MessageStatus.sent
-          : status;
+  /// When the other person's phone last received the open chat's messages.
+  Timestamp? get recipientDeliveredAt {
+    final other = currentChat?.uidUser2;
+    return other == null ? null : _subChat?.deliveredAt[other];
+  }
+
+  /// The ticks to show on one of your own messages.
+  TickState tickState(MessageStatus? status, Timestamp? sentAt,
+          Timestamp? recipientDeliveredAt) =>
+      tickStateFor(
+        status: status,
+        sentAt: sentAt,
+        recipientDeliveredAt: recipientDeliveredAt,
+        readReceiptsOn: readReceiptsOn,
+      );
+
+  /// Acknowledges delivery for every chat in the list whose latest message
+  /// came from the other person and is newer than this user's
+  /// `delivered_at`. The chat list stays subscribed while the app is open,
+  /// so a message counts as delivered as soon as it reaches the phone.
+  void acknowledgeDelivery(List<ChatWithUser> chats) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    for (final item in chats) {
+      final chat = item.chat;
+      _ackIfNeeded(
+        chatId: chat.id,
+        uid: uid,
+        lastMessageId: chat.lastMessageId,
+        lastSenderId: chat.lastSenderUserId,
+        lastMessageAt: chat.lastMessageTimestamp?.toTimestamp(),
+        deliveredAt: chat.deliveredAt,
+      );
+    }
+  }
+
+  void _ackIfNeeded({
+    required String? chatId,
+    required String? uid,
+    required String? lastMessageId,
+    required String? lastSenderId,
+    required Timestamp? lastMessageAt,
+    required Map<String, Timestamp> deliveredAt,
+  }) {
+    if (chatId == null || lastMessageId == null) return;
+    if (_deliveryAckedFor[chatId] == lastMessageId) return;
+    if (!needsDeliveryAck(
+      uid: uid,
+      lastSenderId: lastSenderId,
+      lastMessageAt: lastMessageAt,
+      deliveredAt: deliveredAt,
+    )) {
+      return;
+    }
+    _deliveryAckedFor[chatId] = lastMessageId;
+    _chatRepository.markDelivered(chatId: chatId, uid: uid!);
+  }
+
+  /// The message being replied to in the open chat, if any.
+  Message? get replyingTo => _replyingTo;
+
+  void startReply(Message message) {
+    _replyingTo = message;
+    notifyListeners();
+  }
+
+  void cancelReply() {
+    if (_replyingTo == null) return;
+    _replyingTo = null;
+    notifyListeners();
+  }
 
   Future<void> updateMessageStatus(Message message) async {
     if (viewPermission && readReceiptsOn) {
@@ -325,6 +416,14 @@ class ChatsNotifier extends ChangeNotifier {
           _lastMessageId = chat.lastMessageId;
         }
         _markReadIfNeeded(chat);
+        _ackIfNeeded(
+          chatId: chat.id,
+          uid: FirebaseAuth.instance.currentUser?.uid,
+          lastMessageId: chat.lastMessageId,
+          lastSenderId: chat.lastSenderId,
+          lastMessageAt: chat.lastMessageTimestamp?.toTimestamp(),
+          deliveredAt: chat.deliveredAt,
+        );
       }
       updateSubChat(chat);
     });
@@ -349,6 +448,7 @@ class ChatsNotifier extends ChangeNotifier {
     _subChat = null;
     _lastMessageId = null;
     _readMarkedFor = null;
+    _replyingTo = null;
   }
 
   /// Checks if the chat room has been opened for the first time
@@ -459,6 +559,8 @@ class ChatsNotifier extends ChangeNotifier {
     _isUserConnected = false;
     _lastMessageId = null;
     _readMarkedFor = null;
+    _deliveryAckedFor.clear();
+    _replyingTo = null;
 
     _chatSubscription?.cancel();
     _chatSubscription = null;
